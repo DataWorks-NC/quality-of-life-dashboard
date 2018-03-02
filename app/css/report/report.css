@@ -7256,78 +7256,7 @@ body {
 .page .row:first-of-type {
     padding-top: 0;
 }
-.page-front .subtitle {
-    font-size: 1.5em;
-    font-weight: bold;
-    border: none;
-    border-bottom: 1px dashed #ccc;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-    padding: 8px 2px 2px;
-    text-shadow: 1px 1px 1px #ccc;
-    background: none;
-    height: 38px;
-}
-.page-front .logo-image {
-    width: 408px;
-}
-.page-front .hero {
-    height: 120px;
-}
-.page-front .subhero {
-    position: absolute;
-    top: 55px;
-    left: 105px;
-    right: 20px;
-}
-.page-front h1 {
-    font-size: 2.8em;
-    text-shadow: 1px 1px 1px #ccc;
-    margin: 10px 0 0;
-}
-.page-front h4 {
-    margin-top: 5px;
-    font-size: 1em;
-}
-.page-front .metric-box {
-    width: 100%;
-    border-collapse: collapse;
-    border-style: hidden;
-}
-.page-front .metric-box td {
-    border: 2px solid #dddddd;
-}
-.page-front .metric-box td h2 {
-    font-size: 1.2em;
-    text-transform: uppercase;
-}
-.page-front .metric-box td h3 {
-    font-size: 2.5em;
-    text-shadow: 1px 1px 1px #ccc;
-}
-.page-front .metric-box td h4 {
-    font-size: 0.9em;
-}
-.page-category h1 {
-    margin: 0;
-    text-shadow: 1px 1px 1px #ccc;
-}
-.page-category .table {
-    margin-top: 30px;
-}
-.page-category .table td {
-    white-space: nowrap;
-    font-size: 0.9em;
-}
-.page-category .table td:first-of-type {
-    white-space: normal;
-}
-.page-category .report-column-selected {
-    background: #dce6f0;
-}
-.page-category .report-column-county {
-    background: #ecf0df;
-}
+
 .vis {
     font-family: sans-serif;
 }
@@ -7347,15 +7276,7 @@ body {
 .vis.vis-horizontal .title {
     display: inline-block;
 }
-td.metric-table__feature-value {
-    background-color: #fcf8e3;
-}
-td.metric-table__selection-average {
-    background-color: #dff0d8;
-}
-td.metric-table__county-average {
-    background-color: #f5f5f5;
-}
+
 @media print {
     .page {
         margin: 0;

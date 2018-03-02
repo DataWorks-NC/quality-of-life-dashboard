@@ -49,8 +49,6 @@
         methods: {
           renderChart: function() {
             if (!(this.years.length && this.values.length)) return;
-            console.log(this.years);
-            console.log(this.values);
             if (this.years.length > 1) {
               let _this = this;
               let options = {

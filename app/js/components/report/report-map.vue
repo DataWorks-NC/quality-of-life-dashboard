@@ -1,5 +1,13 @@
 <template>
-    <p>Map goes here.</p>
+    <div class="container">
+        <div class="page page-front">
+            <div class="row">
+                <div class="col-xs-12">
+                   <h3> Map goes here </h3>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>

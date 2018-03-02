@@ -114,6 +114,16 @@
 }
 </style>
 <style scoped>
+td.metric-table__feature-value {
+    background-color: #fcf8e3;
+}
+td.metric-table__selection-average {
+    background-color: #dff0d8;
+}
+td.metric-table__county-average {
+    background-color: #f5f5f5;
+}
+
 .metric-more-info {
     background: rgb(204, 204, 204);
 }

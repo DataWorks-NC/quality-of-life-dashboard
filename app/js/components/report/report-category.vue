@@ -43,5 +43,24 @@ import ReportMetric from './report-metric';
 </script>
 
 <style scoped>
-
+.page-category h1 {
+    margin: 0;
+    text-shadow: 1px 1px 1px #ccc;
+}
+.page-category .table {
+    margin-top: 30px;
+}
+.page-category .table td {
+    white-space: nowrap;
+    font-size: 0.9em;
+}
+.page-category .table td:first-of-type {
+    white-space: normal;
+}
+.page-category .report-column-selected {
+    background: #dce6f0;
+}
+.page-category .report-column-county {
+    background: #ecf0df;
+}
 </style>
