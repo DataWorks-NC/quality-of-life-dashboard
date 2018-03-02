@@ -72,19 +72,22 @@ let appState = {
       }
       }
   ).filter((m) => (m)),
-  metricValues: {}
+  metricValues: {},
+  countyAverages: {},
 };
 
+// Fill in skeleton structure of metricValues and countyAverages objects as categories -> metrics.
 Object.values(dataConfig).forEach((metric) => {
   if (!appState.metricValues.hasOwnProperty(metric.category)) appState.metricValues[metric.category] = {};
+  if (!appState.countyAverages.hasOwnProperty(metric.category)) appState.countyAverages[metric.category] = {};
   appState.metricValues[metric.category][metric.metric] = {};
+  appState.countyAverages[metric.category][metric.metric] = {};
 });
 
 function fetchReportData(geographyId, areaId) {
   axios.get(`data/report/${geographyId}/${areaId}.json`).then(function(data) {
     Object.keys(data.data).forEach((key) => {
       const category = dataConfig[`m${key}`].category;
-      if (!appState.metricValues.hasOwnProperty(category)) appState.metricValues[category] = {};
       let metricValues = {};
       Object.keys(data.data[key]).forEach((year) => {
             metricValues[year.replace('y_', '')] = data.data[key][year];
@@ -93,12 +96,25 @@ function fetchReportData(geographyId, areaId) {
       appState.metricValues[category][key] = metricValues;
     });
   });
+
+  axios.get('data/report/county_averages.json').then(function(data) {
+    Object.keys(data.data).forEach((key) => {
+      const category = dataConfig[`m${key}`].category;
+      let countyAverages = {};
+      Object.keys(data.data[key]).forEach((year) => {
+            countyAverages[year.replace('y_', '')] = data.data[key][year];
+          }
+      );
+      appState.countyAverages[category][key] = countyAverages;
+    });
+  });
 }
 
 ReportBody.data = function() {
   return {
     categories: appState.categories,
     metricValues: appState.metricValues,
+    countyAverages: appState.countyAverages,
   }
 };
 

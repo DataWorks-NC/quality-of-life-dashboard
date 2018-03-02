@@ -1,5 +1,5 @@
 <template>
-    <div class="row">
+    <div class="row" v-if="notNull">
         <div class="col-md-12">
     <h3>{{ metric.title }}</h3>
         <table v-if="metricValues" class="table table-striped metric-table">
@@ -7,17 +7,23 @@
             <tr>
             <th class="metric-table__year">Year</th>
             <th class="metric-table__feature-value">Feature Value</th>
-            <th class="metric-table__county-average">County Average</th>
+            <th class="metric-table__county-average" v-if="countyAverages">County Average</th>
             </tr>
             <tr v-for="year in Object.keys(metricValues)">
                 <td class="metric-table__year">{{ year }}</td>
                 <td class="metric-table__feature-value">{{ prettyValues[year] }}</td>
-                <td class="metric-table__county-average"></td>
+                <td class="metric-table__county-average" v-if="countyAverages">{{ prettyAverages[year] }}</td>
             </tr>
             </tbody>
         </table>
             <div class="metric-trendchart">
-                <TrendChart v-if="metricValues" :metricConfig="metric" :years="Object.keys(metricValues)" :values="Object.values(metricValues)" :selected="[]"/>
+                <TrendChart v-if="metricValues && countyAverages"
+                            :metricConfig="metric"
+                            :years="Object.keys(metricValues)"
+                            :values="Object.values(metricValues)"
+                            :averageValues="Object.values(countyAverages)"
+                            :selected="[]"
+                />
             </div>
             <div class="metric-more-info">
                 <div class="metric-more-info__title" v-on:click="collapsed = !collapsed"><h3>Why is this important?</h3></div>
@@ -44,17 +50,20 @@
         type: Object,
         required: false,
       },
+      countyAverages: {
+        type: Object,
+        required: false,
+      }
     },
     computed: {
       prettyValues: function() {
-        let retval = Object.assign(
-            ...Object.keys(this.metricValues)
-            .map(
-                (k) => ({[k]: prettyNumber(this.metricValues[k], this.metric.decimals, this.metric.prefix, this.metric.suffix)})
-            )
-        );
-        console.log(retval);
-        return retval;
+        return this.prettify(this.metricValues);
+      },
+      prettyAverages: function() {
+        return this.prettify(this.countyAverages);
+      },
+      notNull: function() {
+        return (!this.MetricValues || this.metricValues.filter((v) => (v !== null)).length > 0)
       }
     },
     components: {
@@ -79,25 +88,19 @@
           });
         }
       },
-      prettyNumber: function(value) {
-        return
+      prettify: function(values) {
+        let retval = Object.assign(
+            ...Object.keys(values)
+            .map(
+                (k) => ({[k]: prettyNumber(values[k], this.metric.decimals, this.metric.prefix, this.metric.suffix)})
+            )
+        );
+        return retval;
       }
     }
   };
 </script>
-
-<style scoped>
-.metric-more-info {
-    background: rgb(204, 204, 204);
-}
-.metric-more-info__title {
-    padding: 3px;
-}
-.metric-more-info__body {
-    background: white;
-    border: 3px solid rgb(204,204,204);
-    padding: 6px;
-}
+<style>
 .metric-more-info__body h2:first-of-type {
     display: none;
 }
@@ -108,5 +111,21 @@
 
 .metric-more-info__body h3:first-of-type {
     display: none;
+}
+</style>
+<style scoped>
+.metric-more-info {
+    background: rgb(204, 204, 204);
+}
+.metric-more-info__title {
+    padding: 3px;
+    padding-left: 6px;
+    color: #337ab7;
+    cursor: pointer;
+}
+.metric-more-info__body {
+    background: white;
+    border: 3px solid rgb(204,204,204);
+    padding: 6px;
 }
 </style>

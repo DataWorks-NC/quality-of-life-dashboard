@@ -1,5 +1,5 @@
 <template lang="html">
-    <div class="qol-chart mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop mdl-typography--text-center">
+    <div class="qol-chart">
         <div class="trendchart">
             <h1 v-if="metricConfig">{{ metricConfig.title }}</h1>
             <span class="legend"><svg class="icon legend-county"><use xlink:href="#icon-trending_up"></use></svg> County</span>
@@ -32,10 +32,14 @@
             type: Array,
             required: true,
           },
+          averageValues: {
+            type: Array,
+            required: true,
+          },
           metricConfig: {
             type: Object,
             required: true,
-          }
+          },
         },
         data: function() {
           return {
@@ -114,7 +118,7 @@
               }
               this.privateState.chart = new Chartist.Line(`#ct-trendchart-${this.metricConfig.metric}`, {
                 labels: this.years,
-                series: [this.values]
+                series: [this.values, this.averageValues]
               }, options);
               // animation
               this.privateState.chart.on('draw', function(data) {
@@ -196,6 +200,10 @@
     .ct-area,
     .ct-line {
         pointer-events: none;
+    }
+    .ct-line {
+        fill: transparent;
+        stroke-width: 2px;
     }
 </style>
 

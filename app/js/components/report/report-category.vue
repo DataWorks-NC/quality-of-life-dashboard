@@ -6,7 +6,12 @@
         </div>
         <div class="row">
             <div class="col-xs-12">
-        <ReportMetric v-for="m in category.metrics" :key="m.id" :metric="m" :metricValues="metricValues && metricValues.hasOwnProperty(m.metric) ? metricValues[m.metric] : null"/>
+        <ReportMetric v-for="m in category.metrics"
+                      :key="m.id"
+                      :metric="m"
+                      :metricValues="metricValues && metricValues.hasOwnProperty(m.metric) ? metricValues[m.metric] : null"
+                      :countyAverages="countyAverages && countyAverages.hasOwnProperty(m.metric) ? countyAverages[m.metric] : null"
+        />
             </div>
             </div>
 </div>
@@ -28,6 +33,10 @@ import ReportMetric from './report-metric';
       metricValues: {
         type: Object,
         required: false,
+      },
+      countyAverages: {
+        type: Object,
+        requred: false,
       }
     }
   };
