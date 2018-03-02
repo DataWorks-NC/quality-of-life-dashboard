@@ -9,17 +9,17 @@
             <th class="metric-table__feature-value">Feature Value</th>
             <th class="metric-table__county-average" v-if="countyAverages">County Average</th>
             </tr>
-            <tr v-for="year in Object.keys(metricValues)">
+            <tr v-for="year in years">
                 <td class="metric-table__year">{{ year }}</td>
-                <td class="metric-table__feature-value">{{ prettyValues[year] }}</td>
-                <td class="metric-table__county-average" v-if="countyAverages">{{ prettyAverages[year] }}</td>
+                <td class="metric-table__feature-value">{{ prettify(metricValues[year]) }}</td>
+                <td class="metric-table__county-average" v-if="countyAverages">{{ prettify(countyAverages[year]) }}</td>
             </tr>
             </tbody>
         </table>
-            <div class="metric-trendchart">
+            <div class="metric-trendchart" v-if="years.length > 1">
                 <TrendChart v-if="metricValues && countyAverages"
                             :metricConfig="metric"
-                            :years="Object.keys(metricValues)"
+                            :years="years"
                             :values="Object.values(metricValues)"
                             :averageValues="Object.values(countyAverages)"
                             :selected="[]"
@@ -30,7 +30,6 @@
                 <div class="metric-more-info__body" v-show="!collapsed" v-html="moreInfo"></div>
                 </div>
             </div>
-    </div>
     </div>
 </template>
 
@@ -48,22 +47,21 @@
       },
       metricValues: {
         type: Object,
-        required: false,
+        required: true,
+        default: {},
       },
       countyAverages: {
         type: Object,
-        required: false,
+        required: true,
+        default: {},
       }
     },
     computed: {
-      prettyValues: function() {
-        return this.prettify(this.metricValues);
-      },
-      prettyAverages: function() {
-        return this.prettify(this.countyAverages);
+      years: function() {
+        return Object.keys(this.metricValues);
       },
       notNull: function() {
-        return (!this.MetricValues || this.metricValues.filter((v) => (v !== null)).length > 0)
+        return (Object.values(this.metricValues).filter((v) => (v !== null)).length > 0)
       }
     },
     components: {
@@ -88,14 +86,8 @@
           });
         }
       },
-      prettify: function(values) {
-        let retval = Object.assign(
-            ...Object.keys(values)
-            .map(
-                (k) => ({[k]: prettyNumber(values[k], this.metric.decimals, this.metric.prefix, this.metric.suffix)})
-            )
-        );
-        return retval;
+      prettify: function(value) {
+        return prettyNumber(value, this.metric.decimals, this.metric.prefix, this.metric.suffix);
       }
     }
   };

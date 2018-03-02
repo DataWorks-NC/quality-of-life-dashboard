@@ -32,7 +32,7 @@ if ('serviceWorker' in navigator) {
 ieSVGFixes();
 
 // Process hashes
-const areaId = getHash(1)[0];
+const areaIds = getHash(1);
 const geographyId = getHash(2);
 
 const categoryNames = new Array(...new Set(Object.values(dataConfig).map((m) => (m.category))));
@@ -67,7 +67,7 @@ Object.values(dataConfig).forEach((metric) => {
 function loadReportSummary() {
   ReportSummary.data = function() {
     return {
-      areaName: siteConfig.geographies.find((g) => (g.id === geographyId)).label(areaId),
+      areaNames: areaIds.map((id) => (siteConfig.geographies.find((g) => (g.id === geographyId)).label(id))),
       summaryMetrics: siteConfig.summaryMetrics.map((id) => {
         let metric = dataConfig[id];
         if (appState.metricValues.hasOwnProperty(metric.category) && appState.metricValues[metric.category].hasOwnProperty(metric.metric)) {
@@ -84,19 +84,31 @@ function loadReportSummary() {
   });
 }
 
-function fetchReportData(geographyId, areaId) {
-  axios.get(`data/report/${geographyId}/${areaId}.json`).then(function(data) {
-    Object.keys(data.data).forEach((key) => {
-      if (!dataConfig.hasOwnProperty(`m${key}`)) return console.log("No data config found for " + key);
-      const category = dataConfig[`m${key}`].category;
-      let metricValues = {};
-      Object.keys(data.data[key]).forEach((year) => {
-            metricValues[year.replace('y_', '')] = data.data[key][year];
+function fetchReportData(geographyId, areaIds) {
+  axios.all(areaIds.map((id) => (axios.get(`data/report/${geographyId}/${id}.json`)))).then(
+      function(args) {
+        Object.keys(args[0].data).forEach((key) => {
+        if (!dataConfig.hasOwnProperty(`m${key}`)) return console.log("No data config found for " + key);
+        const metric = dataConfig[`m${key}`];
+        let metricValues = {};
+        Object.keys(args[0].data[key].map).forEach((year) => {
+          if (metric.type === 'sum') {
+            metricValues[year.replace('y_', '')] = args.reduce((prevVal, file) => (file.data[key].map[year] !== null ? prevVal + file.data[key].map[year] : prevVal), 0);
           }
-      );
-      appState.metricValues[category][key] = metricValues;
+          else if (metric.type === 'mean') {
+            metricValues[year.replace('y_', '')] = args.reduce((prevVal, file) => (file.data[key].map[year] !== null ? prevVal + file.data[key].map[year] : prevVal), 0)/args.length;
+          }
+          else if (metric.type === 'weighted') {
+            metricValues[year.replace('y_', '')] = args.reduce((prevVal, file) => (
+                file.data[key].w[year] !== null && file.data[key].map[year] !== null
+                    ? prevVal + file.data[key].map[year]*file.data[key].w[year]
+                    : prevVal), 0)
+                / args.reduce((prevVal, file) => (file.data[key].w[year] !== null ? prevVal + file.data[key].w[year] : prevVal), 0);
+          }
+          }
+        );
+        appState.metricValues[metric.category][key] = metricValues;
     });
-
     loadReportSummary();
   });
 
@@ -144,4 +156,4 @@ new Vue({
   render: h => h(ReportBody),
 });
 
-fetchReportData(geographyId, areaId);
+fetchReportData(geographyId, areaIds);

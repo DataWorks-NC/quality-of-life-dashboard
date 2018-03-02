@@ -9,8 +9,8 @@
         <ReportMetric v-for="m in category.metrics"
                       :key="m.id"
                       :metric="m"
-                      :metricValues="metricValues && metricValues.hasOwnProperty(m.metric) ? metricValues[m.metric] : null"
-                      :countyAverages="countyAverages && countyAverages.hasOwnProperty(m.metric) ? countyAverages[m.metric] : null"
+                      :metricValues="metricValues.hasOwnProperty(m.metric) ? metricValues[m.metric] : null"
+                      :countyAverages="countyAverages.hasOwnProperty(m.metric) ? countyAverages[m.metric] : null"
         />
             </div>
             </div>
@@ -36,7 +36,7 @@ import ReportMetric from './report-metric';
       },
       countyAverages: {
         type: Object,
-        requred: false,
+        required: false,
       }
     }
   };

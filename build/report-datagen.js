@@ -56,7 +56,12 @@ _.each(siteConfig.geographies || ['geography',], function(geography) {
             if (!geographyMetricsCached.hasOwnProperty(key)) {
               geographyMetricsCached[key] = {};
             }
-            geographyMetricsCached[key][metric.metric] = value;
+            geographyMetricsCached[key][metric.metric] = {
+              map: value
+            };
+            if (contents.hasOwnProperty('w')) {
+              geographyMetricsCached[key][metric.metric]['w'] = contents.w[key];
+            }
           });
 
           // If this is the tract-level data, store county averages.

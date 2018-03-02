@@ -3,7 +3,7 @@
     <div class="row">
         <div class="col-xs-12">
         <img class="logo-image" src="img/report-logo.png" alt="Durham Neighborhood Compass"/>
-        <h2 class="subtitle">{{ areaName }}</h2>
+        <h2 class="subtitle">{{ areaNames.join(', ') }}</h2>
         </div>
     </div>
     <div class="row">
