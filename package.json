@@ -6,8 +6,8 @@
   "author": "Tobin Bradley",
   "license": "MIT",
   "scripts": {
-    "start": "brunch watch --server --network --port 3000 --debug",
-    "build": "node $NODE_DEBUG_OPTION ./build/datagen.js && brunch build --production --debug"
+    "start": "brunch watch --server --network --port 3000",
+    "build": "node $NODE_DEBUG_OPTION ./build/datagen.js && npx babel-node ./build/report-datagen.js && brunch build --production"
   },
   "dependencies": {
     "@mapbox/mapbox-gl-geocoder": "^2.2.0",
@@ -24,8 +24,10 @@
     "vue": "^2.5.13"
   },
   "devDependencies": {
+    "async": "^2.6.0",
     "auto-reload-brunch": "^2.7.1",
     "babel-brunch": "^6.1.1",
+    "babel-cli": "^6.26.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.1",
     "brunch": "^2.10.10",

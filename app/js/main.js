@@ -419,7 +419,7 @@ if (reportEmbed) {
 }
 if (reportFull) {
   reportFull.addEventListener('click', function() {
-    window.open(`${siteConfig.qolreportURL}?s=${appState.selected.join(',')}`);
+    window.open(`/report.html${location.hash}`);
   });
 }
 

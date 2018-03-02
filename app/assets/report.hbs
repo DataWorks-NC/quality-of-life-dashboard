@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="{{ siteConfig.description }}">
+    <meta name="keywords" content="{{ siteConfig.keywords }}">
+    <meta name="author" content="{{ siteConfig.author }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ siteConfig.jurisdiction }} {{ siteConfig.title }}</title>
+
+    <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- Windows 8.1 garbage -->
+    <meta name="application-name" content="{{ siteConfig.title }}" />
+    <meta name="msapplication-TileColor" content="#1e59bd" />
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/png" href="images/favicon.png" />
+    <link rel="apple-touch-icon-precomposed" href="images/apple-touch-icon-precomposed.png" />
+
+    <!-- Theme color for Android -->
+    <meta name="theme-color" content="#db5945">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="report.css">
+
+</head>
+
+<body>
+<!--[if lt IE 9]>
+<p class="oldie alert-info text-center">You are using an outdated browser. <a href="http://whatbrowser.org/">Upgrade your browser today</a> to better experience this site.</p>
+<![endif]-->
+
+    <report-summary></report-summary>
+    <report-map></report-map>
+    <report-body></report-body>
+
+<script src="vendor.js"></script>
+<script src="app.js"></script>
+<script> require('js/report'); </script>
+<!--   Google Analytics -->
+<script>
+    (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function () {
+            (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+    ga('create', '{{ siteConfig.gaKey }}', 'auto');
+    ga('send', 'pageview');
+</script>
+
+</body>
+
+</html>
