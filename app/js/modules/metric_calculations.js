@@ -46,7 +46,7 @@ function valsToArray(data, years, keys) {
 function wValsToArray(data, weight, years, keys) {
     let arr = [];
     for (let y = 0; y < years.length; y++) {
-        for (var i = 0; i < keys.length; i++) {
+        for (let i = 0; i < keys.length; i++) {
             if (isNumeric(data[keys[i]][`y_${years[y]}`]) && isNumeric(weight[keys[i]][`y_${years[y]}`])) {
                 arr.push(data[keys[i]][`y_${years[y]}`] * weight[keys[i]][`y_${years[y]}`]);
             }

@@ -12,13 +12,14 @@ module.exports = {
     javascripts: {
       joinTo: {
         'vendor.js': /^(?!app)/,
-        'app.js': /^app/
+        'app.js': /^app/,
       }
     },
     stylesheets: {
       joinTo: {
         'vendor.css': /^(?!app)/,
-        'app.css': /^app/
+        'app.css': /^app(?!report)/,
+        'report.css': /^app\/css\/report/,
       }
     }
   },
