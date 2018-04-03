@@ -67,7 +67,7 @@ export default {
 
 <style lang="css" scoped>
 #years {
-    color: rgb(210, 210, 210);
+    color: #262626;
     padding: 5px;
     display: inline-block;
     width: 100%;
