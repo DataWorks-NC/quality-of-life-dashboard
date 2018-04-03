@@ -136,7 +136,7 @@ export default {
                 if (metric.config.suffix === '%') {
                   rawValue /= 100;
                 }
-                this.privateState.selectedRaw = prettyNumber(rawValue, 0);
+                this.privateState.selectedRaw = prettyNumber(rawValue, 0, metric.config.prefix);
             }
         },
         processArea: function() {
@@ -154,7 +154,7 @@ export default {
                 if (metric.config.suffix === '%') {
                   rawValue /= 100;
                 }
-                this.privateState.areaRaw = prettyNumber(rawValue, 0);
+                this.privateState.areaRaw = prettyNumber(rawValue, 0, metric.config.prefix);
             }
         },
         processYear: function() {

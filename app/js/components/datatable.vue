@@ -7,10 +7,10 @@
                         <th class="mdl-data-table__cell--non-numeric">
                             <span class="tooltip" v-bind:title="sharedState.geography.description">{{ sharedState.geography.name }}</span>
                         </th>
-                        <th>{{sharedState.year}} Value</th>
+                        <th>{{sharedState.year}} Value <span v-if="sharedState.metric.config.label">({{sharedState.metric.config.label}})</span></th>
                         <th v-if="sharedState.metric.data.a">Accuracy</th>
                         <th v-if="sharedState.metric.years.length > 1">Trend<br>{{sharedState.metric.years[0]}}-{{sharedState.metric.years[sharedState.metric.years.length - 1]}}</th>
-                        <th v-if="sharedState.metric.config.raw_label">Number</th>
+                        <th v-if="sharedState.metric.config.raw_label">Number of {{sharedState.metric.config.raw_label}}</th>
                         <th v-if="sharedState.metric.years.length > 1 && sharedState.metric.config.raw_label">Trend<br>{{sharedState.metric.years[0]}}-{{sharedState.metric.years[sharedState.metric.years.length - 1]}}</th>
                     </tr>
                 </thead>
@@ -20,7 +20,7 @@
                         <td>{{ formatVal(getVal(n)) }}</td>
                         <td v-if="sharedState.metric.config.accuracy"> &#177; {{ formatVal(getAccuracy(n)) }}</td>
                         <td v-if="sharedState.metric.years.length > 1" v-html="trend(n)"></td>
-                        <td v-if="sharedState.metric.config.raw_label &&  sharedState.metric.data.w">{{ formatRaw(getRaw(n)) }}<span class="units" v-if="sharedState.metric.config.raw_label" v-html="' ' + sharedState.metric.config.raw_label"></span></td>
+                        <td v-if="sharedState.metric.config.raw_label &&  sharedState.metric.data.w">{{ formatRaw(getRaw(n)) }}</td>
                         <td v-if="sharedState.metric.years.length > 1 && sharedState.metric.config.raw_label" v-html="trendRaw(n)"></td>
                     </tr>
                 </tbody>
@@ -105,7 +105,8 @@ export default {
             return prettyNumber(num, sharedState.metric.config.decimals, sharedState.metric.config.prefix, sharedState.metric.config.suffix);
         },
         formatRaw: function(num) {
-            return prettyNumber(num, 0);
+          let sharedState = this.sharedState;
+          return prettyNumber(num, 0, sharedState.metric.config.prefix);
         }
     }
 };
