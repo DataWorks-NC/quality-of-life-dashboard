@@ -303,7 +303,7 @@ export default {
             let _this = this;
 
             _this.sharedState.selected.forEach(id => {
-                stops.push([id, '#ba00e4']);
+                stops.push([id, '#00688B']);
             });
 
             let outline = {

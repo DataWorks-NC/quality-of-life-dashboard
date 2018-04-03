@@ -175,7 +175,7 @@
 <style lang="css">
     .qol-chart .ct-series-b .ct-line,
     .qol-chart .ct-series-b .ct-point {
-        stroke: #ba00e4;
+        stroke: #00688B;
     }
     .qol-chart .ct-series-a .ct-line,
     .qol-chart .ct-series-a .ct-point {
@@ -238,7 +238,7 @@
         height: 1.5em;
     }
     .legend-selected {
-        color: #ba00e4;
+        color: #00688B;
     }
     .legend-county {
         color: orange;

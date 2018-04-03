@@ -173,7 +173,7 @@ export default {
 <style>
     /* selected */    
     .ct-distributionchart .ct-point {
-        stroke: #ba00e4;
+        stroke: #00688B;
         stroke-width: 7;
     }
 
@@ -221,7 +221,7 @@ export default {
         font-size: 1.2em;
     }
     .legend-selected {
-        color: #ba00e4;
+        color: #00688B;
     }
     .legend-median {
         fill: #666;
