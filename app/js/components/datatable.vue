@@ -82,7 +82,7 @@ export default {
             let end = sharedState.metric.data.map[n][`y_${sharedState.metric.years[0]}`] * sharedState.metric.data.w[n][`y_${sharedState.metric.years[0]}`];
 
             if (isNumeric(begin) && isNumeric(end)) {
-                let trendVal = begin - end;
+                let trendVal = (begin - end) * (sharedState.metric.config.suffix === '%' ? 0.01 : 1);
                 return  `${this.trendIcon(trendVal)} ${prettyNumber(trendVal, 0)}`;
             } else {
                 return  '--';
@@ -98,7 +98,7 @@ export default {
         },
         getRaw: function(n) {
             let sharedState = this.sharedState;
-            return sharedState.metric.data.w[n][`y_${sharedState.year}`] * sharedState.metric.data.map[n][`y_${sharedState.year}`];
+            return sharedState.metric.data.w[n][`y_${sharedState.year}`] * sharedState.metric.data.map[n][`y_${sharedState.year}`] * (sharedState.metric.config.suffix === '%' ? 0.01 : 1);
         },
         formatVal: function(num) {
             let sharedState = this.sharedState;

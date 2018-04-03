@@ -14,7 +14,7 @@
                     <span class="metrictype">SELECTED</span>
                     <span class="metricvalue">{{ privateState.selected }}</span>
                     <span v-if="sharedState.metric.config.label" class="metriclabel">{{ sharedState.metric.config.label.toLowerCase() }}</span>
-                    <span v-if="sharedState.metric.config.raw_label && sharedState.selected.length > 0" class="metric-raw">
+                    <span v-if="sharedState.metric.config.raw_label && sharedState.selected.length > 0 && privateState.selectedRaw" class="metric-raw">
                         <span>or</span>
                         <span class="metricvalue metricraw">{{privateState.selectedRaw}}</span>
                         <span v-html="sharedState.metric.config.raw_label.toLowerCase()" class="metriclabel"></span>
@@ -24,7 +24,7 @@
                     <span class="metrictype">COUNTY</span>
                     <span class="metricvalue">{{ privateState.area }}</span>
                     <span v-if="sharedState.metric.config.label" class="metriclabel">{{ sharedState.metric.config.label.toLowerCase() }}</span>
-                    <span v-if="sharedState.metric.config.raw_label" class="metric-raw">
+                    <span v-if="sharedState.metric.config.raw_label && privateState.areaRaw" class="metric-raw">
                         <span>or</span>
                         <span class="metricvalue metricraw">{{privateState.areaRaw}}</span>
                         <span v-html="sharedState.metric.config.raw_label.toLowerCase()" class="metriclabel"></span>
@@ -133,6 +133,9 @@ export default {
             if (metric.config.raw_label) {
                 let rawArray = wValsToArray(metric.data.map, metric.data.w, [this.sharedState.year], this.sharedState.selected);
                 let rawValue = sum(rawArray);
+                if (metric.config.suffix === '%') {
+                  rawValue /= 100;
+                }
                 this.privateState.selectedRaw = prettyNumber(rawValue, 0);
             }
         },
@@ -148,6 +151,9 @@ export default {
             if (metric.config.raw_label) {
                 let rawArray = wValsToArray(metric.data.map, metric.data.w, [this.sharedState.year], keys);
                 let rawValue = sum(rawArray);
+                if (metric.config.suffix === '%') {
+                  rawValue /= 100;
+                }
                 this.privateState.areaRaw = prettyNumber(rawValue, 0);
             }
         },
