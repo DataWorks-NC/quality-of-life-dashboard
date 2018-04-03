@@ -15,8 +15,9 @@ export default function fetchData(appState, metric=null, geography=null) {
   }
 
   // Check that data exists for this metric & geography, otherwise switch geography.
-  if (dataConfig[`m${appState.metricId}`].geographies.indexOf(geography) === -1) {
+  if (!geography || dataConfig[`m${appState.metricId}`].geographies.indexOf(geography) === -1) {
     geography = dataConfig[`m${appState.metricId}`].geographies[0];
+    appState.selected = [];
   }
 
   // fetch data

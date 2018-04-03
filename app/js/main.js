@@ -145,14 +145,16 @@ if (getHash(0)) {
   }
 }
 
-// set selected if provided
-if (getHash(1)) {
-  appState.selected = getHash(1);
+// set geography if provided
+const hashGeog = siteConfig.geographies.find((g) => (g.id === getHash(1)));
+if (hashGeog) {
+  appState.geography = hashGeog;
 }
 
-// set geography if provided
-if (getHash(2)) {
-  appState.geography = siteConfig.geographies.find((g) => (g.id === getHash(2)));
+// set selected if provided
+const hashSelected = getHash(2);
+if (hashSelected && hashSelected.constructor === Array) {
+  appState.selected = hashSelected;
 }
 
 // grab initial data and use the first available geography for this metric.
