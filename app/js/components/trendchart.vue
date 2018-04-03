@@ -56,7 +56,7 @@
                         plugins: [
                             Chartist.plugins.tooltip({
                                 transformTooltipTextFnc: function(value) {
-                                    return prettyNumber(value, _this.sharedState.metric.config.decimals, _this.sharedState.metric.config.prefix, _this.sharedState.metric.config.suffix);
+                                    return prettyNumber(value, _this.sharedState.metric.config.decimals, _this.sharedState.metric.config.prefix, _this.sharedState.metric.config.suffix, _this.sharedState.metric.config.commas);
                                 }
                             })
                         ]

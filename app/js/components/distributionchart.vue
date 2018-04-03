@@ -74,7 +74,7 @@ export default {
             // get values
             let data = this.dataToSortedArray(this.sharedState.metric.data.map, this.sharedState.year);
             let med = median(data.map(function(el) { return el.val }));
-            _this.privateState.median = prettyNumber(med, metric.config.decimals, metric.config.prefix, metric.config.suffix);
+            _this.privateState.median = prettyNumber(med, metric.config.decimals, metric.config.prefix, metric.config.suffix, metric.config.commas);
 
             // populate chart data
             let dataArrayA = [];

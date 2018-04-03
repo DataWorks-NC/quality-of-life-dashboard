@@ -40,9 +40,16 @@ function numberfixes(number, prefix = '', suffix = '') {
     return prefix + number + suffix;
 }
 
-function prettyNumber(number, decimals = 0, prefix = '', suffix = '') {
+function prettyNumber(number, decimals = 0, prefix = '', suffix = '', commas = true) {
     if (isNumeric(number)) {
-        return numberfixes(commafy(round(Number(number), decimals)), prefix, suffix);
+        if (commas) {
+          return numberfixes(commafy(round(Number(number), decimals)), prefix,
+              suffix);
+        }
+        else {
+          return numberfixes(round(Number(number), decimals), prefix,
+              suffix);
+        }
     } else {
         return '--';
     }

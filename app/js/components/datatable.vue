@@ -71,7 +71,7 @@ export default {
 
             if (isNumeric(begin) && isNumeric(end)) {
                 let trendVal = round(Number(begin), sharedState.metric.config.decimals) - round(Number(end), sharedState.metric.config.decimals);
-                return `${this.trendIcon(trendVal)} ${prettyNumber(trendVal, this.sharedState.metric.config.decimals, this.sharedState.metric.config.prefix, this.sharedState.metric.config.suffix)}`;
+                return `${this.trendIcon(trendVal)} ${prettyNumber(trendVal, this.sharedState.metric.config.decimals, this.sharedState.metric.config.prefix, this.sharedState.metric.config.suffix, this.sharedState.metric.config.commas)}`;
             } else {
                 return '--';
             }
@@ -102,7 +102,7 @@ export default {
         },
         formatVal: function(num) {
             let sharedState = this.sharedState;
-            return prettyNumber(num, sharedState.metric.config.decimals, sharedState.metric.config.prefix, sharedState.metric.config.suffix);
+            return prettyNumber(num, sharedState.metric.config.decimals, sharedState.metric.config.prefix, sharedState.metric.config.suffix, sharedState.metric.config.commas);
         },
         formatRaw: function(num) {
           let sharedState = this.sharedState;
