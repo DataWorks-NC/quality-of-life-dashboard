@@ -17,7 +17,7 @@ require('material-design-lite');
 //import {introJs} from 'intro.js';
 import Vue from 'vue/dist/vue.js';
 import axios from 'axios';
-import dataConfig from '../../data/config/data';
+import dataConfigUnsorted from '../../data/config/data';
 import mapConfig from '../../data/config/map';
 import siteConfig from '../../data/config/site';
 import privateConfig from '../../data/config/private';
@@ -89,6 +89,24 @@ ieSVGFixes();
 //   iframe.setAttribute('aria-label', 'GeoPortal video tutorial');
 //   theElem.appendChild(iframe);
 // });
+
+// Sort dataConfig alphabetically by metric and category
+let dataConfigTemp = [];
+for (let key in dataConfigUnsorted) {
+  if (dataConfigUnsorted.hasOwnProperty(key)) {
+    let t = dataConfigUnsorted[key];
+    t._key = key;
+    dataConfigTemp.push(t);
+  }
+}
+dataConfigTemp = dataConfigTemp.sort((a, b) => {
+  if (a.category > b.category) return 1;
+  if (a.category < b.category) return -1;
+  if (a.title > b.title) return 1;
+  if (a.title < b.title) return -1;
+  return 0;
+});
+const dataConfig = dataConfigTemp.reduce((obj, curVal) => { obj[curVal._key] = curVal; return obj; }, {});
 
 // the shared state between components
 let appState = {
