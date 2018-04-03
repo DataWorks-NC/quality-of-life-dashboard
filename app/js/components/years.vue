@@ -28,9 +28,9 @@
 export default {
     name: 'sc-year',
     methods: {
-        changeYear: function(elem) {
-            let closest = this.getClosest(this.sharedState.metric.years, elem.srcElement.value);
-            this.sharedState.year = elem.srcElement.value = closest;
+        changeYear: function(event) {
+            let closest = this.getClosest(this.sharedState.metric.years, event.target.value);
+            this.sharedState.year = event.target.value = closest;
         },
         getClosest: function(arr, val) {
             return arr.reduce(function (prev, curr) {
@@ -84,7 +84,7 @@ export default {
     padding: 0 10px;
 }
 #yearslider {
-  width: 100%;
+    width: 100%;
 }
 h3 {
     margin: 0;
@@ -92,25 +92,24 @@ h3 {
 }
 
 .playpause label {
-  display: block;
-  box-sizing: border-box;
-  width: 0;
-  height: 34px;
-  border-color: transparent transparent transparent rgb(158, 158, 158);
-  transition: 180ms all ease;
-  cursor: pointer;
-  border-style: double;
-  border-width: 0px 0 0px 25px;
+    display: block;
+    box-sizing: border-box;
+    width: 0;
+    height: 34px;
+    border-color: transparent transparent transparent rgb(158, 158, 158);
+    transition: 180ms all ease;
+    cursor: pointer;
+    border-style: double;
+    border-width: 0px 0 0px 25px;
 }
 .playpause label:hover {
-  border-color: transparent transparent transparent #ff4081;
+    border-color: transparent transparent transparent #ff4081;
 }
 .playpause input[type="checkbox"] {
-  display: none;
+    display: none;
 }
 .playpause input[type="checkbox"]:checked + label {
-  border-style: solid;
-  border-width: 17px 0 17px 25px;
+    border-style: solid;
+    border-width: 17px 0 17px 25px;
 }
-
 </style>
