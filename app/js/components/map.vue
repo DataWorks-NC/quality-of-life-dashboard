@@ -42,7 +42,10 @@ export default {
             map.addControl(nav, 'top-right');
 
             // add full extent button
-            map.addControl(new FullExtent({}), 'top-right');
+            map.addControl(new FullExtent(
+                _this.privateState.mapOptions.center,
+                _this.privateState.mapOptions.zoom
+            ), 'top-right');
             map.addControl(new mapboxgl.GeolocateControl, 'top-right');
 
             map.addControl(new MapboxGlGeocoder({
