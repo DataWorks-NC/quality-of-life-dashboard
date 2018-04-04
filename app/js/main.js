@@ -17,7 +17,7 @@ require('material-design-lite');
 //import {introJs} from 'intro.js';
 import Vue from 'vue/dist/vue.js';
 import axios from 'axios';
-import dataConfig from '../../data/config/data';
+import dataConfigUnsorted from '../../data/config/data';
 import mapConfig from '../../data/config/map';
 import siteConfig from '../../data/config/site';
 import privateConfig from '../../data/config/private';
@@ -90,6 +90,24 @@ ieSVGFixes();
 //   theElem.appendChild(iframe);
 // });
 
+// Sort dataConfig alphabetically by metric and category
+let dataConfigTemp = [];
+for (let key in dataConfigUnsorted) {
+  if (dataConfigUnsorted.hasOwnProperty(key)) {
+    let t = dataConfigUnsorted[key];
+    t._key = key;
+    dataConfigTemp.push(t);
+  }
+}
+dataConfigTemp = dataConfigTemp.sort((a, b) => {
+  if (a.category > b.category) return 1;
+  if (a.category < b.category) return -1;
+  if (a.title > b.title) return 1;
+  if (a.title < b.title) return -1;
+  return 0;
+});
+const dataConfig = dataConfigTemp.reduce((obj, curVal) => { obj[curVal._key] = curVal; return obj; }, {});
+
 // the shared state between components
 let appState = {
   metric: {
@@ -127,14 +145,16 @@ if (getHash(0)) {
   }
 }
 
-// set selected if provided
-if (getHash(1)) {
-  appState.selected = getHash(1);
+// set geography if provided
+const hashGeog = siteConfig.geographies.find((g) => (g.id === getHash(1)));
+if (hashGeog) {
+  appState.geography = hashGeog;
 }
 
-// set geography if provided
-if (getHash(2)) {
-  appState.geography = siteConfig.geographies.find((g) => (g.id === getHash(2)));
+// set selected if provided
+const hashSelected = getHash(2);
+if (hashSelected && hashSelected.constructor === Array) {
+  appState.selected = hashSelected;
 }
 
 // grab initial data and use the first available geography for this metric.
