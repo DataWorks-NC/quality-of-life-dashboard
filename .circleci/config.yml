@@ -37,17 +37,19 @@ jobs:
       # run tests!
       - run: npm run build
       - persist_to_workspace:
-          root: public
+          root: /tmp/workspace
+          paths:
+            - public/*
   deploy:
     docker:
       - image: circleci/node:9.11
     working-directory: ~/repo
     steps:
       - attach_workspace:
-          at: ./public
+          at: /tmp/workspace
       - run: sudo apt-get install --upgrade -qq groff less awscli
       - run: aws configure set preview.cloudfront true
-      - run: aws s3 cp --recursive ./public/ $AWS_S3_BUCKET --exclude "*" --include "*.js" --include "*.json" --include "*.html" --include "*.css" --include "*.png" --include "*.zip"
+      - run: aws s3 cp --recursive /tmp/workspace/public/ $AWS_S3_BUCKET --exclude "*" --include "*.js" --include "*.json" --include "*.html" --include "*.css" --include "*.png" --include "*.zip"
       - run: aws cloudfront create-invalidation --distribution-id $AWS_CLOUDFRONT_ID  --paths "/*"
 
 workflows:
