@@ -439,7 +439,9 @@ if (reportEmbed) {
 }
 if (reportFull) {
   reportFull.addEventListener('click', function() {
-    window.open(`/report.html${location.hash}`);
+    const hashComponents = decodeURI(location.hash).split('/');
+    const newHash = encodeURI(`#${hashComponents[1]}/${hashComponents[2]}`);
+    window.open(`/report.html${newHash}`);
   });
 }
 
