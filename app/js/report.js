@@ -32,8 +32,8 @@ if ('serviceWorker' in navigator) {
 ieSVGFixes();
 
 // Process hashes
-const areaIds = getHash(1);
-const geographyId = getHash(2);
+const areaIds = getHash(1).split(',');
+const geography = siteConfig.geographies.find((g) => (g.id === getHash(0)));
 
 const categoryNames = new Array(...new Set(Object.values(dataConfig).map((m) => (m.category))));
 
@@ -42,7 +42,7 @@ let appState = {
   categories: categoryNames.map((name) => {
       let tempCategory = {
           name: name,
-          metrics: Object.values(dataConfig).filter((m) => (m.category === name && m.geographies.indexOf(geographyId) > -1))
+          metrics: Object.values(dataConfig).filter((m) => (m.category === name && m.geographies.indexOf(geography.id) > -1))
         };
       if (tempCategory.metrics.length > 0) {
         return tempCategory;
@@ -67,7 +67,7 @@ Object.values(dataConfig).forEach((metric) => {
 function loadReportSummary() {
   ReportSummary.data = function() {
     return {
-      areaNames: areaIds.map((id) => (siteConfig.geographies.find((g) => (g.id === geographyId)).label(id))),
+      areaNames: areaIds.map((id) => (siteConfig.geographies.find((g) => (g.id === geography.id)).label(id))),
       summaryMetrics: siteConfig.summaryMetrics.map((id) => {
         let metric = dataConfig[id];
         if (appState.metricValues.hasOwnProperty(metric.category) && appState.metricValues[metric.category].hasOwnProperty(metric.metric)) {
@@ -156,4 +156,4 @@ new Vue({
   render: h => h(ReportBody),
 });
 
-fetchReportData(geographyId, areaIds);
+fetchReportData(geography.id, areaIds);
