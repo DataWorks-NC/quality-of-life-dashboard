@@ -51,7 +51,7 @@ jobs:
       - run: sudo apt-get install --upgrade -qq groff less awscli
       - run: aws configure set preview.cloudfront true
       - run: aws s3 cp --recursive /tmp/workspace/public/ $AWS_S3_BUCKET --exclude "*" --include "*.js" --include "*.json" --include "*.html" --include "*.css" --include "*.png" --include "*.zip"
-      - run: aws cloudfront create-invalidation --distribution-id $AWS_CLOUDFRONT_ID  --paths "/*"
+      - run: aws cloudfront create-invalidation --distribution-id $AWS_CLOUDFRONT_ID  --paths "/*" --invalidation-batch $CIRCLE_SHA1
 
 workflows:
   version: 2
