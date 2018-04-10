@@ -11,3 +11,5 @@ TODO.md
 yarn.lock
 .idea
 .DS_Store
+.envrc
+.Rhistory

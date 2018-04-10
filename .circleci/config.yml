@@ -1,0 +1,60 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:9.11
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/mongo:3.4.4
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - run: git clone https://github.com/DataWorks-NC/durham-quality-of-life-data.git data
+      - run: cp ./.circleci/config.private.js data/config/private.js
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run: npm install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      # run tests!
+      - run: npm run build
+  deploy:
+    docker:
+      - image: circleci/node:9.11
+    working-directory: ~/repo
+    steps:
+      - run: sudo apt-get install --upgrade -qq groff less awscli
+      - run: aws configure set preview.cloudfront true
+      - run: aws s3 cp --recursive ./public/ $AWS_S3_BUCKET --exclude "*" --include "*.js" --include "*.json" --include "*.html" --include "*.css" --include "*.png" --include "*.zip"
+      - run: aws cloudfront create-invalidation --distribution-id $AWS_CLOUDFRONT_ID  --paths "/*"
+
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                master

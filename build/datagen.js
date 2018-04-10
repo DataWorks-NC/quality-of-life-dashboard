@@ -11,7 +11,7 @@ const marked = require('marked');
 ///////////////////////////////////////////////////
 // Create destination folders
 ///////////////////////////////////////////////////
-directoriesToMake = ['data/meta', 'data/metric', 'downloads'];
+directoriesToMake = ['', 'data', 'data/meta', 'data/metric', 'downloads', 'data'];
 _.each(siteConfig.geographies, function(geography) {
   directoriesToMake.push('data/metric/' + geography.id);
 });
@@ -177,7 +177,7 @@ function convertMetricCsvToJson(geography, metric) {
               ) {
                 jsonArrayR[key][key2] =
                     Math.round(
-                        jsonArrayR[key][key2] / jsonArrayD[key][key2] * 1000,
+                        jsonArrayR[key][key2] / jsonArrayD[key][key2] * 1000
                     ) / 1000;
                 if (metric.suffix === '%') {
                   jsonArrayR[key][key2] *= 100;
