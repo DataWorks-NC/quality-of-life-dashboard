@@ -1,7 +1,7 @@
  
 export default class FullExtent {
     
-    constructor({center = [-80.84, 35.26], zoom = 9.3}) {
+    constructor(center = [-80.84, 35.26], zoom = 9.3) {
         this._center = center;
         this._zoom = zoom;
     }

@@ -42,7 +42,10 @@ export default {
             map.addControl(nav, 'top-right');
 
             // add full extent button
-            map.addControl(new FullExtent({}), 'top-right');
+            map.addControl(new FullExtent(
+                _this.privateState.mapOptions.center,
+                _this.privateState.mapOptions.zoom
+            ), 'top-right');
             map.addControl(new mapboxgl.GeolocateControl, 'top-right');
 
             map.addControl(new MapboxGlGeocoder({
@@ -172,7 +175,7 @@ export default {
                     let id = feature.properties.id;
                     let data = _this.sharedState.metric.data.map[id][`y_${_this.sharedState.year}`];
                     let geographyLabel = _this.sharedState.geography.label(id);
-                    let val = prettyNumber(data, _this.sharedState.metric.config.decimals, _this.sharedState.metric.config.prefix, _this.sharedState.metric.config.suffix);
+                    let val = prettyNumber(data, _this.sharedState.metric.config.decimals, _this.sharedState.metric.config.prefix, _this.sharedState.metric.config.suffix, _this.sharedState.metric.config.commas);
                     popup.setLngLat(map.unproject(e.point))
                         .setHTML(`<div style="text-align: center; margin: 0; padding: 0;"><h3 style="font-size: 1.2em; margin: 0; padding: 0; line-height: 1em; font-weight: bold;">${geographyLabel}</h3>${val}</div>`)
                         .addTo(map);
@@ -303,7 +306,7 @@ export default {
             let _this = this;
 
             _this.sharedState.selected.forEach(id => {
-                stops.push([id, '#ba00e4']);
+                stops.push([id, '#00688B']);
             });
 
             let outline = {
