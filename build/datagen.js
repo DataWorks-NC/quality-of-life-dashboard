@@ -21,7 +21,7 @@ directoriesToMake.forEach((name) => {
   }
   catch (err) {
     if (err.code !== 'EEXIST') {
-      console.log(err);
+      console.log(`Error on creating directory ${name}: ${err.message}`);
     }
   }
 });
@@ -33,9 +33,9 @@ directoriesToMake.forEach((name) => {
 // Either loop through the geography IDs, or just copy geography.geojson.json.
 _.each(siteConfig.geographies || ['geography',], function(geography) {
   fs.readFile(`data/${geography.id}.geojson.json`, 'utf8', (err,data) => {
-    if (err) return console.log(err.message);
+    if (err) return console.log(`Error on ${geography.name}: ${err.message}`);
     fs.writeFile(`public/data/${geography.id}.geojson.json`, jsonminify(data), (err) => {
-      if (err) return console.log(err.message);
+      if (err) return console.log(`Error writing minified geojson for ${geography.name}: ${err.message}`);
       console.log(`Saved and minified geojson for ${geography.name}`);
     });
     }
@@ -44,7 +44,7 @@ _.each(siteConfig.geographies || ['geography',], function(geography) {
 
 // Copy data download file.
 fs.copyFile('data/download/qol-data.zip', 'public/downloads/qol-data.zip', (err) => {
-  if (err) return console.log(err.message);
+  if (err) return console.log(`Error on copying qol-data.zip: ${err.message}`);
   console.log("Copied qol-data.zip to downloads");
 });
 
@@ -70,20 +70,20 @@ marked.setOptions({
 const src = './data/meta';
 
 fs.readdir(src, (err, files) => {
-  if (err) return console.log(err);
+  if (err) return console.log(`Error on reading /data/meta: ${err.message}`);
   files.forEach((filePath) => {
     fs.readFile(path.join(src, filePath), 'utf-8', (err, data) => {
-      if (err) return console.log(err.message);
+      if (err) return console.log(`Error on reading ${path.join(src,filePath)} ${err.message}`);
       let outFile =
           path.join('public/data/meta', path.basename(filePath).split('.')[0]) +
           '.html';
 
       marked(data, function(err, content) {
         if (err) {
-          return console.log(err);
+          return console.log(`Error on running marked: ${err.message}`);
         }
         fs.writeFile(outFile, content, (err) => {
-          if (err) return console.log(err.message);
+          if (err) return console.log(`Error on writing ${outFile}: ${err.message}`);
           console.log("Wrote " + outFile);
           }
         );
@@ -120,8 +120,8 @@ function writeMetricFile(destPath, metric, json) {
       outFile,
       jsonminify(JSON.stringify(json, null, '  ')),
       (err) => {
-        if (err) return console.log(err.message);
-        console.log("Wrote " + outFile);
+        if (err) return console.log(`Error on writing ${outFile}: ${err.message}`);
+        console.log(`Wrote ${outFile}`);
       }
   );
 }
@@ -139,20 +139,20 @@ function convertMetricCsvToJson(geography, metric) {
 
       if (metric.accuracy) {
         csv()
-        .fromFile(path.join(basePath, `m${metric.metric}-accuracy.csv`))
+        .fromFile(path.join(basePath, `${prefix}${metric.metric}-accuracy.csv`))
         .on('end_parsed', jsonObj => {
           outJSON['a'] = jsonTransform(jsonObj);
           writeMetricFile(destPath, metric, outJSON);
         })
         .on('error', error => {
-          console.log(error);
+          console.log(`Error parsing ${prefix}${metric.metric}-accuracy.csv for ${geography}: ${error.message}`);
         });
       } else {
         writeMetricFile(destPath, metric, outJSON);
       }
     })
     .on('error', error => {
-      if (error) console.log(error);
+      if (error) console.log(`Error parsing ${prefix}${metric.metric}.csv for ${geography}: ${error.message}`);
     });
   }
 
@@ -189,8 +189,7 @@ function convertMetricCsvToJson(geography, metric) {
           }
         }
         catch (err) {
-          console.log("Error on " + metric.metric + " for " + geography);
-          return console.log(err);
+          return console.log(`Error on ${metric.metric} for ${geography}: ${err.message}`);
         }
         outJSON['w'] = jsonArrayD;
         outJSON['map'] = jsonArrayR;
@@ -202,18 +201,18 @@ function convertMetricCsvToJson(geography, metric) {
             writeMetricFile(destPath, metric, outJSON);
           })
           .on('error', error => {
-            if (error) console.log(error);
+            if (error) console.log(`Error parsing m${metric.metric}-accuracy.csv for ${geography}: ${error.message}`);
           });
         } else {
           writeMetricFile(destPath, metric, outJSON);
         }
       })
       .on('error', error => {
-        console.log(error);
+        if (error) console.log(`Error parsing d${metric.metric}.csv for ${geography}: ${error.message}`);
       });
     })
     .on('error', error => {
-      if (error) console.log(error);
+      if (error) console.log(`Error parsing r${metric.metric}.csv for ${geography}: ${error.message}`);
     });
   }
 }
@@ -225,7 +224,7 @@ _.each(dataConfig, function(metric) {
       try {
         convertMetricCsvToJson(geography, metric);
       } catch (err) {
-        console.log(err);
+        return console.log(`Error running metricCsvToJson for ${geography}: ${err.message}`);
       }
     });
   }
