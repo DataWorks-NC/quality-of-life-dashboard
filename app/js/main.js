@@ -152,7 +152,7 @@ if (hashGeog) {
 }
 
 // set selected if provided
-const hashSelected = getHash(2);
+const hashSelected = getHash(2) ? getHash(2).split(',') : false;
 if (hashSelected && hashSelected.constructor === Array) {
   appState.selected = hashSelected;
 }
@@ -439,9 +439,8 @@ if (reportEmbed) {
 }
 if (reportFull) {
   reportFull.addEventListener('click', function() {
-    const hashComponents = decodeURI(location.hash).split('/');
-    const newHash = encodeURI(`#${hashComponents[1]}/${hashComponents[2]}`);
-    window.open(`/report.html${newHash}`);
+    const newHash = encodeURI(`${appState.geography.id}/${appState.selected.map(g => encodeURIComponent(g)).join(',')}`);
+    window.open(`/report.html#${newHash}`);
   });
 }
 

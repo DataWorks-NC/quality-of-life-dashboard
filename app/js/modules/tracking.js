@@ -1,7 +1,7 @@
 import getURLParameter from './geturlparams.js';
 
 function replaceState(metric, selected, geography) {
-  location.hash = `${metric}/${geography}/${selected.join(',')}`;
+  location.hash = `${metric}/${geography}/${selected.map(g => encodeURIComponent(g)).join(',')}`;
 }
 
 function gaEvent(type, title, category) {
@@ -33,11 +33,7 @@ function getHash(pos = 0) {
   let hash = decodeURI(location.hash).split('/');
   if (hash[pos] && hash[pos].length > 0) {
     hash[pos] = hash[pos].toString().replace('#', '');
-    if (pos === 2) {
-      return hash[pos].split(',');
-    } else {
-      return hash[pos];
-    }
+    return decodeURIComponent(hash[pos]);
   } else {
     return false;
   }

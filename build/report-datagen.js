@@ -4,6 +4,7 @@ const jsonminify = require("jsonminify");
 const _ = require('lodash');
 const async = require('async');
 const dest = './public/data/';
+const md5 = require('js-md5');
 import dataConfig from '../data/config/data.js';
 import siteConfig from '../data/config/site.js';
 import { calcValue } from '../app/js/modules/metric_calculations.js';
@@ -21,7 +22,7 @@ directoriesToMake.forEach((name) => {
   }
   catch (err) {
     if (err.code !== 'EEXIST') {
-      console.log(err);
+      console.log(`Error making directory public/${name}: ${err.message}`);
     }
   }
 });
@@ -42,14 +43,14 @@ _.each(siteConfig.geographies || ['geography',], function(geography) {
         (err, data) => {
           let contents = {};
           if (err) {
-            console.log(err.message);
+            console.log(`Error reading ${dest}/metric/${geography.id}/m${metric.metric}.json: ${err.message}`);
             return callback();
           }
           try {
             contents = JSON.parse(data);
           }
           catch (err) {
-            console.log(err.message);
+            console.log(`Error parsing ${dest}/metric/${geography.id}/m${metric.metric}.json: ${err.message}`);
             return callback();
           }
           _.forOwn(contents.map, (value, key) => {
@@ -86,20 +87,25 @@ _.each(siteConfig.geographies || ['geography',], function(geography) {
         });
     },
     (err) => {
-      if (err) console.log(err.message);
+      if (err) console.log(`Error on looping through metrics: ${err.message}`);
 
       fs.writeFile(path.join(dest, 'report/county_averages.json'),
           jsonminify(JSON.stringify(countyAverages)), (err) => {
-            if (err) return console.log(err.message);
+            if (err) return console.log(`Error writing county_averages.json: ${err.message}`);
               console.log('Saved county averages json file');
           });
       // Write a file for each geography with just the metrics for that geography.
       _.forOwn(geographyMetricsCached, (value, key) => {
-        fs.writeFile(path.join(dest, `report/${geography.id}/${key}.json`),
+        value['geography_name'] = key;
+        let filename = key;
+        if (geography.id === 'neighborhood') {
+          filename = md5(key);
+        }
+        fs.writeFile(path.join(dest, `report/${geography.id}/${filename}.json`),
             jsonminify(JSON.stringify(value)),
             (err) => {
-              if (err) return console.log(err.message);
-              console.log(`Saved report JSON for ${geography.id} ${key}`)
+              if (err) return console.log(`Error saving report JSON for ${geography.id} ${filename} (${key}): ${err.message}`);
+              console.log(`Saved report JSON for ${geography.id} ${filename} (${key})`)
             });
       });
     }

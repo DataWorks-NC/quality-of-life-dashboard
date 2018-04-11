@@ -1,6 +1,7 @@
 require('es6-promise').polyfill(); // Fix for axios on IE11
 require('./modules/ie-polyfill-array-from.js'); // fix for array from on IE11
 require('material-design-lite');
+const md5 = require('js-md5');
 
 import Vue from 'vue/dist/vue.js';
 import axios from 'axios';
@@ -32,7 +33,7 @@ if ('serviceWorker' in navigator) {
 ieSVGFixes();
 
 // Process hashes
-const areaIds = getHash(1).split(',');
+const areaIds = getHash(1).split(',').map(g=>decodeURIComponent(g));
 const geography = siteConfig.geographies.find((g) => (g.id === getHash(0)));
 
 const categoryNames = new Array(...new Set(Object.values(dataConfig).map((m) => (m.category))));
@@ -85,9 +86,16 @@ function loadReportSummary() {
 }
 
 function fetchReportData(geographyId, areaIds) {
-  axios.all(areaIds.map((id) => (axios.get(`data/report/${geographyId}/${id}.json`)))).then(
+  axios.all(areaIds.map((id) => {
+    let filename = id;
+    if (geographyId === 'neighborhood') {
+      filename = md5(id);
+    }
+    return axios.get(`data/report/${geographyId}/${filename}.json`)
+  })).then(
       function(args) {
         Object.keys(args[0].data).forEach((key) => {
+        if (key === 'geography_name') return;
         if (!dataConfig.hasOwnProperty(`m${key}`)) return console.log("No data config found for " + key);
         const metric = dataConfig[`m${key}`];
         let metricValues = {};

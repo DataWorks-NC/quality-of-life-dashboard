@@ -28,6 +28,8 @@ jobs:
           - v1-dependencies-
 
       - run: npm install
+      # Manual fix for error in Mapbox GL SDK, see https://github.com/mapbox/mapbox-sdk-js/issues/181
+      - run: sed -i 's_'\''rest'\''_'\''rest/browser.js'\''_' node_modules/mapbox/lib/client.js
 
       - save_cache:
           paths:
@@ -50,6 +52,7 @@ jobs:
           at: /tmp/workspace
       - run: sudo apt-get install --upgrade -qq groff less python-dev python-pip
       - run: pip install --upgrade --user awscli
+      - run: ~/.local/bin/aws s3 rm --recursive $AWS_S3_BUCKET
       - run: ~/.local/bin/aws s3 cp --recursive /tmp/workspace/public/ $AWS_S3_BUCKET --exclude "*" --include "*.js" --include "*.json" --include "*.html" --include "*.css" --include "*.png" --include "*.zip"
       - run: ~/.local/bin/aws cloudfront create-invalidation --distribution-id $AWS_CLOUDFRONT_ID  --paths "/*"
 
