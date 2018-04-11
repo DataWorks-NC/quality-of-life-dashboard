@@ -32,7 +32,7 @@ if ('serviceWorker' in navigator) {
 ieSVGFixes();
 
 // Process hashes
-const areaIds = getHash(1).split(',');
+const areaIds = getHash(1).split(',').map(g=>decodeURIComponent(g));
 const geography = siteConfig.geographies.find((g) => (g.id === getHash(0)));
 
 const categoryNames = new Array(...new Set(Object.values(dataConfig).map((m) => (m.category))));
