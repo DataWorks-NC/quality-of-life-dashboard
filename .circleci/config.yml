@@ -19,6 +19,7 @@ jobs:
     steps:
       - checkout
       - run: git clone https://github.com/DataWorks-NC/durham-quality-of-life-data.git data
+      - run: sed -i "s/MAPBOX_ACCESS_TOKEN/$MAPBOX_ACCESS_TOKEN/" .circleci/config.private.js
       - run: cp ./.circleci/config.private.js data/config/private.js
       # Download and cache dependencies
       - restore_cache:
