@@ -4,6 +4,7 @@ const jsonminify = require("jsonminify");
 const _ = require('lodash');
 const async = require('async');
 const dest = './public/data/';
+const md5 = require('js-md5');
 import dataConfig from '../data/config/data.js';
 import siteConfig from '../data/config/site.js';
 import { calcValue } from '../app/js/modules/metric_calculations.js';
@@ -95,11 +96,16 @@ _.each(siteConfig.geographies || ['geography',], function(geography) {
           });
       // Write a file for each geography with just the metrics for that geography.
       _.forOwn(geographyMetricsCached, (value, key) => {
-        fs.writeFile(path.join(dest, `report/${geography.id}/${key}.json`),
+        value['geography_name'] = key;
+        let filename = key;
+        if (geography.id === 'neighborhood') {
+          filename = md5(key);
+        }
+        fs.writeFile(path.join(dest, `report/${geography.id}/${filename}.json`),
             jsonminify(JSON.stringify(value)),
             (err) => {
-              if (err) return console.log(`Error saving report JSON for ${geography.id} ${key}: ${err.message}`);
-              console.log(`Saved report JSON for ${geography.id} ${key}`)
+              if (err) return console.log(`Error saving report JSON for ${geography.id} ${filename} (${key}): ${err.message}`);
+              console.log(`Saved report JSON for ${geography.id} ${filename} (${key})`)
             });
       });
     }
