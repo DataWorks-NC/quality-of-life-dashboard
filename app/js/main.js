@@ -16,6 +16,7 @@ require('material-design-lite');
 
 //import {introJs} from 'intro.js';
 import Vue from 'vue/dist/vue.js';
+import Rollbar from 'vue-rollbar';
 import axios from 'axios';
 import dataConfigUnsorted from '../../data/config/data';
 import mapConfig from '../../data/config/map';
@@ -54,6 +55,13 @@ import 'mapbox-gl';
 import '@mapbox/mapbox-gl-geocoder';
 import {scaleLinear} from 'd3-scale';
 import debounce from 'lodash.debounce';
+
+if (privateConfig.hasOwnProperty('rollbarAccessToken') && privateConfig.rollbarAccessToken) {
+  Vue.use(Rollbar, {
+    accessToken: privateConfig.rollbarAccessToken,
+  });
+}
+
 
 Vue.config.productionTip = false;
 
