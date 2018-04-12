@@ -34,6 +34,11 @@ directoriesToMake.forEach((name) => {
 _.each(siteConfig.geographies || ['geography',], function(geography) {
   fs.readFile(`data/${geography.id}.geojson.json`, 'utf8', (err,data) => {
     if (err) return console.log(`Error on ${geography.name}: ${err.message}`);
+
+    // Add labels
+    data = JSON.parse(data);
+    data.features = data.features.map((g) => {g.properties.label = geography.label(g.properties.id); return g;});
+    data = JSON.stringify(data);
     fs.writeFile(`public/data/${geography.id}.geojson.json`, jsonminify(data), (err) => {
       if (err) return console.log(`Error writing minified geojson for ${geography.name}: ${err.message}`);
       console.log(`Saved and minified geojson for ${geography.name}`);

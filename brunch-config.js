@@ -18,6 +18,7 @@ module.exports = {
     stylesheets: {
       joinTo: {
         'vendor.css': /^(?!app)/,
+        'map.css': /mapbox-gl.css/,
         'app.css': /^app(?!report)/,
         'report.css': /^app\/css\/report/,
       }
