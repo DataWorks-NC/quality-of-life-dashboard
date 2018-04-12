@@ -7,12 +7,13 @@ import Vue from 'vue/dist/vue.js';
 import axios from 'axios';
 import dataConfig from '../../data/config/data';
 import siteConfig from '../../data/config/site';
+import mapConfig from '../../data/config/map';
+
 import {
   getHash,
 } from './modules/tracking';
 import ReportSummary from './components/report/report-summary';
 import ReportBody from './components/report/report-body';
-import ReportMap from './components/report/report-map';
 import ieSVGFixes from './modules/ie-svg-bugs.js';
 
 import 'vueify/lib/insert-css'; // required for .vue file <style> tags
@@ -68,7 +69,10 @@ Object.values(dataConfig).forEach((metric) => {
 function loadReportSummary() {
   ReportSummary.data = function() {
     return {
+      mapConfig: mapConfig,
+      geographyId: geography.id,
       areaNames: areaIds.map((id) => (siteConfig.geographies.find((g) => (g.id === geography.id)).label(id))),
+      areaIds: areaIds,
       summaryMetrics: siteConfig.summaryMetrics.map((id) => {
         let metric = dataConfig[id];
         if (appState.metricValues.hasOwnProperty(metric.category) && appState.metricValues[metric.category].hasOwnProperty(metric.metric)) {
@@ -145,18 +149,9 @@ ReportBody.data = function() {
   }
 };
 
-ReportMap.data = function() {
-  return {}
-};
-
 // Parse data config to get unique list of categories
 const summaryMetrics = siteConfig.summaryMetrics.map((id) => {
   return dataConfig[id];
-});
-
-new Vue({
-  el: 'report-map',
-  render: h => h(ReportMap),
 });
 
 new Vue({

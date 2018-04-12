@@ -26,17 +26,15 @@
     <meta name="theme-color" content="#db5945">
 
     <!-- Stylesheets -->
+    <link rel="stylesheet" href="map.css">
     <link rel="stylesheet" href="report.css">
-
 </head>
-
 <body>
 <!--[if lt IE 9]>
 <p class="oldie alert-info text-center">You are using an outdated browser. <a href="http://whatbrowser.org/">Upgrade your browser today</a> to better experience this site.</p>
 <![endif]-->
 
     <report-summary></report-summary>
-    <report-map></report-map>
     <report-body></report-body>
 
 <script src="vendor.js"></script>
@@ -59,7 +57,6 @@
     ga('create', '{{ siteConfig.gaKey }}', 'auto');
     ga('send', 'pageview');
 </script>
-
 </body>
 
 </html>

@@ -18,8 +18,8 @@
                 A quantitative project with qualitative values.
             </p>
         </div>
-        <div class="col-xs-6 text-right">
-            <div id="smallmap" class="pull-right">Small map goes here</div>
+        <div class="col-xs-6">
+            <ReportMap :mapConfig="mapConfig" :geographyId="geographyId" :selectedGeographies="areaIds"></ReportMap>
         </div>
     </div>
     <div class="row" id="metric-summary-box">
@@ -48,14 +48,19 @@
 </template>
 
 <script>
+  import ReportMap from './report-map';
   import { prettyNumber } from '../../modules/number_format';
+
   export default {
     name: 'report-summary',
     methods: {
       prettyValue: function(metric) {
         return prettyNumber(metric.value, metric.decimals, metric.prefix, metric.suffix);
       }
-    }
+    },
+    components: {
+      ReportMap,
+    },
   };
 </script>
 
