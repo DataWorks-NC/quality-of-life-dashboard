@@ -74,29 +74,7 @@
                         <div class="flex-item mdl-typography--text-right">
                             <sc-years></sc-years>
                         </div>
-                        <div class="flex-item mdl-typography--text-right undermap-controls">
-                            <p style="margin-top: 0;">
-                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect selected-clear">
-                                    Clear Selected
-                                </button> {{#if siteConfig.qolreportURL}}
-                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" data-fullreport>
-                                    Report
-                                </button>
-                                {{/if}}
-                                {{#if siteConfig.qolembedURL}}
-                                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" data-printmap>
-                                    Print Map
-                                </button> {{/if}}
-                            </p>
-                            {{#if selectgroups}} Select Approximate: {{#each selectgroups}}
-                            <a href="javascript:void(0)" id="selectgroup-{{@index}}" class="selectgroup-link">{{@key}}</a>
-                            <ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu" for="selectgroup-{{@index}}">
-                                {{#each this}}
-                                <li class="mdl-menu__item" data-selectgroup="{{this}}">{{@key}}</li>
-                                {{/each}}
-                            </ul>
-                            {{/each}} {{/if}}
-                        </div>
+                        <sc-undermap-buttons/>
                     </div>
                     <sc-datatable></sc-datatable>
                 </div>
@@ -239,3 +217,9 @@
 </body>
 
 </html>
+<script>
+  import UndermapButtons from '../js/components/undermap-buttons';
+  export default {
+    components: {UndermapButtons},
+  };
+</script>

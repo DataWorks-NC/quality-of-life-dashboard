@@ -45,6 +45,7 @@ import Social from './components/social.vue';
 import Offline from './components/offline.vue';
 import Tabs from './components/tabs.vue';
 import GeographySwitcher from './components/geography-switcher.vue';
+import UndermapButtons from './components/undermap-buttons.vue';
 import ieSVGFixes from './modules/ie-svg-bugs.js';
 
 import 'vueify/lib/insert-css'; // required for .vue file <style> tags
@@ -367,6 +368,25 @@ new Vue({
     render: h => h(GeographySwitcher)
 });
 
+
+UndermapButtons.data = function() {
+  return {
+    sharedState: appState,
+    privateState: {
+      qolEmbedURL: siteConfig.hasOwnProperty('qolEmbedURL') ?
+          siteConfig.qolEmbedURL :
+          false,
+      qolReportURL: siteConfig.qolreportURL,
+    }
+  }
+};
+
+// Undermap buttons
+new Vue({
+  el: 'sc-undermap-buttons',
+  render: h => h(UndermapButtons)
+})
+
 ////////////////////////////////////////////////////////////////////////////
 // General non-component page interactions
 ///////////////////////////////////////////////////////////////////////////
@@ -384,17 +404,6 @@ window.changeMetric = function(m) {
   scrollTo(document.querySelector('.mdl-layout__content'), 0, 600);
 };
 
-// select groups if present
-let selectGroups = document.querySelectorAll('li[data-selectGroup]');
-let selectGroups_array = [...selectGroups];
-selectGroups_array.forEach(link => {
-  link.addEventListener('click', function() {
-    let selectList = link.getAttribute('data-selectGroup').split(',');
-    appState.selected = selectList;
-    appState.zoomNeighborhoods = selectList.slice(0);
-  });
-});
-
 // what's new links
 let whatsnew = document.querySelectorAll('span[data-whatsnew]');
 let whatsnew_array = [...whatsnew];
@@ -411,38 +420,6 @@ whatsnew_array.forEach(link => {
     scrollTo(document.querySelector('.mdl-layout__content'), 0, 600);
   });
 });
-
-// clear selected button
-let clearselected = document.querySelector('.selected-clear');
-if (clearselected) {
-  clearselected.addEventListener(
-    'click',
-    function() {
-      appState.selected = [];
-      replaceState(appState.metricId, [], appState.geography.id);
-    },
-    false
-  );
-}
-
-// Reports
-let reportEmbed = document.querySelector('button[data-printmap]');
-let reportFull = document.querySelector('button[data-fullreport]');
-if (reportEmbed) {
-  reportEmbed.addEventListener('click', function() {
-    window.open(
-      `${siteConfig.qolembedURL}?m=${appState.metricId}&y=${
-        appState.year
-      }&s=${appState.selected.join(',')}`
-    );
-  });
-}
-if (reportFull) {
-  reportFull.addEventListener('click', function() {
-    const newHash = encodeURI(`${appState.geography.id}/${appState.selected.map(g => encodeURIComponent(g)).join(',')}`);
-    window.open(`/report.html#${newHash}`);
-  });
-}
 
 // contact form
 let contactForm = document.querySelector('#contact-submit');
