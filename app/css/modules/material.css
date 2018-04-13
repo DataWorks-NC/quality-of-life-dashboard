@@ -28,7 +28,7 @@
   height: 54px;
 }
 .header-nav .mdl-navigation__link:hover {
-  border-bottom: 4px solid #ff4081;
+  border-bottom: 4px solid #00688B;
 }
 /* hide content on phones */
 @media (max-width: 777px) {
