@@ -3,18 +3,18 @@
         <p style="margin-top: 0;">
             <button
                     class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect selected-clear"
-                    v-bind:class="{'mdl-button--accent' : sharedState.selected.length}"
+                    v-bind:class="{'undermap-buttons__active' : sharedState.selected.length}"
                     v-on:click="clearSelected"
             >
-                Clear Selected
+                <span class="mdl-chip__text">Clear Selected</span>
             </button>
             <button
                     v-if="privateState.qolReportURL" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
-                    v-bind:class="{'mdl-button--accent' : sharedState.selected.length}"
+                    v-bind:class="{'undermap-buttons__active' : sharedState.selected.length}"
                     v-on:click="loadReport"
                     data-fullreport
             >
-                Report
+                <span class="mdl-chip__text">Report</span>
             </button>
             <button
                     v-if="privateState.qolEmbedURL"
@@ -22,7 +22,7 @@
                     v-on:click="loadEmbed"
                     data-printmap
             >
-                Print Map
+                <span class="mdl-chip__text">Print Map</span>
             </button>
         </p>
     </div>
@@ -54,5 +54,14 @@ name: 'undermap-buttons',
 </script>
 
 <style scoped>
-
+span {
+    opacity: 0.25;
+}
+.undermap-buttons__active {
+    background: #00688B;
+}
+.undermap-buttons__active span {
+    opacity: 1;
+    color: white;
+}
 </style>

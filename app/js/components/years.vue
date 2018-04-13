@@ -103,7 +103,7 @@ h3 {
     border-width: 0px 0 0px 25px;
 }
 .playpause label:hover {
-    border-color: transparent transparent transparent #ff4081;
+    border-color: transparent transparent transparent #00688B;
 }
 .playpause input[type="checkbox"] {
     display: none;
