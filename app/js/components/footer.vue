@@ -15,6 +15,7 @@
             </p>
             <p class="logos">
                 <a href="https://durhamnc.gov"><img src="img/cityLogo.png" alt="City of Durham logo" height="125px"/></a>
+                <a href="https://www.dataworks-nc.org"><img src="img/dwLogo.png" alt="DataWorks NC logo" height="50px"/></a>
                 <a href="https://dconc.gov"><img src="img/countyLogo.png" alt="Durham County logo" height="125px"/></a>
             </p>
         </div>
