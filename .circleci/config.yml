@@ -54,7 +54,7 @@ jobs:
       - run: sudo apt-get install --upgrade -qq groff less python-dev python-pip
       - run: pip install --upgrade --user awscli
       - run: ~/.local/bin/aws s3 rm --recursive $AWS_S3_BUCKET
-      - run: ~/.local/bin/aws s3 cp --recursive /tmp/workspace/public/ $AWS_S3_BUCKET --exclude "*" --include "*.js" --include "*.json" --include "*.geojson" --include "*.html" --include "*.css" --include "*.png" --include "*.zip" --acl public-read
+      - run: ~/.local/bin/aws s3 cp --recursive /tmp/workspace/public/ $AWS_S3_BUCKET --exclude "*" --include "*.js" --include "*.json" --include "*.geojson" --include "*.html" --include "*.css" --include "*.png" --include "*.zip" --acl public-read --cache-control "max-age=86400"
       - run: ~/.local/bin/aws cloudfront create-invalidation --distribution-id $AWS_CLOUDFRONT_ID  --paths "/*"
 
 workflows:
