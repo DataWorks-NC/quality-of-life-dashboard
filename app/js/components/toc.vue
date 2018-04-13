@@ -6,9 +6,6 @@
                 <a href="javascript:void(0)" title="Move Table of Contents" v-on:click="position()"><svg class="icon"><use xlink:href="#icon-zoom_out_map"></use></svg></a>
             </div>
             <h1 class="title">{{ sharedState.metric.config.title }}, {{ sharedState.year }}</h1>
-            <h2 v-if="privateState.metaDesc" class="description">
-                <span v-html="privateState.metaDesc"></span>
-            </h2>
             <div class="metricboxes">
                 <div class="metricbox" v-if="sharedState.selected.length > 0">
                     <span class="metrictype">SELECTED</span>
@@ -271,12 +268,6 @@ export default {
   border-bottom: 1px solid rgba(0,0,0,0.15);
   word-wrap: break-word;
   font-size: 15px;
-}
-
-.description {
-    padding: 3px 10px 2px;
-    font-size: 12px;
-    text-align: center;
 }
 
 h1, h2 {
