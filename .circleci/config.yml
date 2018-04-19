@@ -30,7 +30,7 @@ jobs:
 
       - run: npm install
       # Manual fix for error in Mapbox GL SDK, see https://github.com/mapbox/mapbox-sdk-js/issues/181
-      - run: sed -i 's_'\''rest'\''_'\''rest/browser.js'\''_' node_modules/mapbox/lib/client.js
+      - run: sed -i 's_require('\''rest'\'');_require('\''rest/browser.js'\'');_' node_modules/mapbox/lib/client.js
 
       - save_cache:
           paths:
