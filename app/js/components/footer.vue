@@ -5,13 +5,13 @@
                 <a v-for="link in privateState.links" v-bind:href="link.href" target="_blank">{{link.text}}</a>
             </p>
             <p class="text-muted">
-                View the Neighborhood Compass code <a href="https://github.com/DataWorks-NC/quality-of-life-dashboard">on Github</a>. Based on code created by <a href="http://charmeck.org/mecklenburg/county/Pages/Default.aspx">Mecklenburg County</a>, the <a href="http://charmeck.org/city/charlotte/Pages/default.aspx">City of Charlotte</a>, and <a href="http://www.uncc.edu/">UNC Charlotte</a>
+                View the Neighborhood Compass code <a href="https://github.com/DataWorks-NC/quality-of-life-dashboard">on Github</a>. Based on code created by <a href="https://charmeck.org/mecklenburg/county/Pages/Default.aspx">Mecklenburg County</a>, the <a href="https://charmeck.org/city/charlotte/Pages/default.aspx">City of Charlotte</a>, and <a href="https://www.uncc.edu/">UNC Charlotte</a>
                 with much &#9829; for the projects that make this site possible:
                 <a href="https://www.openstreetmap.org/" target="_blank">OpenStreetMap</a>,
-                <a href="http://osm2vectortiles.org/" target="_blank">OSM2VectorTiles</a>,
+                <a href="https://osm2vectortiles.org/" target="_blank">OSM2VectorTiles</a>,
                 <a href="https://www.mapbox.com/mapbox-gl-js/api/" target="_blank">Mapbox GL JS</a>,
-                <a href="http://vuejs.org/" target="_blank">Vue.js</a>, and
-                <a href="http://getmdl.io/" target="_blank">Material Design Lite</a>.
+                <a href="https://vuejs.org/" target="_blank">Vue.js</a>, and
+                <a href="https://getmdl.io/" target="_blank">Material Design Lite</a>.
             </p>
             <p class="logos">
                 <a href="https://durhamnc.gov"><img src="img/cityLogo.png" alt="City of Durham logo" height="125px"/></a>

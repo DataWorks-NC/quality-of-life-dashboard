@@ -52,7 +52,7 @@ export default {
               accessToken: this.privateState.mapboxAccessToken,
               country: 'us',
               bbox: [-79.01, 35.87, -78.7, 36.15],
-              placeholder: 'Search for an address',
+              placeholder: 'Search for an address, neighborhood or landmark',
               zoom: 14,
             }).on('result', (e) => {
               if (e.result) {
@@ -193,15 +193,15 @@ export default {
                 data: geoJSON
             });
 
-            // neighborhood boundaries
-            // TODO: Is `building` the right layer for this to be before?
+            // selected neighborhood
             map.addLayer({
                 'id': 'neighborhoods',
                 'type': 'line',
                 'source': 'neighborhoods',
                 'layout': {},
                 'paint': {}
-            }, 'tunnel_motorway_link_casing');
+            }, 'water_name_line');
+
 
             map.addLayer({
                 'id': 'neighborhoods-fill-extrude',
@@ -211,6 +211,18 @@ export default {
                     'fill-extrusion-opacity': 1
                 }
             }, 'waterway_river');
+
+          // neighborhood boundaries
+          map.addLayer({
+            'id': 'neighborhoods-outlines',
+            'type': 'line',
+            'source': 'neighborhoods',
+            'layout': {},
+            'paint': {
+              'line-color': 'rgba(0,0,0,1)',
+              'line-width': 0.4,
+            }
+          }, 'waterway_river');
         },
         styleNeighborhoods: function() {
           let map = this.privateState.map, _this = this;
@@ -311,7 +323,7 @@ export default {
 
             let outline = {
                 property: 'id',
-                default: 'rgba(0,0,0,1)',
+                default: 'rgba(0,0,0,0)',
                 type: 'categorical',
                 stops: stops
             }
@@ -332,7 +344,7 @@ export default {
 
             let outlineSize = {
                 property: 'id',
-                default: 0.4,
+                default: 0,
                 type: 'categorical',
                 stops: stops
             }

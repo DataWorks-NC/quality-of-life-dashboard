@@ -11,7 +11,6 @@
             <template v-for="category in filterCategories(privateState.data)">
                 <a class="mdl-navigation__link" v-on:click="changeFilter(category)" href="javascript:void(0)">{{category}}<svg class="mdl-color-text--blue-grey-400 icon icon-keyboard_arrow_right navright"><use xlink:href="#icon-keyboard_arrow_right"></use></svg></a>
             </template>
-            <a class="mdl-navigation__link" href="http://qol.charmeck.org/">About</a>
             <a class="mdl-navigation__link" onclick="ga('send', 'event', 'download', 'metric zip file download')" href="downloads/qol-data.zip">Download Data</a>
         </template>
 
