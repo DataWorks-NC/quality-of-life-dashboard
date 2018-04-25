@@ -52,7 +52,7 @@ export default {
               accessToken: this.privateState.mapboxAccessToken,
               country: 'us',
               bbox: [-79.01, 35.87, -78.7, 36.15],
-              placeholder: 'Search for an address',
+              placeholder: 'Search for an address, neighborhood or landmark',
               zoom: 14,
             }).on('result', (e) => {
               if (e.result) {
