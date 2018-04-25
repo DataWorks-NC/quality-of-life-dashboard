@@ -223,9 +223,10 @@ function convertMetricCsvToJson(geography, metric) {
 }
 
 // Loop through geographies & variables.
+let siteGeographyIds = siteConfig.geographies.map((g) => (g.id));
 _.each(dataConfig, function(metric) {
   if (metric.geographies) {
-    _.each(metric.geographies, function(geography) {
+    _.each(metric.geographies.filter((g) => (siteGeographyIds.indexOf(g) !== -1)), function(geography) {
       try {
         convertMetricCsvToJson(geography, metric);
       } catch (err) {
