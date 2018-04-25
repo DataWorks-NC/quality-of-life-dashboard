@@ -24,9 +24,7 @@
     "npm": "^5.7.1",
     "querystring": "^0.2.0",
     "vue": "^2.5.13",
-    "vue-rollbar": "^0.2.2"
-  },
-  "devDependencies": {
+    "vue-rollbar": "^0.2.2",
     "async": "^2.6.0",
     "auto-reload-brunch": "^2.7.1",
     "babel-brunch": "^6.1.1",
