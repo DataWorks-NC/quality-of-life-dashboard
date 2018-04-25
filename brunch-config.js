@@ -69,6 +69,14 @@ module.exports = {
         ],
         stripPrefix: 'public/'
       }
+    },
+    uglify: {
+      mangle: false,
+      compress: {
+        global_defs: {
+          DEBUG: false
+        }
+      }
     }
   }
 };

@@ -24,7 +24,9 @@
     "npm": "^5.7.1",
     "querystring": "^0.2.0",
     "vue": "^2.5.13",
-    "vue-rollbar": "^0.2.2",
+    "vue-rollbar": "^0.2.2"
+  },
+  "devDependencies": {
     "async": "^2.6.0",
     "auto-reload-brunch": "^2.7.1",
     "babel-brunch": "^6.1.1",
@@ -42,6 +44,7 @@
     "postcss-cssnext": "^3.0.2",
     "shelljs": "^0.7.8",
     "sw-precache-brunch": "^2.0.1",
+    "uglify-js-brunch": "git+ssh://git@github.com:brunch/uglify-js-brunch.git",
     "vue-brunch": "^2.0.1"
   }
 }
