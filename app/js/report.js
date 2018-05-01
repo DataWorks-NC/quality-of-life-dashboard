@@ -2,7 +2,6 @@ import privateConfig from '../../data/config/private';
 
 require('es6-promise').polyfill(); // Fix for axios on IE11
 require('./modules/ie-polyfill-array-from.js'); // fix for array from on IE11
-require('material-design-lite');
 const md5 = require('js-md5');
 
 import Vue from 'vue/dist/vue.js';
