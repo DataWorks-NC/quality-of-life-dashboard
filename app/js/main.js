@@ -53,8 +53,6 @@ import 'vueify/lib/insert-css'; // required for .vue file <style> tags
 // to fix vue not including modules bug
 import 'mapbox-gl';
 import '@mapbox/mapbox-gl-geocoder';
-import {scaleLinear} from 'd3-scale';
-import debounce from 'lodash.debounce';
 
 if (privateConfig.hasOwnProperty('rollbarAccessToken') && privateConfig.rollbarAccessToken) {
   Vue.use(Rollbar, {
