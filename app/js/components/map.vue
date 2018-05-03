@@ -171,13 +171,14 @@ export default {
                         return;
                     }
 
-                    let feature = features[0];
-                    let id = feature.properties.id;
-                    let data = _this.sharedState.metric.data.map[id][`y_${_this.sharedState.year}`];
-                    let geographyLabel = _this.sharedState.geography.label(id);
-                    let val = prettyNumber(data, _this.sharedState.metric.config.decimals, _this.sharedState.metric.config.prefix, _this.sharedState.metric.config.suffix, _this.sharedState.metric.config.commas);
-                    popup.setLngLat(map.unproject(e.point))
-                        .setHTML(`<div style="text-align: center; margin: 0; padding: 0;"><h3 style="font-size: 1.2em; margin: 0; padding: 0; line-height: 1em; font-weight: bold;">${geographyLabel}</h3>${val}</div>`)
+                    const feature = features[0];
+                    const id = feature.properties.id;
+                  const data = _this.sharedState.metric.data.map[id][`y_${_this.sharedState.year}`];
+                  const geographyLabel = _this.sharedState.geography.label(id);
+                  const val = prettyNumber(data, _this.sharedState.metric.config.decimals, _this.sharedState.metric.config.prefix, _this.sharedState.metric.config.suffix, _this.sharedState.metric.config.commas);
+                  const label = _this.sharedState.metric.config.label ? ` ${_this.sharedState.metric.config.label}` : '';
+                  popup.setLngLat(map.unproject(e.point))
+                        .setHTML(`<div style="text-align: center; margin: 0; padding: 0;"><h3 style="font-size: 1.2em; margin: 0; padding: 0; line-height: 1em; font-weight: bold;">${geographyLabel}</h3>${val}${label}</div>`)
                         .addTo(map);
 
                 });
