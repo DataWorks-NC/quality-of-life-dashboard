@@ -27,7 +27,7 @@ export default {
             let data = this.updateData();
             let _this = this;
 
-            var options = {
+            let options = {
                 showLine: false,
                 showPoint: false,
                 showArea: true,
@@ -154,7 +154,7 @@ export default {
             let dataArray = [];
             let keys = Object.keys(data);
 
-            for (var i = 0; i < keys.length; i++) {
+            for (let i = 0; i < keys.length; i++) {
                 if (isNumeric(data[keys[i]][`y_${year}`])) {
                     dataArray.push({ "id": keys[i], "val": data[keys[i]][`y_${year}`]});
                 }

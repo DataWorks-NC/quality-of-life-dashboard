@@ -11,6 +11,7 @@
 
 <script>
     import Chartist from 'chartist';
+    import isNumeric from '../modules/isnumeric';
     require('../modules/chartist.axis.title.js');
     require('../modules/chartist.tooltip.js');
     import {calcValue} from '../modules/metric_calculations';
@@ -27,14 +28,22 @@
                 if (this.sharedState.metric.years.length > 1) {
                     let _this = this;
                     let data = this.updateData();
+
+                    // Set low and high values of axes based on overall data set.
+                    let low = Object.values(this.sharedState.metric.data.map).reduce(function (previous, val) {
+                      if (previous === null) {
+                        return Math.min(...Object.values(val).filter(isNumeric));
+                      }
+                      return Math.min(previous,
+                          ...Object.values(val).filter(isNumeric)
+                      );
+                    }, null);
+
                     let options = {
                         fullWidth: true,
                         height: '180px',
                         showArea: false,
-                        low: 0,
-                        chartPadding: {
-                            right: 40
-                        },
+                        low: low,
                         lineSmooth: Chartist.Interpolation.cardinal({
                             fillHoles: true,
                         }),
@@ -87,10 +96,7 @@
                             }
                         }));
                     }
-                    // set range from 0 to 100 for percentages
-                    if (this.sharedState.metric.config.suffix && this.sharedState.metric.config.suffix === '%') {
-                        options.high = 100;
-                    }
+
                     this.privateState.chart = new Chartist.Line('.ct-trendchart', data, options);
                     // animation
                     this.privateState.chart.on('draw', function(data) {
@@ -136,6 +142,7 @@
                 let keys = Object.keys(this.sharedState.metric.data.map);
                 let areaArray = [];
                 let metric = this.sharedState.metric;
+
                 // county value
                 for (let i = 0; i < chartData.labels.length; i++) {
                     let areaValue = null;
