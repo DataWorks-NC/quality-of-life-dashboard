@@ -54,16 +54,6 @@
                           return value;
                         }
                       },
-                        axisX: {
-                            labelInterpolationFnc: function(value, index) {
-                                let len = _this.sharedState.metric.years[_this.sharedState.metric.years.length - 1] - _this.sharedState.metric.years[0];
-                                if (len > 6) {
-                                    return index % 2 === 0 ? value : null;
-                                } else {
-                                    return value;
-                                }
-                            }
-                        },
                         plugins: [
                             Chartist.plugins.tooltip({
                                 transformTooltipTextFnc: function(value) {
@@ -126,16 +116,9 @@
                 }
             },
             updateData: function() {
-                // for filling in missing years
                 let _this = this;
-                let minYear = this.sharedState.metric.years[0];
-                let maxYear = this.sharedState.metric.years[this.sharedState.metric.years.length - 1];
-                let yearsLength = parseInt(maxYear) - parseInt(minYear) + 1;
-                let filledYears = Array.apply(0, Array(yearsLength)).map(function(_, b) {
-                    return b + parseInt(minYear)
-                });
                 let chartData = {
-                    labels: filledYears,
+                    labels: _this.sharedState.metric.years,
                     series: []
                 };
                 // county values

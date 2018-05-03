@@ -95,3 +95,13 @@ textarea {
     display: none;
   }
 }
+
+/* Chart styling */
+.ct-label {
+  font-size: 1rem;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.ct-label.ct-horizontal {
+  margin-left: -1.25rem;
+}
