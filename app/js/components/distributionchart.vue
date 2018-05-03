@@ -42,8 +42,10 @@ export default {
                     }
                 },
                 axisY: {
-                    labelInterpolationFnc: function(value, index) {
+                    labelInterpolationFnc : this.sharedState.metric.config.commas ? function(value, index) {
                         return abbrNum(round(Number(value), 2), 2);
+                    } : function(value, index) {
+                      return value;
                     }
                 },
                 series: {

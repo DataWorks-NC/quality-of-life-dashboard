@@ -38,11 +38,13 @@
                         lineSmooth: Chartist.Interpolation.cardinal({
                             fillHoles: true,
                         }),
-                        axisY: {
-                            labelInterpolationFnc: function(value, index) {
-                                return abbrNum(round(Number(value), 2), 2);
-                            }
-                        },
+                      axisY: {
+                        labelInterpolationFnc : this.sharedState.metric.config.commas ? function(value, index) {
+                          return abbrNum(round(Number(value), 2), 2);
+                        } : function(value, index) {
+                          return value;
+                        }
+                      },
                         axisX: {
                             labelInterpolationFnc: function(value, index) {
                                 let len = _this.sharedState.metric.years[_this.sharedState.metric.years.length - 1] - _this.sharedState.metric.years[0];

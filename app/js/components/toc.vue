@@ -108,7 +108,7 @@ export default {
       },
 
       abbrNumber: function (value) {
-            let num = abbrNum(value, 1);
+            let num = this.sharedState.metric.config.commas ? abbrNum(value, 1) : value;
             if (isNumeric(num)) {
                 return round(num, this.sharedState.metric.config.decimals);
             } else {
