@@ -94,10 +94,12 @@ export default {
               }
 
             }).on('clear', (e) => {
-              map.getSource('point').setData({
-                "type": "FeatureCollection",
-                "features": []
-              });
+              if (map.getLayer('point')) {
+                map.getSource('point').setData({
+                  "type": "FeatureCollection",
+                  "features": []
+                });
+              }
               _this.sharedState.selected = [];
               replaceState(_this.sharedState.metricId, _this.sharedState.selected, _this.sharedState.geography.id);
             }), 'bottom-right');
