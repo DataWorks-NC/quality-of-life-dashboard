@@ -86,8 +86,20 @@ export default {
                     }
                   });
                 }
+
+                // Clear selection and select underlying area
+                let features = map.queryRenderedFeatures(map.project(e.result.center), { layers: ['neighborhoods-fill-extrude'] });
+                _this.sharedState.selected = features.length > 0 ? [features[0].properties.id, ] : [];
+                replaceState(_this.sharedState.metricId, _this.sharedState.selected, _this.sharedState.geography.id);
               }
 
+            }).on('clear', (e) => {
+              map.getSource('point').setData({
+                "type": "FeatureCollection",
+                "features": []
+              });
+              _this.sharedState.selected = [];
+              replaceState(_this.sharedState.metricId, _this.sharedState.selected, _this.sharedState.geography.id);
             }), 'bottom-right');
 
             // disable map rotation until 3D support added
