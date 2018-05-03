@@ -99,7 +99,7 @@ textarea {
 /* Chart styling */
 .ct-label {
   font-size: 1rem;
-  color: rgba(0, 0, 0, 0.6);
+  color: rgba(0, 0, 0, 0.8);
 }
 
 .ct-label.ct-horizontal {

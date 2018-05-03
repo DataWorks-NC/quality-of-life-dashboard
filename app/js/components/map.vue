@@ -434,24 +434,28 @@ export default {
     width: 100%;
     height: 600px;
 }
+
 .mapboxgl-popup {
     max-width: 400px;
 }
+
 .mapboxgl-popup-content {
     padding: 10px 10px 5px;
 }
+
 #btnPitch {
     position: absolute;
     bottom: 4px;
     left: 4px;
     border-radius: 4px;
-    /*width: 30px;*/
     height: 30px;
     min-width: 30px;
     padding: 4px 7px;
-    /*box-shadow: 0 0 0 2px rgba(0,0,0,.1);*/
     line-height: inherit;
     background-color: rgba(158,158,158, 0.40);
-    /*background: #ffffff;*/
+}
+
+.mapboxgl-ctrl-geocoder input[type="text"] {
+    color: rgba(0, 0, 0, 0.8);
 }
 </style>
