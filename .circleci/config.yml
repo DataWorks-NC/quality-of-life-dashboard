@@ -53,8 +53,11 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - run: pip install python-dotenv
-      - run: export AZURE_DESTINATION_BLOB=prod
-      - run: python /tmp/workspace/deploy.py
+      - run:
+          command: python deploy.py
+          working_directory: /tmp/workspace/
+          environment:
+            AZURE_DESTINATION_BLOB: "prod"
   deploy_dev:
     docker:
       - image: microsoft/azure-cli
