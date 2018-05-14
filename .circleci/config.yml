@@ -45,7 +45,7 @@ jobs:
           root: .
           paths:
             - public/*
-  deploy:
+  deploy-prod:
     docker:
       - image: microsoft/azure-cli
     working-directory: ~/repo
@@ -53,6 +53,17 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - run: pip install python-dotenv
+      - run: export AZURE_DESTINATION_BLOB=prod
+      - run: python deploy.py
+  deploy-dev:
+    docker:
+      - image: microsoft/azure-cli
+    working-directory: ~/repo
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - run: pip install python-dotenv
+      - run: export AZURE_DESTINATION_BLOB=dev
       - run: python deploy.py
 
 workflows:
@@ -60,7 +71,14 @@ workflows:
   build_and_deploy:
     jobs:
       - build
-      - deploy:
+      - deploy-dev:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                develop
+      - deploy-prod:
           requires:
             - build
           filters:
