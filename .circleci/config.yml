@@ -60,10 +60,13 @@ jobs:
       - image: microsoft/azure-cli
     working-directory: ~/repo
     steps:
+      - checkout
       - attach_workspace:
           at: /tmp/workspace
+      - run: cp deploy.py /tmp/workspace/deploy.py
       - run: pip install python-dotenv
       - run: export AZURE_DESTINATION_BLOB=dev
+      - run: cd /tmp/workspace
       - run: python deploy.py
 
 workflows:
