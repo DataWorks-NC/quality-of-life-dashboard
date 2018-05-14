@@ -49,24 +49,24 @@ jobs:
   deploy_prod:
     docker:
       - image: microsoft/azure-cli
-    working-directory: ~/repo
     steps:
       - attach_workspace:
           at: /tmp/workspace
       - run: pip install python-dotenv
       - run: export AZURE_DESTINATION_BLOB=prod
-      - run: python deploy.py
+      - run: python /tmp/workspace/deploy.py
   deploy_dev:
     docker:
       - image: microsoft/azure-cli
-    working-directory: ~/repo
     steps:
       - attach_workspace:
           at: /tmp/workspace
       - run: pip install python-dotenv
-      - run: export AZURE_DESTINATION_BLOB=dev
-      - run: cd /tmp/workspace
-      - run: python deploy.py
+      - run:
+          command: python deploy.py
+          working_directory: /tmp/workspace/
+          environment:
+            AZURE_DESTINATION_BLOB: "dev"
 
 workflows:
   version: 2
