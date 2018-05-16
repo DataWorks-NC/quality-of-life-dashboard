@@ -231,10 +231,13 @@ Footer.data = function() {
     }
   };
 };
+
 Feedback.data = function() {
   return {
     privateState: {
-      feedbackUrl: 'https://www.surveymonkey.com/r/BHT5VP5?sm=8D2cIz7y%2bauvPg%2bI6xuv4Q%3d%3d'
+      feedbackUrl: siteConfig.feedbackUrl,
+      signupEmbed: siteConfig.signupEmbed,
+      showSignup: false,
     }
   };
 };
