@@ -51,11 +51,14 @@ export default {
         .then(function(response) {
           let geoJSON = response.data;
           geoJSON.features = geoJSON.features.filter((g) => (_this.selectedGeographies.indexOf(g.properties.id) !== -1));
+          let bounds = _this.getBoundingBox(geoJSON.features);
+          map.fitBounds(bounds, { padding: 50 });
 
           map.addSource('neighborhoods', {
             type: 'geojson',
             data: geoJSON
           });
+
 
           // neighborhood boundaries
           // TODO: Is `building` the right layer for this to be before?
@@ -82,6 +85,12 @@ export default {
         });
       });
     },
+    getBoundingBox: function(features) {
+      let longitudes = features.reduce((i, f) => (i.concat(f.geometry.coordinates[0].map((c) => c[0]))), []);
+      let latitudes = features.reduce((i, f) => (i.concat(f.geometry.coordinates[0].map((c) => c[1]))), []);
+      return [[Math.min(...longitudes), Math.min(...latitudes)], [Math.max(...longitudes), Math.max(...latitudes)]];
+    }
+
   },
   mounted: function () {
     this.initMap();
