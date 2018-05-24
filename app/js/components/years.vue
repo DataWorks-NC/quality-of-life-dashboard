@@ -1,7 +1,7 @@
 <template lang="html">
-    <div id="years">
+    <div id="years" v-if="sharedState.metric.years.length > 1" >
         <div class="flex-container">
-            <div v-if="sharedState.metric.years.length > 1" class="flex-left">
+            <div class="flex-left">
                 <div class="playpause">
                    <input type="checkbox" value="None" id="playpause" name="check" v-on:change="play" checked title="Start or stop playing through data timeseries by year"/>
                    <label for="playpause"></label>
@@ -103,7 +103,7 @@ h3 {
     transition: 180ms all ease;
     cursor: pointer;
     border-style: double;
-    border-width: 0px 0 0px 25px;
+    border-width: 0 0 0 25px;
 }
 .playpause label:hover {
     border-color: transparent transparent transparent #00688B;
