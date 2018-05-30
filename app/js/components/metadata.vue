@@ -1,9 +1,9 @@
 <template lang="html">
     <div v-if="sharedState.metadata" id="metadata">
-        <h3>About the Data</h3>
-        <div v-html="about(sharedState.metadata)"></div>
         <h3>Why This is Important</h3>
         <div v-html="important(sharedState.metadata)"></div>
+        <h3>About the Data</h3>
+        <div v-html="about(sharedState.metadata)"></div>
         <h4>Additional Resources</h4>
         <div v-html="resources(sharedState.metadata)"></div>
     </div>

@@ -172,4 +172,7 @@
         width: 24px;
         height: 24px;
     }
+    .mdl-data-table th {
+        line-height: initial;
+    }
 </style>
