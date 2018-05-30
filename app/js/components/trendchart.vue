@@ -2,8 +2,8 @@
     <div v-show="sharedState.metric.years.length > 1" class="qol-chart mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop mdl-typography--text-center">
         <div class="trendchart">
             <h1 v-if="sharedState.metric.config">{{ sharedState.metric.config.title }}</h1>
-            <span class="legend"><svg class="icon legend-county"><use xlink:href="#icon-trending_up"></use></svg> County</span>
-            <span v-show="sharedState.selected.length > 0" class="legend"><svg class="icon legend-selected"><use xlink:href="#icon-trending_up"></use></svg> Selected</span>
+            <span class="legend"><svg class="icon legend-county"><use href="#icon-trending_up"></use></svg> County</span>
+            <span v-show="sharedState.selected.length > 0" class="legend"><svg class="icon legend-selected"><use href="#icon-trending_up"></use></svg> Selected</span>
             <div class="ct-trendchart"></div>
         </div>
     </div>
@@ -11,10 +11,11 @@
 
 <script>
     import Chartist from 'chartist';
+    import isNumeric from '../modules/isnumeric';
     require('../modules/chartist.axis.title.js');
     require('../modules/chartist.tooltip.js');
     import {calcValue} from '../modules/metric_calculations';
-    import {abbrNum, round, prettyNumber} from '../modules/number_format';
+    import {legendLabelNumber, prettyNumber} from '../modules/number_format';
 
     export default {
         name: 'sc-trendchart',
@@ -27,32 +28,28 @@
                 if (this.sharedState.metric.years.length > 1) {
                     let _this = this;
                     let data = this.updateData();
+
+                    // Set low and high values of axes based on overall data set.
+                    let low = Object.values(this.sharedState.metric.data.map).reduce(function (previous, val) {
+                      if (previous === null) {
+                        return Math.min(...Object.values(val).filter(isNumeric));
+                      }
+                      return Math.min(previous,
+                          ...Object.values(val).filter(isNumeric)
+                      );
+                    }, null);
+
                     let options = {
                         fullWidth: true,
                         height: '180px',
                         showArea: false,
-                        low: 0,
-                        chartPadding: {
-                            right: 40
-                        },
+                        low: low,
                         lineSmooth: Chartist.Interpolation.cardinal({
                             fillHoles: true,
                         }),
-                        axisY: {
-                            labelInterpolationFnc: function(value, index) {
-                                return abbrNum(round(Number(value), 2), 2);
-                            }
-                        },
-                        axisX: {
-                            labelInterpolationFnc: function(value, index) {
-                                let len = _this.sharedState.metric.years[_this.sharedState.metric.years.length - 1] - _this.sharedState.metric.years[0];
-                                if (len > 6) {
-                                    return index % 2 === 0 ? value : null;
-                                } else {
-                                    return value;
-                                }
-                            }
-                        },
+                      axisY: {
+                        labelInterpolationFnc : (value, index) => (legendLabelNumber(value, _this.sharedState.metric.config))
+                      },
                         plugins: [
                             Chartist.plugins.tooltip({
                                 transformTooltipTextFnc: function(value) {
@@ -85,10 +82,7 @@
                             }
                         }));
                     }
-                    // set range from 0 to 100 for percentages
-                    if (this.sharedState.metric.config.suffix && this.sharedState.metric.config.suffix === '%') {
-                        options.high = 100;
-                    }
+
                     this.privateState.chart = new Chartist.Line('.ct-trendchart', data, options);
                     // animation
                     this.privateState.chart.on('draw', function(data) {
@@ -118,22 +112,16 @@
                 }
             },
             updateData: function() {
-                // for filling in missing years
                 let _this = this;
-                let minYear = this.sharedState.metric.years[0];
-                let maxYear = this.sharedState.metric.years[this.sharedState.metric.years.length - 1];
-                let yearsLength = parseInt(maxYear) - parseInt(minYear) + 1;
-                let filledYears = Array.apply(0, Array(yearsLength)).map(function(_, b) {
-                    return b + parseInt(minYear)
-                });
                 let chartData = {
-                    labels: filledYears,
+                    labels: _this.sharedState.metric.years,
                     series: []
                 };
                 // county values
                 let keys = Object.keys(this.sharedState.metric.data.map);
                 let areaArray = [];
                 let metric = this.sharedState.metric;
+
                 // county value
                 for (let i = 0; i < chartData.labels.length; i++) {
                     let areaValue = null;

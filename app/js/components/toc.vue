@@ -3,7 +3,7 @@
         <div>
             <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=" class="background-print-img" alt="white background for printing">
             <div class="tocposition">
-                <a href="javascript:void(0)" title="Move Table of Contents" v-on:click="position()"><svg class="icon"><use xlink:href="#icon-zoom_out_map"></use></svg></a>
+                <a href="javascript:void(0)" title="Move Table of Contents" v-on:click="position()"><svg class="icon"><use href="#icon-zoom_out_map"></use></svg></a>
             </div>
             <h1 class="title">{{ sharedState.metric.config.title }}, {{ sharedState.year }}</h1>
             <div class="metricboxes">
@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import {abbrNum, round, prettyNumber} from '../modules/number_format';
+import {legendLabelNumber, abbrNum, round, prettyNumber} from '../modules/number_format';
 import {metaDescription} from '../modules/meta';
 import isNumeric from '../modules/isnumeric';
 import {calcValue, wValsToArray, sum} from '../modules/metric_calculations';
@@ -108,12 +108,7 @@ export default {
       },
 
       abbrNumber: function (value) {
-            let num = abbrNum(value, 1);
-            if (isNumeric(num)) {
-                return round(num, this.sharedState.metric.config.decimals);
-            } else {
-                return num;
-            }
+            return legendLabelNumber(value, this.sharedState.metric.config);
         },
         getMetaDesc: function() {
             this.privateState.metaDesc = metaDescription(this.sharedState.metadata).replace('<p>', '').replace('</p>','').trim();

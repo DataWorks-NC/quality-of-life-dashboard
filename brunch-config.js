@@ -12,14 +12,15 @@ module.exports = {
     javascripts: {
       joinTo: {
         'vendor.js': /^(?!app)/,
-        'app.js': /^app/,
+        'app.js': ['app/js/main.js', /^app\/js\/modules/, /^app\/js\/components\/(?!report)/],
+        'report.js': ['app/js/report.js', /^app\/js\/modules/, /^app\/js\/components\/report/],
       }
     },
     stylesheets: {
       joinTo: {
         'vendor.css': /^(?!app)/,
         'map.css': /mapbox-gl.css/,
-        'app.css': /^app(?!report)/,
+        'app.css': /^app\/css/,
         'report.css': /^app\/css\/report/,
       }
     }

@@ -2,8 +2,8 @@
     <div class="qol-chart mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop">
         <div class="scatterplot mdl-typography--text-center">
             <h1>Data Distribution, {{sharedState.year}}</h1>
-            <span v-show="sharedState.selected.length > 0"><svg class="icon legend legend-selected"><use xlink:href="#icon-lens"></use></svg> Selected</span>
-            <span><svg class="icon legend legend-median"><use xlink:href="#icon-more_horiz"></use></svg> Median {{privateState.median}}</span>
+            <span v-show="sharedState.selected.length > 0"><svg class="icon legend legend-selected"><use href="#icon-lens"></use></svg> Selected</span>
+            <span><svg class="icon legend legend-median"><use href="#icon-more_horiz"></use></svg> Median {{privateState.median}}</span>
             <div class="ct-distributionchart"></div>
         </div>
     </div>
@@ -12,7 +12,7 @@
 <script>
 import Chartist from 'chartist';
 import isNumeric from '../modules/isnumeric';
-import {abbrNum, round, prettyNumber} from '../modules/number_format';
+import {legendLabelNumber, prettyNumber} from '../modules/number_format';
 import {median} from '../modules/metric_calculations';
 
 export default {
@@ -27,7 +27,7 @@ export default {
             let data = this.updateData();
             let _this = this;
 
-            var options = {
+            let options = {
                 showLine: false,
                 showPoint: false,
                 showArea: true,
@@ -42,9 +42,7 @@ export default {
                     }
                 },
                 axisY: {
-                    labelInterpolationFnc: function(value, index) {
-                        return abbrNum(round(Number(value), 2), 2);
-                    }
+                    labelInterpolationFnc : (value, index) => (legendLabelNumber(value, _this.sharedState.metric.config))
                 },
                 series: {
                     'series-selected': {
@@ -152,7 +150,7 @@ export default {
             let dataArray = [];
             let keys = Object.keys(data);
 
-            for (var i = 0; i < keys.length; i++) {
+            for (let i = 0; i < keys.length; i++) {
                 if (isNumeric(data[keys[i]][`y_${year}`])) {
                     dataArray.push({ "id": keys[i], "val": data[keys[i]][`y_${year}`]});
                 }
@@ -174,7 +172,6 @@ export default {
     /* selected */    
     .ct-distributionchart .ct-point {
         stroke: #00688B;
-        stroke-width: 7;
     }
 
     /* distribution series */

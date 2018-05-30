@@ -45,25 +45,49 @@ jobs:
           root: .
           paths:
             - public/*
-  deploy:
+            - .circleci/deploy.py
+            - .circleci/robots.txt
+  deploy_prod:
     docker:
-      - image: circleci/node:9.11
-    working-directory: ~/repo
+      - image: microsoft/azure-cli
     steps:
       - attach_workspace:
           at: /tmp/workspace
-      - run: sudo apt-get install --upgrade -qq groff less python-dev python-pip
-      - run: pip install --upgrade --user awscli
-      - run: ~/.local/bin/aws s3 rm --recursive $AWS_S3_BUCKET
-      - run: ~/.local/bin/aws s3 cp --recursive /tmp/workspace/public/ $AWS_S3_BUCKET --exclude "*" --include "*.js" --include "*.json" --include "*.geojson" --include "*.html" --include "*.css" --include "*.png" --include "*.zip" --acl public-read --cache-control "max-age=86400"
-      - run: ~/.local/bin/aws cloudfront create-invalidation --distribution-id $AWS_CLOUDFRONT_ID  --paths "/*"
+      - run: pip install python-dotenv
+      - run:
+          command: python .circleci/deploy.py
+          working_directory: /tmp/workspace/
+          environment:
+            AZURE_DESTINATION_BLOB: "prod"
+  deploy_dev:
+    docker:
+      - image: microsoft/azure-cli
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - run: pip install python-dotenv
+      - run:
+          command: cp .circleci/robots.txt public/robots.txt
+          working_directory: /tmp/workspace/
+      - run:
+          command: python .circleci/deploy.py /tmp/workspace/public
+          working_directory: /tmp/workspace/
+          environment:
+            AZURE_DESTINATION_BLOB: "dev"
 
 workflows:
   version: 2
   build_and_deploy:
     jobs:
       - build
-      - deploy:
+      - deploy_dev:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                develop
+      - deploy_prod:
           requires:
             - build
           filters:

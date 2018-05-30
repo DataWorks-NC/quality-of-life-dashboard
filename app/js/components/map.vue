@@ -86,8 +86,22 @@ export default {
                     }
                   });
                 }
+
+                // Clear selection and select underlying area
+                let features = map.queryRenderedFeatures(map.project(e.result.center), { layers: ['neighborhoods-fill-extrude'] });
+                _this.sharedState.selected = features.length > 0 ? [features[0].properties.id, ] : [];
+                replaceState(_this.sharedState.metricId, _this.sharedState.selected, _this.sharedState.geography.id);
               }
 
+            }).on('clear', (e) => {
+              if (map.getLayer('point')) {
+                map.getSource('point').setData({
+                  "type": "FeatureCollection",
+                  "features": []
+                });
+              }
+              _this.sharedState.selected = [];
+              replaceState(_this.sharedState.metricId, _this.sharedState.selected, _this.sharedState.geography.id);
             }), 'bottom-right');
 
             // disable map rotation until 3D support added
@@ -171,13 +185,14 @@ export default {
                         return;
                     }
 
-                    let feature = features[0];
-                    let id = feature.properties.id;
-                    let data = _this.sharedState.metric.data.map[id][`y_${_this.sharedState.year}`];
-                    let geographyLabel = _this.sharedState.geography.label(id);
-                    let val = prettyNumber(data, _this.sharedState.metric.config.decimals, _this.sharedState.metric.config.prefix, _this.sharedState.metric.config.suffix, _this.sharedState.metric.config.commas);
-                    popup.setLngLat(map.unproject(e.point))
-                        .setHTML(`<div style="text-align: center; margin: 0; padding: 0;"><h3 style="font-size: 1.2em; margin: 0; padding: 0; line-height: 1em; font-weight: bold;">${geographyLabel}</h3>${val}</div>`)
+                    const feature = features[0];
+                    const id = feature.properties.id;
+                  const data = _this.sharedState.metric.data.map[id][`y_${_this.sharedState.year}`];
+                  const geographyLabel = _this.sharedState.geography.label(id);
+                  const val = prettyNumber(data, _this.sharedState.metric.config.decimals, _this.sharedState.metric.config.prefix, _this.sharedState.metric.config.suffix, _this.sharedState.metric.config.commas);
+                  const label = _this.sharedState.metric.config.label ? ` ${_this.sharedState.metric.config.label}` : '';
+                  popup.setLngLat(map.unproject(e.point))
+                        .setHTML(`<div style="text-align: center; margin: 0; padding: 0;"><h3 style="font-size: 1.2em; margin: 0; padding: 0; line-height: 1em; font-weight: bold;">${geographyLabel}</h3>${val}${label}</div>`)
                         .addTo(map);
 
                 });
@@ -433,24 +448,28 @@ export default {
     width: 100%;
     height: 600px;
 }
+
 .mapboxgl-popup {
     max-width: 400px;
 }
+
 .mapboxgl-popup-content {
     padding: 10px 10px 5px;
 }
+
 #btnPitch {
     position: absolute;
     bottom: 4px;
     left: 4px;
     border-radius: 4px;
-    /*width: 30px;*/
     height: 30px;
     min-width: 30px;
     padding: 4px 7px;
-    /*box-shadow: 0 0 0 2px rgba(0,0,0,.1);*/
     line-height: inherit;
     background-color: rgba(158,158,158, 0.40);
-    /*background: #ffffff;*/
+}
+
+.mapboxgl-ctrl-geocoder input[type="text"] {
+    color: rgba(0, 0, 0, 0.8);
 }
 </style>

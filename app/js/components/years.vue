@@ -1,7 +1,7 @@
 <template lang="html">
-    <div id="years">
+    <div id="years" v-if="sharedState.metric.years.length > 1" >
         <div class="flex-container">
-            <div v-if="sharedState.metric.years.length > 1" class="flex-left">
+            <div class="flex-left">
                 <div class="playpause">
                    <input type="checkbox" value="None" id="playpause" name="check" v-on:change="play" checked title="Start or stop playing through data timeseries by year"/>
                    <label for="playpause"></label>
@@ -11,7 +11,6 @@
                 <input id="yearslider" type="range" v-bind:min="sharedState.metric.years[0]"
                     v-bind:value="sharedState.year" v-bind:max="sharedState.metric.years[sharedState.metric.years.length - 1]"
                     v-on:change="changeYear" step="1" list="ticks">
-                <label for="yearslider">use slider to choose a data year to view</label>
                 <datalist id="ticks">
                     <option v-for="year in sharedState.metric.years">
                         {{ year }}
@@ -21,6 +20,9 @@
             <div class="flex-right">
                 <h3>{{ sharedState.year }}</h3>
             </div>
+        </div>
+        <div class="flex-container">
+            <label for="yearslider">use slider to choose a data year to view</label>
         </div>
     </div>
 </template>
@@ -101,7 +103,7 @@ h3 {
     transition: 180ms all ease;
     cursor: pointer;
     border-style: double;
-    border-width: 0px 0 0px 25px;
+    border-width: 0 0 0 25px;
 }
 .playpause label:hover {
     border-color: transparent transparent transparent #00688B;
@@ -114,7 +116,7 @@ h3 {
     border-width: 17px 0 17px 25px;
 }
 
-.yearslider label {
+#years label {
     width: 100%;
     text-align: center;
     color: rgb(158, 158, 158);

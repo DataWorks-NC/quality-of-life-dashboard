@@ -54,7 +54,8 @@ search: function() {
 
 ## Deployment
 
-This project includes a makefile with a `deploy` command for pushing the website to Amazon Web Services using S3 for storage and Cloudfront to cache the site.
-In order for this command to succeed, you'll need to be logged into the aws CLI as a user with appropriate credentials (or have environment variables `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` set),
-and have environment variables `AWS_S3_BUCKET` set to the full path to the deployment bucket (e.g. `s3://neighborhood-compass/`) and `AWS_CLOUDFRONT_ID` set to the cloudfront distribution ID. We recommend using `direnv` (https://direnv.net/) to track
-these environment variables, as described [here](https://www.taos.com/using-multiple-accounts-aws-cli-direnv/). This AWS hosting strategy follows [these instructions by Lance Lakey](https://www.pandastrike.com/posts/20151021-static-site-circleci-s3-cloudfront).
+This project includes a makefile with a `deploy` command for pushing the website to Azure using Blob storage for storage.
+In order for this command to succeed, you'll need to have environment variables `AZURE_STORAGE_CONNECTION_STRING` and `AZURE_DESTINATION_BLOB` set to the connection string for your Azure storage container and the destination blob name, respectively. We recommend using `direnv` (https://direnv.net/) to track
+these environment variables, as described [here](https://www.taos.com/using-multiple-accounts-aws-cli-direnv/).
+
+To deploy, run `python deploy.py` (make sure that `python-dotenv` is installed locally using `pip install python-dotenv`). This will deploy everything in the `public` directory to the blob name set in `AZURE_DESTINATION_BLOB` This Azure hosting strategy follows [these instructions by Hao Luo](https://blog.lifeishao.com/2017/05/24/serving-your-static-sites-with-azure-blob-and-cdn).
