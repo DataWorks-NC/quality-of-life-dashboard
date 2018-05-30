@@ -12,7 +12,7 @@
 <script>
 import Chartist from 'chartist';
 import isNumeric from '../modules/isnumeric';
-import {abbrNum, round, prettyNumber} from '../modules/number_format';
+import {legendLabelNumber, prettyNumber} from '../modules/number_format';
 import {median} from '../modules/metric_calculations';
 
 export default {
@@ -42,11 +42,7 @@ export default {
                     }
                 },
                 axisY: {
-                    labelInterpolationFnc : this.sharedState.metric.config.commas ? function(value, index) {
-                        return abbrNum(round(Number(value), 2), 2);
-                    } : function(value, index) {
-                      return value;
-                    }
+                    labelInterpolationFnc : (value, index) => (legendLabelNumber(value, _this.sharedState.metric.config))
                 },
                 series: {
                     'series-selected': {

@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import {abbrNum, round, prettyNumber} from '../modules/number_format';
+import {legendLabelNumber, abbrNum, round, prettyNumber} from '../modules/number_format';
 import {metaDescription} from '../modules/meta';
 import isNumeric from '../modules/isnumeric';
 import {calcValue, wValsToArray, sum} from '../modules/metric_calculations';
@@ -108,12 +108,7 @@ export default {
       },
 
       abbrNumber: function (value) {
-            let num = this.sharedState.metric.config.commas ? abbrNum(value, 1) : value;
-            if (isNumeric(num)) {
-                return round(num, this.sharedState.metric.config.decimals);
-            } else {
-                return num;
-            }
+            return legendLabelNumber(value, this.sharedState.metric.config);
         },
         getMetaDesc: function() {
             this.privateState.metaDesc = metaDescription(this.sharedState.metadata).replace('<p>', '').replace('</p>','').trim();
