@@ -67,6 +67,7 @@ jobs:
           at: /tmp/workspace
       - run: pip install python-dotenv
       - run: cp .circleci/robots.txt public/robots.txt
+          working_directory: /tmp/workspace/
       - run:
           command: python .circleci/deploy.py
           working_directory: /tmp/workspace/
