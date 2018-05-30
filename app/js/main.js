@@ -43,6 +43,7 @@ import MapGL from './components/map.vue';
 import EmbedCode from './components/embedcode.vue';
 import Footer from './components/footer.vue';
 import Social from './components/social.vue';
+import Feedback from './components/feedback.vue';
 import Offline from './components/offline.vue';
 import Tabs from './components/tabs.vue';
 import GeographySwitcher from './components/geography-switcher.vue';
@@ -230,6 +231,16 @@ Footer.data = function() {
     }
   };
 };
+
+Feedback.data = function() {
+  return {
+    privateState: {
+      feedbackUrl: siteConfig.feedbackUrl,
+      signupEmbed: siteConfig.signupEmbed,
+      showSignup: false,
+    }
+  };
+};
 Social.data = function() {
   return {
     sharedState: appState,
@@ -363,6 +374,10 @@ new Vue({
 new Vue({
   el: 'sc-social',
   render: h => h(Social)
+});
+new Vue({
+  el: 'sc-feedback',
+  render: h => h(Feedback)
 });
 // offline message
 new Vue({

@@ -26,7 +26,7 @@
                 />
             </div>
             <div class="metric-more-info">
-                <div class="metric-more-info__title" v-on:click="collapsed = !collapsed"><h3>Why is this important?</h3></div>
+                <div class="metric-more-info__title" v-on:click="collapsed = !collapsed"><h3>{{ collapsed ? 'Show more info' : 'Hide more info'}}</h3></div>
                 <div class="metric-more-info__body" v-show="!collapsed" v-html="moreInfo"></div>
                 </div>
             </div>

@@ -45,7 +45,8 @@ jobs:
           root: .
           paths:
             - public/*
-            - deploy.py
+            - .circleci/deploy.py
+            - .circleci/robots.txt
   deploy_prod:
     docker:
       - image: microsoft/azure-cli
@@ -54,7 +55,7 @@ jobs:
           at: /tmp/workspace
       - run: pip install python-dotenv
       - run:
-          command: python deploy.py
+          command: python .circleci/deploy.py
           working_directory: /tmp/workspace/
           environment:
             AZURE_DESTINATION_BLOB: "prod"
@@ -65,8 +66,9 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - run: pip install python-dotenv
+      - run: cp .circleci/robots.txt public/robots.txt
       - run:
-          command: python deploy.py
+          command: python .circleci/deploy.py
           working_directory: /tmp/workspace/
           environment:
             AZURE_DESTINATION_BLOB: "dev"

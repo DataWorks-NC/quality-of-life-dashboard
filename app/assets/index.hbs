@@ -61,7 +61,7 @@
             </header>
             <sc-sidenav></sc-sidenav>
         </div>
-        <div class="mdl-layout__content mdl-color--grey-100">
+        <div class="mdl-layout__content">
             <div class="mdl-grid">
                 <sc-offline></sc-offline>
                 <sc-tabs></sc-tabs>
@@ -77,6 +77,8 @@
                         <sc-undermap-buttons/>
                     </div>
                     <sc-datatable></sc-datatable>
+                    <div class="demo-separator mdl-cell--1-col"></div>
+                    <sc-metadata></sc-metadata>
                 </div>
                 <div class="demo-cards mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-grid mdl-grid--no-spacing">
                     <sc-geography-switcher></sc-geography-switcher>
@@ -85,12 +87,13 @@
                     <div class="demo-separator mdl-cell--1-col"></div>
                     <sc-trendchart></sc-trendchart>
                     <div class="demo-separator mdl-cell--1-col"></div>
+                    <sc-feedback></sc-feedback>
+                    <div class="demo-separator mdl-cell--1-col"></div>
                     <div class="mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop mdl-typography--text-center">
                         <sc-social></sc-social>
                     </div>
                 </div>
             </div>
-            <sc-metadata></sc-metadata>
             <div class="mdl-grid demo-cards">
                 <sc-embedcode></sc-embedcode>
                 {{#if siteConfig.contactForm}}

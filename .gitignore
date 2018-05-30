@@ -12,4 +12,5 @@ yarn.lock
 .idea
 .DS_Store
 .envrc
+.env
 .Rhistory
