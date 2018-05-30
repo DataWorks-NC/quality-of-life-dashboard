@@ -15,7 +15,7 @@
     require('../modules/chartist.axis.title.js');
     require('../modules/chartist.tooltip.js');
     import {calcValue} from '../modules/metric_calculations';
-    import {abbrNum, round, prettyNumber} from '../modules/number_format';
+    import {legendLabelNumber, prettyNumber} from '../modules/number_format';
 
     export default {
         name: 'sc-trendchart',
@@ -48,11 +48,7 @@
                             fillHoles: true,
                         }),
                       axisY: {
-                        labelInterpolationFnc : this.sharedState.metric.config.commas ? function(value, index) {
-                          return abbrNum(round(Number(value), 2), 2);
-                        } : function(value, index) {
-                          return value;
-                        }
+                        labelInterpolationFnc : (value, index) => (legendLabelNumber(value, _this.sharedState.metric.config))
                       },
                         plugins: [
                             Chartist.plugins.tooltip({

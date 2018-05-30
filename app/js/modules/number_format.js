@@ -1,5 +1,17 @@
 import isNumeric from './isnumeric';
 
+function legendLabelNumber(value, config) {
+    let prefix = '', suffix = '';
+    if (config.hasOwnProperty('prefix')) {
+        prefix = config.prefix;
+    }
+    if (config.hasOwnProperty('suffix')) {
+        suffix = config.suffix;
+    }
+  let num = config.commas || prefix === '$' ? abbrNum(value, config.decimals) : round(value, config.decimals);
+  return prefix + num + suffix;
+}
+
 function abbrNum(number, decPlaces) {
     // 2 decimal places => 100, 3 => 1000, etc
     decPlaces = Math.pow(10, decPlaces);
@@ -56,4 +68,4 @@ function prettyNumber(number, decimals = 0, prefix = '', suffix = '', commas = t
 }
 
 
-export {abbrNum, round, numberfixes, commafy, prettyNumber};
+export {legendLabelNumber, abbrNum, round, numberfixes, commafy, prettyNumber};
