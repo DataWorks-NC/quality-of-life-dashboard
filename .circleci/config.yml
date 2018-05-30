@@ -55,7 +55,7 @@ jobs:
           at: /tmp/workspace
       - run: pip install python-dotenv
       - run:
-          command: python .circleci/deploy.py
+          command: python .circleci/deploy.py /tmp/workspace/public
           working_directory: /tmp/workspace/
           environment:
             AZURE_DESTINATION_BLOB: "prod"
