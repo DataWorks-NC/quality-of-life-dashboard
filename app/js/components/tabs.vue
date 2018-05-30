@@ -61,12 +61,16 @@
 <style lang="css" scoped>
   .mdl-tabs__tab {
     padding: 0 14px;
+    height: auto;
+    min-height: 48px;
+    line-height: inherit;
   }
   .mdl-tabs__panel {
     padding: 10px;
   }
   .mdl-tabs__tab-bar {
     justify-content: left;
+    height: auto;
   }
   .mdl-tabs.is-upgraded .mdl-tabs__tab.is-active:after {
     background: #00688B;

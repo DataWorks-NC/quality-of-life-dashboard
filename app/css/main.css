@@ -19,6 +19,12 @@ h3,
 h4,
 h5 {
   color: #333;
+  line-height: 1.33;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+p, h6 {
+  line-height: 1.33;
 }
 a {
   text-decoration-skip: ink;

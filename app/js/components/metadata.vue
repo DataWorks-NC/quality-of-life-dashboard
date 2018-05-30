@@ -27,7 +27,7 @@ export default {
         resources: function(data) {
           return data
           .substring(getSubstringIndex(data, '</h3>', 3) + 5, data.length)
-          .replace(/\<table/g, '<table class="meta-table"');
+          .replace(/\<table/g, '<table class="meta-table table"');
         },
         about: function(data) {
             return data.substring(getSubstringIndex(data, '</h3>', 2) + 5, getSubstringIndex(data, '<h3', 3));;
@@ -53,11 +53,12 @@ export default {
     width: 100%;
     padding: 0 10px;
 }
-h3:first-of-type {
-    margin-top: 0;
-}
 h3 {
     font-size: 2em;
+    margin-top: 45px;
+}
+h3:first-of-type {
+    margin-top: 0;
 }
 h4 {
     font-size: 1.5em;
