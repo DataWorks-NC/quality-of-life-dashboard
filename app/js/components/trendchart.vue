@@ -2,8 +2,8 @@
     <div v-show="sharedState.metric.years.length > 1" class="qol-chart mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop mdl-typography--text-center">
         <div class="trendchart">
             <h1 v-if="sharedState.metric.config">{{ sharedState.metric.config.title }}</h1>
-            <span class="legend"><svg class="icon legend-county"><use xlink:href="#icon-trending_up"></use></svg> County</span>
-            <span v-show="sharedState.selected.length > 0" class="legend"><svg class="icon legend-selected"><use xlink:href="#icon-trending_up"></use></svg> Selected</span>
+            <span class="legend"><svg class="icon legend-county"><use href="#icon-trending_up"></use></svg> County</span>
+            <span v-show="sharedState.selected.length > 0" class="legend"><svg class="icon legend-selected"><use href="#icon-trending_up"></use></svg> Selected</span>
             <div class="ct-trendchart"></div>
         </div>
     </div>

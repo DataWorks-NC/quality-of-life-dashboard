@@ -12,35 +12,35 @@
                 <li v-on:click="selectNeighborhoods(n.select)">
                     <span class="search-result-type">{{privateState.neighborhoodDescriptor}}</span>
                     <span class="search-result-label">{{n.label}}</span>
-                    <!-- <svg class="icon"><use xlink:href="#icon-keyboard_arrow_right"></use></svg> -->
+                    <!-- <svg class="icon"><use href="#icon-keyboard_arrow_right"></use></svg> -->
                 </li>
             </ul>
             <ul v-for="n in privateState.results.metric">
               <li v-on:click="selectMetric(n.select)">
                 <span class="search-result-type">METRIC</span>
                 <span class="search-result-label">{{n.label}}</span>
-                <!-- <svg class="icon"><use xlink:href="#icon-keyboard_arrow_right"></use></svg> -->
+                <!-- <svg class="icon"><use href="#icon-keyboard_arrow_right"></use></svg> -->
               </li>
             </ul>
             <ul v-for="n in privateState.results.NSA">
               <li v-on:click="selectNeighborhoods(n.select)">
                 <span class="search-result-type">NSA</span>
                 <span class="search-result-label">{{n.label}}</span>
-                <!-- <svg class="icon"><use xlink:href="#icon-keyboard_arrow_right"></use></svg> -->
+                <!-- <svg class="icon"><use href="#icon-keyboard_arrow_right"></use></svg> -->
               </li>
             </ul>
             <ul v-for="n in privateState.results.zipcode">
                 <li v-on:click="selectNeighborhoods(n.select)">
                     <span class="search-result-type">ZIPCODE</span>
                     <span class="search-result-label">{{n.label}}</span>
-                    <!-- <svg class="icon"><use xlink:href="#icon-keyboard_arrow_right"></use></svg> -->
+                    <!-- <svg class="icon"><use href="#icon-keyboard_arrow_right"></use></svg> -->
                 </li>
             </ul>
             <ul v-for="n in privateState.results.address">
                 <li v-on:click="selectLocation(n.lng, n.lat, n.label)">
                     <span class="search-result-type">ADDRESS</span>
                     <span class="search-result-label">{{n.label | trimLabel}}</span>
-                    <!-- <svg class="icon"><use xlink:href="#icon-keyboard_arrow_right"></use></svg> -->
+                    <!-- <svg class="icon"><use href="#icon-keyboard_arrow_right"></use></svg> -->
                 </li>
             </ul>
         </div>

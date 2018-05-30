@@ -67,11 +67,11 @@
       },
       trendIcon: function(num) {
         if (num === 0) {
-          return '<svg class="icon"><use xlink:href="#icon-trending_flat"></use></svg>';
+          return '<svg class="icon"><use href="#icon-trending_flat"></use></svg>';
         } else if (num > 0) {
-          return '<svg class="icon"><use xlink:href="#icon-trending_up"></use></svg>';
+          return '<svg class="icon"><use href="#icon-trending_up"></use></svg>';
         } else {
-          return '<svg class="icon"><use xlink:href="#icon-trending_down"></use></svg>';
+          return '<svg class="icon"><use href="#icon-trending_down"></use></svg>';
         }
       },
       trend: function(n) {

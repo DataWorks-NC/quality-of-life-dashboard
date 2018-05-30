@@ -3,7 +3,7 @@
         <div>
             <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=" class="background-print-img" alt="white background for printing">
             <div class="tocposition">
-                <a href="javascript:void(0)" title="Move Table of Contents" v-on:click="position()"><svg class="icon"><use xlink:href="#icon-zoom_out_map"></use></svg></a>
+                <a href="javascript:void(0)" title="Move Table of Contents" v-on:click="position()"><svg class="icon"><use href="#icon-zoom_out_map"></use></svg></a>
             </div>
             <h1 class="title">{{ sharedState.metric.config.title }}, {{ sharedState.year }}</h1>
             <div class="metricboxes">

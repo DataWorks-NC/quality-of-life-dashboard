@@ -2,8 +2,8 @@
     <div class="qol-chart">
         <div class="trendchart">
             <h1 v-if="metricConfig">{{ metricConfig.title }}</h1>
-            <span class="legend"><svg class="icon legend-county"><use xlink:href="#icon-trending_up"></use></svg> County</span>
-            <span class="legend"><svg class="icon legend-selected"><use xlink:href="#icon-trending_up"></use></svg> Selected</span>
+            <span class="legend"><svg class="icon legend-county"><use href="#icon-trending_up"></use></svg> County</span>
+            <span class="legend"><svg class="icon legend-selected"><use href="#icon-trending_up"></use></svg> Selected</span>
             <div class="ct-trendchart" :id="'ct-trendchart-' + metricConfig.metric"></div>
         </div>
     </div>

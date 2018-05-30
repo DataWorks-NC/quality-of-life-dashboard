@@ -2,8 +2,8 @@
     <div class="qol-chart mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop">
         <div class="scatterplot mdl-typography--text-center">
             <h1>Data Distribution, {{sharedState.year}}</h1>
-            <span v-show="sharedState.selected.length > 0"><svg class="icon legend legend-selected"><use xlink:href="#icon-lens"></use></svg> Selected</span>
-            <span><svg class="icon legend legend-median"><use xlink:href="#icon-more_horiz"></use></svg> Median {{privateState.median}}</span>
+            <span v-show="sharedState.selected.length > 0"><svg class="icon legend legend-selected"><use href="#icon-lens"></use></svg> Selected</span>
+            <span><svg class="icon legend legend-median"><use href="#icon-more_horiz"></use></svg> Median {{privateState.median}}</span>
             <div class="ct-distributionchart"></div>
         </div>
     </div>
