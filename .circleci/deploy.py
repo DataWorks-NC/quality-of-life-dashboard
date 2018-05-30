@@ -14,7 +14,7 @@ mimetypes.add_type("application/font-woff2", ".woff2")
 mimetypes.add_type("application/font-woff", ".otf")
 mimetypes.add_type("image/svg+xml", ".svg")
 
-dir_path = os.path.dirname(os.path.realpath(__file__)) + "/public"
+dir_path = os.path.dirname(os.path.realpath(__file__)) + "../public"
 
 extensions = set()
 MAX_WORKERS = 20
