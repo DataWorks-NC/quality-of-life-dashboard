@@ -32,11 +32,6 @@ if (privateConfig.hasOwnProperty('rollbarAccessToken') && privateConfig.rollbarA
 
 Vue.config.productionTip = false;
 
-// register service worker
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js');
-}
-
 // fix ie SVG bugs
 ieSVGFixes();
 

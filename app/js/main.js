@@ -63,38 +63,8 @@ if (privateConfig.hasOwnProperty('rollbarAccessToken') && privateConfig.rollbarA
 
 Vue.config.productionTip = false;
 
-// register service worker
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js');
-}
-
 // fix ie SVG bugs
 ieSVGFixes();
-
-// help system
-//for (const el of document.querySelectorAll('.help')) {
-//  el.addEventListener('click', function() {
-//    console.log('click');
-//    introJs().start();
-//  });
-//}
-
-// youtube video
-// document.querySelector('.youtube').addEventListener('click', function() {
-//   let theElem = document.querySelector('.youtube');
-//   let id = theElem.getAttribute('id');
-
-//   // create iframe
-//   var iframe = document.createElement('iframe');
-//   var url = `https://www.youtube.com/embed/${
-//     id
-//   }?autoplay=1&autohide=1&${theElem.getAttribute('data-params')}`;
-//   iframe.src = url;
-//   iframe.setAttribute('allowfullscreen', 'allowfullscreen');
-//   iframe.setAttribute('frameborder', '0');
-//   iframe.setAttribute('aria-label', 'GeoPortal video tutorial');
-//   theElem.appendChild(iframe);
-// });
 
 // Sort dataConfig alphabetically by metric and category
 let dataConfigTemp = [];
