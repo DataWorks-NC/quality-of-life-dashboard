@@ -4,7 +4,7 @@
             <p class="site-links" v-if="privateState.links" >
                 <a v-for="link in privateState.links" v-bind:href="link.href" target="_blank">{{link.text}}</a>
             </p>
-            <p class="text-muted">
+            <p>
                 View the Neighborhood Compass code <a href="https://github.com/DataWorks-NC/quality-of-life-dashboard">on Github</a>. Based on code created by <a href="https://charmeck.org/mecklenburg/county/Pages/Default.aspx">Mecklenburg County</a>, the <a href="https://charmeck.org/city/charlotte/Pages/default.aspx">City of Charlotte</a>, and <a href="https://www.uncc.edu/">UNC Charlotte</a>
                 with much &#9829; for the projects that make this site possible:
                 <a href="https://www.openstreetmap.org/" target="_blank">OpenStreetMap</a>,

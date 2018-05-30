@@ -71,6 +71,7 @@
   .mdl-tabs__tab-bar {
     justify-content: left;
     height: auto;
+    padding: 10px 5px 0 5px;
   }
   .mdl-tabs.is-upgraded .mdl-tabs__tab.is-active:after {
     background: #00688B;
