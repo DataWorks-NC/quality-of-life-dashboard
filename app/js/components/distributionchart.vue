@@ -176,7 +176,6 @@ export default {
     /* selected */    
     .ct-distributionchart .ct-point {
         stroke: #00688B;
-        stroke-width: 7;
     }
 
     /* distribution series */
