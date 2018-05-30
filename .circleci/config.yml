@@ -70,7 +70,7 @@ jobs:
           command: cp .circleci/robots.txt public/robots.txt
           working_directory: /tmp/workspace/
       - run:
-          command: python .circleci/deploy.py
+          command: python .circleci/deploy.py /tmp/workspace/public
           working_directory: /tmp/workspace/
           environment:
             AZURE_DESTINATION_BLOB: "dev"

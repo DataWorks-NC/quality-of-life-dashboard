@@ -1,5 +1,6 @@
 # save as deploy.py
 import os
+import sys
 import platform
 import mimetypes
 import subprocess
@@ -14,7 +15,9 @@ mimetypes.add_type("application/font-woff2", ".woff2")
 mimetypes.add_type("application/font-woff", ".otf")
 mimetypes.add_type("image/svg+xml", ".svg")
 
-dir_path = os.path.dirname(os.path.realpath(__file__)) + "../public"
+if len(sys.argv) < 2:
+    print("Must include path to the files to deploy as an argument")
+dir_path = sys.argv[1]
 
 extensions = set()
 MAX_WORKERS = 20
