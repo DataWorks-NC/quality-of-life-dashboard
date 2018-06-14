@@ -14,7 +14,6 @@ require('es6-promise').polyfill(); // Fix for axios on IE11
 require('./modules/ie-polyfill-array-from.js'); // fix for array from on IE11
 
 import Vue from 'vue/dist/vue.js';
-import Rollbar from 'vue-rollbar';
 import axios from 'axios';
 import dataConfigUnsorted from '../../data/config/data';
 import mapConfig from '../../data/config/map';
@@ -53,13 +52,6 @@ import 'vueify/lib/insert-css'; // required for .vue file <style> tags
 // to fix vue not including modules bug
 import 'mapbox-gl';
 import '@mapbox/mapbox-gl-geocoder';
-
-if (privateConfig.hasOwnProperty('rollbarAccessToken') && privateConfig.rollbarAccessToken) {
-  Vue.use(Rollbar, {
-    accessToken: privateConfig.rollbarAccessToken,
-  });
-}
-
 
 Vue.config.productionTip = false;
 

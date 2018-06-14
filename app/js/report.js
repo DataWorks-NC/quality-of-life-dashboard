@@ -5,7 +5,6 @@ require('./modules/ie-polyfill-array-from.js'); // fix for array from on IE11
 const md5 = require('js-md5');
 
 import Vue from 'vue/dist/vue.js';
-import Rollbar from 'vue-rollbar';
 import axios from 'axios';
 import dataConfig from '../../data/config/data';
 import siteConfig from '../../data/config/site';
@@ -23,12 +22,6 @@ import 'vueify/lib/insert-css'; // required for .vue file <style> tags
 // to fix vue not including modules bug
 import 'mapbox-gl';
 import '@mapbox/mapbox-gl-geocoder';
-
-if (privateConfig.hasOwnProperty('rollbarAccessToken') && privateConfig.rollbarAccessToken) {
-  Vue.use(Rollbar, {
-    accessToken: privateConfig.rollbarAccessToken,
-  });
-}
 
 Vue.config.productionTip = false;
 
