@@ -2,11 +2,9 @@ import privateConfig from '../../data/config/private';
 
 require('es6-promise').polyfill(); // Fix for axios on IE11
 require('./modules/ie-polyfill-array-from.js'); // fix for array from on IE11
-require('material-design-lite');
 const md5 = require('js-md5');
 
 import Vue from 'vue/dist/vue.js';
-import Rollbar from 'vue-rollbar';
 import axios from 'axios';
 import dataConfig from '../../data/config/data';
 import siteConfig from '../../data/config/site';
@@ -25,18 +23,7 @@ import 'vueify/lib/insert-css'; // required for .vue file <style> tags
 import 'mapbox-gl';
 import '@mapbox/mapbox-gl-geocoder';
 
-if (privateConfig.hasOwnProperty('rollbarAccessToken') && privateConfig.rollbarAccessToken) {
-  Vue.use(Rollbar, {
-    accessToken: privateConfig.rollbarAccessToken,
-  });
-}
-
 Vue.config.productionTip = false;
-
-// register service worker
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js');
-}
 
 // fix ie SVG bugs
 ieSVGFixes();
