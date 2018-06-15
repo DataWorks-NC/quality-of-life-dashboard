@@ -35,6 +35,7 @@ module.exports = {
     }
   },
   plugins: {
+
     babel: {
       presets: [
         [
@@ -80,6 +81,11 @@ module.exports = {
         global_defs: {
           DEBUG: false
         }
+      }
+    },
+    cssnano: {
+      autoprefixer: {
+        add: true
       }
     }
   }
