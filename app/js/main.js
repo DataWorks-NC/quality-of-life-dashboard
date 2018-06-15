@@ -12,6 +12,7 @@
 
 require('es6-promise').polyfill(); // Fix for axios on IE11
 require('./modules/ie-polyfill-array-from.js'); // fix for array from on IE11
+require('material-design-lite');
 
 import Vue from 'vue/dist/vue.js';
 import axios from 'axios';
