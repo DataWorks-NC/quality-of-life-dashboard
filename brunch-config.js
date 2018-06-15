@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const siteConfig = require('./data/config/site.js');
 const dataConfig = require('./data/config/data.js');
+const privateConfig = require('./data/config/private');
 
 // whatsnew handlebars data
 let whatsnew = _.filter(dataConfig, function(el) {
@@ -34,6 +35,7 @@ module.exports = {
     }
   },
   plugins: {
+
     babel: {
       presets: [
         [
@@ -54,6 +56,7 @@ module.exports = {
       locals: {
         siteConfig: siteConfig,
         dataConfig: dataConfig,
+        privateConfig: privateConfig,
         selectgroups: require('./data/config/selectgroups.js'),
         whatsnew: whatsnew
       },
@@ -65,8 +68,9 @@ module.exports = {
           'public/**/*.{js,css,png,jpg,gif,svg,eot,ttf,woff,woff2}',
           'public/index.html',
           'public/manifest.json',
-          'public/data/geography.geojson.json',
-          'public/style/positron-mecklenburg.json'
+          'public/data/blockgroup.geojson.json',
+          'public/data/tract.geojson.json',
+          'public/style/osm-liberty.json'
         ],
         stripPrefix: 'public/'
       }
@@ -77,6 +81,11 @@ module.exports = {
         global_defs: {
           DEBUG: false
         }
+      }
+    },
+    cssnano: {
+      autoprefixer: {
+        add: true
       }
     }
   }

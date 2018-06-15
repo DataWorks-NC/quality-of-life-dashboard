@@ -12,11 +12,8 @@
 
 require('es6-promise').polyfill(); // Fix for axios on IE11
 require('./modules/ie-polyfill-array-from.js'); // fix for array from on IE11
-require('material-design-lite');
 
-//import {introJs} from 'intro.js';
 import Vue from 'vue/dist/vue.js';
-import Rollbar from 'vue-rollbar';
 import axios from 'axios';
 import dataConfigUnsorted from '../../data/config/data';
 import mapConfig from '../../data/config/map';
@@ -55,50 +52,11 @@ import 'vueify/lib/insert-css'; // required for .vue file <style> tags
 // to fix vue not including modules bug
 import 'mapbox-gl';
 import '@mapbox/mapbox-gl-geocoder';
-import {scaleLinear} from 'd3-scale';
-import debounce from 'lodash.debounce';
-
-if (privateConfig.hasOwnProperty('rollbarAccessToken') && privateConfig.rollbarAccessToken) {
-  Vue.use(Rollbar, {
-    accessToken: privateConfig.rollbarAccessToken,
-  });
-}
-
 
 Vue.config.productionTip = false;
 
-// register service worker
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js');
-}
-
 // fix ie SVG bugs
 ieSVGFixes();
-
-// help system
-//for (const el of document.querySelectorAll('.help')) {
-//  el.addEventListener('click', function() {
-//    console.log('click');
-//    introJs().start();
-//  });
-//}
-
-// youtube video
-// document.querySelector('.youtube').addEventListener('click', function() {
-//   let theElem = document.querySelector('.youtube');
-//   let id = theElem.getAttribute('id');
-
-//   // create iframe
-//   var iframe = document.createElement('iframe');
-//   var url = `https://www.youtube.com/embed/${
-//     id
-//   }?autoplay=1&autohide=1&${theElem.getAttribute('data-params')}`;
-//   iframe.src = url;
-//   iframe.setAttribute('allowfullscreen', 'allowfullscreen');
-//   iframe.setAttribute('frameborder', '0');
-//   iframe.setAttribute('aria-label', 'GeoPortal video tutorial');
-//   theElem.appendChild(iframe);
-// });
 
 // Sort dataConfig alphabetically by metric and category
 let dataConfigTemp = [];

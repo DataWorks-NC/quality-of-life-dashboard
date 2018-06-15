@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import Chartist from 'chartist';
+import { Line } from 'chartist';
 import isNumeric from '../modules/isnumeric';
 import {legendLabelNumber, prettyNumber} from '../modules/number_format';
 import {median} from '../modules/metric_calculations';
@@ -58,7 +58,7 @@ export default {
                 }                    
             };
 
-            this.privateState.chart = new Chartist.Line('.ct-distributionchart', data, options);
+            this.privateState.chart = new Line('.ct-distributionchart', data, options);
 
         },
         updateData: function() {

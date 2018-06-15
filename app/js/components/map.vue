@@ -10,7 +10,6 @@ import MapboxGlGeocoder from '@mapbox/mapbox-gl-geocoder';
 import axios from 'axios';
 import {prettyNumber} from '../modules/number_format';
 import {replaceState} from '../modules/tracking';
-import {scaleLinear} from 'd3-scale';
 import FullExtent from '../modules/map-fullextent.js';
 
 export default {
@@ -415,10 +414,12 @@ export default {
             let _this = this;
             const stops = [];
             let data = _this.sharedState.metric.data.map;
-
-            let heightAdjust = scaleLinear()
-                    .domain([_this.sharedState.breaks[0], _this.sharedState.breaks[this.sharedState.breaks.length - 1]])
-                    .range([0, 3000]);
+            let heightAdjust =
+                (x) =>
+                    (
+                        (x - _this.sharedState.breaks[0])
+                        * 3000 / (_this.sharedState.breaks[this.sharedState.breaks.length - 1] - _this.sharedState.breaks[0])
+                    );
 
             Object.keys(data).forEach(id => {
                 const value = data[id][`y_${_this.sharedState.year}`];
