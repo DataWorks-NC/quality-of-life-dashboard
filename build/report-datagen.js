@@ -66,8 +66,16 @@ _.each(siteConfig.geographies || ['geography',], function(geography) {
             }
           });
 
-          // If this is the blockgroup-level data, store county averages.
-          if (geography.id === 'blockgroup') {
+          // Use worldval for county average if it is set in config/data.js.
+          if (metric.hasOwnProperty('world_val')) {
+            if (!countyAverages.hasOwnProperty(metric.metric)) {
+              countyAverages[metric.metric] = metric.world_val;
+            }
+          }
+
+          // Otherwise, compute and store county averages.
+          // Prefer tract over blockgroup data for calculating averages.
+          else if (geography.id === 'tract' || geography.id === 'blockgroup' && !countyAverages.hasOwnProperty(metric.metric)) {
             const geographyKeys = Object.keys(contents.map);
             // Get the maximal set of years across all the tracts
             const years = geographyKeys
@@ -84,6 +92,7 @@ _.each(siteConfig.geographies || ['geography',], function(geography) {
                   year, geographyKeys);
             });
           }
+
           callback();
         });
     },
