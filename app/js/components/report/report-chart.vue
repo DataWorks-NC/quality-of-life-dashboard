@@ -150,12 +150,12 @@
 </script>
 
 <style lang="css">
-    .qol-chart .ct-series-b .ct-line,
-    .qol-chart .ct-series-b .ct-point {
-        stroke: #00688B;
-    }
     .qol-chart .ct-series-a .ct-line,
     .qol-chart .ct-series-a .ct-point {
+        stroke: #00688B;
+    }
+    .qol-chart .ct-series-b .ct-line,
+    .qol-chart .ct-series-b .ct-point {
         stroke: orange;
     }
     .ct-trendchart {
