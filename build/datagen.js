@@ -11,7 +11,7 @@ const marked = require('marked');
 ///////////////////////////////////////////////////
 // Create destination folders
 ///////////////////////////////////////////////////
-directoriesToMake = ['', 'data', 'data/meta', 'data/metric', 'downloads', 'data'];
+directoriesToMake = ['', 'data', 'data/meta', 'data/metric', 'downloads'];
 _.each(siteConfig.geographies, function(geography) {
   directoriesToMake.push('data/metric/' + geography.id);
 });
@@ -77,23 +77,25 @@ const src = './data/meta';
 fs.readdir(src, (err, files) => {
   if (err) return console.log(`Error on reading /data/meta: ${err.message}`);
   files.forEach((filePath) => {
-    fs.readFile(path.join(src, filePath), 'utf-8', (err, data) => {
-      if (err) return console.log(`Error on reading ${path.join(src,filePath)} ${err.message}`);
-      let outFile =
-          path.join('public/data/meta', path.basename(filePath).split('.')[0]) +
-          '.html';
+    if (path.basename(filePath).split('.')[1] == 'md') {
+      fs.readFile(path.join(src, filePath), 'utf-8', (err, data) => {
+        if (err) return console.log(`Error on reading ${path.join(src,filePath)} ${err.message}`);
+        let outFile =
+            path.join('public/data/meta', path.basename(filePath).split('.')[0]) +
+            '.html';
 
-      marked(data, function(err, content) {
-        if (err) {
-          return console.log(`Error on running marked: ${err.message}`);
-        }
-        fs.writeFile(outFile, content, (err) => {
-          if (err) return console.log(`Error on writing ${outFile}: ${err.message}`);
-          console.log("Wrote " + outFile);
+        marked(data, function(err, content) {
+          if (err) {
+            return console.log(`Error on running marked: ${err.message}`);
           }
-        );
+          fs.writeFile(outFile, content, (err) => {
+            if (err) return console.log(`Error on writing ${outFile}: ${err.message}`);
+            console.log("Wrote " + outFile);
+            }
+          );
+        });
       });
-    });
+    }
   });
 });
 
