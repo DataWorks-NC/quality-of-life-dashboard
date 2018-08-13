@@ -47,6 +47,7 @@ jobs:
             - public/*
             - .circleci/deploy.py
             - .circleci/robots.txt
+            - .circleci/requirements.txt
   deploy_prod:
     docker:
       - image: microsoft/azure-cli
@@ -65,7 +66,7 @@ jobs:
     steps:
       - attach_workspace:
           at: /tmp/workspace
-      - run: pip install python-dotenv
+      - run: pip install -r .circleci/requirements.txt
       - run:
           command: cp .circleci/robots.txt public/robots.txt
           working_directory: /tmp/workspace/
