@@ -25,12 +25,18 @@ After running npm install, and after each fresh time re-running npm install, you
 
 `sed -i '' "s_require('rest');_require('rest/browser.js');_" node_modules/mapbox/lib/client.js`.
 
+You'll then need to populate `private.js` in the `data/config` directory, following the instructions in https://github.com/DataWorks-NC/durham-quality-of-life-data/blob/master/README.md.
+
+Then run
+
 ```bash`
 npm run build
 npm start
 ```
 
-The Dashboard should launch in your default web browser with a live reload server. To build the site for production, run `npm run build` and copy the `public` folder contents to your web server.
+You should now be able to access the dashboard locally at http://127.0.0.1:3000/.
+
+To build the site for production, see Deployment, below, and the Tehnical Infrastructure Manual.
 
 ## Customizing the Dashboard
 
@@ -53,6 +59,8 @@ search: function() {
 ```
 
 ## Deployment
+
+Further deployment instructions in the DataWorks NC Technical Infrastructure Manual.
 
 This project includes a python script, `.circleci/deploy.py` for pushing the website to Azure using Blob storage for storage.
 In order for this command to succeed, you'll need to have environment variables `AZURE_STORAGE_CONNECTION_STRING` and `AZURE_DESTINATION_BLOB` set to the connection string for your Azure storage container and the destination blob name, respectively. We recommend using `direnv` (https://direnv.net/) to track
