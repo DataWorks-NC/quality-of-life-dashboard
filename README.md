@@ -25,12 +25,18 @@ After running npm install, and after each fresh time re-running npm install, you
 
 `sed -i '' "s_require('rest');_require('rest/browser.js');_" node_modules/mapbox/lib/client.js`.
 
+You'll then need to populate `private.js` in the `data/config` directory, following the instructions in https://github.com/DataWorks-NC/durham-quality-of-life-data/blob/master/README.md.
+
+Then run
+
 ```bash`
 npm run build
 npm start
 ```
 
-The Dashboard should launch in your default web browser with a live reload server. To build the site for production, run `npm run build` and copy the `public` folder contents to your web server.
+You should now be able to access the dashboard locally at http://127.0.0.1:3000/.
+
+To build the site for production, see Deployment, below, and the Tehnical Infrastructure Manual.
 
 ## Customizing the Dashboard
 
@@ -54,8 +60,10 @@ search: function() {
 
 ## Deployment
 
-This project includes a makefile with a `deploy` command for pushing the website to Azure using Blob storage for storage.
+Further deployment instructions in the DataWorks NC Technical Infrastructure Manual.
+
+This project includes a python script, `.circleci/deploy.py` for pushing the website to Azure using Blob storage for storage.
 In order for this command to succeed, you'll need to have environment variables `AZURE_STORAGE_CONNECTION_STRING` and `AZURE_DESTINATION_BLOB` set to the connection string for your Azure storage container and the destination blob name, respectively. We recommend using `direnv` (https://direnv.net/) to track
 these environment variables, as described [here](https://www.taos.com/using-multiple-accounts-aws-cli-direnv/).
 
-To deploy, run `python deploy.py` (make sure that `python-dotenv` is installed locally using `pip install python-dotenv`). This will deploy everything in the `public` directory to the blob name set in `AZURE_DESTINATION_BLOB` This Azure hosting strategy follows [these instructions by Hao Luo](https://blog.lifeishao.com/2017/05/24/serving-your-static-sites-with-azure-blob-and-cdn).
+To deploy, run `python .circleci/deploy.py` (make sure that `python-dotenv` is installed locally using `pip install python-dotenv`, and that the Microsoft Azure CLI is also installed). This will deploy everything in the `public` directory to the blob name set in `AZURE_DESTINATION_BLOB` This Azure hosting strategy follows [these instructions by Hao Luo](https://blog.lifeishao.com/2017/05/24/serving-your-static-sites-with-azure-blob-and-cdn).

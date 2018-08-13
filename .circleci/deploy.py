@@ -1,4 +1,8 @@
 # save as deploy.py
+from __future__ import print_function
+from future import standard_library
+standard_library.install_aliases()
+
 import os
 import sys
 import platform
@@ -35,7 +39,7 @@ for extension in extensions:
     try:
         mime = mimetypes.types_map[extension]
     except KeyError:
-        print(f'MIME Type not found: {extension}')
+        print('MIME Type not found: %s' % extension)
         continue
     command = [
         "az", 

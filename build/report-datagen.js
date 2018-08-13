@@ -12,7 +12,7 @@ import { calcValue } from '../app/js/modules/metric_calculations.js';
 ///////////////////////////////////////////////////
 // Create destination folders
 ///////////////////////////////////////////////////
-let directoriesToMake = ['data/report'];
+let directoriesToMake = ['', 'data', 'data/report'];
 _.each(siteConfig.geographies, function(geography) {
   directoriesToMake.push('data/report/' + geography.id);
 });
@@ -33,6 +33,7 @@ directoriesToMake.forEach((name) => {
 
 _.each(siteConfig.geographies || ['geography',], function(geography) {
   // Cache metrics json files.
+  // TODO: Filter out metrics which don't appear in the report to save filesize.
   let metrics = Object.values(dataConfig).
       filter((m) => (m.geographies.indexOf(geography.id) > -1));
   let geographyMetricsCached = {};
@@ -65,8 +66,16 @@ _.each(siteConfig.geographies || ['geography',], function(geography) {
             }
           });
 
-          // If this is the tract-level data, store county averages.
-          if (geography.id === 'blockgroup') {
+          // Use worldval for county average if it is set in config/data.js.
+          if (metric.hasOwnProperty('world_val')) {
+            if (!countyAverages.hasOwnProperty(metric.metric)) {
+              countyAverages[metric.metric] = metric.world_val;
+            }
+          }
+
+          // Otherwise, compute and store county averages.
+          // Prefer tract over blockgroup data for calculating averages.
+          else if (geography.id === 'tract' || geography.id === 'blockgroup' && !countyAverages.hasOwnProperty(metric.metric)) {
             const geographyKeys = Object.keys(contents.map);
             // Get the maximal set of years across all the tracts
             const years = geographyKeys
@@ -83,6 +92,7 @@ _.each(siteConfig.geographies || ['geography',], function(geography) {
                   year, geographyKeys);
             });
           }
+
           callback();
         });
     },
