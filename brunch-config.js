@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const siteConfig = require('./data/config/site.js');
 const dataConfig = require('./data/config/data.js');
-const privateConfig = require('./data/config/private');
+const privateConfig = require('./data/config/private.js');
 
 // whatsnew handlebars data
 let whatsnew = _.filter(dataConfig, function(el) {
