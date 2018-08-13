@@ -214,7 +214,7 @@ export default {
                 'source': 'neighborhoods',
                 'layout': {},
                 'paint': {}
-            }, 'water_name_line');
+            }, _this.privateState.neighborhoodsSelectedBefore);
 
 
             map.addLayer({
@@ -224,7 +224,7 @@ export default {
                 'paint': {
                     'fill-extrusion-opacity': 1
                 }
-            }, 'waterway_river');
+            }, _this.privateState.neighborhoodsBefore);
 
           // neighborhood boundaries
           map.addLayer({
@@ -236,7 +236,7 @@ export default {
               'line-color': 'rgba(0,0,0,1)',
               'line-width': 0.4,
             }
-          }, 'waterway_river');
+          }, _this.privateState.neighborhoodsBefore);
         },
         styleNeighborhoods: function() {
           let map = this.privateState.map, _this = this;
