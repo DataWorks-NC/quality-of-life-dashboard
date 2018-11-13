@@ -60,12 +60,6 @@ a {
   line-height: 54px !important;
 }
 
-/* select group */
-.selectgroup-link {
-  padding-left: 6px;
-  white-space: nowrap;
-}
-
 /* for side by side elements */
 .flexcontainer {
   display: flex;
