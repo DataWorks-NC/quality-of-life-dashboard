@@ -1,5 +1,5 @@
 <template>
-  <p v-if="selectGroup && typeof selectGroup === 'object'">
+  <p v-if="Object.keys(validSelectGroups).length !== 0">
     Or, select a
     <template v-for="group, key, index in selectGroup" v-if="group.hasOwnProperty(sharedState.geography.id)">
       <a :id="`selectgroup-${index}`" href="javascript:void(0)" class="selectgroup-link">{{ key }}</a>
@@ -13,6 +13,20 @@
 <script>
 export default {
   name: 'Selectgroup',
+  computed: {
+    validSelectGroups() {
+      let returnVal = {};
+      const selectGroup = this.selectGroup;
+      const geographyId = this.sharedState.geography.id;
+      Object.keys(selectGroup).forEach(k => {
+        if (selectGroup[k].hasOwnProperty(geographyId)) {
+          returnVal[k] = selectGroup[k][geographyId];
+        }
+      });
+
+      return returnVal;
+    },
+  },
   methods: {
     select(item) {
       this.sharedState.selected = item;
@@ -48,6 +62,10 @@ p {
 
 .selectgroup-link:last-of-type::before {
     content: " or ";
+}
+
+.selectgroup-link:first-of-type::before {
+  content: "";
 }
 
 .selectgroup-link:last-of-type::after {
