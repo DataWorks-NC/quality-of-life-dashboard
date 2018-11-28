@@ -35,7 +35,6 @@ import TrendChart from './components/trendchart.vue';
 import DistributionChart from './components/distributionchart.vue';
 import ToC from './components/toc.vue';
 import MapGL from './components/map.vue';
-import EmbedCode from './components/embedcode.vue';
 import Footer from './components/footer.vue';
 import Social from './components/social.vue';
 import Feedback from './components/feedback.vue';
@@ -158,15 +157,7 @@ YearControl.data = function () {
     },
   };
 };
-EmbedCode.data = function () {
-  return {
-    sharedState: appState,
-    privateState: {
-      title: null,
-      qolembedURL: siteConfig.qolembedURL,
-    },
-  };
-};
+
 DataTable.data = function () {
   return {
     sharedState: appState,
@@ -207,6 +198,7 @@ Social.data = function () {
     sharedState: appState,
     privateState: {
       links: siteConfig.links,
+      baseURL: siteConfig.qoldashboardURL,
     },
   };
 };
@@ -325,10 +317,6 @@ new Vue({
 new Vue({
   el: 'sc-toc',
   render: h => h(ToC),
-});
-new Vue({
-  el: 'sc-embedcode',
-  render: h => h(EmbedCode),
 });
 new Vue({
   el: 'sc-map',

@@ -1,7 +1,11 @@
 import getURLParameter from './geturlparams.js';
 
+function computeHash(metric, selected, geography) {
+  return `${metric}/${geography}/${selected.map(g => encodeURIComponent(g)).join(',')}`
+}
+
 function replaceState(metric, selected, geography) {
-  location.hash = `${metric}/${geography}/${selected.map(g => encodeURIComponent(g)).join(',')}`;
+  location.hash = computeHash(metric,selected,geography);
 }
 
 function gaEvent(type, title, category) {
@@ -39,4 +43,4 @@ function getHash(pos = 0) {
   }
 }
 
-export {replaceState, gaEvent, urlArgsToHash, getHash};
+export {computeHash, replaceState, gaEvent, urlArgsToHash, getHash};
