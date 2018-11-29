@@ -1,34 +1,39 @@
 <template lang="html">
-    <div id="geography-switcher" v-if="geographies" class="mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop geography-switcher">
-        <template v-for="geography in geographies">
-            <button type="button" v-bind:class="['mdl-chip', geography.id === sharedState.geography.id ? 'is-active' : '', geography.isAvailable ? '' : 'is-disabled']" v-on:click="changeGeography(geography.id)">
-                <span class="mdl-chip__text">{{geography.name}}</span>
-            </button>
-        </template>
-        <div class="geography-switcher--instructions">Select a base geography (depending on the dataset, different geographies may be available).</div>
-    </div>
+  <div v-if="geographies" id="geography-switcher" class="mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop geography-switcher">
+    <template v-for="geography in geographies">
+      <button :class="['mdl-chip', geography.id === sharedState.geography.id ? 'is-active' : '', geography.isAvailable ? '' : 'is-disabled']" type="button" @click="changeGeography(geography.id)">
+        <span class="mdl-chip__text">{{ geography.name }}</span>
+      </button>
+    </template>
+    <div class="geography-switcher--instructions">Select a base geography (depending on the dataset, different geographies may be available).
+      </div>
+    <Selectgroup/>
+  </div>
 </template>
 
 <script>
 import fetchData from '../modules/fetch';
-import {gaEvent, replaceState} from '../modules/tracking';
+import { gaEvent, replaceState } from '../modules/tracking';
+
+import Selectgroup from './selectgroup';
 
 export default {
-  name: 'sc-geography-switcher',
-  methods: {
-    changeGeography: function(id) {
-      this.sharedState.selected = [];
-      fetchData(this.sharedState, null, id);
-      gaEvent('geography', this.privateState.geographies.find((g) => (g.id === id)).name);
-      replaceState(this.sharedState.metricId, [], id)
+  name: 'ScGeographySwitcher',
+  components: { Selectgroup },
+  computed: {
+    geographies() {
+      return this.privateState.geographies.map((g) => { g.isAvailable = (this.privateState.data[`m${this.sharedState.metricId}`].geographies.indexOf(g.id) > -1); return g; });
     },
   },
-  computed: {
-    geographies: function() {
-      return this.privateState.geographies.map((g) => { g.isAvailable = (this.privateState.data[`m${this.sharedState.metricId}`].geographies.indexOf(g.id) > -1); return g; });
-    }
-  }
-}
+  methods: {
+    changeGeography(id) {
+      this.sharedState.selected = [];
+      fetchData(this.sharedState, null, id);
+      gaEvent('geography', this.privateState.geographies.find(g => (g.id === id)).name);
+      replaceState(this.sharedState.metricId, [], id);
+    },
+  },
+};
 
 </script>
 

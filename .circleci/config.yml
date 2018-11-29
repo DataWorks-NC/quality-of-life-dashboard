@@ -29,7 +29,7 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-      - run: npm install --only=dev
+      - run: npm install
       # Manual fix for error in Mapbox GL SDK, see https://github.com/mapbox/mapbox-sdk-js/issues/181
       - run: sed -i 's_require('\''rest'\'');_require('\''rest/browser.js'\'');_' node_modules/mapbox/lib/client.js
 
@@ -55,6 +55,9 @@ jobs:
       - run:
           command: pip install -r .circleci/requirements.txt
           working_directory: /tmp/workspace/
+
+      # Add robots file for production.
+      - run: cp /tmp/workspace/.circleci/robots-prod.txt /tmp/workspace/public/robots.txt
       - run:
           command: python .circleci/deploy.py /tmp/workspace/public
           working_directory: /tmp/workspace/
@@ -68,9 +71,6 @@ jobs:
           at: /tmp/workspace
       - run:
           command: pip install -r .circleci/requirements.txt
-          working_directory: /tmp/workspace/
-      - run:
-          command: cp .circleci/robots.txt public/robots.txt
           working_directory: /tmp/workspace/
       - run:
           command: python .circleci/deploy.py /tmp/workspace/public

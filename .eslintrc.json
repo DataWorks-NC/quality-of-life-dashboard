@@ -1,0 +1,10 @@
+{
+  "extends": ["airbnb-base", "plugin:vue/recommended"],
+  "rules": {
+    "quote-props": "off",
+    "quotes": "off",
+    "vue/max-attributes-per-line": "off",
+    "max-len": "off",
+    "import/no-unresolved": "off"
+  }
+}

@@ -182,10 +182,7 @@ function convertMetricCsvToJson(geography, metric) {
                   isNumeric(jsonArrayR[key][key2]) &&
                   isNumeric(jsonArrayD[key][key2])
               ) {
-                jsonArrayR[key][key2] =
-                    Math.round(
-                        jsonArrayR[key][key2] / jsonArrayD[key][key2] * 1000
-                    ) / 1000;
+                jsonArrayR[key][key2] = jsonArrayR[key][key2] / jsonArrayD[key][key2];
                 if (metric.suffix === '%') {
                   jsonArrayR[key][key2] *= 100;
                 }
