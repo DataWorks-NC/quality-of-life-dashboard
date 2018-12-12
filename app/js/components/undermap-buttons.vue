@@ -34,7 +34,7 @@ import { replaceState } from '../modules/tracking.js';
 export default {
 methods: {
   loadReport: function(event) {
-    const newHash = encodeURI(`${this.sharedState.geography.id}/${this.sharedState.selected.map(g => encodeURIComponent(g)).join(',')}`);
+    const newHash = encodeURI(`${this.sharedState.geography.id}/${this.sharedState.selected.map(g => encodeURIComponent(g)).join(',')}${this.sharedState.selectGroupName ? `/${this.sharedState.selectGroupName}` : ''}`);
     window.open(`${this.privateState.qolReportURL}#${newHash}`);
   },
   clearSelected: function(event) {

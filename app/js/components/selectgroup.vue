@@ -1,10 +1,10 @@
 <template>
   <p v-if="Object.keys(validSelectGroups).length !== 0">
     Or, select a
-    <template v-for="group, key, index in selectGroup" v-if="group.hasOwnProperty(sharedState.geography.id)">
-      <a :id="`selectgroup-${index}`" href="javascript:void(0)" class="selectgroup-link">{{ key }}</a>
-      <ul :for="`selectgroup-${index}`" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
-        <li v-for="item, key, index in group[sharedState.geography.id]" class="mdl-menu__item" @click="select(item)">{{ key }}</li>
+    <template v-if="group.hasOwnProperty(sharedState.geography.id)" v-for="group, groupKey, groupIndex in selectGroup">
+      <a :id="`selectgroup-${groupIndex}`" href="javascript:void(0)" class="selectgroup-link">{{ groupKey }}</a>
+      <ul :for="`selectgroup-${groupIndex}`" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+        <li v-for="item, key, index in group[sharedState.geography.id]" class="mdl-menu__item" @click="select(item, key, groupKey)">{{ key }}</li>
       </ul>
     </template>
   </p>
@@ -28,9 +28,10 @@ export default {
     },
   },
   methods: {
-    select(item) {
+    select(item, key, groupKey) {
       this.sharedState.selected = item;
       this.sharedState.zoomNeighborhoods = item.slice(0);
+      this.sharedState.selectGroupName = `${key} (${groupKey})`;
     },
   },
 };
@@ -62,6 +63,8 @@ p {
 
 .selectgroup-link:last-of-type::before {
     content: " or ";
+    font-weight: normal;
+    color: black;
 }
 
 .selectgroup-link:first-of-type::before {

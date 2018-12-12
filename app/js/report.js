@@ -31,8 +31,10 @@ ieSVGFixes();
 // Process hashes
 const areaIds = getHash(1).split(',').map(g=>decodeURIComponent(g));
 const geography = siteConfig.geographies.find((g) => (g.id === getHash(0)));
-
 const categoryNames = new Array(...new Set(Object.values(dataConfig).map((m) => (m.category))));
+
+// Optional report title
+const customTitle = getHash(2);
 
 // Initialize app state.
 let appState = {
@@ -68,6 +70,7 @@ function loadReportSummary() {
       geographyId: geography.id,
       areaNames: areaIds.map((id) => (siteConfig.geographies.find((g) => (g.id === geography.id)).label(id))),
       areaIds: areaIds,
+      customTitle: customTitle,
       summaryMetrics: siteConfig.summaryMetrics.map((id) => {
         let metric = dataConfig[id];
         if (appState.metricValues.hasOwnProperty(metric.category) && appState.metricValues[metric.category].hasOwnProperty(metric.metric)) {

@@ -3,7 +3,7 @@
     <div class="row">
         <div class="col-xs-12">
         <img class="logo-image" src="img/report-logo.png" alt="Durham Neighborhood Compass"/>
-        <h2 class="subtitle">{{ areaNames.join(', ') }}</h2>
+        <h2 class="subtitle">{{ title }}</h2>
         </div>
     </div>
     <div class="row">
@@ -53,6 +53,14 @@
 
   export default {
     name: 'report-summary',
+    computed: {
+      title() {
+        if (this.customTitle !== false) {
+          return this.customTitle;
+        }
+        return this.areaNames.join(', ');
+      }
+    },
     methods: {
       prettyValue: function(metric) {
         return prettyNumber(metric.value, metric.decimals, metric.prefix, metric.suffix);
