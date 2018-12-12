@@ -110,10 +110,10 @@ function fetchReportData(geographyId, areaIds) {
           }
           else if (metric.type === 'weighted') {
             metricValues[year.replace('y_', '')] = args.reduce((prevVal, file) => (
-                file.data[key].w[year] !== null && file.data[key].map[year] !== null
-                    ? prevVal + file.data[key].map[year]*file.data[key].w[year]
+                file.data[key] && file.data[key].w[year] !== null && file.data[key].map[year] !== null
+                    ? prevVal + file.data[key].map[year] * file.data[key].w[year]
                     : prevVal), 0)
-                / args.reduce((prevVal, file) => (file.data[key].w[year] !== null ? prevVal + file.data[key].w[year] : prevVal), 0);
+                / args.reduce((prevVal, file) => (file.data[key] && file.data[key].w[year] !== null ? prevVal + file.data[key].w[year] : prevVal), 0);
           }
           }
         );
