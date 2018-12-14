@@ -1,12 +1,13 @@
 <template>
-  <p v-if="Object.keys(validSelectGroups).length !== 0">
-    Or, select a
-    <template v-for="group, key, index in selectGroup" v-if="group.hasOwnProperty(sharedState.geography.id)">
-      <a :id="`selectgroup-${index}`" href="javascript:void(0)" class="selectgroup-link">{{ key }}</a>
-      <ul :for="`selectgroup-${index}`" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
-        <li v-for="item, key, index in group[sharedState.geography.id]" class="mdl-menu__item" @click="select(item)">{{ key }}</li>
-      </ul>
-    </template>
+  <p v-if="Object.keys(validSelectGroups).length !== 0" class="selectgroup">
+    <span class="selectgroup__instructions">Or, select a</span>
+    <template v-for="(group, groupKey, groupIndex) in selectGroup">
+      <span v-if="groupIndex === (Object.keys(selectGroup).length - 1)" class="selectgroup__instructions">or</span>
+      <button :id="`selectgroup-${groupIndex}`" :disabled="!group.hasOwnProperty(sharedState.geography.id)" class="mdl-button mdl-js-button mdl-button--primary"><span>{{ groupKey }}</span></button>
+        <ul :for="`selectgroup-${groupIndex}`" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+          <li v-for="(item, key, index) in group[sharedState.geography.id]" class="mdl-menu__item" @click="select(item, key, groupKey)">{{ key }}</li>
+        </ul>
+      </template>
   </p>
 </template>
 
@@ -28,48 +29,31 @@ export default {
     },
   },
   methods: {
-    select(item) {
+    select(item, key, groupKey) {
       this.sharedState.selected = item;
       this.sharedState.zoomNeighborhoods = item.slice(0);
+      this.sharedState.selectGroupName = `${key} (${groupKey})`;
     },
   },
 };
 </script>
 
 <style scoped>
-/* select group */
-
 p {
     font-size: 0.9em;
     padding-top: 0.5em;
 }
 
-.selectgroup-link {
-    padding-left: 1px;
-    white-space: nowrap;
-    font-weight: bold;
+.selectgroup__instructions {
+  line-height: 36px;
+  float: left;
 }
 
-.selectgroup-link::after {
-    content: ", ";
-    padding-right: 6px;
-}
-
-.selectgroup-link:nth-last-of-type(2)::after {
-    content: "";
-    padding-right: 0px;
-}
-
-.selectgroup-link:last-of-type::before {
-    content: " or ";
-}
-
-.selectgroup-link:first-of-type::before {
-  content: "";
-}
-
-.selectgroup-link:last-of-type::after {
-    content: "";
+.selectgroup button {
+  padding: 0 0.5em;
+  text-transform: none;
+  display: inline;
+  float: left;
 }
 
 </style>
