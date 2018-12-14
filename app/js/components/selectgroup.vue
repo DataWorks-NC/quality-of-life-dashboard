@@ -1,9 +1,9 @@
 <template>
   <p v-if="Object.keys(validSelectGroups).length !== 0" class="selectgroup">
     <span class="selectgroup__instructions">Or, select a</span>
-    <template v-if="group.hasOwnProperty(sharedState.geography.id)" v-for="(group, groupKey, groupIndex) in selectGroup">
+    <template v-for="(group, groupKey, groupIndex) in selectGroup">
       <span v-if="groupIndex === (Object.keys(selectGroup).length - 1)" class="selectgroup__instructions">or</span>
-      <button :id="`selectgroup-${groupIndex}`" class="mdl-button mdl-js-button mdl-button--primary"><span>{{ groupKey }}</span></button>
+      <button :id="`selectgroup-${groupIndex}`" :disabled="!group.hasOwnProperty(sharedState.geography.id)" class="mdl-button mdl-js-button mdl-button--primary"><span>{{ groupKey }}</span></button>
         <ul :for="`selectgroup-${groupIndex}`" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
           <li v-for="(item, key, index) in group[sharedState.geography.id]" class="mdl-menu__item" @click="select(item, key, groupKey)">{{ key }}</li>
         </ul>
