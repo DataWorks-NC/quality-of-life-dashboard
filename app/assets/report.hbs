@@ -42,6 +42,20 @@
         </script>
     {{/if}}
 
+    {{#if siteConfig.gaKey}}
+        <!-- Google Analytics -->
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+            ga('create', '{{ siteConfig.gaKey }}', 'auto');
+            ga('send', 'pageview');
+        </script>
+        <!-- End Google Analytics -->
+    {{/if}}
+
     <!-- Stylesheets -->
     <link rel="stylesheet" href="map.css">
     <link rel="stylesheet" href="report.css">
@@ -66,15 +80,6 @@
 <script src="vendor.js"></script>
 <script src="report.js"></script>
 <script> require('js/report'); </script>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id={{ siteConfig.gaKey }}"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', '{{ siteConfig.gaKey }}');
-</script>
 </body>
 
 </html>
