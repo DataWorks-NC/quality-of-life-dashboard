@@ -58,7 +58,7 @@ module.exports = {
         dataConfig: dataConfig,
         privateConfig: privateConfig,
         selectgroups: require('./data/config/selectgroups.js'),
-        whatsnew: whatsnew
+        whatsnew: whatsnew,
       },
       include: {enabled: false}
     },
