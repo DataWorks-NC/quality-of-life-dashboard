@@ -9,7 +9,7 @@ function replaceState(metric, selected, geography) {
 }
 
 function gaEvent(type, title, category) {
-  if (window.ga) {
+  if (ga) {
     ga('send', 'event', type, title, category);
   }
 }

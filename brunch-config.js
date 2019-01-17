@@ -3,6 +3,8 @@ const siteConfig = require('./data/config/site.js');
 const dataConfig = require('./data/config/data.js');
 const privateConfig = require('./data/config/private.js');
 
+privateConfig.environment = process.env.NODE_ENV;
+
 // whatsnew handlebars data
 let whatsnew = _.filter(dataConfig, function(el) {
   return siteConfig.whatsnew.indexOf(el.metric) !== -1;
@@ -58,7 +60,7 @@ module.exports = {
         dataConfig: dataConfig,
         privateConfig: privateConfig,
         selectgroups: require('./data/config/selectgroups.js'),
-        whatsnew: whatsnew
+        whatsnew: whatsnew,
       },
       include: {enabled: false}
     },
