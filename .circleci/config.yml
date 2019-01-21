@@ -79,6 +79,24 @@ jobs:
           environment:
             AZURE_DESTINATION_BLOB: "dev"
 
+  performance-test_dev:
+    docker:
+      - image: circleci/node:jessie-browsers
+
+    steps:
+      - checkout
+      - run: npm install pwmetrics
+      - run: npx pwmetrics http://nbhdcompassdev.azurewebsites.us/ --config=./.circleci/pwmetrics-config.js
+
+  performance-test_prod:
+    docker:
+      - image: circleci/node:jessie-browsers
+
+    steps:
+      - checkout
+      - run: npm install pwmetrics
+      - run: npx pwmetrics http://nbhdcompassdev.azurewebsites.us/ --config=./.circleci/pwmetrics-config.js
+
 workflows:
   version: 2
   build_and_deploy:
@@ -91,6 +109,9 @@ workflows:
             branches:
               only:
                 develop
+      - performance-test_dev:
+          - requires:
+              - deploy_dev
       - deploy_prod:
           requires:
             - build
@@ -98,3 +119,6 @@ workflows:
             branches:
               only:
                 master
+      - performance-test_prod:
+          - requires:
+              - deploy_dev
