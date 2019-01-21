@@ -9,6 +9,20 @@
     "start": "brunch watch --server --network --port 3000",
     "build": "node $NODE_DEBUG_OPTION ./build/datagen.js && npx babel-node ./build/report-datagen.js && brunch build --production"
   },
+  "bundlesize": [
+    {
+      "path": "./public/vendor.js",
+      "maxSize": "460 kB"
+    },
+    {
+      "path": "./public/app.js",
+      "maxSize": "40 kB"
+    },
+    {
+      "path": "./public/report.js",
+      "maxSize": "20 kB"
+    }
+  ],
   "dependencies": {
     "@mapbox/mapbox-gl-geocoder": "^2.3.0",
     "async": "^2.6.1",
@@ -45,6 +59,7 @@
     "vue-brunch": "2.x"
   },
   "devDependencies": {
+    "bundlesize": "^0.17.1",
     "eslint": "^5.12.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
