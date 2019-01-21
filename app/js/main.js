@@ -33,7 +33,7 @@ import YearControl from './components/years.vue';
 import DataTable from './components/datatable.vue';
 import TrendChart from './components/trendchart.vue';
 import DistributionChart from './components/distributionchart.vue';
-import ToC from './components/toc.vue';
+import Legend from './components/legend.vue';
 import MapGL from './components/map.vue';
 import Footer from './components/footer.vue';
 import Social from './components/social.vue';
@@ -221,7 +221,7 @@ DistributionChart.data = function () {
     },
   };
 };
-ToC.data = function () {
+Legend.data = function () {
   return {
     sharedState: appState,
     privateState: {
@@ -315,8 +315,8 @@ new Vue({
   render: h => h(TrendChart),
 });
 new Vue({
-  el: 'sc-toc',
-  render: h => h(ToC),
+  el: 'sc-legend',
+  render: h => h(Legend),
 });
 new Vue({
   el: 'sc-map',
