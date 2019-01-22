@@ -94,6 +94,7 @@ jobs:
             - v1-dependencies-
       - run: npm install
       # Save google auth credentials to the file they're supposed to be in so as to avoid having to manually authorize.
+      - run: mkdir /home/circleci/.credentials
       - run: echo $PWMETRICS_GOOGLE_CREDENTIALS > /home/circleci/.credentials/sheets.googleapis.com-nodejs-pwmetrics.json
       - run: npx pwmetrics http://nbhdcompassdev.azurewebsites.us/ --config=./.circleci/pwmetrics-config.js
 
