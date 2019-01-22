@@ -12,15 +12,15 @@
   "bundlesize": [
     {
       "path": "./public/vendor.js",
-      "maxSize": "460 kB"
+      "maxSize": "300 kB"
     },
     {
       "path": "./public/app.js",
-      "maxSize": "40 kB"
+      "maxSize": "12 kB"
     },
     {
       "path": "./public/report.js",
-      "maxSize": "20 kB"
+      "maxSize": "10 kB"
     }
   ],
   "dependencies": {

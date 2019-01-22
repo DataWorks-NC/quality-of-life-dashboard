@@ -9,7 +9,7 @@ module.exports = {
   sheets: {
     type: 'GOOGLE_SHEETS', // sheets service type. Available types: GOOGLE_SHEETS
     options: {
-      spreadsheetId: '1TQqwWvlOSj8-qQP3kDIkQmUeM5dgAJwa-NdUBn_lnQU',
+      spreadsheetId: process.env.GOOGLE_SPREADSHEET_ID,
       tableName: 'data'
     },
   },

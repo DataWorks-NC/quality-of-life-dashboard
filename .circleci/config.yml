@@ -85,7 +85,12 @@ jobs:
 
     steps:
       - checkout
-      - run: npm install pwmetrics
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run: npm install
       - run: npx pwmetrics http://nbhdcompassdev.azurewebsites.us/ --config=./.circleci/pwmetrics-config.js
 
   performance_test_prod:
@@ -94,7 +99,12 @@ jobs:
 
     steps:
       - checkout
-      - run: npm install pwmetrics
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run: npm install
       - run: npx pwmetrics http://nbhdcompassdev.azurewebsites.us/ --config=./.circleci/pwmetrics-config.js
 
 workflows:
@@ -112,6 +122,7 @@ workflows:
       - performance_test_dev:
           requires:
             - deploy_dev
+
       - deploy_prod:
           requires:
             - build
@@ -121,4 +132,4 @@ workflows:
                 master
       - performance_test_prod:
           requires:
-            - deploy_dev
+            - deploy_prod
