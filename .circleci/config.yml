@@ -83,19 +83,7 @@ jobs:
     docker:
       - image: circleci/node:jessie-browsers
 
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-      - run: npm install
-      - run: npx pwmetrics http://nbhdcompassdev.azurewebsites.us/ --config=./.circleci/pwmetrics-config.js
-
-  performance_test_prod:
-    docker:
-      - image: circleci/node:jessie-browsers
+    working_directory: ~/repo
 
     steps:
       - checkout
@@ -105,6 +93,8 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
       - run: npm install
+      # Save google auth credentials to the file they're supposed to be in so as to avoid having to manually authorize.
+      - run: echo $PWMETRICS_GOOGLE_CREDENTIALS > /home/circleci/.credentials/sheets.googleapis.com-nodejs-pwmetrics.json
       - run: npx pwmetrics http://nbhdcompassdev.azurewebsites.us/ --config=./.circleci/pwmetrics-config.js
 
 workflows:
@@ -130,6 +120,3 @@ workflows:
             branches:
               only:
                 master
-      - performance_test_prod:
-          requires:
-            - deploy_prod

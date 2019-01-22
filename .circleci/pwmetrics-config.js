@@ -1,5 +1,3 @@
-const METRICS = require('pwmetrics/lib/metrics');
-
 module.exports = {
   flags: { // AKA feature flags
     runs: 3, // number or runs
