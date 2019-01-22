@@ -110,8 +110,8 @@ workflows:
               only:
                 develop
       - performance_test_dev:
-          - requires:
-              - deploy_dev
+          requires:
+            - deploy_dev
       - deploy_prod:
           requires:
             - build
@@ -120,5 +120,5 @@ workflows:
               only:
                 master
       - performance_test_prod:
-          - requires:
-              - deploy_dev
+          requires:
+            - deploy_dev
