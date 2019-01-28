@@ -1,8 +1,8 @@
 <template lang="html">
-    <div id="toc" v-if="sharedState.metric.config" class="top left">
+    <div id="legend" v-if="sharedState.metric.config" class="top left">
         <div>
             <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=" class="background-print-img" alt="white background for printing">
-            <div class="tocposition">
+            <div class="legendposition">
                 <a href="javascript:void(0)" title="Move Table of Contents" v-on:click="position()"><svg class="icon"><use href="#icon-zoom_out_map"></use></svg></a>
             </div>
             <h1 class="title">{{ sharedState.metric.config.title }}, {{ sharedState.year }}</h1>
@@ -70,7 +70,7 @@ import {calcValue, wValsToArray, sum} from '../modules/metric_calculations';
 import {replaceState} from '../modules/tracking';
 
 export default {
-    name: 'sc-toc',
+    name: 'sc-legend',
     watch: {
         'sharedState.metric': 'processData',
         'sharedState.metadata': 'getMetaDesc',
@@ -154,7 +154,7 @@ export default {
             this.processSelected();
         },
         position: function() {
-            let el = document.querySelector("#toc");
+            let el = document.querySelector("#legend");
 
             // move to top left from bottom right
             if (el.classList.contains("right")) {
@@ -180,41 +180,41 @@ export default {
 </script>
 
 <style lang="css" scoped>
-#toc.top {
+#legend.top {
     top: -1px;
 }
-#toc.bottom {
+#legend.bottom {
     bottom: -1px;
 }
-#toc.left {
+#legend.left {
     left: -1px;
 }
-#toc.right {
+#legend.right {
     right: -1px;
 }
-#toc {
+#legend {
     position: absolute;
     width: 260px;
     background: white;
     /*box-shadow: 0 1px 3px #666, 0 6px 5px -5px #666;*/
 }
 
-.tocposition {
+.legendposition {
     position: absolute;
     top: 0;
     right: 0;
     font-size: 0.8em;
     z-index: 20;
 }
-.tocposition a {
+.legendposition a {
     color: #333;
     opacity: 0.2;
     transition: opacity 0.5s;
 }
-.tocposition a:hover {
+.legendposition a:hover {
     opacity: 0.8;
 }
-.tocposition .icon {
+.legendposition .icon {
     width: 14px;
     height: 14px;
     fill: #ccc;
@@ -319,7 +319,7 @@ svg {
         left: 0;
         top: 0;
     }
-    .tocposition {
+    .legendposition {
         display: none;
     }
 }
@@ -328,7 +328,7 @@ svg {
     .metric-raw {
         display: none !important;
     }
-    #toc {
+    #legend {
         width: 200px;
     }
 }
