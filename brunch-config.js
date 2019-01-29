@@ -15,9 +15,9 @@ module.exports = {
     javascripts: {
       joinTo: {
         'vendor.js': /^(?!app)/,
-        'app.js': ['app/js/main.js', /^app\/js\/modules/, /^app\/js\/components\/(?!report)/],
-        'report.js': ['app/js/report.js', /^app\/js\/modules/, /^app\/js\/components\/report/],
-      }
+        'app.js': ['app/js/main.js', /^app\/(?!report)/],
+        'report.js': ['app/js/report.js', /^app\/(?!main)/],
+      },
     },
     stylesheets: {
       joinTo: {
