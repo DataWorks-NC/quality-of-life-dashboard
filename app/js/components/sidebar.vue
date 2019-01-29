@@ -23,7 +23,6 @@
 
 <script>
 import { mapState } from 'vuex';
-import _ from 'lodash';
 
 export default {
   name: 'Sidebar',
@@ -32,8 +31,9 @@ export default {
   }),
   computed: mapState({
     categories: 'categories',
+    metricsByCategory: 'metricsByCategory',
     filteredMetrics(state) {
-      return _.filter(state.dataConfig, metric => (metric.category === this.filterVal));
+      return state.metricsByCategory[this.filterVal];
     },
   }),
   methods: {
@@ -51,7 +51,6 @@ export default {
     },
     changeMetric(metric) {
       this.$store.dispatch('changeMetric', metric);
-      console.log(metric);
       this.hideOverlay();
     },
   },

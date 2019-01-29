@@ -8,16 +8,19 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 import { computeHash } from '../modules/tracking';
 
 export default {
-  name: 'ScSocial',
-  computed: {
-    pageUrl() { return `${this.privateState.baseURL}#${computeHash(this.sharedState.metricId, this.sharedState.selected, this.sharedState.geography.id)}`; },
-    twitter() { return `https://twitter.com/intent/tweet?url=${this.pageUrl}&text=${this.sharedState.metric.config ? encodeURIComponent(this.sharedState.metric.config.title) : ''}`; },
+  name: 'Social',
+  computed: mapState({
+    siteConfig: 'siteConfig',
+    pageUrl(state) { return `${state.siteConfig.baseURL}#${computeHash(state.metricId, state.selected, state.geography.id)}`; },
+    twitter(state) { return `https://twitter.com/intent/tweet?url=${this.pageUrl}&text=${state.metric.config ? encodeURIComponent(state.metric.config.title) : ''}`; },
     facebook() { return `https://www.facebook.com/sharer.php?u=${this.pageUrl}`; },
     linkedin() { return `https://www.linkedin.com/shareArticle?url=${this.pageUrl}`; },
-  },
+  }),
 };
 </script>
 

@@ -1,61 +1,59 @@
 <template lang="html">
-    <div class="mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-color--white category-tabs no-print">
+  <div class="mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-color--white category-tabs no-print">
 
-      <div class="mdl-tabs mdl-js-tabs">
-         <div class="mdl-tabs__tab-bar mdl-typography--text--center">
-            <template v-for="category, index in filterCategories(privateState.data)">
-              <a v-bind:class="['mdl-tabs__tab', category === privateState.data[`m${sharedState.metricId}`].category ? 'is-active' : '']" v-bind:href="tabId(index, '#')">{{category}}</a>
-            </template>
-         </div>
-
-         <template v-for="category, index in filterCategories(privateState.data)">
-           <div v-bind:class="['mdl-tabs__panel', category === privateState.data[`m${sharedState.metricId}`].category ? 'is-active': '']" v-bind:id="tabId(index)">
-             <template v-for="m in filterMetrics(privateState.data, category)">
-               <button type="button" v-bind:class="['mdl-chip', m.metric === sharedState.metricId ? 'is-active' : '']" v-on:click="changeMetric(m.metric)">
-                 <span class="mdl-chip__text">{{m.title}}</span>
-               </button>
-             </template>
-           </div>
-         </template>
-
+    <div class="mdl-tabs mdl-js-tabs">
+      <div class="mdl-tabs__tab-bar mdl-typography--text--center">
+        <template v-for="category in categories">
+          <a
+            :class="['mdl-tabs__tab', metric.config && category.name === metric.config.category ? 'is-active' : '']"
+            :href="`#${category.id}-panel`"
+            :key="category.id"
+            @click="changeFilter(category.name)"
+          >{{ category.name }}</a>
+        </template>
       </div>
+
+      <template v-for="category in categories">
+        <div :class="['mdl-tabs__panel', metric.config && category.name === metric.config.category ? 'is-active': '']" :id="`${category.id}-panel`" :key="category.id">
+          <template v-for="m in metricsByCategory[category.name]">
+            <button :class="['mdl-chip', m.metric === metricId ? 'is-active' : '']" type="button" @click="changeMetric(m.metric)" :key="m.metric">
+              <span class="mdl-chip__text">{{ m.title }}</span>
+            </button>
+          </template>
+        </div>
+      </template>
+
     </div>
+  </div>
 </template>
 
 <script>
-    import {replaceState, gaEvent} from '../modules/tracking';
-    import fetchData from '../modules/fetch';
 
+import { mapState } from 'vuex';
 
-    export default {
-        name: 'tabs',
-        methods: {
-          changeMetric: function(metric) {
-            if (this.sharedState.metricId !== metric) {
-              gaEvent('metric', this.privateState.data[`m${metric}`].title.trim(), this.privateState.data[`m${metric}`].category.trim());
-              fetchData(this.sharedState, metric);
-              replaceState(metric, this.sharedState.selected, this.sharedState.geography.id);
-            }
-          },
-          filterCategories: function(value) {
-            let categories = [];
-            for (let key in value) {
-              if (categories.indexOf(value[key].category) === -1) { categories.push(value[key].category); }
-            }
-            return categories;
-          },
-          filterMetrics: function(value, filter) {
-            let metrics = [];
-            for (let key in value) {
-              if (value[key].category === filter) { metrics.push({title: value[key].title, metric: value[key].metric}); }
-            }
-            return metrics;
-          },
-          tabId: function(id, prefix = '') {
-            return `${prefix}tab${id}-panel`;
-          }
-        }
-    }
+export default {
+  name: 'Tabs',
+  data: () => ({
+    filterVal: null,
+  }),
+  computed: mapState({
+    metricsByCategory: 'metricsByCategory',
+    metric: 'metric',
+    metricId: 'metricId',
+    categories(state) {
+      return state.categories.map(c => ({ id: c.replace(/\s+/g, ''), name: c }));
+    },
+  }),
+
+  methods: {
+    changeFilter(filter) {
+      this.filterVal = filter;
+    },
+    changeMetric(metric) {
+      this.$store.dispatch('changeMetric', metric);
+    },
+  },
+};
 </script>
 
 <style lang="css" scoped>

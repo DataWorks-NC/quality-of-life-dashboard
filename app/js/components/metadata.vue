@@ -1,44 +1,32 @@
 <template lang="html">
-    <div v-if="sharedState.metadata" id="metadata">
-        <h3>Why This is Important</h3>
-        <div v-html="important(sharedState.metadata)"></div>
-        <h3>About the Data</h3>
-        <div v-html="about(sharedState.metadata)"></div>
-        <h4>Additional Resources</h4>
-        <div v-html="resources(sharedState.metadata)"></div>
-    </div>
+  <div v-if="metadata" id="metadata">
+    <h3>Why This is Important</h3>
+    <div v-html="important"/>
+    <h3>About the Data</h3>
+    <div v-html="about"/>
+    <h4>Additional Resources</h4>
+    <div v-html="resources"/>
+  </div>
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 import getSubstringIndex from '../modules/substring-nth';
-import scrollTo from '../modules/scrollto';
-import fetchData from '../modules/fetch.js';
 
 export default {
-    name: 'sc-metadata',
-    watch: {
-      'privateState.model.metricId': 'fetch'
-    },
-    methods: {
-        important: function(data) {
-            return data
-            .substring(getSubstringIndex(data, '</h3>', 1) + 5, getSubstringIndex(data, '<h3', 2));;
-        },
-        resources: function(data) {
-          return data
-          .substring(getSubstringIndex(data, '</h3>', 3) + 5, data.length)
-          .replace(/\<table/g, '<table class="meta-table table"');
-        },
-        about: function(data) {
-            return data.substring(getSubstringIndex(data, '</h3>', 2) + 5, getSubstringIndex(data, '<h3', 3));;
-        },
-        fetch: function() {
-            fetchData(this.sharedState, this.privateState.model.metricId.replace('m', ''));
-            scrollTo(document.querySelector('.mdl-layout__content'), 0, 600);
-        }
-    }
+  name: 'Metadata',
+  computed: mapState({
+    metadata: 'metadata',
+    important: state => state.metadata.substring(getSubstringIndex(state.metadata, '</h3>', 1) + 5, getSubstringIndex(state.metadata, '<h3', 2)),
+    resources: state => state.metadata.substring(getSubstringIndex(state.metadata, '</h3>', 3) + 5, state.metadata.length).replace(/\<table/g, '<table class="meta-table table"'),
+    about: state => state.metadata.substring(getSubstringIndex(state.metadata, '</h3>', 2) + 5, getSubstringIndex(state.metadata, '<h3', 3))
+
+  }),
+  // TODO is this still needed after fetch? scrollTo(document.querySelector('.mdl-layout__content'), 0, 600);
 };
 </script>
+
 <style lang="css">
 .meta-table {
     width: 100%;
@@ -48,6 +36,7 @@ export default {
     margin-bottom: 15px;
 }
 </style>
+
 <style lang="css" scoped>
 #metadata {
     width: 100%;

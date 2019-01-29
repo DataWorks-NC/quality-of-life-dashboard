@@ -3,9 +3,12 @@ import 'babel-polyfill';
 import Vuex from 'vuex';
 import Vue from 'vue';
 
+import _ from 'lodash';
+
 import colors from '../modules/breaks';
 import siteConfig from '../../../data/config/site';
 import dataConfigUnsorted from '../../../data/config/data';
+import selectGroups from '../../../data/config/selectgroups';
 import jenksBreaks from '../modules/jenksbreaks';
 import { gaEvent, replaceState } from '../modules/tracking';
 
@@ -51,9 +54,16 @@ dataConfigTemp = dataConfigTemp.sort((a, b) => {
 const dataConfig = dataConfigTemp.reduce((obj, curVal) => { obj[curVal._key] = curVal; return obj; }, {});
 const categories = dataConfigTemp.reduce((categoriesArray, curVal) => { if (categoriesArray.indexOf(curVal.category) === -1) categoriesArray.push(curVal.category); return categoriesArray; }, []);
 
+const metricsByCategory = _.fromPairs(
+    categories.map(
+        (category) => [category, Object.values(dataConfig).filter(metric => metric.category === category)]
+    )
+);
+
+
 export default new Vuex.Store({
   state: {
-    metric: {
+    metric: { // Currently selected metric
       config: null,
       years: [],
       data: null,
@@ -66,19 +76,33 @@ export default new Vuex.Store({
     metadata: null,
     zoomNeighborhoods: [],
     metricId: null,
+    selectGroupName: null,
     geography: siteConfig.geographies[0],
-    dataConfig: dataConfig,
-    categories: categories,
+    dataConfig: dataConfig, // Object where keys are metric IDs and values are config for that metric.
+    siteConfig: siteConfig,
+    selectGroups: selectGroups,
+    categories: categories, // List of category names only
+    metricsByCategory: metricsByCategory, // Object where keys are category names and properties are metrics within that category.
+  },
+  getters: {
+    reportUrl: state => `${state.siteConfig.qolreportURL}#${state.geography.id}/${state.selected.map(g => encodeURIComponent(g)).join(',')}${state.selectGroupName ? `/${state.selectGroupName}` : ''}`,
+    embedUrl: state => `${state.siteConfig.qolembedURL}?m=${state.metricId}&y=${state.year}&s=${state.selected.join(',')}`,
   },
   mutations: {
     clearSelected(state) {
       state.selected = [];
     },
+    setSelected(state, geographyIds) {
+      state.selected = geographyIds;
+    },
+    addToSelected(state, geographyId) {
+      state.selected.push(geographyId);
+    },
     removeSelectedByPos(state, pos) {
       state.selected.splice(pos, 1);
     },
     setGeographyId(state, newGeographyId) {
-      state.geography = siteConfig.geographies.filter(obj => obj.id === newGeographyId);
+      state.geography = siteConfig.geographies.find(obj => obj.id === newGeographyId);
     },
     setMetricId(state, newMetricId) {
       state.metricId = newMetricId;
@@ -95,6 +119,15 @@ export default new Vuex.Store({
     setBreaks(state, breaks) {
       state.breaks = breaks;
     },
+    setHighlight(state, highlight) {
+      state.highlight = highlight;
+    },
+    setSelectGroupName(state, newName) {
+      state.selectGroupName = newName;
+    },
+    setZoomNeighborhoods(state, neighborhoods) {
+      state.zoomNeighborhoods = neighborhoods;
+    }
   },
   actions: {
     async loadMetricData({ commit, state }) {
@@ -120,6 +153,9 @@ export default new Vuex.Store({
       });
       commit('setYear', years[years.length - 1]);
       commit('setBreaks', jenksBreaks(metricJSON.map, years, nKeys, 5));
+
+      // TODO remove this test
+      commit('setSelected', Object.keys(metricJSON.map).slice(0,2));
     },
     async loadMetricMetadata({ commit, state }) {
       let metricMetadata = await fetchResponseHTML(`/data/meta/m${state.metricId}.html`);
@@ -128,7 +164,7 @@ export default new Vuex.Store({
     async setGeography({ commit, dispatch, state }, newGeographyId) {
       console.log('Set Geography');
       commit('setGeographyId', newGeographyId);
-
+      // TODO!!!
     },
     async changeMetric({ commit, dispatch, state }, newMetricId) {
       commit('setMetricId', newMetricId);
@@ -142,5 +178,37 @@ export default new Vuex.Store({
       replaceState(newMetricId, state.selected, state.geography.id);
       return await Promise.all([dispatch('loadMetricData'), dispatch('loadMetricMetadata')]);
     },
+    clearSelected({ commit , state }) {
+      commit('clearSelected');
+      replaceState(state.metricId, [], state.geography.id);
+    },
+    async playYearAnimation({ commit, state }) {
+      // TODO
+      console.log('Start animation');
+      // let _this = this;
+      // const checked = $event.target.checked;
+      //
+      // if (!checked) {
+      //   // set current index and advance one
+      //   let i = _this.metric.years.indexOf(_this.sharedState.year) + 1;
+      //   i >= _this.metric.years.length ? i = 0 : null;
+      //   _this.$store.commit('setYear', _this.metric.years[i]);
+      //
+      //   _this.privateState.playToggle = setInterval(function() {
+      //     // begin the loop
+      //     i++;
+      //     if (i >= _this.sharedState.metric.years.length) {
+      //       i = 0;
+      //     }
+      //     _this.sharedState.year = _this.sharedState.metric.years[i];
+      //   }, 1500);
+      // } else {
+      //   // end loop
+      // }
+    },
+    async stopYearAnimation({ commit, state}) {
+      // TODO
+      console.log('Stop animation');
+    }
   },
 });
