@@ -6,8 +6,10 @@ import Vue from 'vue';
 import _ from 'lodash';
 
 import colors from '../modules/breaks';
+import mapConfig from '../../../data/config/map';
 import siteConfig from '../../../data/config/site';
 import dataConfigUnsorted from '../../../data/config/data';
+import privateConfig from '../../../data/config/private';
 import selectGroups from '../../../data/config/selectgroups';
 import jenksBreaks from '../modules/jenksbreaks';
 import { gaEvent, replaceState } from '../modules/tracking';
@@ -79,6 +81,8 @@ export default new Vuex.Store({
     selectGroupName: null,
     geography: siteConfig.geographies[0],
     dataConfig: dataConfig, // Object where keys are metric IDs and values are config for that metric.
+    mapConfig: mapConfig,
+    privateConfig: privateConfig,
     siteConfig: siteConfig,
     selectGroups: selectGroups,
     categories: categories, // List of category names only

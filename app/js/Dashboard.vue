@@ -19,12 +19,11 @@
     </div>
     <div class="mdl-layout__content">
       <div class="mdl-grid">
-        <div>sc-offline</div>
         <tabs/>
         <div class="mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--8-col">
           <div class="map-container" style="position: relative">
-            <div>sc-map</div>
-            <div>sc-legend</div>
+            <dashboard-map :mapboxAccessToken="privateConfig.mapboxAccessToken" :mapConfig="mapConfig"/>
+            <dashboard-legend/>
           </div>
           <div class="flexcontainer">
             <div class="flex-item mdl-typography--text-right">
@@ -96,6 +95,8 @@ import DistributionChart from './components/distribution-chart.vue';
 import Feedback from './components/feedback.vue';
 import Footer from './components/footer.vue';
 import GeographySwitcher from './components/geography-switcher.vue';
+import DashboardLegend from './components/dashboard-legend.vue';
+import DashboardMap from './components/dashboard-map.vue';
 import Metadata from './components/metadata.vue';
 import Sidebar from './components/sidebar.vue';
 import Social from './components/social.vue';
@@ -112,6 +113,8 @@ export default {
     Feedback,
     Footer,
     GeographySwitcher,
+    DashboardLegend,
+    DashboardMap,
     Metadata,
     Sidebar,
     Social,
@@ -120,7 +123,7 @@ export default {
     UndermapButtons,
     YearSlider,
   },
-  computed: mapState(['siteConfig']),
+  computed: mapState(['siteConfig', 'privateConfig', 'mapConfig']),
 };
 </script>
 
