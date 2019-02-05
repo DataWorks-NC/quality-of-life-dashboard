@@ -71,8 +71,6 @@ import {
 } from '../modules/number_format';
 import { calcValue, wValsToArray, sum } from '../modules/metric_calculations';
 
-console.log('loaded legend code');
-
 export default {
   // You would think to just name this component 'Legend', but <legend> is in the HTML5 spec!
   name: 'dashboard-legend',
@@ -129,10 +127,13 @@ export default {
       return legendLabelNumber(value, this.metricConfig);
     },
     processData() {
+      if (!this.metricData || !this.metricConfig) return;
       this.processArea();
       this.processSelected();
     },
     processSelected() {
+      if (!this.metricData || !this.metricConfig) return;
+
       const metricConfig = this.metricConfig;
       const metricData = this.metricData;
 
@@ -148,6 +149,8 @@ export default {
       }
     },
     processArea() {
+      if (!this.metricData || !this.metricConfig) return;
+
       const metricConfig = this.metricConfig;
       const metricData = this.metricData;
       const keys = Object.keys(this.metricData.map);

@@ -9,7 +9,6 @@ import { mapState } from 'vuex';
 
 import mapboxgl from 'mapbox-gl';
 import MapboxGlGeocoder from '@mapbox/mapbox-gl-geocoder';
-import axios from 'axios';
 import { prettyNumber } from '../modules/number_format';
 import FullExtent from '../modules/map-fullextent.js';
 
@@ -22,10 +21,7 @@ export default {
       geoJSON: null,
       isPitched3D: false,
       locationPopup: null,
-      map: null,
       mapLoaded: false,
-      neighborhoodsBefore: null,
-      neighborhoodsSelectedBefore: null,
     }
   },
   computed: mapState({
@@ -50,8 +46,8 @@ export default {
   },
 
   mounted: function () {
+    this.map = null;
     this.mapMetricId = this.metricId;
-    this.mapGeographyId = this.geography.id;
     this.initMap();
   },
   methods: {
@@ -83,8 +79,8 @@ export default {
 
       // add full extent button
       map.addControl(new FullExtent(
-        mapOptions.center,
-        mapOptions.zoom,
+              mapOptions.center,
+              mapOptions.zoom,
       ), 'top-right');
       map.addControl(new mapboxgl.GeolocateControl(), 'top-right');
 
@@ -127,10 +123,11 @@ export default {
           }
 
           // Clear selection and select underlying area
-          let features = map.queryRenderedFeatures(map.project(e.result.center), { layers: ['neighborhoods-fill-extrude'] });
-          _this.$store.commit('clearSelected');
+          let features = map.queryRenderedFeatures(map.project(e.result.center),
+                  {layers: ['neighborhoods-fill-extrude']});
+          _this.$store.commit('setSelected', features);
         }
-            }).on('clear', (e) => {
+      }).on('clear', (e) => {
         if (map.getLayer('point')) {
           map.getSource('point').setData({
             "type": "FeatureCollection",
@@ -144,18 +141,21 @@ export default {
       // map.dragRotate.disable();
       map.touchZoomRotate.disableRotation();
 
+
       // after map initiated, grab geography and initiate/style neighborhoods
       map.once('style.load', () => {
-                axios.get(`data/${_this.geography.id}.geojson.json`)
-                    .then(function(response) {
-                        _this.mapLoaded = true;
-                        _this.geoJSON = response.data;
-                        _this.initNeighborhoods();
-                        _this.styleNeighborhoods();
-                        _this.initMapEvents();
-                });
-            });
-        },
+        // Add tracts
+        map.addSource('neighborhoods', {
+          type: 'geojson',
+          data: `data/${_this.geography.id}.geojson.json`,
+        });
+
+        _this.mapLoaded = true;
+        _this.initNeighborhoods();
+        _this.styleNeighborhoods();
+        _this.initMapEvents();
+      });
+    },
     toggle3D: function () {
       let _this = this;
       let map = _this.map;
@@ -190,56 +190,54 @@ export default {
 
       // on feature click add or remove from selected set
       map.on('click', (e) => {
-                let features = map.queryRenderedFeatures(e.point, { layers: ['neighborhoods-fill-extrude'] });
-                if (!features.length) {
-                    return;
-                }
+        let features = map.queryRenderedFeatures(e.point, {layers: ['neighborhoods-fill-extrude']});
+        if (!features.length) {
+          return;
+        }
 
-                let feature = features[0];
-                let featureIndex = _this.selected.indexOf(feature.properties.id);
+        let feature = features[0];
+        let featureIndex = _this.selected.indexOf(feature.properties.id);
 
-                if (featureIndex === -1) {
-                  _this.$store.commit('addToSelected', feature.properties.id)
-                } else {
-                    _this.$store.commit('removeSelectedByPos', featureIndex);
-                }
-       });
+        if (featureIndex === -1) {
+          _this.$store.commit('addToSelected', feature.properties.id)
+        } else {
+          _this.$store.commit('removeSelectedByPos', featureIndex);
+        }
+      });
 
       // fix for popup cancelling click event on iOS
       let iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
       if (!iOS) {
         // show feature info on mouse move
         map.on('mousemove', (e) => {
-                    let features = map.queryRenderedFeatures(e.point, { layers: ['neighborhoods-fill-extrude'] });
-                    map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
+          if (!_this.metric.config || !_this.metric.data) {
+            return;
+          }
+          let features = map.queryRenderedFeatures(e.point, {layers: ['neighborhoods-fill-extrude']});
+          map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
 
-                    if (!features.length) {
-                        popup.remove();
-                        return;
-                    }
+          if (!features.length) {
+            popup.remove();
+            return;
+          }
 
-                    const feature = features[0];
-                    const id = feature.properties.id;
-                  const data = _this.metric.data.map[id][`y_${_this.year}`];
-                  const geographyLabel = _this.geography.label(id);
-                  const val = prettyNumber(data, _this.metric.config.decimals, _this.metric.config.prefix, _this.metric.config.suffix, _this.metric.config.commas);
-                  const label = _this.metric.config.label ? ` ${_this.metric.config.label}` : '';
-                  popup.setLngLat(map.unproject(e.point))
-                        .setHTML(`<div style="text-align: center; margin: 0; padding: 0;"><h3 style="font-size: 1.2em; margin: 0; padding: 0; line-height: 1em; font-weight: bold;">${geographyLabel}</h3>${val}${label}</div>`)
-                        .addTo(map);
+          const feature = features[0];
+          const id = feature.properties.id;
+          const data = _this.metric.data.map[id][`y_${_this.year}`];
+          const geographyLabel = _this.geography.label(id);
+          const val = prettyNumber(data, _this.metric.config.decimals, _this.metric.config.prefix,
+                  _this.metric.config.suffix, _this.metric.config.commas);
+          const label = _this.metric.config.label ? ` ${_this.metric.config.label}` : '';
+          popup.setLngLat(map.unproject(e.point)).
+                  setHTML(`<div style="text-align: center; margin: 0; padding: 0;"><h3 style="font-size: 1.2em; margin: 0; padding: 0; line-height: 1em; font-weight: bold;">${geographyLabel}</h3>${val}${label}</div>`).
+                  addTo(map);
 
-                });
+        });
       }
     },
     initNeighborhoods: function () {
       let map = this.map;
       let _this = this;
-      let geoJSON = _this.geoJSON;
-
-      map.addSource('neighborhoods', {
-        type: 'geojson',
-        data: geoJSON,
-      });
 
       // selected neighborhood
       map.addLayer({
@@ -248,7 +246,7 @@ export default {
         'source': 'neighborhoods',
         'layout': {},
         'paint': {},
-      }, _this.neighborhoodsSelectedBefore);
+      }, _this.mapConfig.neighborhoodsSelectedBefore);
 
 
       map.addLayer({
@@ -258,7 +256,7 @@ export default {
         'paint': {
           'fill-extrusion-opacity': 1,
         },
-      }, _this.neighborhoodsBefore);
+      }, _this.mapConfig.neighborhoodsBefore);
 
       // neighborhood boundaries
       map.addLayer({
@@ -270,11 +268,12 @@ export default {
           'line-color': 'rgba(0,0,0,1)',
           'line-width': 0.4,
         },
-      }, _this.neighborhoodsBefore);
+      }, _this.mapConfig.neighborhoodsBefore);
     },
+
     styleNeighborhoods: function () {
-      let map = this.map; let
-_this = this;
+      let map = this.map;
+      let _this = this;
       if (map.getLayer('neighborhoods')) {
         map.setPaintProperty('neighborhoods', 'line-color', _this.getOutlineColor());
         map.setPaintProperty('neighborhoods', 'line-width', _this.getOutlineWidth());
@@ -287,12 +286,14 @@ _this = this;
         }
       }
     },
+
     updateChoropleth: function () {
       let _this = this;
       if (this.mapLoaded) {
         this.styleNeighborhoods();
       }
     },
+
     updateBreaks: function () {
       this.mapMetricId = this.metricId;
       this.updateChoropleth();
@@ -302,20 +303,13 @@ _this = this;
         this.updateChoropleth();
       }
     },
+
     updateGeography: function () {
-      let _this = this;
-      this.mapGeographyId = this.geography.id;
-      axios.get(`data/${_this.geography.id}.geojson.json`)
-        .then((response) => {
-            _this.map.getSource('neighborhoods').setData(response.data);
-            _this.styleNeighborhoods();
-          });
+      if (this.map.getLayer('neighborhoods') && this.geography.id) {
+        this.map.getSource('neighborhoods').setData(`data/${this.geography.id}.geojson.json`);
+      }
     },
-    geoJSONMerge: function () {
-      let _this = this;
-      let geoObj = geojsonDataMerge(_this.geoJSON, _this.metric.data.map, _this.year);
-      return geoObj;
-    },
+
     changeZoomNeighborhoods: function () {
       let bounds = new mapboxgl.LngLatBounds();
       let _this = this;
@@ -407,11 +401,11 @@ _this = this;
             
         },
     getColors: function () {
+      if (!this.metric.data) return;
+
       const stops = [];
-      let _this = this;
-      let data = _this.metric.data.map;
-      let breaks = _this.breaks;
-      let colors = _this.colors;
+      const breaks = this.breaks;
+      const colors = this.colors;
 
       let color = function(val) {
                 if (val <= breaks[1]) {
@@ -430,8 +424,9 @@ _this = this;
                 }
             };
 
-      Object.keys(data).forEach((id) => {
-        const value = data[id][`y_${_this.year}`];
+      const _this = this;
+      Object.keys(_this.metric.data.map).forEach((id) => {
+        const value = _this.metric.data.map[id][`y_${_this.year}`];
 
         if (_this.highlight.indexOf(id) !== -1) {
           stops.push([id, '#F7E55B']);

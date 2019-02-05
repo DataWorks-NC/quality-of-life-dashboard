@@ -3,7 +3,7 @@
     <div class="flex-container">
       <div class="flex-left">
         <div class="playpause">
-          <input id="playpause" type="checkbox" value="None" name="check" checked title="Start or stop playing through data timeseries by year" @change="play">
+          <input id="playpause" :checked="!animationPlaying" type="checkbox" value="None" name="check" title="Start or stop playing through data timeseries by year" @change="play">
           <label for="playpause"/>
         </div>
       </div>
@@ -32,7 +32,13 @@ import { mapState } from 'vuex';
 
 export default {
   name: 'YearSlider',
-  computed: mapState(['metric', 'year']),
+  computed: mapState({
+    metric: 'metric',
+    year: 'year',
+    animationPlaying(state) {
+      return state.yearAnimationHandler.playing;
+    },
+  }),
   methods: {
     changeYear(event) {
       const closest = this.getClosest(this.metric.years, event.target.value);

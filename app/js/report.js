@@ -1,7 +1,6 @@
 import privateConfig from '../../data/config/private';
 
 require('es6-promise').polyfill(); // Fix for axios on IE11
-require('./modules/ie-polyfill-array-from.js'); // fix for array from on IE11
 const md5 = require('js-md5');
 
 import Vue from 'vue/dist/vue.js';
@@ -15,7 +14,6 @@ import {
 } from './modules/tracking';
 import ReportSummary from './components/report/report-summary';
 import ReportBody from './components/report/report-body';
-import ieSVGFixes from './modules/ie-svg-bugs.js';
 
 import 'vueify/lib/insert-css'; // required for .vue file <style> tags
 

@@ -27,7 +27,7 @@ export default {
   }),
   methods: {
     changeGeography(id) {
-      this.$store.dispatch('setGeography', id);
+      this.$store.dispatch('setGeographyId', id);
     },
   },
 };

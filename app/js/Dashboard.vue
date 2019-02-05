@@ -73,14 +73,6 @@
             </p>
           </div>
         </div>
-        <div v-if="siteConfig.whatsnew" class="mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet whatsnew">
-          <div class="">
-            <h1 class="mdl-typography--text-center">What's New</h1>
-            <span v-for="item in siteConfig.whatsnew" class="mdl-chip mdl-color--teal mdl-color-text--white">
-              <span :data-whatsnew="item.metric" class="mdl-chip__text">{{ item.title }}</span>
-            </span>
-          </div>
-        </div>
       </div>
       <footer/>
     </div>
@@ -123,7 +115,48 @@ export default {
     UndermapButtons,
     YearSlider,
   },
-  computed: mapState(['siteConfig', 'privateConfig', 'mapConfig']),
+  computed: mapState({
+    siteConfig: 'siteConfig',
+    privateConfig: 'privateConfig',
+    mapConfig: 'mapConfig',
+    urlHash(state) {
+      if (!state.metricId || !state.geography.id) return '';
+      return `${state.metricId}/${state.geography.id}/${state.selected.map(g => encodeURIComponent(g)).join(',')}`;
+    },
+  }),
+  watch: {
+    urlHash(newUrlHash) {
+      location.hash = newUrlHash;
+    },
+  },
+  mounted() {
+    // Check if there is an existing hash and use it, otherwise redirect to a random metric.
+
+    if (location.hash) {
+      // Helper function to get the current page hash.
+      function getHash(pos = 0) {
+        let hash = decodeURI(location.hash).split('/');
+        if (hash[pos] && hash[pos].length > 0) {
+          hash[pos] = hash[pos].toString().replace('#', '');
+          return decodeURIComponent(hash[pos]);
+        } else {
+          return false;
+        }
+      }
+
+      // Hash has the form #metricId/geographyId/selectedid1,selectedid2
+      if (getHash(1)) {
+        this.$store.commit('setGeographyId', getHash(1));
+      }
+      if (getHash(2)) {
+        this.$store.commit('setSelected', getHash(2).split(','));
+      }
+      this.$store.dispatch('changeMetric', getHash(0));
+    }
+    else {
+      this.$store.dispatch('randomMetric');
+    }
+  },
 };
 </script>
 

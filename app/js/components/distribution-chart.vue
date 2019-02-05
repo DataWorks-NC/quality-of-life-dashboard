@@ -33,6 +33,7 @@ export default {
   methods: {
     renderChart() {
       const data = this.updateData();
+      if (!data) return;
       const _this = this;
 
       const options = {
@@ -75,6 +76,7 @@ export default {
       };
       const _this = this;
       const metric = this.metric;
+      if (!metric.data) return;
 
       // get values
       const data = this.dataToSortedArray(metric.data.map, this.year);

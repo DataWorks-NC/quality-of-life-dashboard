@@ -12,7 +12,7 @@ import dataConfigUnsorted from '../../../data/config/data';
 import privateConfig from '../../../data/config/private';
 import selectGroups from '../../../data/config/selectgroups';
 import jenksBreaks from '../modules/jenksbreaks';
-import { gaEvent, replaceState } from '../modules/tracking';
+import { gaEvent } from '../modules/tracking';
 
 const fetchResponseJSON = async (path) => {
   try {
@@ -75,11 +75,21 @@ export default new Vuex.Store({
     selected: [],
     highlight: [],
     year: null,
+    yearAnimationHandler: { // Object to keep track of various aspects related to the year animation.
+      interval: null,
+      currentIndex: null,
+      playing: false,
+    },
     metadata: null,
     zoomNeighborhoods: [],
     metricId: null,
     selectGroupName: null,
-    geography: siteConfig.geographies[0],
+    geography: {
+      id: null,
+      name: null,
+      label: null,
+      description: null,
+    },
     dataConfig: dataConfig, // Object where keys are metric IDs and values are config for that metric.
     mapConfig: mapConfig,
     privateConfig: privateConfig,
@@ -106,7 +116,12 @@ export default new Vuex.Store({
       state.selected.splice(pos, 1);
     },
     setGeographyId(state, newGeographyId) {
-      state.geography = siteConfig.geographies.find(obj => obj.id === newGeographyId);
+      if (state.geography.id !== newGeographyId) {
+        state.geography = siteConfig.geographies.find(
+            obj => obj.id === newGeographyId);
+        state.selected = [];
+        state.highlight = [];
+      }
     },
     setMetricId(state, newMetricId) {
       state.metricId = newMetricId;
@@ -119,6 +134,26 @@ export default new Vuex.Store({
     },
     setYear(state, year) {
       state.year = year;
+    },
+    nextYear(state) {
+      // Increment year. Used to handle animating the year.
+      state.yearAnimationHandler.currentIndex++;
+      if (state.yearAnimationHandler.currentIndex >= state.metric.years.length) {
+        state.yearAnimationHandler.currentIndex = 0;
+      }
+      state.year = state.metric.years[state.yearAnimationHandler.currentIndex];
+    },
+    setAnimationHandler(state, handler) {
+      if (!handler) {
+        state.yearAnimatinoHandler = {
+          interval: null,
+          currentIndex: null,
+          playing: false,
+        };
+      }
+      else {
+        state.yearAnimationHandler = handler;
+      }
     },
     setBreaks(state, breaks) {
       state.breaks = breaks;
@@ -135,8 +170,8 @@ export default new Vuex.Store({
   },
   actions: {
     async loadMetricData({ commit, state }) {
+      // TODO: Cache this result.
       const path = `data/metric/${state.geography.id}/m${state.metricId}.json`;
-      console.log(path);
       let metricJSON = await fetchResponseJSON(path);
       let nKeys = Object.keys(metricJSON.map);
       let yKeys = Object.keys(metricJSON.map[nKeys[0]]);
@@ -157,62 +192,57 @@ export default new Vuex.Store({
       });
       commit('setYear', years[years.length - 1]);
       commit('setBreaks', jenksBreaks(metricJSON.map, years, nKeys, 5));
-
-      // TODO remove this test
-      commit('setSelected', Object.keys(metricJSON.map).slice(0,2));
     },
     async loadMetricMetadata({ commit, state }) {
       let metricMetadata = await fetchResponseHTML(`/data/meta/m${state.metricId}.html`);
       commit('setMetricMetadata', metricMetadata);
     },
-    async setGeography({ commit, dispatch, state }, newGeographyId) {
-      console.log('Set Geography');
+
+    // In contrast to the mutation function by the same name, this checks to see if new data also needs to be loaded.
+    async setGeographyId({ commit, dispatch }, newGeographyId) {
       commit('setGeographyId', newGeographyId);
-      // TODO!!!
+      return dispatch('loadMetricData');
     },
     async changeMetric({ commit, dispatch, state }, newMetricId) {
+      console.log('Change metric ' + newMetricId);
       commit('setMetricId', newMetricId);
 
       // Check that data exists for this metric & geography, otherwise switch geography.
-      if (!state.geography || state.dataConfig[`m${newMetricId}`].geographies.indexOf(state.geography.id) === -1) {
-        await dispatch('setGeography', state.dataConfig[`m${newMetricId}`].geographies[0]);
+      if (!state.geography.id || state.dataConfig[`m${newMetricId}`].geographies.indexOf(state.geography.id) === -1) {
+        commit('setGeographyId', state.dataConfig[`m${newMetricId}`].geographies[0]);
       }
 
       gaEvent('metric', state.dataConfig[`m${newMetricId}`].title.trim(), state.dataConfig[`m${newMetricId}`].category.trim());
-      replaceState(newMetricId, state.selected, state.geography.id);
-      return await Promise.all([dispatch('loadMetricData'), dispatch('loadMetricMetadata')]);
+      return await Promise.all([ dispatch('loadMetricData'), dispatch('loadMetricMetadata') ]);
+    },
+
+    // Set a random metric.
+    async randomMetric({ dispatch, state }) {
+      const metricIds = Object.keys(state.dataConfig);
+      const metric = state.dataConfig[metricIds[Math.floor(Math.random() * (metricIds.length + 1))]];
+      return await dispatch('changeMetric', metric.metric);
     },
     clearSelected({ commit , state }) {
       commit('clearSelected');
-      replaceState(state.metricId, [], state.geography.id);
     },
     async playYearAnimation({ commit, state }) {
-      // TODO
       console.log('Start animation');
-      // let _this = this;
-      // const checked = $event.target.checked;
-      //
-      // if (!checked) {
-      //   // set current index and advance one
-      //   let i = _this.metric.years.indexOf(_this.sharedState.year) + 1;
-      //   i >= _this.metric.years.length ? i = 0 : null;
-      //   _this.$store.commit('setYear', _this.metric.years[i]);
-      //
-      //   _this.privateState.playToggle = setInterval(function() {
-      //     // begin the loop
-      //     i++;
-      //     if (i >= _this.sharedState.metric.years.length) {
-      //       i = 0;
-      //     }
-      //     _this.sharedState.year = _this.sharedState.metric.years[i];
-      //   }, 1500);
-      // } else {
-      //   // end loop
-      // }
+      // set current index and advance one
+      commit('setAnimationHandler', {
+        playing: true,
+        currentIndex: state.metric.years.indexOf(state.year),
+        interval: setInterval(function() {
+          commit('nextYear');
+        }, 1750)
+      });
+      commit('nextYear');
     },
     async stopYearAnimation({ commit, state}) {
       // TODO
-      console.log('Stop animation');
+      if (state.yearAnimationHandler) {
+        clearInterval(state.yearAnimationHandler.interval);
+        commit('setAnimationHandler', null);
+      }
     }
   },
 });
