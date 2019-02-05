@@ -1,6 +1,5 @@
 <template lang="html">
   <div class="mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-color--white category-tabs no-print">
-
     <div class="mdl-tabs mdl-js-tabs">
       <div class="mdl-tabs__tab-bar mdl-typography--text--center">
         <template v-for="category in categories">

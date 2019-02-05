@@ -23,9 +23,9 @@
             <td class="mdl-data-table__cell--non-numeric">{{ geography.label(row.geogIndex) }}</td>
             <td>{{ row.value }}</td>
             <td v-if="row.accuracy"> &#177; {{ row.accuracy }}</td>
-            <td v-if="row.trend" v-html="row.trend"/>
+            <td v-if="metric.years.length > 1 && row.trend" v-html="row.trend"/>
             <td v-if="row.rawValue">{{ row.rawValue }}</td>
-            <td v-if="row.rawTrend" v-html="row.rawTrend"/>
+            <td v-if="metric.years.length > 1 && row.rawTrend" v-html="row.rawTrend"/>
           </tr>
         </tbody>
       </table>

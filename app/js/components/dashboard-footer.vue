@@ -26,7 +26,7 @@
 import { mapState } from 'vuex';
 
 export default {
-  name: 'Footer',
+  name: 'Dashboard-Footer',
   computed: mapState(['siteConfig']),
 };
 </script>
