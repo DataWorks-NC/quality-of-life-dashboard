@@ -23,11 +23,13 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import config from '../modules/config';
 
 export default {
   name: 'Dashboard-Footer',
-  computed: mapState(['siteConfig']),
+  data: () => ({
+    siteConfig: config.siteConfig,
+  }),
 };
 </script>
 

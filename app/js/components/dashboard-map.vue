@@ -11,6 +11,7 @@ import mapboxgl from 'mapbox-gl';
 import MapboxGlGeocoder from '@mapbox/mapbox-gl-geocoder';
 import { prettyNumber } from '../modules/number_format';
 import FullExtent from '../modules/map-fullextent.js';
+import config from '../modules/config';
 
 export default {
   // You would think to just name this component 'Map', but <map> is in the HTML5 spec!
@@ -22,11 +23,11 @@ export default {
       isPitched3D: false,
       locationPopup: null,
       mapLoaded: false,
+      colors: config.colors,
     }
   },
   computed: mapState({
     breaks: 'breaks',
-    colors: 'colors',
     geography: 'geography',
     highlight: 'highlight',
     metric: 'metric',

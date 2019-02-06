@@ -63,6 +63,7 @@
 </template>
 
 <script>
+import config from '../modules/config';
 
 import { mapState } from 'vuex';
 
@@ -79,10 +80,10 @@ export default {
     selectedValueRaw: null,
     areaValue: null,
     areaValueRaw: null,
+    colors: config.colors,
   }),
   computed: mapState({
     breaks: 'breaks',
-    colors: 'colors',
     highlight: 'highlight',
     metricConfig(state) { return state.metric.config; },
     metricData(state) { return state.metric.data; },

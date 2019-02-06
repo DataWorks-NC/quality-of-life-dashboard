@@ -27,20 +27,21 @@
 </template>
 
 <script>
-
 import { mapState } from 'vuex';
+
+import config from '../modules/config';
 
 export default {
   name: 'Tabs',
   data: () => ({
     filterVal: null,
+    metricsByCategory: config.metricsByCategory,
   }),
   computed: mapState({
-    metricsByCategory: 'metricsByCategory',
     metric: 'metric',
     metricId: 'metricId',
-    categories(state) {
-      return state.categories.map(c => ({ id: c.replace(/\s+/g, ''), name: c }));
+    categories() {
+      return config.categories.map(c => ({ id: c.replace(/\s+/g, ''), name: c }));
     },
   }),
 

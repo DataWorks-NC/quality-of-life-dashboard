@@ -8,6 +8,8 @@
 </template>
 
 <script>
+import config from '../modules/config';
+
 import { mapState } from 'vuex';
 
 import { computeHash } from '../modules/tracking';
@@ -15,8 +17,7 @@ import { computeHash } from '../modules/tracking';
 export default {
   name: 'Social',
   computed: mapState({
-    siteConfig: 'siteConfig',
-    pageUrl(state) { return `${state.siteConfig.baseURL}#${computeHash(state.metricId, state.selected, state.geography.id)}`; },
+    pageUrl(state) { return `${config.siteConfig.baseURL}#${computeHash(state.metricId, state.selected, state.geography.id)}`; },
     twitter(state) { return `https://twitter.com/intent/tweet?url=${this.pageUrl}&text=${state.metric.config ? encodeURIComponent(state.metric.config.title) : ''}`; },
     facebook() { return `https://www.facebook.com/sharer.php?u=${this.pageUrl}`; },
     linkedin() { return `https://www.linkedin.com/shareArticle?url=${this.pageUrl}`; },

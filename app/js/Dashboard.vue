@@ -63,6 +63,8 @@
 <script>
 import { mapState } from 'vuex';
 
+import config from './modules/config';
+
 import DataTable from './components/datatable.vue';
 import DistributionChart from './components/distribution-chart.vue';
 import Feedback from './components/feedback.vue';
@@ -96,10 +98,13 @@ export default {
     UndermapButtons,
     YearSlider,
   },
+  data() {
+    return {
+    siteConfig: config.siteConfig,
+    privateConfig: config.privateConfig,
+    mapConfig: config.mapConfig, };
+  },
   computed: mapState({
-    siteConfig: 'siteConfig',
-    privateConfig: 'privateConfig',
-    mapConfig: 'mapConfig',
     urlHash(state) {
       if (!state.metricId || !state.geography.id) return '';
       return `${state.metricId}/${state.geography.id}/${state.selected.map(g => encodeURIComponent(g)).join(',')}`;

@@ -1,13 +1,14 @@
-import privateConfig from '../../data/config/private';
+import config from './modules/config.js';
+const privateConfig = config.privateConfig;
+const siteConfig = config.siteConfig;
+const mapConfig = config.mapConfig;
+const dataConfig = config.dataConfig;
 
 require('es6-promise').polyfill(); // Fix for axios on IE11
 const md5 = require('js-md5');
 
 import Vue from 'vue/dist/vue.js';
 import axios from 'axios';
-import dataConfig from '../../data/config/data';
-import siteConfig from '../../data/config/site';
-import mapConfig from '../../data/config/map';
 
 import {
   getHash,
@@ -22,9 +23,6 @@ import 'mapbox-gl';
 import '@mapbox/mapbox-gl-geocoder';
 
 Vue.config.productionTip = false;
-
-// fix ie SVG bugs
-ieSVGFixes();
 
 // Process hashes
 const areaIds = getHash(1).split(',').map(g=>decodeURIComponent(g));

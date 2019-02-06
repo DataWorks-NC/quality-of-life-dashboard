@@ -15,6 +15,8 @@ import { mapState } from 'vuex';
 
 import SelectGroup from './select-group';
 
+import config from '../modules/config';
+
 export default {
   name: 'GeographySwitcher',
   components: { SelectGroup },
@@ -22,7 +24,7 @@ export default {
     selectedGeography: 'geography',
     validGeographies(state) {
       if (!state.metric.config) { return null; }
-      return state.siteConfig.geographies.map(g => (Object.assign(g, { isAvailable: (state.metric.config.geographies.indexOf(g.id) > -1) })));
+      return config.siteConfig.geographies.map(g => (Object.assign(g, { isAvailable: (state.metric.config.geographies.indexOf(g.id) > -1) })));
     },
   }),
   methods: {

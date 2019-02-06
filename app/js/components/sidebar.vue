@@ -22,20 +22,20 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import config from '../modules/config';
 
 export default {
   name: 'Sidebar',
   data: () => ({
     filterVal: null,
+    categories: config.categories,
+    metricsByCategory: config.metricsByCategory,
   }),
-  computed: mapState({
-    categories: 'categories',
-    metricsByCategory: 'metricsByCategory',
-    filteredMetrics(state) {
-      return state.metricsByCategory[this.filterVal];
+  computed: {
+    filteredMetrics() {
+      return this.metricsByCategory[this.filterVal];
     },
-  }),
+  },
   methods: {
     changeFilter(filter) {
       this.filterVal = filter;

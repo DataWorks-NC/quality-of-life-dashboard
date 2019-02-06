@@ -9,14 +9,14 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import config from '../modules/config';
 
 export default {
   name: 'feedback',
   data: () => ({
     showSignup: false,
+    siteConfig: config.siteConfig,
   }),
-  computed: mapState(['siteConfig']),
   methods: {
     openSurvey() {
       window.open(this.siteConfig.feedbackUrl);

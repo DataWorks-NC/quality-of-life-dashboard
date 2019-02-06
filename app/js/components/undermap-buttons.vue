@@ -29,11 +29,16 @@
 </template>
 
 <script>
+import config from '../modules/config';
+
 import { mapState } from 'vuex';
 
 export default {
   name: 'UndermapButtons',
-  computed: mapState(['siteConfig', 'selected']),
+  data() {
+    return { siteConfig: config.siteConfig };
+  },
+  computed: mapState(['selected']),
   methods: {
     loadReport() {
       window.open(this.$store.getters.reportUrl);

@@ -14,14 +14,20 @@
 <script>
 import { mapState } from 'vuex';
 
+import config from '../modules/config';
+
 export default {
   name: 'SelectGroup',
+  data() {
+    return {
+      selectGroups: config.selectGroups,
+    };
+  },
   computed: mapState({
     geography: 'geography',
-    selectGroups: 'selectGroups',
     // Returns null if there is a valid select group, non-null otherwise.
     validSelectGroups(state) {
-      return Object.keys(state.selectGroups).find(g => state.selectGroups[g].hasOwnProperty(state.geography.id));
+      return Object.keys(this.selectGroups).find(g => this.selectGroups[g].hasOwnProperty(state.geography.id));
     },
   }),
   methods: {
