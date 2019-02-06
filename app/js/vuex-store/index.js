@@ -75,8 +75,8 @@ export default new Vuex.Store({
     },
     setGeographyId(state, newGeographyId) {
       if (state.geography.id !== newGeographyId) {
-        state.geography = config.siteConfig.geographies.find(
-            obj => obj.id === newGeographyId);
+        state.geography = Object.freeze(config.siteConfig.geographies.find(
+            obj => obj.id === newGeographyId));
         state.selected = [];
         state.highlight = [];
       }
@@ -116,7 +116,7 @@ export default new Vuex.Store({
       }
     },
     setBreaks(state, breaks) {
-      state.breaks = breaks;
+      state.breaks = Object.freeze(breaks);
     },
     setHighlight(state, highlight) {
       state.highlight = highlight;
@@ -162,6 +162,11 @@ export default new Vuex.Store({
     async setGeographyId({ commit, dispatch }, newGeographyId) {
       commit('setGeographyId', newGeographyId);
       return dispatch('loadMetricData');
+    },
+
+    // Load all the geography bounds, once.
+    async loadGeographyBounds({ state }) {
+      // TODO
     },
     async changeMetric({ commit, dispatch, state }, newMetricId) {
       console.log('Change metric ' + newMetricId);
