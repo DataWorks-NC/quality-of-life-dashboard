@@ -55,10 +55,15 @@ export default new Vuex.Store({
       label: null,
       description: null,
     },
+
+    // Bounds object for each geography.
+    // Each bounds object has keys which are feature ids, and values which are MapBoxGL boundslike objects for the rectangular bounds of that geography.
+    geographyBounds: {},
   },
   getters: {
     reportUrl: state => `${config.siteConfig.qolreportURL}#${state.geography.id}/${state.selected.map(g => encodeURIComponent(g)).join(',')}${state.selectGroupName ? `/${state.selectGroupName}` : ''}`,
     embedUrl: state => `${config.siteConfig.qolembedURL}?m=${state.metricId}&y=${state.year}&s=${state.selected.join(',')}`,
+    geographyBounds: state => state.geographyBounds[state.geography.id],
   },
   mutations: {
     clearSelected(state) {
@@ -75,8 +80,9 @@ export default new Vuex.Store({
     },
     setGeographyId(state, newGeographyId) {
       if (state.geography.id !== newGeographyId) {
-        state.geography = Object.freeze(config.siteConfig.geographies.find(
-            obj => obj.id === newGeographyId));
+        state.geography = config.siteConfig.geographies.find(
+            obj => obj.id === newGeographyId);
+        Object.freeze(state.geography);
         state.selected = [];
         state.highlight = [];
       }
@@ -105,7 +111,7 @@ export default new Vuex.Store({
     },
     setAnimationHandler(state, handler) {
       if (!handler) {
-        state.yearAnimatinoHandler = {
+        state.yearAnimationHandler = {
           interval: null,
           currentIndex: null,
           playing: false,
@@ -126,6 +132,10 @@ export default new Vuex.Store({
     },
     setZoomNeighborhoods(state, neighborhoods) {
       state.zoomNeighborhoods = neighborhoods;
+    },
+    setGeographyBounds(state, params) {
+      Vue.set(state.geographyBounds, params.id, params.bounds);
+      Object.freeze(state.geographyBounds[params.id]);
     }
   },
   actions: {
@@ -161,15 +171,18 @@ export default new Vuex.Store({
     // In contrast to the mutation function by the same name, this checks to see if new data also needs to be loaded.
     async setGeographyId({ commit, dispatch }, newGeographyId) {
       commit('setGeographyId', newGeographyId);
-      return dispatch('loadMetricData');
+      return Promise.all([ dispatch('loadMetricData'), dispatch('loadGeographyBounds', newGeographyId) ]);
     },
 
-    // Load all the geography bounds, once.
-    async loadGeographyBounds({ state }) {
-      // TODO
+    // Load a single geography bounds file.
+    async loadGeographyBounds({ state, commit }, geographyId) {
+      if (!geographyId) geographyId = state.geography.id;
+
+      const bounds = await fetchResponseJSON(`data/${geographyId}.bounds.json`);
+      return commit('setGeographyBounds', { id: geographyId, bounds: bounds });
     },
+
     async changeMetric({ commit, dispatch, state }, newMetricId) {
-      console.log('Change metric ' + newMetricId);
       commit('setMetricId', newMetricId);
 
       // Check that data exists for this metric & geography, otherwise switch geography.
@@ -191,7 +204,6 @@ export default new Vuex.Store({
       commit('clearSelected');
     },
     async playYearAnimation({ commit, state }) {
-      console.log('Start animation');
       // set current index and advance one
       commit('setAnimationHandler', {
         playing: true,
@@ -203,7 +215,6 @@ export default new Vuex.Store({
       commit('nextYear');
     },
     async stopYearAnimation({ commit, state}) {
-      // TODO
       if (state.yearAnimationHandler) {
         clearInterval(state.yearAnimationHandler.interval);
         commit('setAnimationHandler', null);

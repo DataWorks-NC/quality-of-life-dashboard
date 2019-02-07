@@ -9,7 +9,7 @@
         <span class="mdl-chip__text">Clear Selected</span>
       </button>
       <button
-        v-if="siteConfig.qolReportURL" :class="{'undermap-buttons__active' : selected.length}"
+        v-if="siteConfig.qolreportURL" :class="{'undermap-buttons__active' : selected.length}"
         class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
         data-fullreport
         @click="loadReport"
@@ -17,7 +17,7 @@
         <span class="mdl-chip__text">Report</span>
       </button>
       <button
-        v-if="siteConfig.qolEmbedURL"
+        v-if="siteConfig.qolembedURL"
         class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
         data-printmap
         @click="loadEmbed"
@@ -29,9 +29,9 @@
 </template>
 
 <script>
-import config from '../modules/config';
-
 import { mapState } from 'vuex';
+
+import config from '../modules/config';
 
 export default {
   name: 'UndermapButtons',

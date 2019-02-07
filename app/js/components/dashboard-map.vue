@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 
 import mapboxgl from 'mapbox-gl';
 import MapboxGlGeocoder from '@mapbox/mapbox-gl-geocoder';
@@ -17,6 +17,7 @@ export default {
   // You would think to just name this component 'Map', but <map> is in the HTML5 spec!
   name: 'dashboard-map',
   props: ['mapboxAccessToken', 'mapConfig'],
+
   data() {
     return {
       geoJSON: null,
@@ -26,16 +27,13 @@ export default {
       colors: config.colors,
     }
   },
-  computed: mapState({
-    breaks: 'breaks',
-    geography: 'geography',
-    highlight: 'highlight',
-    metric: 'metric',
-    metricId: 'metricId',
-    selected: 'selected',
-    year: 'year',
-    zoomNeighborhoods: 'zoomNeighborhoods',
-  }),
+
+  // For some reason brunch doesn't like object spread syntax, so using Object.assign here.
+  computed: Object.assign(
+    mapState(['breaks', 'geography', 'highlight', 'metric', 'metricId', 'selected', 'year', 'zoomNeighborhoods']),
+    mapGetters(['geographyBounds',])
+  ),
+
   watch: {
     'selected': 'styleNeighborhoods',
     'highlight': 'styleNeighborhoods',
@@ -125,8 +123,9 @@ export default {
 
           // Clear selection and select underlying area
           let features = map.queryRenderedFeatures(map.project(e.result.center),
-                  {layers: ['neighborhoods-fill-extrude']});
+                  {layers: ['neighborhoods-fill-extrude']}).map(g => g.properties.id);
           _this.$store.commit('setSelected', features);
+          _this.zoomToIds(features);
         }
       }).on('clear', (e) => {
         if (map.getLayer('point')) {
@@ -289,7 +288,6 @@ export default {
     },
 
     updateChoropleth: function () {
-      let _this = this;
       if (this.mapLoaded) {
         this.styleNeighborhoods();
       }
@@ -312,53 +310,24 @@ export default {
     },
 
     changeZoomNeighborhoods: function () {
+      return this.zoomToIds(this.zoomNeighborhoods);
+    },
+
+    zoomToIds: function (ids) {
+      if (!this.geographyBounds) return;
+
       let bounds = new mapboxgl.LngLatBounds();
-      let _this = this;
+      ids.forEach((id) => {
+        bounds.extend(this.geographyBounds[id]);
+      });
 
-      this.geoJSON.features.forEach((feature) => {
-                if (_this.zoomNeighborhoods.indexOf(feature.properties.id) !== -1) {
-                    feature.geometry.coordinates.forEach(function(coord) {
-                        coord.forEach(function(el) {
-                            bounds.extend(el);
-                        })
-                    });
-                }
-            });
-
-      if (!bounds.isEmpty()) {
+      if (bounds && !bounds.isEmpty()) {
         this.map.fitBounds(bounds, {padding: 100});
       }
-    },
-    getFullBounds: function () {
-      let bounds = new mapboxgl.LngLatBounds();
-      let _this = this;
-
-      this.geoJSON.features.forEach((feature) => {
-                feature.geometry.coordinates.forEach(function(coord) {
-                    coord.forEach(function(el) {
-                        bounds.extend(el);
-                    })
-                });
-            });
 
       return bounds;
     },
-    getSelectedBounds: function () {
-      let bounds = new mapboxgl.LngLatBounds();
-      let _this = this;
 
-      this.geoJSON.features.forEach((feature) => {
-                if (_this.selected.indexOf(feature.properties.id) !== -1) {
-                    feature.geometry.coordinates.forEach(function(coord) {
-                        coord.forEach(function(el) {
-                            bounds.extend(el);
-                        })
-                    });
-                }
-            });
-
-      return bounds;
-    },
     getOutlineColor: function() {
             const stops = [];
             let _this = this;
@@ -393,7 +362,7 @@ export default {
                 default: 0,
                 type: 'categorical',
                 stops: stops
-            }
+            };
 
             if (stops.length > 0) {
                 return outlineSize;

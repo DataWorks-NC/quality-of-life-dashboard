@@ -115,9 +115,8 @@ export default {
       location.hash = newUrlHash;
     },
   },
-  mounted() {
+  beforeCreate() {
     // Check if there is an existing hash and use it, otherwise redirect to a random metric.
-
     if (location.hash) {
       // Helper function to get the current page hash.
       function getHash(pos = 0) {
@@ -140,6 +139,9 @@ export default {
     } else {
       this.$store.dispatch('randomMetric');
     }
+  },
+  mounted() {
+    this.$store.dispatch('loadGeographyBounds');
   },
 };
 </script>

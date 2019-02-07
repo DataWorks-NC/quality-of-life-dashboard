@@ -43,13 +43,14 @@ _.each(siteConfig.geographies || ['geography'], (geography) => {
     // layers, and doesn't make underlying GeoJSON data accessible from GeoJSON layers. Could be done better in the future.
     let boundsFile = {};
     data.features.forEach((feature) => {
-      let bounds = { sw: feature.geometry.coordinates[0][0], ne: feature.geometry.coordinates[0][0] }; // coordinate pairs go [lon, lat]
+      // The bounds object implements Mapbox GL LngLatBoundsLike object, meaning it is an array of [[w, s], [e, n]].
+      let bounds = [ [ feature.geometry.coordinates[0][0][0], feature.geometry.coordinates[0][0][1] ], [ feature.geometry.coordinates[0][0][0], feature.geometry.coordinates[0][0][1], ] ]; // coordinate pairs go [lon, lat]
         feature.geometry.coordinates.forEach(function(coordGroup) {
           coordGroup.forEach(function(coord) {
-              if (coord[0] < bounds.sw[0]) bounds.sw[0] = coord[0];
-              else if (coord[0] > bounds.ne[0]) bounds.ne[0] = coord[0];
-              if (coord[1] > bounds.sw[1]) bounds.sw[1] = coord[1];
-              else if (coord[1] < bounds.ne[1]) bounds.ne[1] = coord[1];
+              if (coord[0] < bounds[0][0]) bounds[0][0] = coord[0];
+              else if (coord[0] > bounds[1][0]) bounds[1][0] = coord[0];
+              if (coord[1] < bounds[0][1]) bounds[0][1] = coord[1];
+              else if (coord[1] > bounds[1][1]) bounds[1][1] = coord[1];
           });
         });
       boundsFile[feature.properties.id] = bounds;
