@@ -7,10 +7,16 @@ import config from '../modules/config';
 import jenksBreaks from '../modules/jenksbreaks';
 import { gaEvent } from '../modules/tracking';
 
+const jsonCache = {};
+const htmlCache = {};
+
 const fetchResponseJSON = async (path) => {
+  if (jsonCache[path]) {
+    return jsonCache[path];
+  }
   try {
     let response = await fetch(path);
-    return await response.json();
+    return jsonCache[path] = await response.json();
   }
   catch (e) {
     return null;
@@ -18,9 +24,12 @@ const fetchResponseJSON = async (path) => {
 };
 
 const fetchResponseHTML = async (path) => {
+  if (htmlCache[path]) {
+    return htmlCache[path];
+  }
   try {
     let response = await fetch(path);
-    return await response.text();
+    return htmlCache[path] = await response.text();
   }
   catch (e) {
     return null;

@@ -14,7 +14,6 @@ import Vue from 'vue';
 
 import Vuex from 'vuex';
 import store from './vuex-store';
-import config from './modules/config';
 
 import 'vueify/lib/insert-css'; // required for .vue file <style> tags
 

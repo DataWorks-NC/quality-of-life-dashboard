@@ -145,7 +145,7 @@ export default {
       // after map initiated, grab geography and initiate/style neighborhoods
       map.once('style.load', () => {
         // Add tracts
-        map.addSource('neighborhoods', {
+        map.addSource(_this.geography.id, {
           type: 'geojson',
           data: `data/${_this.geography.id}.geojson.json`,
         });
@@ -236,39 +236,38 @@ export default {
       }
     },
     initNeighborhoods: function () {
-      let map = this.map;
-      let _this = this;
+      const map = this.map;
 
       // selected neighborhood
       map.addLayer({
         'id': 'neighborhoods',
         'type': 'line',
-        'source': 'neighborhoods',
+        'source': this.geography.id,
         'layout': {},
         'paint': {},
-      }, _this.mapConfig.neighborhoodsSelectedBefore);
+      }, this.mapConfig.neighborhoodsSelectedBefore);
 
 
       map.addLayer({
         'id': 'neighborhoods-fill-extrude',
         'type': 'fill-extrusion',
-        'source': 'neighborhoods',
+        'source': this.geography.id,
         'paint': {
           'fill-extrusion-opacity': 1,
         },
-      }, _this.mapConfig.neighborhoodsBefore);
+      }, this.mapConfig.neighborhoodsBefore);
 
       // neighborhood boundaries
       map.addLayer({
         'id': 'neighborhoods-outlines',
         'type': 'line',
-        'source': 'neighborhoods',
+        'source': this.geography.id,
         'layout': {},
         'paint': {
           'line-color': 'rgba(0,0,0,1)',
           'line-width': 0.4,
         },
-      }, _this.mapConfig.neighborhoodsBefore);
+      }, this.mapConfig.neighborhoodsBefore);
     },
 
     styleNeighborhoods: function () {
@@ -304,8 +303,15 @@ export default {
     },
 
     updateGeography: function () {
-      if (this.map.getLayer('neighborhoods') && this.geography.id) {
-        this.map.getSource('neighborhoods').setData(`data/${this.geography.id}.geojson.json`);
+      const mapLayers = ['neighborhoods','neighborhoods-fill-extrude', 'neighborhoods-outlines'];
+      if (this.geography.id && !this.map.getSource(this.geography.id)) {
+        this.map.addSource(this.geography.id, {
+          type: 'geojson',
+          data: `data/${this.geography.id}.geojson.json`,
+        });
+      }
+      for (let layer in mapLayers) {
+        this.map.getLayer(layer).source = this.geography.id;
       }
     },
 
