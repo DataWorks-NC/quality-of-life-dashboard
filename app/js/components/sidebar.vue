@@ -1,7 +1,7 @@
 <template lang="html">
   <div class="demo-drawer mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
     <header class="demo-drawer-header">
-      <a href="./">TITLE GOES HERE</a>
+      <a href="./">{{ title }}</a>
     </header>
   <nav class="demo-navigation mdl-navigation mdl-color--blue-grey-900">
     <template v-if="filterVal">
@@ -30,6 +30,7 @@ export default {
     filterVal: null,
     categories: config.categories,
     metricsByCategory: config.metricsByCategory,
+    title: config.siteConfig.title,
   }),
   computed: {
     filteredMetrics() {
