@@ -63,8 +63,8 @@ export default {
       };
       this.map = new mapboxgl.Map(mapOptions);
 
-      let _this = this;
-      let map = _this.map;
+      const _this = this;
+      const map = _this.map;
       mapboxgl.accessToken = _this.mapboxAccessToken;
 
       this.locationPopup = new mapboxgl.Popup({
@@ -73,7 +73,7 @@ export default {
       });
 
       // add nav control
-      let nav = new mapboxgl.NavigationControl();
+      const nav = new mapboxgl.NavigationControl();
       map.addControl(nav, 'top-right');
 
       // add full extent button
@@ -123,7 +123,7 @@ export default {
 
           // Clear selection and select underlying area
           let features = map.queryRenderedFeatures(map.project(e.result.center),
-                  {layers: ['neighborhoods-fill-extrude']}).map(g => g.properties.id);
+                  {layers: [`${_this.geography.id}-fill-extrude`]}).map(g => g.properties.id);
           _this.$store.commit('setSelected', features);
           _this.zoomToIds(features);
         }
@@ -162,13 +162,13 @@ export default {
       let pitched = _this.isPitched3D;
 
       if (pitched) {
-        map.setLayoutProperty('neighborhoods', 'visibility', 'none');
-        map.moveLayer('neighborhoods-fill-extrude');
-        map.setPaintProperty("neighborhoods-fill-extrude", 'fill-extrusion-height', _this.getHeight());
+        map.setLayoutProperty(`${_this.geography.id}`, 'visibility', 'none');
+        map.moveLayer(`${_this.geography.id}-fill-extrude`);
+        map.setPaintProperty(`${_this.geography.id}-fill-extrude`, 'fill-extrusion-height', _this.getHeight());
       } else {
-        map.setLayoutProperty('neighborhoods', 'visibility', 'visible');
-        map.moveLayer('neighborhoods-fill-extrude', 'building');
-        map.setPaintProperty("neighborhoods-fill-extrude", 'fill-extrusion-height', 0);
+        map.setLayoutProperty(`${_this.geography.id}`, 'visibility', 'visible');
+        map.moveLayer(`${_this.geography.id}-fill-extrude`, 'building');
+        map.setPaintProperty(`${_this.geography.id}-fill-extrude`, 'fill-extrusion-height', 0);
       }
     },
     initMapEvents: function () {
@@ -190,7 +190,7 @@ export default {
 
       // on feature click add or remove from selected set
       map.on('click', (e) => {
-        let features = map.queryRenderedFeatures(e.point, {layers: ['neighborhoods-fill-extrude']});
+        let features = map.queryRenderedFeatures(e.point, {layers: [`${_this.geography.id}-fill-extrude`]});
         if (!features.length) {
           return;
         }
@@ -213,7 +213,7 @@ export default {
           if (!_this.metric.config || !_this.metric.data) {
             return;
           }
-          let features = map.queryRenderedFeatures(e.point, {layers: ['neighborhoods-fill-extrude']});
+          let features = map.queryRenderedFeatures(e.point, {layers: [`${_this.geography.id}-fill-extrude`]});
           map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
 
           if (!features.length) {
@@ -240,7 +240,7 @@ export default {
 
       // selected neighborhood
       map.addLayer({
-        'id': 'neighborhoods',
+        'id': `${this.geography.id}`,
         'type': 'line',
         'source': this.geography.id,
         'layout': {},
@@ -249,7 +249,7 @@ export default {
 
 
       map.addLayer({
-        'id': 'neighborhoods-fill-extrude',
+        'id': `${this.geography.id}-fill-extrude`,
         'type': 'fill-extrusion',
         'source': this.geography.id,
         'paint': {
@@ -259,7 +259,7 @@ export default {
 
       // neighborhood boundaries
       map.addLayer({
-        'id': 'neighborhoods-outlines',
+        'id': `${this.geography.id}-outlines`,
         'type': 'line',
         'source': this.geography.id,
         'layout': {},
@@ -273,15 +273,15 @@ export default {
     styleNeighborhoods: function () {
       let map = this.map;
       let _this = this;
-      if (map.getLayer('neighborhoods')) {
-        map.setPaintProperty('neighborhoods', 'line-color', _this.getOutlineColor());
-        map.setPaintProperty('neighborhoods', 'line-width', _this.getOutlineWidth());
+      if (map.getLayer(`${_this.geography.id}`)) {
+        map.setPaintProperty(`${_this.geography.id}`, 'line-color', _this.getOutlineColor());
+        map.setPaintProperty(`${_this.geography.id}`, 'line-width', _this.getOutlineWidth());
       }
-      if (map.getLayer('neighborhoods-fill-extrude')) {
-        map.setPaintProperty('neighborhoods-fill-extrude', 'fill-extrusion-color', _this.getColors());
+      if (map.getLayer(`${_this.geography.id}-fill-extrude`)) {
+        map.setPaintProperty(`${_this.geography.id}-fill-extrude`, 'fill-extrusion-color', _this.getColors());
 
         if (_this.isPitched3D) {
-          map.setPaintProperty('neighborhoods-fill-extrude', 'fill-extrusion-height', _this.getHeight());
+          map.setPaintProperty(`${_this.geography.id}-fill-extrude`, 'fill-extrusion-height', _this.getHeight());
         }
       }
     },
@@ -302,17 +302,31 @@ export default {
       }
     },
 
-    updateGeography: function () {
-      const mapLayers = ['neighborhoods','neighborhoods-fill-extrude', 'neighborhoods-outlines'];
-      if (this.geography.id && !this.map.getSource(this.geography.id)) {
-        this.map.addSource(this.geography.id, {
+    updateGeography: function (newGeography, oldGeography) {
+      if (!this.geography.id) return;
+      const oldMapLayers = [`${oldGeography.id}`,`${oldGeography.id}-fill-extrude`, `${oldGeography.id}-outlines`];
+      const newMapLayers = [`${newGeography.id}`,`${newGeography.id}-fill-extrude`, `${newGeography.id}-outlines`];
+      const _this = this;
+
+      if (!this.map.getSource(newGeography.id)) {
+        this.map.addSource(newGeography.id, {
           type: 'geojson',
           data: `data/${this.geography.id}.geojson.json`,
         });
       }
-      for (let layer in mapLayers) {
-        this.map.getLayer(layer).source = this.geography.id;
-      }
+
+      oldMapLayers.forEach(layer => {
+        _this.map.setLayoutProperty(layer, 'visibility', 'none');
+      });
+
+      newMapLayers.forEach(layer => {
+        if (!_this.map.getLayer(layer)) {
+          _this.initNeighborhoods();
+        }
+        else {
+          _this.map.setLayoutProperty(layer, 'visibility', 'visible');
+        }
+      });
     },
 
     changeZoomNeighborhoods: function () {
