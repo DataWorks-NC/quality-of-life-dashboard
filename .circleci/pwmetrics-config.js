@@ -1,6 +1,6 @@
 module.exports = {
   flags: { // AKA feature flags
-    runs: 3, // number or runs
+    runs: 5, // number or runs
     submit: true, // turn on submitting to Google Sheets
     failOnError: true,
   },
