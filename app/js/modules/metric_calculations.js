@@ -1,76 +1,75 @@
 import isNumeric from './isnumeric';
 
 function sum(arr) {
-    let sum = arr.reduce(function(sum, x) {
-        return sum + x;
-    }, 0);
-    if (arr.length === 0) { sum = '--'; }
-    return sum;
+  let sum = arr.reduce((sum, x) => sum + x, 0);
+  if (arr.length === 0) { sum = '--'; }
+  return sum;
 }
 
 function mean(arr) {
-    return sum(arr) / arr.length;
+  return sum(arr) / arr.length;
 }
 
 function weighted(arr, weight) {
-    let sumR = sum(arr);
-    let sumW = sum(weight);
-    return sumR / sumW;
+  const sumR = sum(arr);
+  const sumW = sum(weight);
+  return sumR / sumW;
 }
 
 function median(arr) {
-    arr.sort( function(a,b) {return a - b;} );
-    let half = Math.floor(arr.length/2);
+  arr.sort((a, b) => a - b);
+  const half = Math.floor(arr.length / 2);
 
-    if (arr.length % 2) {
-        return arr[half];
-    }
-    else {
-        return (arr[half-1] + arr[half]) / 2.0;
-    }
+  if (arr.length % 2) {
+    return arr[half];
+  }
+
+  return (arr[half - 1] + arr[half]) / 2.0;
 }
 
 
 function valsToArray(data, years, keys) {
-    let arr = [];
-    for (let y = 0; y < years.length; y++) {
-        for (var i = 0; i < keys.length; i++) {
-            if (isNumeric(data[keys[i]][`y_${years[y]}`])) {
-                arr.push(data[keys[i]][`y_${years[y]}`]);
-            }
-        }
+  const arr = [];
+  for (let y = 0; y < years.length; y++) {
+    for (let i = 0; i < keys.length; i++) {
+      if (isNumeric(data[keys[i]][`y_${years[y]}`])) {
+        arr.push(data[keys[i]][`y_${years[y]}`]);
+      }
     }
-    return arr;
+  }
+  return arr;
 }
 
 function wValsToArray(data, weight, years, keys) {
-    let arr = [];
-    for (let y = 0; y < years.length; y++) {
-        for (let i = 0; i < keys.length; i++) {
-            if (isNumeric(data[keys[i]][`y_${years[y]}`]) && isNumeric(weight[keys[i]][`y_${years[y]}`])) {
-                arr.push(data[keys[i]][`y_${years[y]}`] * weight[keys[i]][`y_${years[y]}`]);
-            }
-        }
+  const arr = [];
+  for (let y = 0; y < years.length; y++) {
+    for (let i = 0; i < keys.length; i++) {
+      if (isNumeric(data[keys[i]][`y_${years[y]}`]) && isNumeric(weight[keys[i]][`y_${years[y]}`])) {
+        arr.push(data[keys[i]][`y_${years[y]}`] * weight[keys[i]][`y_${years[y]}`]);
+      }
     }
-    return arr;
+  }
+  return arr;
 }
 
 function calcValue(data, calcType = sum, year, keys) {
-    if (calcType === 'sum') {
-        let dataArray = valsToArray(data.map, [year], keys);
-        return sum(dataArray);
-    }
-    if (calcType === 'mean') {
-        let dataArray = valsToArray(data.map, [year], keys);
-        return mean(dataArray);
-    }
-    if (calcType === 'weighted') {
-        let dataArray = wValsToArray(data.map, data.w, [year], keys);
-        let wArray = valsToArray(data.w, [year], keys);
-        return weighted(dataArray, wArray);
-    }
-    return false;
+  if (calcType === 'sum') {
+    const dataArray = valsToArray(data.map, [year], keys);
+    return sum(dataArray);
+  }
+  if (calcType === 'mean') {
+    const dataArray = valsToArray(data.map, [year], keys);
+    return mean(dataArray);
+  }
+  if (calcType === 'weighted') {
+    const dataArray = wValsToArray(data.map, data.w, [year], keys);
+    const wArray = valsToArray(data.w, [year], keys);
+    return weighted(dataArray, wArray);
+  }
+  return false;
 }
 
 
-export {sum, mean, weighted, median, valsToArray, wValsToArray, calcValue};
+export {
+  sum, mean, weighted, median, valsToArray, wValsToArray, calcValue,
+};

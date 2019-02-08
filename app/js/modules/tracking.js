@@ -1,9 +1,5 @@
 function computeHash(metric, selected, geography) {
-  return `${metric}/${geography}/${selected.map(g => encodeURIComponent(g)).join(',')}`
-}
-
-function replaceState(metric, selected, geography) {
-  location.hash = computeHash(metric,selected,geography);
+  return `${metric}/${geography}/${selected.map(g => encodeURIComponent(g)).join(',')}`;
 }
 
 function gaEvent(type, title, category) {
@@ -22,4 +18,4 @@ function getHash(pos = 0) {
   }
 }
 
-export { computeHash, replaceState, gaEvent, getHash };
+export { computeHash, gaEvent, getHash };
