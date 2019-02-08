@@ -1,3 +1,5 @@
+<!-- UNUSED - TODO: Adapt -->
+
 <template lang="html">
     <div v-show="privateState.qolembedURL" class="mdl-typography--text-center mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet flexcontainer">
         <div v-if="sharedState.metric.config" class="embedcode">

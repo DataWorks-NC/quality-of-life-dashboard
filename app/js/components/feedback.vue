@@ -1,22 +1,28 @@
 <template lang="html">
-       <div v-if="privateState.feedbackUrl || privateState.signupEmbed" class="mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop">
-              <div class="feedback-buttons">
-              <button class="mdl-button mdl-js-button mdl-button--raised" v-if="privateState.feedbackUrl" v-on:click="openSurvey">Share feedback or questions</button>
-              <button v-bind:class="privateState.showSignup ? 'is-active' : ''" class="mdl-button mdl-js-button mdl-button--raised" v-if="privateState.signupEmbed" v-on:click="privateState.showSignup = !privateState.showSignup">Join our mailing list</button>
+       <div v-if="siteConfig.feedbackUrl || siteConfig.signupEmbed" class="mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop">
+       <div class="feedback-buttons">
+       <button v-if="siteConfig.feedbackUrl" class="mdl-button mdl-js-button mdl-button--raised" @click="openSurvey">Share feedback or questions</button>
+       <button v-if="siteConfig.signupEmbed" :class="showSignup ? 'is-active' : ''" class="mdl-button mdl-js-button mdl-button--raised" @click="showSignup = !showSignup">Join our mailing list</button>
               </div>
-              <div v-if="privateState.showSignup" v-html="privateState.signupEmbed" class="signup-embed"></div>
+              <div v-if="showSignup" class="signup-embed" v-html="siteConfig.signupEmbed"></div>
        </div>
 </template>
 
 <script>
+import config from '../modules/config';
+
 export default {
-  name: 'sc-feedback',
+  name: 'feedback',
+  data: () => ({
+    showSignup: false,
+    siteConfig: config.siteConfig,
+  }),
   methods: {
-    openSurvey: function() {
-      window.open(this.privateState.feedbackUrl);
+    openSurvey() {
+      window.open(this.siteConfig.feedbackUrl);
     },
-  }
-}
+  },
+};
 </script>
 
 <style lang="css" scoped>

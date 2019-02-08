@@ -8,7 +8,8 @@ module.exports = {
     type: 'GOOGLE_SHEETS', // sheets service type. Available types: GOOGLE_SHEETS
     options: {
       spreadsheetId: process.env.GOOGLE_SPREADSHEET_ID,
-      tableName: 'data'
+      tableName: 'data',
+      uploadMedian: true // not required, set to true if you want to upload only the median run
     },
   },
   clientSecret: {
