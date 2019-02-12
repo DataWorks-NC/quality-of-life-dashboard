@@ -7,7 +7,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-6">
+        <div class="col-sm-6">
             <p>
                 The <a href="/">Neighborhood Compass</a> is a primary community resource for information that is regularly-updated, serving meaningful data to the community openly.
             </p>
@@ -18,7 +18,7 @@
                 A quantitative project with qualitative values.
             </p>
         </div>
-        <div class="col-xs-6">
+        <div class="col-sm-6">
             <ReportMap :mapConfig="mapConfig" :geographyId="geographyId" :selectedGeographies="areaIds"></ReportMap>
         </div>
     </div>

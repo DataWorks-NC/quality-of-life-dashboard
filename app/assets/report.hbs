@@ -18,10 +18,6 @@
     <meta name="application-name" content="{{ siteConfig.title }}" />
     <meta name="msapplication-TileColor" content="#1e59bd" />
 
-    <!-- Favicon -->
-    <link rel="shortcut icon" type="image/png" href="images/favicon.png" />
-    <link rel="apple-touch-icon-precomposed" href="images/apple-touch-icon-precomposed.png" />
-
     <!-- Theme color for Android -->
     <meta name="theme-color" content="#db5945">
 
@@ -56,10 +52,13 @@
         </script>
         <!-- End Google Analytics -->
     {{/if}}
+    <!-- preload assets -->
+    <link rel="preload" as="script" href="vendor.js">
+    <link rel="preload" as="script" href="report.js">
+    <link rel="preload" href="img/logo.png" as="image">
 
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="map.css">
-    <link rel="stylesheet" href="report.css">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/png" href="img/favicon.png" />
 </head>
 <body>
 <!--[if lt IE 9]>
@@ -67,6 +66,7 @@
 <![endif]-->
 
     <report-summary></report-summary>
+    <report-selector></report-selector>
     <report-body></report-body>
 <!-- svg icons -->
 <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="https://www.w3.org/2000/svg"
@@ -81,7 +81,8 @@
 <script src="vendor.js"></script>
 <script src="report.js"></script>
 <script> require('js/report'); </script>
+<link rel="stylesheet" href="map.css">
+<link rel="stylesheet" href="report.css">
 <script defer src="/js/ie-svg-bugs.js"></script>
 </body>
-
 </html>

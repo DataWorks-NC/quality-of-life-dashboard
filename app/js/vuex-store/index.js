@@ -1,40 +1,10 @@
-import 'babel-polyfill';
-
 import Vuex from 'vuex';
 import Vue from 'vue';
 
 import config from '../modules/config';
 import jenksBreaks from '../modules/jenksbreaks';
 import { gaEvent } from '../modules/tracking';
-
-const jsonCache = {};
-const htmlCache = {};
-
-const fetchResponseJSON = async (path) => {
-  if (jsonCache[path]) {
-    return jsonCache[path];
-  }
-  try {
-    let response = await fetch(path);
-    return jsonCache[path] = await response.json();
-  }
-  catch (e) {
-    return null;
-  }
-};
-
-const fetchResponseHTML = async (path) => {
-  if (htmlCache[path]) {
-    return htmlCache[path];
-  }
-  try {
-    let response = await fetch(path);
-    return htmlCache[path] = await response.text();
-  }
-  catch (e) {
-    return null;
-  }
-};
+import { fetchResponseJSON, fetchResponseHTML } from '../modules/fetch';
 
 Vue.use(Vuex);
 
