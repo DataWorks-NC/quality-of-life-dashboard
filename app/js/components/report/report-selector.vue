@@ -1,5 +1,5 @@
 <template>
-  <div class="page page-category metric-selector">
+  <div class="page page-category metric-selector d-print-none">
     <div class="row">
       <div class="col-xs-12">
         <h3 class="metric-selector__title" @click="collapsed=!collapsed">Customize this report</h3>
@@ -31,6 +31,7 @@ export default {
       if (this.categories[n].visible) {
         this.categories[n].visible = false;
       } else {
+        // When you re-open a cataegory, toggle all the submetrics to visible.
         this.categories[n].metrics.forEach((m) => { m.visible = true; });
         this.categories[n].visible = true;
       }
@@ -53,6 +54,9 @@ export default {
     background: white;
     border: 3px solid rgb(204,204,204);
     padding: 6px;
+  }
+  .metric-selector__sub-metric {
+    padding: 5px 15px;
   }
   .metric-selector__sub-metric.active {
     background-color: #669ECC;
