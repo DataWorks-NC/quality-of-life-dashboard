@@ -4,7 +4,6 @@ const jsonCache = {};
 const htmlCache = {};
 
 const fetchResponseJSON = async (path) => {
-  console.log(path);
   if (jsonCache[path]) {
     return jsonCache[path];
   }

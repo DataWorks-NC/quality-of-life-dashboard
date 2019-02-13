@@ -1,4 +1,4 @@
-import Vue from 'vue/dist/vue.js';
+import Vue from 'vue';
 
 import { fetchResponseJSON } from './modules/fetch';
 import config from './modules/config.js';
@@ -14,7 +14,6 @@ import 'vueify/lib/insert-css'; // required for .vue file <style> tags
 
 // to fix vue not including modules bug
 import 'mapbox-gl';
-import '@mapbox/mapbox-gl-geocoder';
 
 const privateConfig = config.privateConfig;
 const siteConfig = config.siteConfig;
@@ -25,22 +24,35 @@ const md5 = require('js-md5');
 
 Vue.config.productionTip = false;
 
+// TODO: Refactor this section of the code to be clearer!
+
 // Process hashes
 const areaIds = getHash(1).split(',').map(g => decodeURIComponent(g));
 const geography = siteConfig.geographies.find(g => (g.id === getHash(0)));
 const categoryNames = new Array(...new Set(Object.values(dataConfig).map(m => (m.category))));
+const areaNames = areaIds.map(id => (siteConfig.geographies.find(g => (g.id === geography.id)).label(id)));
 
 // Optional report title
-const customTitle = getHash(2);
+let customTitle = getHash(2);
+
+// Optional metric filtering
+let visibleMetricList = getHash(3);
+if (visibleMetricList === '') {
+  visibleMetricList = false;
+}
+else {
+  visibleMetricList = visibleMetricList.split(',');
+}
 
 // Initialize app state.
 const appState = {
   categories: categoryNames.map((name) => {
     let tempCategory = {
         name: name,
-        metrics: Object.values(dataConfig).filter((m) => (m.category === name && m.geographies.indexOf(geography.id) > -1)).map(m => Object.assign(m, { visible: true })),
+        metrics: Object.values(dataConfig).filter((m) => (m.category === name && m.geographies.indexOf(geography.id) > -1)).map(m => Object.assign(m, { visible: !visibleMetricList || visibleMetricList.indexOf(m.metric) > -1 })),
         visible: true,
       };
+    tempCategory.visible = !tempCategory.metrics.every(m => !m.visible);
     if (tempCategory.metrics.length > 0) {
       return tempCategory;
     }
@@ -51,6 +63,7 @@ const appState = {
   ).filter(m => (m)),
   metricValues: {},
   countyAverages: {},
+  reportTitle: customTitle ? customTitle : areaNames.join(', '),
 };
 
 // Fill in skeleton structure of metricValues and countyAverages objects as categories -> metrics.
@@ -66,9 +79,9 @@ function loadReportSummary() {
     const data = {
       mapConfig,
       areaIds,
-      customTitle,
+      areaNames,
       geographyId: geography.id,
-      areaNames: areaIds.map(id => (siteConfig.geographies.find(g => (g.id === geography.id)).label(id))),
+      reportTitle: appState.reportTitle,
       summaryMetrics: siteConfig.summaryMetrics.map((id) => {
         const metric = dataConfig[id];
         if (appState.metricValues.hasOwnProperty(metric.category) && appState.metricValues[metric.category].hasOwnProperty(metric.metric)) {
@@ -161,7 +174,10 @@ new Vue({
 
 ReportSelector.data = function () {
   return {
+    reportTitle: appState.reportTitle,
     categories: appState.categories,
+    hostName: window.location.host,
+    baseUrl: siteConfig.qolreportURL,
     collapsed: true,
   };
 };
