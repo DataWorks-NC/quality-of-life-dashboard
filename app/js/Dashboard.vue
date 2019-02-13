@@ -140,9 +140,6 @@ export default {
       this.$store.dispatch('randomMetric');
     }
   },
-  mounted() {
-    this.$store.dispatch('loadGeographyBounds');
-  },
 };
 </script>
 

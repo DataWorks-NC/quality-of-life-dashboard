@@ -30,8 +30,7 @@ export default {
 
   // For some reason brunch doesn't like object spread syntax, so using Object.assign here.
   computed: Object.assign(
-    mapState(['breaks', 'geography', 'highlight', 'metric', 'metricId', 'selected', 'year', 'zoomNeighborhoods']),
-    mapGetters(['geographyBounds',])
+      mapState(['breaks', 'geography', 'highlight', 'metric', 'metricId', 'selected', 'year', 'zoomNeighborhoods']),
   ),
 
   watch: {
@@ -44,13 +43,13 @@ export default {
     'isPitched3D': 'toggle3D',
   },
 
-  mounted: function () {
+  mounted: function() {
     this.map = null;
     this.mapMetricId = this.metricId;
     this.initMap();
   },
   methods: {
-    initMap: function () {
+    initMap: function() {
       const mapOptions = {
         container: 'map',
         style: this.mapConfig.style,
@@ -78,8 +77,8 @@ export default {
 
       // add full extent button
       map.addControl(new FullExtent(
-              mapOptions.center,
-              mapOptions.zoom,
+          mapOptions.center,
+          mapOptions.zoom,
       ), 'top-right');
       map.addControl(new mapboxgl.GeolocateControl(), 'top-right');
 
@@ -123,7 +122,7 @@ export default {
 
           // Clear selection and select underlying area
           let features = map.queryRenderedFeatures(map.project(e.result.center),
-                  {layers: [`${_this.geography.id}-fill-extrude`]}).map(g => g.properties.id);
+              {layers: [`${_this.geography.id}-fill-extrude`]}).map(g => g.properties.id);
           _this.$store.commit('setSelected', features);
           _this.zoomToIds(features);
         }
@@ -141,7 +140,6 @@ export default {
       // map.dragRotate.disable();
       map.touchZoomRotate.disableRotation();
 
-
       // after map initiated, grab geography and initiate/style neighborhoods
       map.once('style.load', () => {
         // Add tracts
@@ -156,7 +154,7 @@ export default {
         _this.initMapEvents();
       });
     },
-    toggle3D: function () {
+    toggle3D: function() {
       let _this = this;
       let map = _this.map;
       let pitched = _this.isPitched3D;
@@ -171,7 +169,7 @@ export default {
         map.setPaintProperty(`${_this.geography.id}-fill-extrude`, 'fill-extrusion-height', 0);
       }
     },
-    initMapEvents: function () {
+    initMapEvents: function() {
       let map = this.map;
       let _this = this;
 
@@ -181,12 +179,12 @@ export default {
       });
 
       map.on('rotate', (e) => {
-                if (map.getPitch() >= 20) {
-                    _this.isPitched3D = true;
-                } else {
-                    _this.isPitched3D = false;
-                }
-            });
+        if (map.getPitch() >= 20) {
+          _this.isPitched3D = true;
+        } else {
+          _this.isPitched3D = false;
+        }
+      });
 
       // on feature click add or remove from selected set
       map.on('click', (e) => {
@@ -226,16 +224,17 @@ export default {
           const data = _this.metric.data.map[id][`y_${_this.year}`];
           const geographyLabel = _this.geography.label(id);
           const val = prettyNumber(data, _this.metric.config.decimals, _this.metric.config.prefix,
-                  _this.metric.config.suffix, _this.metric.config.commas);
+              _this.metric.config.suffix, _this.metric.config.commas);
           const label = _this.metric.config.label ? ` ${_this.metric.config.label}` : '';
           popup.setLngLat(map.unproject(e.point)).
-                  setHTML(`<div style="text-align: center; margin: 0; padding: 0;"><h3 style="font-size: 1.2em; margin: 0; padding: 0; line-height: 1em; font-weight: bold;">${geographyLabel}</h3>${val}${label}</div>`).
-                  addTo(map);
+              setHTML(
+                  `<div style="text-align: center; margin: 0; padding: 0;"><h3 style="font-size: 1.2em; margin: 0; padding: 0; line-height: 1em; font-weight: bold;">${geographyLabel}</h3>${val}${label}</div>`).
+              addTo(map);
 
         });
       }
     },
-    initNeighborhoods: function () {
+    initNeighborhoods: function() {
       const map = this.map;
 
       // selected neighborhood
@@ -246,7 +245,6 @@ export default {
         'layout': {},
         'paint': {},
       }, this.mapConfig.neighborhoodsSelectedBefore);
-
 
       map.addLayer({
         'id': `${this.geography.id}-fill-extrude`,
@@ -270,7 +268,7 @@ export default {
       }, this.mapConfig.neighborhoodsBefore);
     },
 
-    styleNeighborhoods: function () {
+    styleNeighborhoods: function() {
       let map = this.map;
       let _this = this;
       if (map.getLayer(`${_this.geography.id}`)) {
@@ -286,26 +284,26 @@ export default {
       }
     },
 
-    updateChoropleth: function () {
+    updateChoropleth: function() {
       if (this.mapLoaded) {
         this.styleNeighborhoods();
       }
     },
 
-    updateBreaks: function () {
+    updateBreaks: function() {
       this.mapMetricId = this.metricId;
       this.updateChoropleth();
     },
-    updateYear: function () {
+    updateYear: function() {
       if (this.metricId === this.mapMetricId) {
         this.updateChoropleth();
       }
     },
 
-    updateGeography: function (newGeography, oldGeography) {
+    updateGeography: function(newGeography, oldGeography) {
       if (!this.geography.id) return;
-      const oldMapLayers = [`${oldGeography.id}`,`${oldGeography.id}-fill-extrude`, `${oldGeography.id}-outlines`];
-      const newMapLayers = [`${newGeography.id}`,`${newGeography.id}-fill-extrude`, `${newGeography.id}-outlines`];
+      const oldMapLayers = [`${oldGeography.id}`, `${oldGeography.id}-fill-extrude`, `${oldGeography.id}-outlines`];
+      const newMapLayers = [`${newGeography.id}`, `${newGeography.id}-fill-extrude`, `${newGeography.id}-outlines`];
       const _this = this;
 
       if (!this.map.getSource(newGeography.id)) {
@@ -322,75 +320,67 @@ export default {
       newMapLayers.forEach(layer => {
         if (!_this.map.getLayer(layer)) {
           _this.initNeighborhoods();
-        }
-        else {
+        } else {
           _this.map.setLayoutProperty(layer, 'visibility', 'visible');
         }
       });
     },
 
-    changeZoomNeighborhoods: function () {
+    changeZoomNeighborhoods: function() {
       return this.zoomToIds(this.zoomNeighborhoods);
     },
 
-    zoomToIds: function (ids) {
-      if (!this.geographyBounds) return;
-
-      let bounds = new mapboxgl.LngLatBounds();
-      ids.forEach((id) => {
-        bounds.extend(this.geographyBounds[id]);
-      });
-
-      if (bounds && !bounds.isEmpty()) {
-        this.map.fitBounds(bounds, {padding: 100});
-      }
+    zoomToIds: function(ids) {
+      const zoomToFeatures = this.map.queryRenderedFeatures({ layers: [this.geography.id], filter: ['match', ['get', 'id'], ids, true, false ] });
+      if (!zoomToFeatures) { return; }
+      const bounds = this.getBoundingBox(zoomToFeatures);
+      this.map.fitBounds(bounds, { padding: 50 });
 
       return bounds;
     },
-
     getOutlineColor: function() {
-            const stops = [];
-            let _this = this;
+      const stops = [];
+      let _this = this;
 
-            _this.selected.forEach(id => {
-                stops.push([id, '#00688B']);
-            });
+      _this.selected.forEach(id => {
+        stops.push([id, '#00688B']);
+      });
 
-            let outline = {
-                property: 'id',
-                default: 'rgba(0,0,0,0)',
-                type: 'categorical',
-                stops: stops
-            }
+      let outline = {
+        property: 'id',
+        default: 'rgba(0,0,0,0)',
+        type: 'categorical',
+        stops: stops
+      }
 
-            if (stops.length > 0) {
-                return outline;
-            } 
-                return outline.default
-            
-        },
+      if (stops.length > 0) {
+        return outline;
+      }
+      return outline.default
+
+    },
     getOutlineWidth: function() {
-            const stops = [];
-            let _this = this;
+      const stops = [];
+      let _this = this;
 
-            _this.selected.forEach(id => {
-                stops.push([id, 4]);
-            });
+      _this.selected.forEach(id => {
+        stops.push([id, 4]);
+      });
 
-            let outlineSize = {
-                property: 'id',
-                default: 0,
-                type: 'categorical',
-                stops: stops
-            };
+      let outlineSize = {
+        property: 'id',
+        default: 0,
+        type: 'categorical',
+        stops: stops
+      };
 
-            if (stops.length > 0) {
-                return outlineSize;
-            } 
-                return outlineSize.default;
-            
-        },
-    getColors: function () {
+      if (stops.length > 0) {
+        return outlineSize;
+      }
+      return outlineSize.default;
+
+    },
+    getColors: function() {
       if (!this.metric.data) return;
 
       const stops = [];
@@ -398,21 +388,19 @@ export default {
       const colors = this.colors;
 
       let color = function(val) {
-                if (val <= breaks[1]) {
-                    return colors[0];
-                } if (val <= breaks[2]) {
-                    return colors[1];
-                }
-                 else if (val <= breaks[3]) {
-                    return colors[2];
-                }
-                 else if (val <= breaks[4]) {
-                    return colors[3];
-                }
-                 else if (val <= breaks[5]) {
-                    return colors[4];
-                }
-            };
+        if (val <= breaks[1]) {
+          return colors[0];
+        }
+        if (val <= breaks[2]) {
+          return colors[1];
+        } else if (val <= breaks[3]) {
+          return colors[2];
+        } else if (val <= breaks[4]) {
+          return colors[3];
+        } else if (val <= breaks[5]) {
+          return colors[4];
+        }
+      };
 
       const _this = this;
       Object.keys(_this.metric.data.map).forEach((id) => {
@@ -432,14 +420,14 @@ export default {
         stops: stops,
       };
     },
-    getHeight: function () {
+    getHeight: function() {
       let _this = this;
       const stops = [];
       let data = _this.metric.data.map;
-      let heightAdjust =                (x) => (
-                    (x - _this.breaks[0])
-                        * 3000 / (_this.breaks[this.breaks.length - 1] - _this.breaks[0])
-                  );
+      let heightAdjust = (x) => (
+          (x - _this.breaks[0])
+          * 3000 / (_this.breaks[this.breaks.length - 1] - _this.breaks[0])
+      );
 
       Object.keys(data).forEach((id) => {
         const value = data[id][`y_${_this.year}`];
@@ -455,8 +443,12 @@ export default {
         stops: stops,
       };
     },
+    getBoundingBox(features) {
+      const longitudes = features.reduce((i, f) => (i.concat(f.geometry.coordinates[0].map(c => c[0]))), []);
+      const latitudes = features.reduce((i, f) => (i.concat(f.geometry.coordinates[0].map(c => c[1]))), []);
+      return [[Math.min(...longitudes), Math.min(...latitudes)], [Math.max(...longitudes), Math.max(...latitudes)]];
+    },
   },
-
 };
 </script>
 

@@ -38,34 +38,10 @@ _.each(siteConfig.geographies || ['geography'], (geography) => {
     data = JSON.parse(data);
     data.features = data.features.map((g) => {g.properties.label = geography.label(g.properties.id); return g;});
 
-    // Compute bounds for each feature and cache these separately.
-    // This is necessary both to improve performance but also because MapboxGL JS doesn't have a zoom to bounds feature for
-    // layers, and doesn't make underlying GeoJSON data accessible from GeoJSON layers. Could be done better in the future.
-    let boundsFile = {};
-    data.features.forEach((feature) => {
-      // The bounds object implements Mapbox GL LngLatBoundsLike object, meaning it is an array of [[w, s], [e, n]].
-      let bounds = [ [ feature.geometry.coordinates[0][0][0], feature.geometry.coordinates[0][0][1] ], [ feature.geometry.coordinates[0][0][0], feature.geometry.coordinates[0][0][1], ] ]; // coordinate pairs go [lon, lat]
-        feature.geometry.coordinates.forEach(function(coordGroup) {
-          coordGroup.forEach(function(coord) {
-              if (coord[0] < bounds[0][0]) bounds[0][0] = coord[0];
-              else if (coord[0] > bounds[1][0]) bounds[1][0] = coord[0];
-              if (coord[1] < bounds[0][1]) bounds[0][1] = coord[1];
-              else if (coord[1] > bounds[1][1]) bounds[1][1] = coord[1];
-          });
-        });
-      boundsFile[feature.properties.id] = bounds;
-    });
-
     data = JSON.stringify(data);
     fs.writeFile(`public/data/${geography.id}.geojson.json`, jsonminify(data), (err) => {
       if (err) return console.log(`Error writing minified geojson for ${geography.name}: ${err.message}`);
       console.log(`Saved and minified geojson for ${geography.name}`);
-    });
-
-    boundsFile = JSON.stringify(boundsFile);
-    fs.writeFile(`public/data/${geography.id}.bounds.json`, boundsFile, (err) => {
-      if (err) return console.log(`Error writing boundsfile  for ${geography.name}: ${err.message}`);
-      console.log(`Saved and minified boundsfile for ${geography.name}`);
     });
   });
 
