@@ -50,7 +50,6 @@ export default {
       const _this = this;
       // after map initiated, grab geography and initiate/style neighborhoods
       map.once('style.load', () => {
-
         map.addSource('neighborhoods', {
           type: 'geojson',
           data: `data/${_this.geographyId}.geojson.json`,
@@ -59,17 +58,20 @@ export default {
         // neighborhood boundaries
         // TODO: Is `building` the right layer for this to be before?
         map.addLayer({
-          'id': 'neighborhoods',
-          'type': 'line',
-          'source': 'neighborhoods',
+          id: 'neighborhoods',
+          type: 'line',
+          source: 'neighborhoods',
+          filter: ['match', ['get', 'id'], _this.selectedGeographies, true, false],
         }, 'tunnel_motorway_link_casing');
+
         map.addLayer({
-          'id': 'neighborhoods-fill-extrude',
-          'type': 'fill-extrusion',
-          'source': 'neighborhoods',
-          'paint': {
+          id: 'neighborhoods-fill-extrude',
+          type: 'fill-extrusion',
+          source: 'neighborhoods',
+          paint: {
             'fill-extrusion-opacity': 1,
           },
+          filter: ['match', ['get', 'id'], _this.selectedGeographies, true, false],
         }, 'waterway_river');
         if (map.getLayer('neighborhoods')) {
           map.setPaintProperty('neighborhoods', 'line-color', '#00688B');
@@ -79,9 +81,18 @@ export default {
           map.setPaintProperty('neighborhoods-fill-extrude', 'fill-extrusion-color', '#F7E55B');
         }
 
-        // geoJSON.features = geoJSON.features.filter(g => (_this.selectedGeographies.indexOf(g.properties.id) !== -1));
-        // const bounds = _this.getBoundingBox(geoJSON.features);
-        // map.fitBounds(bounds, {padding: 50});
+        // Workaround to async issues with map.addLayer vs. map.queryRenderedFeatures
+        // @see https://github.com/mapbox/mapbox-gl-js/issues/4222#issuecomment-279446075
+        function afterMapRenders() {
+          if (!map.loaded()) { return; }
+
+          const visibleFeatures = map.queryRenderedFeatures({ layers: ['neighborhoods'] });
+          const bounds = _this.getBoundingBox(visibleFeatures);
+          map.fitBounds(bounds, { padding: 50 });
+          map.off('render', afterMapRenders);
+        }
+
+        map.on('render', afterMapRenders);
       });
     },
     getBoundingBox(features) {
@@ -89,7 +100,6 @@ export default {
       const latitudes = features.reduce((i, f) => (i.concat(f.geometry.coordinates[0].map(c => c[1]))), []);
       return [[Math.min(...longitudes), Math.min(...latitudes)], [Math.max(...longitudes), Math.max(...latitudes)]];
     },
-
   },
 };
 
