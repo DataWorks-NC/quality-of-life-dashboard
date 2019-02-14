@@ -14,7 +14,7 @@ function getHash(pos = 0) {
     hash[pos] = hash[pos].toString().replace('#', '');
     return decodeURIComponent(hash[pos]);
   } else {
-    return false;
+    return '';
   }
 }
 

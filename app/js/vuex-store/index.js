@@ -1,40 +1,10 @@
-import 'babel-polyfill';
-
 import Vuex from 'vuex';
 import Vue from 'vue';
 
 import config from '../modules/config';
 import jenksBreaks from '../modules/jenksbreaks';
 import { gaEvent } from '../modules/tracking';
-
-const jsonCache = {};
-const htmlCache = {};
-
-const fetchResponseJSON = async (path) => {
-  if (jsonCache[path]) {
-    return jsonCache[path];
-  }
-  try {
-    let response = await fetch(path);
-    return jsonCache[path] = await response.json();
-  }
-  catch (e) {
-    return null;
-  }
-};
-
-const fetchResponseHTML = async (path) => {
-  if (htmlCache[path]) {
-    return htmlCache[path];
-  }
-  try {
-    let response = await fetch(path);
-    return htmlCache[path] = await response.text();
-  }
-  catch (e) {
-    return null;
-  }
-};
+import { fetchResponseJSON, fetchResponseHTML } from '../modules/fetch';
 
 Vue.use(Vuex);
 
@@ -64,15 +34,10 @@ export default new Vuex.Store({
       label: null,
       description: null,
     },
-
-    // Bounds object for each geography.
-    // Each bounds object has keys which are feature ids, and values which are MapBoxGL boundslike objects for the rectangular bounds of that geography.
-    geographyBounds: {},
   },
   getters: {
     reportUrl: state => `${config.siteConfig.qolreportURL}#${state.geography.id}/${state.selected.map(g => encodeURIComponent(g)).join(',')}${state.selectGroupName ? `/${state.selectGroupName}` : ''}`,
     embedUrl: state => `${config.siteConfig.qolembedURL}?m=${state.metricId}&y=${state.year}&s=${state.selected.join(',')}`,
-    geographyBounds: state => state.geographyBounds[state.geography.id],
   },
   mutations: {
     clearSelected(state) {
@@ -142,10 +107,6 @@ export default new Vuex.Store({
     setZoomNeighborhoods(state, neighborhoods) {
       state.zoomNeighborhoods = neighborhoods;
     },
-    setGeographyBounds(state, params) {
-      Vue.set(state.geographyBounds, params.id, params.bounds);
-      Object.freeze(state.geographyBounds[params.id]);
-    }
   },
   actions: {
     async loadMetricData({ commit, state }) {
@@ -180,15 +141,7 @@ export default new Vuex.Store({
     // In contrast to the mutation function by the same name, this checks to see if new data also needs to be loaded.
     async setGeographyId({ commit, dispatch }, newGeographyId) {
       commit('setGeographyId', newGeographyId);
-      return Promise.all([ dispatch('loadMetricData'), dispatch('loadGeographyBounds', newGeographyId) ]);
-    },
-
-    // Load a single geography bounds file.
-    async loadGeographyBounds({ state, commit }, geographyId) {
-      if (!geographyId) geographyId = state.geography.id;
-
-      const bounds = await fetchResponseJSON(`data/${geographyId}.bounds.json`);
-      return commit('setGeographyBounds', { id: geographyId, bounds: bounds });
+      return dispatch('loadMetricData');
     },
 
     async changeMetric({ commit, dispatch, state }, newMetricId) {
