@@ -1,0 +1,14 @@
+// This is needed for npx babel-node only. Brunch babel config is in brunch-config.js.
+
+{
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "browsers": ["last 2 versions", "safari >= 9"]
+        }
+      }
+    ]
+  ], "ignore": ["/node_modules/"]
+}
