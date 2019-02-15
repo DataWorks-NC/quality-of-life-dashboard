@@ -3,6 +3,8 @@ const siteConfig = require('./data/config/site.js');
 const dataConfig = require('./data/config/data.js');
 const privateConfig = require('./data/config/private.js');
 
+privateConfig.environment = process.env.NODE_ENV;
+
 // whatsnew handlebars data
 let whatsnew = _.filter(dataConfig, function(el) {
   return siteConfig.whatsnew.indexOf(el.metric) !== -1;
@@ -13,9 +15,9 @@ module.exports = {
     javascripts: {
       joinTo: {
         'vendor.js': /^(?!app)/,
-        'app.js': ['app/js/main.js', /^app\/js\/modules/, /^app\/js\/components\/(?!report)/],
+        'app.js': ['app/js/main.js', 'app/js/Dashboard.vue', 'app/js/vuex-store/index.js', /^app\/js\/modules/, /^app\/js\/components\/(?!report)/],
         'report.js': ['app/js/report.js', /^app\/js\/modules/, /^app\/js\/components\/report/],
-      }
+      },
     },
     stylesheets: {
       joinTo: {
@@ -23,8 +25,8 @@ module.exports = {
         'map.css': /mapbox-gl.css/,
         'app.css': /^app\/css/,
         'report.css': /^app\/css\/report/,
-      }
-    }
+      },
+    },
   },
   npm: {
     styles: {
@@ -43,7 +45,8 @@ module.exports = {
           {
             targets: {
               browsers: ['last 2 versions', 'safari >= 8']
-            }
+            },
+            include: [ 'es7.object.values', ],
           }
         ]
       ],
@@ -58,9 +61,9 @@ module.exports = {
         dataConfig: dataConfig,
         privateConfig: privateConfig,
         selectgroups: require('./data/config/selectgroups.js'),
-        whatsnew: whatsnew
+        whatsnew: whatsnew,
       },
-      include: {enabled: false}
+      include: { enabled: false },
     },
     swPrecache: {
       options: {
@@ -70,9 +73,9 @@ module.exports = {
           'public/manifest.json',
           'public/data/blockgroup.geojson.json',
           'public/data/tract.geojson.json',
-          'public/style/osm-liberty.json'
+          'public/style/osm-liberty.json',
         ],
-        stripPrefix: 'public/'
+        stripPrefix: 'public/',
       }
     },
     uglify: {
@@ -80,8 +83,8 @@ module.exports = {
       compress: {
         global_defs: {
           DEBUG: false
-        }
-      }
+        },
+      },
     },
     cssnano: {
       autoprefixer: {

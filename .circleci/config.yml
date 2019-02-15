@@ -40,6 +40,7 @@ jobs:
 
       # run tests!
       - run: npm run build
+      - run: npx bundlesize
       - run: mkdir /tmp/workspace
       - persist_to_workspace:
           root: .
@@ -78,6 +79,25 @@ jobs:
           environment:
             AZURE_DESTINATION_BLOB: "dev"
 
+  performance_test_dev:
+    docker:
+      - image: circleci/node:jessie-browsers
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run: npm install
+      # Save google auth credentials to the file they're supposed to be in so as to avoid having to manually authorize.
+      - run: mkdir /home/circleci/.credentials
+      - run: echo $PWMETRICS_GOOGLE_CREDENTIALS > /home/circleci/.credentials/sheets.googleapis.com-nodejs-pwmetrics.json
+      - run: npx pwmetrics http://nbhdcompassdev.azurewebsites.us/#PTLAT/tract/ --config=./.circleci/pwmetrics-config.js
+
 workflows:
   version: 2
   build_and_deploy:
@@ -90,6 +110,10 @@ workflows:
             branches:
               only:
                 develop
+      - performance_test_dev:
+          requires:
+            - deploy_dev
+
       - deploy_prod:
           requires:
             - build
