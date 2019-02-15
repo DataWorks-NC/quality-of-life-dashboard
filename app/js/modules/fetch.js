@@ -1,30 +1,36 @@
-import 'babel-polyfill';
+import 'whatwg-fetch';
 
 const jsonCache = {};
 const htmlCache = {};
 
-const fetchResponseJSON = async (path) => {
+function fetchResponseJSON(path) {
   if (jsonCache[path]) {
     return jsonCache[path];
   }
   try {
-    let response = await fetch(path);
-    return jsonCache[path] = await response.json();
-  }
-  catch (e) {
+    return fetch(path).then((response) => {
+      return response.json();
+    }).then((json) => {
+      jsonCache[path] = json;
+      return json;
+    });
+  } catch (e) {
     return null;
   }
-};
+}
 
-const fetchResponseHTML = async (path) => {
+function fetchResponseHTML(path) {
   if (htmlCache[path]) {
     return htmlCache[path];
   }
   try {
-    let response = await fetch(path);
-    return htmlCache[path] = await response.text();
-  }
-  catch (e) {
+    return fetch(path).then((response) => {
+      return response.text();
+    }).then((text) => {
+      htmlCache[path] = text;
+      return text;
+    });
+  } catch (e) {
     return null;
   }
 };

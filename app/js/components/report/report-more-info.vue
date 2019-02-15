@@ -1,31 +1,33 @@
 <template>
-    <div class="metric-more-info">
-        <div class="metric-more-info__title" @click="toggleMoreInfo"><h3>{{ collapsed ? 'Show more info' : 'Hide more info' }}</h3></div>
-        <div v-show="!collapsed" class="metric-more-info__body" v-html="moreInfo"/>
-    </div>
+  <div class="metric-more-info">
+    <div class="metric-more-info__title" @click="toggleMoreInfo"><h3>{{ collapsed ? 'Show more info' : 'Hide more info' }}</h3></div>
+    <div v-show="!collapsed" class="metric-more-info__body" v-html="moreInfo"/>
+  </div>
 </template>
 
 <script>
-  import { fetchResponseHTML } from '../../modules/fetch';
+import { fetchResponseHTML } from '../../modules/fetch';
 
-  export default {
-    name: 'report-more-info',
-    props: [ 'href' ],
-    data() {
-      return {
-        collapsed: true,
-        moreInfo: 'Loading',
-      };
+export default {
+  name: 'ReportMoreInfo',
+  props: ['href'],
+  data() {
+    return {
+      collapsed: true,
+      moreInfo: 'Loading',
+    };
+  },
+  methods: {
+    toggleMoreInfo() {
+      if (!this.collapsed) return this.collapsed = true;
+      const _this = this;
+      return fetchResponseHTML(this.href).then((result) => {
+        _this.moreInfo = result;
+        _this.collapsed = false;
+      });
     },
-    methods: {
-      toggleMoreInfo: async function() {
-        if (!this.collapsed) return this.collapsed = true;
-
-        this.moreInfo = await fetchResponseHTML(this.href);
-        this.collapsed = false;
-      },
-    }
-  };
+  },
+};
 </script>
 
 <style scoped>
