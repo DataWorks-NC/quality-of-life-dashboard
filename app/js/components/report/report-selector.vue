@@ -9,7 +9,7 @@
               <li>Click on the title of a category to hide or show all of the metrics in that category.</li>
               <li>Click on the title of an individual metric to hide or show just that metric.</li>
               <li>If you want to choose a different part of the city to view for this report, you'll need to <a href="/">go back to the dashboard and make a new selection</a></li>
-              <li>Share your customized report using the following URL: <a :href="getReportURL" class="metric-selector__report-link">{{ getReportURL() }}</a></li>
+              <li>Share your customized report using the following URL: <a :href="getReportURL()" class="metric-selector__report-link">{{ getReportURL() }}</a></li>
             </ul>
           </p>
         </div>

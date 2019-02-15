@@ -1,3 +1,5 @@
+// This is needed for npx babel-node only. Brunch babel config is in brunch-config.js.
+
 {
   "presets": [
     [

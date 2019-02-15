@@ -3,16 +3,16 @@
 if (navigator.userAgent.indexOf('Trident') > 0) {
   setTimeout(function() {
     // fix disappearing icons
-    let elems = document.querySelectorAll('svg.icon use');
-    for (let i = 0; i < elems.length; i++) {
-      let link = elems[i].getAttributeNS(
+    var elems = document.querySelectorAll('svg.icon use');
+    for (var i = 0; i < elems.length; i++) {
+      var link = elems[i].getAttributeNS(
           'https://www.w3.org/1999/xlink',
-          'href',
+          'href'
       );
       elems[i].setAttributeNS('https://www.w3.org/1999/xlink', 'href', link);
     }
 
     // fix toc legend click makes it disappear
-    document.querySelector('#maplegend').style.pointerEvents = 'none';
+    // document.querySelector('#maplegend').style.pointerEvents = 'none';
   }, 5000);
 }

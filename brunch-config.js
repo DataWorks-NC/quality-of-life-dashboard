@@ -45,7 +45,8 @@ module.exports = {
           {
             targets: {
               browsers: ['last 2 versions', 'safari >= 8']
-            }
+            },
+            include: [ 'es7.object.values', ],
           }
         ]
       ],

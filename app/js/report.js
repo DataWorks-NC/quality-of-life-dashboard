@@ -1,3 +1,5 @@
+import "@babel/polyfill";
+
 import Vue from 'vue';
 
 import { fetchResponseJSON } from './modules/fetch';
@@ -15,7 +17,6 @@ import 'vueify/lib/insert-css'; // required for .vue file <style> tags
 // to fix vue not including modules bug
 import 'mapbox-gl';
 
-const privateConfig = config.privateConfig;
 const siteConfig = config.siteConfig;
 const mapConfig = config.mapConfig;
 const dataConfig = config.dataConfig;

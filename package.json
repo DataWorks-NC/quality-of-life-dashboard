@@ -24,13 +24,13 @@
     }
   ],
   "dependencies": {
+    "@babel/polyfill": "^7.2.5",
     "@mapbox/mapbox-gl-geocoder": "^2.3.0",
     "async": "^2.6.1",
     "auto-reload-brunch": "^2.7.1",
     "babel-brunch": "^6.1.1",
     "babel-cli": "^6.26.0",
     "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "brunch": "^2.10.17",
     "chartist": "^0.11.0",
@@ -38,7 +38,6 @@
     "chartist-plugin-tooltip": "^0.0.11",
     "cssnano-brunch": "^1.1.8",
     "csvtojson": "^1.1.12",
-    "es6-promise": "^4.2.5",
     "handlebars-brunch": "^2.10.0",
     "imagemin-brunch": "^1.1.0",
     "js-md5": "^0.7.3",
@@ -56,7 +55,8 @@
     "vue": "^2.5.22",
     "vue-brunch": "2.x",
     "vue-template-compiler": "^2.5.22",
-    "vuex": "^3.1.0"
+    "vuex": "^3.1.0",
+    "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
     "bundlesize": "^0.17.1",

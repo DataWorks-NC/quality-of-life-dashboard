@@ -1,14 +1,4 @@
-// __________________________________
-//   QoL Dashboard v3               |
-//   Tobin Bradley                  |
-//   Mecklenburg County GIS         |
-// ----------------------------------
-//        \   ^__^
-//         \  (oo)\_______
-//            (__)\       )\/\
-//                ||----w |
-//                ||     ||
-//
+import "@babel/polyfill";
 
 import Vue from 'vue';
 
