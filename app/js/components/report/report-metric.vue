@@ -20,8 +20,8 @@
         <TrendChart v-if="metricValues && countyAverages"
                     :metric-config="metric"
                     :years="years"
-                    :values="Object.values(metricValues)"
-                    :average-values="Object.values(countyAverages)"
+                    :values="metricValues"
+                    :average-values="countyAverages"
                     :selected="[]"
         />
       </div>

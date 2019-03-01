@@ -24,11 +24,11 @@ export default {
       required: true,
     },
     values: {
-      type: Array,
+      type: Object,
       required: true,
     },
     averageValues: {
-      type: Array,
+      type: Object,
       required: true,
     },
     metricConfig: {
@@ -41,15 +41,25 @@ export default {
       privateState: {},
     };
   },
+  computed: {
+    // Convert the values object (which is keyed by years) to an array of values, one for each year in the years prop.
+    chartValues() {
+      return this.years.map((year) => { if (this.values.hasOwnProperty(year)) return this.values[year]; return null; });
+    },
+    chartAverageValues() {
+      return this.years.map((year) => { if (this.averageValues.hasOwnProperty(year)) return this.averageValues[year]; return null; });
+    },
+  },
   watch: {
     'values': 'renderChart',
+    'averageValues': 'renderChart',
   },
   mounted() {
     this.renderChart();
   },
   methods: {
     renderChart() {
-      if (!(this.years.length && this.values.length)) return;
+      if (!(this.years.length && this.values)) return;
       if (this.years.length > 1) {
         const _this = this;
         const options = {
@@ -86,7 +96,8 @@ export default {
             }),
           ],
         };
-        // axis labels
+
+        // Axis labels
         if (_this.metricConfig.label) {
           options.plugins.push(Chartist.plugins.ctAxisTitle({
             axisX: {
@@ -113,9 +124,10 @@ export default {
 
         this.privateState.chart = new Chartist.Line(`#ct-trendchart-${this.metricConfig.metric}`, {
           labels: this.years,
-          series: [this.values, this.averageValues],
+          series: [this.chartValues, this.chartAverageValues],
         }, options);
-        // animation
+
+        // Animation.
         this.privateState.chart.on('draw', (data) => {
           if (data.type === 'line') {
             data.element.animate({
