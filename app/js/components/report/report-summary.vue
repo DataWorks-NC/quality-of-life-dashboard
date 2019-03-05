@@ -1,4 +1,4 @@
-<template>
+<template functional>
   <div class="page page-front">
     <div class="row">
       <div class="col-xs-12">
