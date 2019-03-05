@@ -6,6 +6,8 @@
     </div>
     <div class="mdl-layout__spacer"></div>
     <button class="mdl-button mdl-button--colored mdl-js-button mdl-button--raised" @click="print()">PRINT THIS MAP</button>
+    <button class="mdl-button mdl-js-button mdl-button--raised" @click="returnToDashboard()">BACK TO DASHBOARD</button>
+
   </div>
 </template>
 
@@ -30,6 +32,9 @@ export default {
     print() {
       window.print();
     },
+    returnToDashboard() {
+      this.$store.commit('setPrintMode', false);
+    }
   },
 };
 </script>

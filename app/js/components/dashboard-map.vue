@@ -34,11 +34,10 @@ export default {
   ),
 
   watch: {
-    'selected': 'styleNeighborhoods',
+    'selected': ['styleNeighborhoods', 'rescale'],
     'highlight': 'styleNeighborhoods',
     'breaks': 'updateBreaks',
     'year': 'updateYear',
-    'zoomNeighborhoods': 'changeZoomNeighborhoods',
     'geography': 'updateGeography',
     'isPitched3D': 'toggle3D',
   },
@@ -159,7 +158,13 @@ export default {
         _this.initNeighborhoods();
         _this.styleNeighborhoods();
         _this.initMapEvents();
-        _this.zoomToFullExtent();
+        if (_this.selected) {
+          // QueryRenderedFeatures doesn't seem to work until even after map has loaded styles :/
+          setTimeout(() => { _this.rescale() }, 2500);
+        }
+        else {
+          _this.rescale();
+        }
       });
     },
     toggle3D: function() {
@@ -334,10 +339,10 @@ export default {
       });
     },
 
-    changeZoomNeighborhoods: function() {
-      return this.zoomToIds(this.zoomNeighborhoods);
+    rescale: function() {
+      if (this.selected.length) { return this.zoomToIds(this.selected); }
+      else return this.zoomToFullExtent();
     },
-
     zoomToFullExtent: function() {
       const durhamCountyBounds = [-79.0182952880858949,35.8613166809082031, -78.6963348388672017, 36.2414207458496023];
       this.map.fitBounds(durhamCountyBounds, { padding: 50 });
