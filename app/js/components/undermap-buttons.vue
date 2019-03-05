@@ -17,8 +17,7 @@
         <span class="mdl-chip__text">Report</span>
       </button>
       <button
-        v-if="siteConfig.qolembedURL"
-        class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+        class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect undermap-buttons__active"
         data-printmap
         @click="loadEmbed"
       >
@@ -47,7 +46,7 @@ export default {
       this.$store.dispatch('clearSelected');
     },
     loadEmbed() {
-      window.open(this.$store.getters.embedUrl);
+      this.$store.commit('setPrintMode');
     },
   },
 };

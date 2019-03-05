@@ -1,7 +1,7 @@
 <template>
   <div class="mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--12-col">
-    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-      <input v-model="title" id="maptitle" class="mdl-textfield__input" type="text" name="maptitle" maxlength="150" aria-label="Set a custom map title">
+    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label is-dirty">
+      <input v-model="title" id="maptitle" class="mdl-textfield__input" type="text" name="maptitle" maxlength="150" aria-label="Set a custom map title" ref="maptitle">
       <label for="maptitle" class="mdl-textfield__label">Title</label>
     </div>
     <div class="mdl-layout__spacer"></div>
@@ -22,11 +22,15 @@ export default {
       },
     },
   },
+  mounted() {
+    // Hack to force the Material Design Lite text field to think it has been edited and properly display the label.
+    this.$refs.maptitle.dispatchEvent('input');
+  },
   methods: {
     print() {
       window.print();
-    }
-  }
+    },
+  },
 };
 </script>
 
