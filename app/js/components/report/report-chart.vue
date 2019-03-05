@@ -1,5 +1,5 @@
 <template lang="html" functional>
-  <div v-if="averageValues && values" class="qol-chart">
+  <div class="qol-chart">
     <div class="trendchart">
       <h1 v-if="metricConfig">{{ metricConfig.title }}</h1>
       <span class="legend"><svg class="icon legend-county"><use href="#icon-trending_up"/></svg> County</span>
@@ -35,6 +35,9 @@ export default {
       type: Object,
       required: true,
     },
+  },
+  watch: {
+    averageValues() { this.renderChart(); },
   },
   mounted() {
     this.renderChart();
