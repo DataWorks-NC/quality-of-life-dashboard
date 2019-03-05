@@ -1,14 +1,13 @@
 module.exports = {
-  url: 'http://127.0.0.1:3333/report.html#blockgroup/370630019001',
   flags: { // AKA feature flags
-    runs: 3, // number or runs
+    runs: 5, // number or runs
     submit: true, // turn on submitting to Google Sheets
     failOnError: true,
   },
   sheets: {
     type: 'GOOGLE_SHEETS', // sheets service type. Available types: GOOGLE_SHEETS
     options: {
-      spreadsheetId: "1_3aN5ayo6TE_c9XOL_s3yNERFBPYmZtwYiLy_PmYdhc",
+      spreadsheetId: process.env.GOOGLE_SPREADSHEET_ID__REPORT,
       tableName: 'data',
       uploadMedian: true // not required, set to true if you want to upload only the median run
     },
