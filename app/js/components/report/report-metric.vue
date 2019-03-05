@@ -1,4 +1,4 @@
-<template>
+<template functional>
   <div v-if="notNull && visible" class="row">
     <div class="col-md-12">
       <h3>{{ metric.title }}</h3>
@@ -17,11 +17,11 @@
         </tbody>
       </table>
       <div v-if="years.length > 1" class="metric-trendchart">
-        <TrendChart v-if="metricValues && countyAverages"
+        <TrendChart v-if="chartMetricValues && chartCountyAverages"
                     :metric-config="metric"
                     :years="years"
-                    :values="metricValues"
-                    :average-values="countyAverages"
+                    :values="chartMetricValues"
+                    :average-values="chartCountyAverages"
                     :selected="[]"
         />
       </div>
@@ -68,6 +68,18 @@ export default {
     },
     notNull() {
       return (Object.values(this.metricValues).filter(v => (v !== null)).length > 0);
+    },
+    chartMetricValues() {
+      return this.years.map((year) => {
+        if (this.metricValues.hasOwnProperty(year)) return this.metricValues[year];
+        return null;
+      });
+    },
+    chartCountyAverages() {
+      return this.years.map((year) => {
+        if (this.countyAverages.hasOwnProperty(year)) return this.countyAverages[year];
+        return null;
+      });
     },
   },
   methods: {

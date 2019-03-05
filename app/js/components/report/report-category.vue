@@ -1,4 +1,4 @@
-<template>
+<template functional>
   <div class="page page-category" v-if="category.visible && !category.metrics.every(m => !m.visible)">
     <div class="row">
       <div class="col-xs-6 text-left">
