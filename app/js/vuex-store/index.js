@@ -34,6 +34,7 @@ export default new Vuex.Store({
       label: null,
       description: null,
     },
+    printMode: false,
   },
   getters: {
     reportUrl: state => `${config.siteConfig.qolreportURL}#${state.geography.id}/${state.selected.map(g => encodeURIComponent(g)).join(',')}${state.selectGroupName ? `/${state.selectGroupName}` : ''}`,
@@ -106,6 +107,9 @@ export default new Vuex.Store({
     },
     setZoomNeighborhoods(state, neighborhoods) {
       state.zoomNeighborhoods = neighborhoods;
+    },
+    setPrintMode(state, printMode = true) {
+      state.printMode = printMode;
     },
   },
   actions: {
