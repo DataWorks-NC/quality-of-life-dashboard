@@ -202,16 +202,10 @@ export default {
 
 <style lang="css" scoped>
 #legend.top {
-    top: -1px;
-}
-#legend.bottom {
-    bottom: -1px;
+    top: 0px;
 }
 #legend.left {
-    left: -1px;
-}
-#legend.right {
-    right: -1px;
+    left: 0px;
 }
 #legend {
     position: absolute;

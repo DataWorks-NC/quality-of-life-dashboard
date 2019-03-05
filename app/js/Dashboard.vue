@@ -1,6 +1,21 @@
 <template>
-  <div class="mdl-layout__content">
+  <div class="mdl-layout__content" :class="printMode ? 'print' : ''">
     <div v-if="!printMode">
+      <header class="mdl-layout__header mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
+        <div aria-label="sidebar menu" aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button">
+          <svg class="icon icon-menu mdl-color-text--blue-grey-50"><use xmlns:xlink="https://www.w3.org/1999/xlink" xlink:href="#icon-menu"/></svg>
+        </div>
+        <div class="mdl-layout__header-row">
+          <span class="mdl-layout-title"><a href="./"><img src="img/logo.png" :alt="siteConfig.title"></a></span>
+          <div class="mdl-layout-spacer"/>
+          <div class="header-nav" style="height: 54px;">
+            <nav class="mdl-navigation">
+              <a class="mdl-navigation__link mdl-typography--text-uppercase mdl-color-text--blue-grey-50" onclick="ga('send', 'event', 'download', 'metric zip file download')" href="downloads/qol-data.zip">Download Data</a>
+            </nav>
+          </div>
+        </div>
+      </header>
+      <sidebar/>
       <div class="mdl-grid">
         <tabs/>
         <div class="mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--8-col">
@@ -60,7 +75,14 @@
       <dashboard-footer/>
     </div>
     <div v-else>
-      <h2>Print Mode!</h2>
+      <div class="mdl-grid">
+        <div class="mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--12-col">
+        <div class="map-container" style="position: relative">
+        <dashboard-map :mapbox-access-token="privateConfig.mapboxAccessToken" :map-config="mapConfig"/>
+        <dashboard-legend/>
+      </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -156,6 +178,17 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+.print .mdl-grid {
+  max-width: 8in;
+  padding: 0.25in;
+}
 
+.print .map-container {
+  height: 9.5in;
+}
+
+.print #map {
+  height: 9.5in;
+}
 </style>
