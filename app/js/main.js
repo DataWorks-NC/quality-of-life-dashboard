@@ -8,7 +8,6 @@ import store from './vuex-store';
 import 'vueify/lib/insert-css'; // required for .vue file <style> tags
 
 import Dashboard from './Dashboard.vue';
-import Sidebar from './components/sidebar.vue';
 
 // to fix vue not including modules bug
 import 'mapbox-gl';
@@ -23,10 +22,4 @@ const dashboard = new Vue({
   store,
   el: '#dashboard',
   render: h => h(Dashboard),
-});
-
-const sidebar = new Vue({
-  store,
-  el: '#sidebar',
-  render: h => h(Sidebar),
 });

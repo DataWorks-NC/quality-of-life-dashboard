@@ -76,6 +76,7 @@
     </div>
     <div v-else>
       <div class="mdl-grid">
+          <print-map-header/>
         <div class="mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--12-col">
         <div class="map-container" style="position: relative">
         <dashboard-map :mapbox-access-token="privateConfig.mapboxAccessToken" :map-config="mapConfig"/>
@@ -100,6 +101,7 @@ import GeographySwitcher from './components/geography-switcher.vue';
 import DashboardLegend from './components/dashboard-legend.vue';
 import DashboardMap from './components/dashboard-map.vue';
 import Metadata from './components/metadata.vue';
+import PrintMapHeader from './components/print-map-header.vue';
 import Sidebar from './components/sidebar.vue';
 import Social from './components/social.vue';
 import Tabs from './components/tabs.vue';
@@ -118,6 +120,7 @@ export default {
     DashboardLegend,
     DashboardMap,
     Metadata,
+    PrintMapHeader,
     Sidebar,
     Social,
     Tabs,
@@ -136,7 +139,7 @@ export default {
     printMode: 'printMode',
     urlHash(state) {
       if (!state.metricId || !state.geography.id) return '';
-      return `${state.metricId}/${state.geography.id}/${state.selected.map(g => encodeURIComponent(g)).join(',')}`;
+      return `${state.printMode ? 'print/' : ''}${state.metricId}/${state.geography.id}/${state.selected.map(g => encodeURIComponent(g)).join(',')}`;
     },
   }),
   watch: {

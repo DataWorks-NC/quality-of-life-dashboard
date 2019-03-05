@@ -35,10 +35,12 @@ export default new Vuex.Store({
       description: null,
     },
     printMode: false,
+    customLegendTitle: '',
   },
   getters: {
     reportUrl: state => `${config.siteConfig.qolreportURL}#${state.geography.id}/${state.selected.map(g => encodeURIComponent(g)).join(',')}${state.selectGroupName ? `/${state.selectGroupName}` : ''}`,
     embedUrl: state => `${config.siteConfig.qolembedURL}?m=${state.metricId}&y=${state.year}&s=${state.selected.join(',')}`,
+    legendTitle: state => state.customLegendTitle || !state.metric.config ? state.customLegendTitle : state.metric.config.title + ', ' + state.year,
   },
   mutations: {
     clearSelected(state) {
@@ -111,6 +113,9 @@ export default new Vuex.Store({
     setPrintMode(state, printMode = true) {
       state.printMode = printMode;
     },
+    setCustomLegendTitle(state, title) {
+      state.customLegendTitle = title;
+    }
   },
   actions: {
     async loadMetricData({ commit, state }) {

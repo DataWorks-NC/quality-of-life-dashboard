@@ -5,7 +5,7 @@
       <div class="legendposition">
         <a href="javascript:void(0)" title="Move Table of Contents" @click="position()"><svg class="icon"><use href="#icon-zoom_out_map"/></svg></a>
       </div>
-      <h1 class="title">{{ metricConfig.title }}, {{ year }}</h1>
+      <h1 class="title">{{ $store.getters.legendTitle }}</h1>
       <div class="metricboxes">
         <div v-if="selected.length > 0" class="metricbox">
           <span class="metrictype">SELECTED</span>
