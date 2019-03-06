@@ -19,14 +19,15 @@ Vue.use(Vuex);
 Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
-const dashboard = new Vue({
-  store,
-  el: '#dashboard',
-  render: h => h(Dashboard),
-});
-
 const sidebar = new Vue({
   store,
   el: '#sidebar',
   render: h => h(Sidebar),
+});
+
+/* eslint-disable no-new */
+const dashboard = new Vue({
+  store,
+  el: '#dashboard',
+  render: h => h(Dashboard),
 });

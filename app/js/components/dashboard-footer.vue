@@ -1,4 +1,4 @@
-<template lang="html">
+<template lang="html" functional>
   <footer class="mdl-grid">
     <div class="mdl-typography--text-center mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet">
       <p v-if="siteConfig.links" class="site-links" >
