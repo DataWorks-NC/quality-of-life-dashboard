@@ -114,3 +114,18 @@ button.mdl-chip:hover {
 button.mdl-chip.is-disabled:hover {
   box-shadow:none;
 }
+
+/* Print styling for global components */
+.print #sidebar-hamburger-button {
+  display: none;
+}
+
+.print .header-nav {
+  display: none;
+}
+
+@media print {
+  .mdl-layout__header {
+    display: none;
+  }
+}

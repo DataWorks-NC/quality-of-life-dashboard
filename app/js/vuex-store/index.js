@@ -112,6 +112,7 @@ export default new Vuex.Store({
     },
     setPrintMode(state, printMode = true) {
       state.printMode = printMode;
+      if (!printMode) state.customLegendTitle = '';
     },
     setCustomLegendTitle(state, title) {
       state.customLegendTitle = title;

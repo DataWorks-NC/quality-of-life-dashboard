@@ -1,21 +1,6 @@
 <template>
   <div class="mdl-layout__content" :class="printMode ? 'print' : ''">
     <div v-if="!printMode">
-      <header class="mdl-layout__header mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
-        <div aria-label="sidebar menu" aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button">
-          <svg class="icon icon-menu mdl-color-text--blue-grey-50"><use xmlns:xlink="https://www.w3.org/1999/xlink" xlink:href="#icon-menu"/></svg>
-        </div>
-        <div class="mdl-layout__header-row">
-          <span class="mdl-layout-title"><a href="./"><img src="img/logo.png" :alt="siteConfig.title"></a></span>
-          <div class="mdl-layout-spacer"/>
-          <div class="header-nav" style="height: 54px;">
-            <nav class="mdl-navigation">
-              <a class="mdl-navigation__link mdl-typography--text-uppercase mdl-color-text--blue-grey-50" onclick="ga('send', 'event', 'download', 'metric zip file download')" href="downloads/qol-data.zip">Download Data</a>
-            </nav>
-          </div>
-        </div>
-      </header>
-      <sidebar/>
       <div class="mdl-grid">
         <tabs/>
         <div class="mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--8-col">
@@ -121,7 +106,6 @@ export default {
     DashboardMap,
     Metadata,
     PrintMapHeader,
-    Sidebar,
     Social,
     Tabs,
     TrendChart,
@@ -145,6 +129,9 @@ export default {
   watch: {
     urlHash(newUrlHash) {
       location.hash = newUrlHash;
+    },
+    printMode() {
+      this.setPrintClass();
     },
   },
   beforeCreate() {
@@ -178,6 +165,19 @@ export default {
       this.$store.dispatch('randomMetric');
     }
   },
+  mounted() {
+    this.setPrintClass();
+  },
+  methods: {
+    setPrintClass() {
+      // Add print mode class to body.
+      if (this.printMode) {
+        document.getElementsByTagName('body')[0].classList.add('print');
+      } else {
+        document.getElementsByTagName('body')[0].classList.remove('print');
+      }
+    }
+  }
 };
 </script>
 

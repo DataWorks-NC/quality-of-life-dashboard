@@ -28,6 +28,10 @@ export default {
     // Hack to force the Material Design Lite text field to think it has been edited and properly display the label.
     this.$refs.maptitle.dispatchEvent(new Event('input'));
   },
+  updated() {
+    // Hack to force the Material Design Lite text field to think it has been edited and properly display the label.
+    this.$refs.maptitle.dispatchEvent(new Event('input'));
+  },
   methods: {
     print() {
       window.print();

@@ -1,23 +1,23 @@
 <template lang="html">
-  <div class="demo-drawer mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
+  <div v-if="!printMode" class="demo-drawer mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
     <header class="demo-drawer-header">
       <a href="./">{{ title }}</a>
     </header>
-  <nav class="demo-navigation mdl-navigation mdl-color--blue-grey-900">
-    <template v-if="filterVal">
-      <a class="mdl-navigation__link" href="javascript:void(0)" @click="changeFilter(null)"><svg class="mdl-color-text--blue-grey-400 icon icon-keyboard_arrow_left navleft"><use href="#icon-keyboard_arrow_left"/></svg>Back</a>
-      <template v-for="m in filteredMetrics">
-        <a class="mdl-navigation__link mdl-navigation__link-end" href="javascript:void(0)" @click="changeMetric(m.metric)">{{ m.title }}</a>
+    <nav class="demo-navigation mdl-navigation mdl-color--blue-grey-900">
+      <template v-if="filterVal">
+        <a class="mdl-navigation__link" href="javascript:void(0)" @click="changeFilter(null)"><svg class="mdl-color-text--blue-grey-400 icon icon-keyboard_arrow_left navleft"><use href="#icon-keyboard_arrow_left"/></svg>Back</a>
+        <template v-for="m in filteredMetrics">
+          <a class="mdl-navigation__link mdl-navigation__link-end" href="javascript:void(0)" @click="changeMetric(m.metric)">{{ m.title }}</a>
+        </template>
       </template>
-    </template>
-    <template v-else >
-      <span class="sidebar-title">Explore the Data</span>
-      <template v-for="category in categories">
-        <a class="mdl-navigation__link" href="javascript:void(0)" @click="changeFilter(category)">{{ category }}<svg class="mdl-color-text--blue-grey-400 icon icon-keyboard_arrow_right navright"><use href="#icon-keyboard_arrow_right"/></svg></a>
+      <template v-else >
+        <span class="sidebar-title">Explore the Data</span>
+        <template v-for="category in categories">
+          <a class="mdl-navigation__link" href="javascript:void(0)" @click="changeFilter(category)">{{ category }}<svg class="mdl-color-text--blue-grey-400 icon icon-keyboard_arrow_right navright"><use href="#icon-keyboard_arrow_right"/></svg></a>
+        </template>
+        <a class="mdl-navigation__link" download="downloads/qol-data.zip" @click="ga('send', 'event', 'download', 'metric zip file download')" >Download Data</a>
       </template>
-      <a class="mdl-navigation__link" download="downloads/qol-data.zip" @click="ga('send', 'event', 'download', 'metric zip file download')" >Download Data</a>
-    </template>
-  </nav>
+    </nav>
   </div>
 </template>
 
@@ -33,6 +33,9 @@ export default {
     title: config.siteConfig.title,
   }),
   computed: {
+    printMode() {
+      return this.$store.state.printMode;
+    },
     filteredMetrics() {
       return this.metricsByCategory[this.filterVal];
     },
