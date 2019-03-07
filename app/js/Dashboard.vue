@@ -60,15 +60,7 @@
       <dashboard-footer/>
     </div>
     <div v-else>
-      <div class="mdl-grid">
-          <print-map-header/>
-        <div class="mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--12-col">
-        <div class="map-container" style="position: relative">
-        <dashboard-map :mapbox-access-token="privateConfig.mapboxAccessToken" :map-config="mapConfig"/>
-        <dashboard-legend/>
-      </div>
-        </div>
-      </div>
+      <print-mode :map-config="mapConfig" :private-config="privateConfig"/>
     </div>
   </div>
 </template>
@@ -86,8 +78,7 @@ import GeographySwitcher from './components/geography-switcher.vue';
 import DashboardLegend from './components/dashboard-legend.vue';
 import DashboardMap from './components/dashboard-map.vue';
 import Metadata from './components/metadata.vue';
-import PrintMapHeader from './components/print-map-header.vue';
-import Sidebar from './components/sidebar.vue';
+import PrintMode from './components/print-mode.vue';
 import Social from './components/social.vue';
 import Tabs from './components/tabs.vue';
 import TrendChart from './components/trend-chart.vue';
@@ -105,7 +96,7 @@ export default {
     DashboardLegend,
     DashboardMap,
     Metadata,
-    PrintMapHeader,
+    PrintMode,
     Social,
     Tabs,
     TrendChart,
@@ -182,16 +173,4 @@ export default {
 </script>
 
 <style>
-.print .mdl-grid {
-  max-width: 8in;
-  padding: 0.25in;
-}
-
-.print .map-container {
-  height: 9.5in;
-}
-
-.print #map {
-  height: 9.5in;
-}
 </style>
