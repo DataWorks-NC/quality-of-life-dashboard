@@ -164,8 +164,10 @@ export default {
       // Add print mode class to body.
       if (this.printMode) {
         document.getElementsByTagName('body')[0].classList.add('print');
+        document.title = `${this.siteConfig.title} - ${this.$store.getters.legendTitle}`;
       } else {
         document.getElementsByTagName('body')[0].classList.remove('print');
+        document.title = this.siteConfig.title;
       }
     }
   }
