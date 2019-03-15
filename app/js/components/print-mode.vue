@@ -74,5 +74,9 @@ export default {
     height: 0.25in;
     margin: auto;
   }
+
+  .mapboxgl-popup {
+    display: none;
+  }
 }
 </style>

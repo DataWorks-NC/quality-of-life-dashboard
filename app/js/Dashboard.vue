@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 import config from './modules/config';
 
@@ -110,19 +110,27 @@ export default {
       mapConfig: config.mapConfig,
     };
   },
-  computed: mapState({
-    printMode: 'printMode',
-    urlHash(state) {
-      if (!state.metricId || !state.geography.id) return '';
-      return `${state.printMode ? 'print/' : ''}${state.metricId}/${state.geography.id}/${state.selected.map(g => encodeURIComponent(g)).join(',')}`;
-    },
-  }),
+  computed: Object.assign(
+    mapState({
+      printMode: 'printMode',
+      metric: 'metric',
+      urlHash(state) {
+        if (!state.metricId || !state.geography.id) return '';
+        return `${state.printMode ? 'print/' : ''}${state.metricId}/${state.geography.id}/${state.selected.map(g => encodeURIComponent(g)).join(',')}`;
+      },
+    }),
+    mapGetters({
+      legendTitle: 'legendTitle',
+    })),
   watch: {
     urlHash(newUrlHash) {
       location.hash = newUrlHash;
     },
     printMode() {
       this.setPrintClass();
+    },
+    legendTitle() {
+      this.setTitle();
     },
   },
   beforeCreate() {
@@ -158,19 +166,26 @@ export default {
   },
   mounted() {
     this.setPrintClass();
+    this.setTitle();
   },
   methods: {
     setPrintClass() {
       // Add print mode class to body.
       if (this.printMode) {
         document.getElementsByTagName('body')[0].classList.add('print');
-        document.title = `${this.siteConfig.title} - ${this.$store.getters.legendTitle}`;
       } else {
         document.getElementsByTagName('body')[0].classList.remove('print');
+      }
+    },
+    setTitle() {
+      if (this.legendTitle) {
+        document.title = `${this.siteConfig.title} - ${this.legendTitle}`;
+      }
+      else {
         document.title = this.siteConfig.title;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
