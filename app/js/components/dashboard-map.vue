@@ -73,11 +73,6 @@ export default {
       // Zoom to county extent initially before map loads.
       this.rescale();
 
-      // Add attribution to print maps.
-      if (this.printMode) {
-        map.addControl(new mapboxgl.AttributionControl({ compact: false, customAttribution: 'Map from the Durham Neighborhood Compass, a project of DataWorks NC. Visit compass.durhamnc.gov to build your own map.'}));
-      }
-
       // add nav control
       const nav = new mapboxgl.NavigationControl();
       map.addControl(nav, 'top-right');

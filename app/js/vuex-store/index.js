@@ -40,7 +40,11 @@ export default new Vuex.Store({
   getters: {
     reportUrl: state => `${config.siteConfig.qolreportURL}#${state.geography.id}/${state.selected.map(g => encodeURIComponent(g)).join(',')}${state.selectGroupName ? `/${state.selectGroupName}` : ''}`,
     embedUrl: state => `${config.siteConfig.qolembedURL}?m=${state.metricId}&y=${state.year}&s=${state.selected.join(',')}`,
-    legendTitle: state => state.customLegendTitle || !state.metric.config ? state.customLegendTitle : state.metric.config.title + ', ' + state.year,
+    legendTitle: state => {
+      if (state.customLegendTitle) return state.customLegendTitle;
+      else if (state.metric.config) return state.metric.config.title + ', ' + state.year;
+      return '';
+    },
   },
   mutations: {
     clearSelected(state) {
@@ -112,7 +116,7 @@ export default new Vuex.Store({
     },
     setPrintMode(state, printMode = true) {
       state.printMode = printMode;
-      if (!printMode) state.customLegendTitle = '';
+      if (!printMode) state.customLegendTitle = false;
     },
     setCustomLegendTitle(state, title) {
       state.customLegendTitle = title;
