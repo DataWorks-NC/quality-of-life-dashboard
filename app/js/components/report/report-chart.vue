@@ -1,4 +1,4 @@
-<template lang="html">
+<template lang="html" functional>
   <div class="qol-chart">
     <div class="trendchart">
       <h1 v-if="metricConfig">{{ metricConfig.title }}</h1>
@@ -36,109 +36,106 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      privateState: {},
-    };
-  },
   watch: {
-    'values': 'renderChart',
+    averageValues() { this.renderChart(); },
   },
   mounted() {
     this.renderChart();
   },
+  updated() {
+    this.renderChart();
+  },
   methods: {
     renderChart() {
-      if (!(this.years.length && this.values.length)) return;
-      if (this.years.length > 1) {
-        const _this = this;
-        const options = {
-          fullWidth: true,
-          height: '180px',
-          showArea: false,
-          low: 0,
-          chartPadding: {
-            right: 40,
+      // Render chart, but only if all the data is here (so render only once).
+      // Filter i=>i call returns true only if the array contains at least one non-null value.
+      if (!this.years.length || !this.values.filter(i => i).length || !this.averageValues.filter(i => i).length || this.years.length <= 1) return;
+      const metricConfig = this.metricConfig;
+      const len = this.years[this.years.length - 1] - this.years[0];
+      const options = {
+        fullWidth: true,
+        height: '180px',
+        showArea: false,
+        low: 0,
+        chartPadding: {
+          right: 40,
+        },
+        lineSmooth: Chartist.Interpolation.cardinal({
+          fillHoles: true,
+        }),
+        axisY: {
+          labelInterpolationFnc(value, index) {
+            return abbrNum(round(Number(value), 2), 2);
           },
-          lineSmooth: Chartist.Interpolation.cardinal({
-            fillHoles: true,
+        },
+        axisX: {
+          labelInterpolationFnc(value, index) {
+            if (len > 6) {
+              return index % 2 === 0 ? value : null;
+            }
+            return value;
+          },
+        },
+        plugins: [
+          Chartist.plugins.tooltip({
+            transformTooltipTextFnc(value) {
+              return prettyNumber(value, metricConfig.decimals, metricConfig.prefix,
+                  metricConfig.suffix);
+            },
           }),
-          axisY: {
-            labelInterpolationFnc(value, index) {
-              return abbrNum(round(Number(value), 2), 2);
-            },
-          },
-          axisX: {
-            labelInterpolationFnc(value, index) {
-              const len = _this.years[_this.years.length - 1] - _this.years[0];
-              if (len > 6) {
-                return index % 2 === 0 ? value : null;
-              }
-              return value;
-            },
-          },
-          plugins: [
-            Chartist.plugins.tooltip({
-              transformTooltipTextFnc(value) {
-                return prettyNumber(value, _this.metricConfig.decimals, _this.metricConfig.prefix,
-                  _this.metricConfig.suffix);
-              },
-            }),
-          ],
-        };
-        // axis labels
-        if (_this.metricConfig.label) {
-          options.plugins.push(Chartist.plugins.ctAxisTitle({
-            axisX: {
-              axisTitle: '',
-              axisClass: 'ct-axis-title',
-              offset: {
-                x: 0,
-                y: 50,
-              },
-              textAnchor: 'middle',
-            },
-            axisY: {
-              axisTitle: _this.metricConfig.label,
-              axisClass: 'ct-axis-title',
-              offset: {
-                x: 0,
-                y: -1,
-              },
-              flipTitle: false,
-              textAnchor: 'middle',
-            },
-          }));
-        }
+        ],
+      };
 
-        this.privateState.chart = new Chartist.Line(`#ct-trendchart-${this.metricConfig.metric}`, {
-          labels: this.years,
-          series: [this.values, this.averageValues],
-        }, options);
-        // animation
-        this.privateState.chart.on('draw', (data) => {
-          if (data.type === 'line') {
-            data.element.animate({
-              d: {
-                begin: 500 * data.index,
-                dur: 500,
-                from: data.path.clone().scale(1, 0).translate(0, data.chartRect.height()).stringify(),
-                to: data.path.clone().stringify(),
-                easing: Chartist.Svg.Easing.easeOutQuint,
-              },
-              opacity: {
-                begin: 500 * data.index,
-                dur: 500,
-                from: 0,
-                to: 1,
-              },
-            });
-          }
-        });
-      } else if (this.privateState.chart) {
-        this.privateState.chart.detach();
-        this.privateState.chart = null;
+      // Axis labels
+      if (metricConfig.label) {
+        options.plugins.push(Chartist.plugins.ctAxisTitle({
+          axisX: {
+            axisTitle: '',
+            axisClass: 'ct-axis-title',
+            offset: {
+              x: 0,
+              y: 50,
+            },
+            textAnchor: 'middle',
+          },
+          axisY: {
+            axisTitle: metricConfig.label,
+            axisClass: 'ct-axis-title',
+            offset: {
+              x: 0,
+              y: -1,
+            },
+            flipTitle: false,
+            textAnchor: 'middle',
+          },
+        }));
       }
+
+      const chart = new Chartist.Line(`#ct-trendchart-${metricConfig.metric}`, {
+        labels: this.years,
+        series: [this.values, this.averageValues],
+      }, options);
+
+      // Animation.
+      chart.on('draw', (data) => {
+        if (data.type === 'line') {
+          data.element.animate({
+            d: {
+              begin: 500 * data.index,
+              dur: 500,
+              from: data.path.clone().scale(1, 0).translate(0, data.chartRect.height()).stringify(),
+              to: data.path.clone().stringify(),
+              easing: Chartist.Svg.Easing.easeOutQuint,
+            },
+            opacity: {
+              begin: 500 * data.index,
+              dur: 500,
+              from: 0,
+              to: 1,
+            },
+          });
+        }
+      });
     },
   },
 };

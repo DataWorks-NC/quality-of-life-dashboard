@@ -1,67 +1,72 @@
 <template>
-  <div class="mdl-layout__content">
-    <div class="mdl-grid">
-      <tabs/>
-      <div class="mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--8-col">
-        <div class="map-container" style="position: relative">
-          <dashboard-map :mapbox-access-token="privateConfig.mapboxAccessToken" :map-config="mapConfig"/>
-          <dashboard-legend/>
-        </div>
-        <div class="flexcontainer">
-          <div class="flex-item mdl-typography--text-right">
-            <year-slider/>
+  <div class="mdl-layout__content" :class="printMode ? 'print' : ''">
+    <div v-if="!printMode">
+      <div class="mdl-grid">
+        <tabs/>
+        <div class="mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--8-col">
+          <div class="map-container" style="position: relative">
+            <dashboard-map :mapbox-access-token="privateConfig.mapboxAccessToken" :map-config="mapConfig"/>
+            <dashboard-legend/>
           </div>
-          <undermap-buttons/>
+          <div class="flexcontainer">
+            <div class="flex-item mdl-typography--text-right">
+              <year-slider/>
+            </div>
+            <undermap-buttons/>
+          </div>
+          <data-table/>
+          <div class="demo-separator mdl-cell--1-col"/>
+          <metadata/>
         </div>
-        <data-table/>
-        <div class="demo-separator mdl-cell--1-col"/>
-        <metadata/>
-      </div>
-      <div class="demo-cards mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-grid mdl-grid--no-spacing">
-        <geography-switcher/>
-        <div class="demo-separator mdl-cell--1-col"/>
-        <distribution-chart/>
-        <div class="demo-separator mdl-cell--1-col"/>
-        <trend-chart/>
-        <div class="demo-separator mdl-cell--1-col"/>
-        <feedback/>
-        <div class="demo-separator mdl-cell--1-col"/>
-        <div class="mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop mdl-typography--text-center">
-          <social/>
+        <div class="demo-cards mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-grid mdl-grid--no-spacing">
+          <geography-switcher/>
+          <div class="demo-separator mdl-cell--1-col"/>
+          <distribution-chart/>
+          <div class="demo-separator mdl-cell--1-col"/>
+          <trend-chart/>
+          <div class="demo-separator mdl-cell--1-col"/>
+          <feedback/>
+          <div class="demo-separator mdl-cell--1-col"/>
+          <div class="mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop mdl-typography--text-center">
+            <social/>
+          </div>
         </div>
       </div>
+      <div class="mdl-grid demo-cards">
+        <div v-if="siteConfig.contactForm" class="mdl-typography--text-center mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet comment-container">
+          <div class="comment-form">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label is-focused">
+              <input id="contact-email" class="mdl-textfield__input" type="email" required autocomplete="off">
+              <label class="mdl-textfield__label" for="contact-email">Email Address</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label is-focused">
+              <textarea id="contact-message" class="mdl-textfield__input" type="text" rows="3" required autocomplete="off"/>
+              <label class="mdl-textfield__label" for="contact-message">Message</label>
+            </div>
+            <p>
+              <button id="contact-submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+                      style="display: inline">
+                Contact Us
+              </button>
+            </p>
+          </div>
+          <div class="comment-complete">
+            <p>
+              <i class="material-icons">thumb_up</i><br> Thanks!
+            </p>
+          </div>
+        </div>
+      </div>
+      <dashboard-footer/>
     </div>
-    <div class="mdl-grid demo-cards">
-      <div v-if="siteConfig.contactForm" class="mdl-typography--text-center mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet comment-container">
-        <div class="comment-form">
-          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label is-focused">
-            <input id="contact-email" class="mdl-textfield__input" type="email" required autocomplete="off">
-            <label class="mdl-textfield__label" for="contact-email">Email Address</label>
-          </div>
-          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label is-focused">
-            <textarea id="contact-message" class="mdl-textfield__input" type="text" rows="3" required autocomplete="off"/>
-            <label class="mdl-textfield__label" for="contact-message">Message</label>
-          </div>
-          <p>
-            <button id="contact-submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
-                    style="display: inline">
-              Contact Us
-            </button>
-          </p>
-        </div>
-        <div class="comment-complete">
-          <p>
-            <i class="material-icons">thumb_up</i><br> Thanks!
-          </p>
-        </div>
-      </div>
+    <div v-else>
+      <print-mode :map-config="mapConfig" :private-config="privateConfig"/>
     </div>
-    <dashboard-footer/>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 import config from './modules/config';
 
@@ -73,7 +78,7 @@ import GeographySwitcher from './components/geography-switcher.vue';
 import DashboardLegend from './components/dashboard-legend.vue';
 import DashboardMap from './components/dashboard-map.vue';
 import Metadata from './components/metadata.vue';
-import Sidebar from './components/sidebar.vue';
+import PrintMode from './components/print-mode.vue';
 import Social from './components/social.vue';
 import Tabs from './components/tabs.vue';
 import TrendChart from './components/trend-chart.vue';
@@ -91,7 +96,7 @@ export default {
     DashboardLegend,
     DashboardMap,
     Metadata,
-    Sidebar,
+    PrintMode,
     Social,
     Tabs,
     TrendChart,
@@ -100,19 +105,32 @@ export default {
   },
   data() {
     return {
-    siteConfig: config.siteConfig,
-    privateConfig: config.privateConfig,
-    mapConfig: config.mapConfig, };
+      siteConfig: config.siteConfig,
+      privateConfig: config.privateConfig,
+      mapConfig: config.mapConfig,
+    };
   },
-  computed: mapState({
-    urlHash(state) {
-      if (!state.metricId || !state.geography.id) return '';
-      return `${state.metricId}/${state.geography.id}/${state.selected.map(g => encodeURIComponent(g)).join(',')}`;
-    },
-  }),
+  computed: Object.assign(
+    mapState({
+      printMode: 'printMode',
+      metric: 'metric',
+      urlHash(state) {
+        if (!state.metricId || !state.geography.id) return '';
+        return `${state.printMode ? 'print/' : ''}${state.metricId}/${state.geography.id}/${state.selected.map(g => encodeURIComponent(g)).join(',')}`;
+      },
+    }),
+    mapGetters({
+      legendTitle: 'legendTitle',
+    })),
   watch: {
     urlHash(newUrlHash) {
       location.hash = newUrlHash;
+    },
+    printMode() {
+      this.setPrintClass();
+    },
+    legendTitle() {
+      this.setTitle();
     },
   },
   beforeCreate() {
@@ -127,22 +145,49 @@ export default {
         }
         return false;
       }
+      let hashOffset = 0;
 
-      // Hash has the form #metricId/geographyId/selectedid1,selectedid2
-      if (getHash(1)) {
-        this.$store.commit('setGeographyId', getHash(1));
+      if (getHash(0).toLowerCase() === 'print') {
+        this.$store.commit('setPrintMode');
+        hashOffset = 1;
       }
-      if (getHash(2)) {
-        this.$store.commit('setSelected', getHash(2).split(','));
+
+      // Hash has the form #[print]/metricId/geographyId/selectedid1,selectedid2
+      if (getHash(hashOffset + 1)) {
+        this.$store.commit('setGeographyId', getHash(hashOffset + 1));
       }
-      this.$store.dispatch('changeMetric', getHash(0));
+      if (getHash(hashOffset + 2)) {
+        this.$store.commit('setSelected', getHash(hashOffset + 2).split(','));
+      }
+      this.$store.dispatch('changeMetric', getHash(hashOffset));
     } else {
       this.$store.dispatch('randomMetric');
     }
   },
+  mounted() {
+    this.setPrintClass();
+    this.setTitle();
+  },
+  methods: {
+    setPrintClass() {
+      // Add print mode class to body.
+      if (this.printMode) {
+        document.getElementsByTagName('body')[0].classList.add('print');
+      } else {
+        document.getElementsByTagName('body')[0].classList.remove('print');
+      }
+    },
+    setTitle() {
+      if (this.legendTitle) {
+        document.title = `${this.siteConfig.title} - ${this.legendTitle}`;
+      }
+      else {
+        document.title = this.siteConfig.title;
+      }
+    },
+  },
 };
 </script>
 
-<style scoped>
-
+<style>
 </style>

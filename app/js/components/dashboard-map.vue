@@ -30,15 +30,14 @@ export default {
 
   // For some reason brunch doesn't like object spread syntax, so using Object.assign here.
   computed: Object.assign(
-      mapState(['breaks', 'geography', 'highlight', 'metric', 'metricId', 'selected', 'year', 'zoomNeighborhoods']),
+      mapState(['breaks', 'geography', 'highlight', 'metric', 'metricId', 'printMode', 'selected', 'year', 'zoomNeighborhoods']),
   ),
 
   watch: {
-    'selected': 'styleNeighborhoods',
+    'selected': ['styleNeighborhoods', 'rescale'],
     'highlight': 'styleNeighborhoods',
     'breaks': 'updateBreaks',
     'year': 'updateYear',
-    'zoomNeighborhoods': 'changeZoomNeighborhoods',
     'geography': 'updateGeography',
     'isPitched3D': 'toggle3D',
   },
@@ -71,6 +70,9 @@ export default {
         closeOnClick: false,
       });
 
+      // Zoom to county extent initially before map loads.
+      this.rescale();
+
       // add nav control
       const nav = new mapboxgl.NavigationControl();
       map.addControl(nav, 'top-right');
@@ -82,59 +84,61 @@ export default {
       ), 'top-right');
       map.addControl(new mapboxgl.GeolocateControl(), 'top-right');
 
-      map.addControl(new MapboxGlGeocoder({
-        accessToken: _this.mapboxAccessToken,
-        country: 'us',
-        bbox: [-79.01, 35.87, -78.7, 36.15],
-        placeholder: 'Search for an address, neighborhood or landmark',
-        zoom: 14,
-      }).on('result', (e) => {
-        if (e.result) {
-          // create the marker
-          const markers = {
-            "type": "FeatureCollection",
-            "features": [
-              {
-                "type": "Feature",
-                "geometry": {
-                  "type": "Point",
-                  "coordinates": e.result.center,
-                },
-              }],
-          };
+      if (!this.printMode) {
+        map.addControl(new MapboxGlGeocoder({
+          accessToken: _this.mapboxAccessToken,
+          country: 'us',
+          bbox: [-79.01, 35.87, -78.7, 36.15],
+          placeholder: 'Search for an address, neighborhood or landmark',
+          zoom: 14,
+        }).on('result', (e) => {
+          if (e.result) {
+            // create the marker
+            const markers = {
+              "type": "FeatureCollection",
+              "features": [
+                {
+                  "type": "Feature",
+                  "geometry": {
+                    "type": "Point",
+                    "coordinates": e.result.center,
+                  },
+                }],
+            };
 
-          if (map.getLayer("point")) {
-            map.getSource("point").setData(markers);
-          } else {
-            map.addLayer({
-              "id": "point",
-              "type": "symbol",
-              "source": {
-                "type": "geojson",
-                "data": markers,
-              },
-              "layout": {
-                "icon-image": "star_15",
-                "icon-size": 2,
-              },
+            if (map.getLayer("point")) {
+              map.getSource("point").setData(markers);
+            } else {
+              map.addLayer({
+                "id": "point",
+                "type": "symbol",
+                "source": {
+                  "type": "geojson",
+                  "data": markers,
+                },
+                "layout": {
+                  "icon-image": "star_15",
+                  "icon-size": 2,
+                },
+              });
+            }
+
+            // Clear selection and select underlying area
+            let features = map.queryRenderedFeatures(map.project(e.result.center),
+                {layers: [`${_this.geography.id}-fill-extrude`]}).map(g => g.properties.id);
+            _this.$store.commit('setSelected', features);
+            _this.zoomToIds(features);
+          }
+        }).on('clear', (e) => {
+          if (map.getLayer('point')) {
+            map.getSource('point').setData({
+              "type": "FeatureCollection",
+              "features": [],
             });
           }
-
-          // Clear selection and select underlying area
-          let features = map.queryRenderedFeatures(map.project(e.result.center),
-              {layers: [`${_this.geography.id}-fill-extrude`]}).map(g => g.properties.id);
-          _this.$store.commit('setSelected', features);
-          _this.zoomToIds(features);
-        }
-      }).on('clear', (e) => {
-        if (map.getLayer('point')) {
-          map.getSource('point').setData({
-            "type": "FeatureCollection",
-            "features": [],
-          });
-        }
-        _this.$store.commit('clearSelected');
-      }), 'bottom-right');
+          _this.$store.commit('clearSelected');
+        }), 'bottom-right');
+      }
 
       // disable map rotation until 3D support added
       // map.dragRotate.disable();
@@ -152,6 +156,10 @@ export default {
         _this.initNeighborhoods();
         _this.styleNeighborhoods();
         _this.initMapEvents();
+        if (_this.selected) {
+          // QueryRenderedFeatures doesn't seem to work until even after map has loaded styles :/
+          setTimeout(() => { _this.rescale() }, 2500);
+        }
       });
     },
     toggle3D: function() {
@@ -326,13 +334,18 @@ export default {
       });
     },
 
-    changeZoomNeighborhoods: function() {
-      return this.zoomToIds(this.zoomNeighborhoods);
+    rescale: function() {
+      if (this.selected.length) { return this.zoomToIds(this.selected); }
+      else return this.zoomToFullExtent();
     },
-
+    zoomToFullExtent: function() {
+      const durhamCountyBounds = [-79.0182952880858949,35.8613166809082031, -78.6963348388672017, 36.2414207458496023];
+      this.map.fitBounds(durhamCountyBounds, { padding: 50 });
+      return durhamCountyBounds;
+    },
     zoomToIds: function(ids) {
       const zoomToFeatures = this.map.queryRenderedFeatures({ layers: [this.geography.id], filter: ['match', ['get', 'id'], ids, true, false ] });
-      if (!zoomToFeatures) { return; }
+      if (!zoomToFeatures.length) { return; }
       const bounds = this.getBoundingBox(zoomToFeatures);
       this.map.fitBounds(bounds, { padding: 50 });
 

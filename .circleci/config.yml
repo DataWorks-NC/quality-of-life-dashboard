@@ -97,6 +97,7 @@ jobs:
       - run: mkdir /home/circleci/.credentials
       - run: echo $PWMETRICS_GOOGLE_CREDENTIALS > /home/circleci/.credentials/sheets.googleapis.com-nodejs-pwmetrics.json
       - run: npx pwmetrics http://nbhdcompassdev.azurewebsites.us/#PTLAT/tract/ --config=./.circleci/pwmetrics-config.js
+      - run: npx pwmetrics http://nbhdcompassdev.azurewebsites.us/report.html#blockgroup/370630019001 --config=./.circleci/pwmetrics-config.report.js
 
 workflows:
   version: 2

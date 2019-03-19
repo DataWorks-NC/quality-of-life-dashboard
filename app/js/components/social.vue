@@ -1,4 +1,4 @@
-<template lang="html">
+<template lang="html" functional>
   <p class="text-muted">
     <a :href="twitter" aria-label="Share on Twitter" target="_blank" rel="noopener"><svg class="icon icon-twitter-with-circle"><use href="#icon-twitter-with-circle"/></svg></a>
     <a :href="facebook" aria-label="Share on Facebook" target="_blank" rel="noopener"><svg class="icon icon-facebook-with-circle"><use href="#icon-facebook-with-circle"/></svg></a>

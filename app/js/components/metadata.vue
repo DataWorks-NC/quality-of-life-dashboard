@@ -1,4 +1,4 @@
-<template lang="html">
+<template lang="html" functional>
   <div v-if="metadata" id="metadata">
     <h3>Why This is Important</h3>
     <div v-html="important"/>
