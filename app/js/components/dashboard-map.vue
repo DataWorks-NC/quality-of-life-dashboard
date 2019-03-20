@@ -47,6 +47,7 @@ export default {
     this.mapMetricId = this.metricId;
     this.initMap();
   },
+
   methods: {
     initMap: function() {
       const mapOptions = {
@@ -71,7 +72,7 @@ export default {
       });
 
       // Zoom to county extent initially before map loads.
-      this.rescale();
+      this.zoomToFullExtent();
 
       // add nav control
       const nav = new mapboxgl.NavigationControl();
@@ -335,8 +336,14 @@ export default {
     },
 
     rescale: function() {
-      if (this.selected.length) { return this.zoomToIds(this.selected); }
-      else return this.zoomToFullExtent();
+      try {
+        if (this.selected.length) {
+          return this.zoomToIds(this.selected);
+        } else return this.zoomToFullExtent();
+      }
+      catch (e) {
+        return;
+      }
     },
     zoomToFullExtent: function() {
       const durhamCountyBounds = [-79.0182952880858949,35.8613166809082031, -78.6963348388672017, 36.2414207458496023];
