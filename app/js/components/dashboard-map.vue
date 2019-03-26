@@ -50,16 +50,10 @@ export default {
 
   methods: {
     initMap: function() {
-      const mapOptions = {
+      const mapOptions = Object.assign({
         container: 'map',
-        style: this.mapConfig.style,
         attributionControl: false,
-        zoom: this.mapConfig.zoom,
-        center: this.mapConfig.center,
-        maxBounds: this.mapConfig.maxBounds,
-        minZoom: this.mapConfig.minZoom,
-        preserveDrawingBuffer: this.mapConfig.preserveDrawingBuffer,
-      };
+      }, this.mapConfig);
       this.map = new mapboxgl.Map(mapOptions);
 
       const _this = this;
