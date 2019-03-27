@@ -23,7 +23,7 @@
           <div class="demo-separator mdl-cell--1-col"/>
           <distribution-chart/>
           <div class="demo-separator mdl-cell--1-col"/>
-          <trend-chart/>
+          <trend-chart v-if="metric.config && metric.years && (chartValues || chartCountyValues)" :metric-config="metric.config" :years="metric.years.map(i => Number(i))" :values="chartValues" :county-values="chartCountyValues" framework="mdl"/>
           <div class="demo-separator mdl-cell--1-col"/>
           <feedback/>
           <div class="demo-separator mdl-cell--1-col"/>
@@ -69,6 +69,7 @@
 import { mapGetters, mapState } from 'vuex';
 
 import config from './modules/config';
+import { calcValue } from './modules/metric_calculations';
 
 import DataTable from './components/datatable.vue';
 import DistributionChart from './components/distribution-chart.vue';
@@ -117,6 +118,22 @@ export default {
       urlHash(state) {
         if (!state.metricId || !state.geography.id) return '';
         return `${state.printMode ? 'print/' : ''}${state.metricId}/${state.geography.id}/${state.selected.map(g => encodeURIComponent(g)).join(',')}`;
+      },
+      chartValues(state) {
+        if (!state.selected.length || state.metric.years.length <= 1) return {};
+        const metricValues = {};
+        for (let i = 0; i < state.metric.years.length; i++) {
+          metricValues[state.metric.years[i]] = calcValue(state.metric.data, state.metric.config.type, state.metric.years[i], state.selected);
+        }
+        return metricValues;
+      },
+      chartCountyValues(state) {
+        const averageValues = {};
+        const years = Object.keys(state.metric.averageValues);
+        for (let i = 0; i < years.length; i++) {
+          averageValues[years[i]] = state.metric.averageValues[years[i]].value;
+        }
+        return averageValues;
       },
     }),
     mapGetters({

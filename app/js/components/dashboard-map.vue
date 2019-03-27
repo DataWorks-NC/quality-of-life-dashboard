@@ -28,10 +28,7 @@ export default {
     }
   },
 
-  // For some reason brunch doesn't like object spread syntax, so using Object.assign here.
-  computed: Object.assign(
-      mapState(['breaks', 'geography', 'highlight', 'metric', 'metricId', 'printMode', 'selected', 'year', 'zoomNeighborhoods']),
-  ),
+  computed: mapState(['breaks', 'geography', 'highlight', 'metric', 'metricId', 'printMode', 'selected', 'year', 'zoomNeighborhoods']),
 
   watch: {
     'selected': ['styleNeighborhoods', 'rescale'],
