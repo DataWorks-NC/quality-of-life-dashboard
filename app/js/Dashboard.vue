@@ -117,13 +117,15 @@ export default {
       metric: 'metric',
       urlHash(state) {
         if (!state.metricId || !state.geography.id) return '';
-        return `${state.printMode ? 'print/' : ''}${state.metricId}/${state.geography.id}/${state.selected.map(g => encodeURIComponent(g)).join(',')}`;
+        return `${state.printMode ? 'print/' : ''}${state.metricId}/${state.geography.id}/${state.selected.map(
+            g => encodeURIComponent(g)).join(',')}`;
       },
       chartValues(state) {
         if (!state.selected.length || state.metric.years.length <= 1) return {};
         const metricValues = {};
         for (let i = 0; i < state.metric.years.length; i++) {
-          metricValues[state.metric.years[i]] = calcValue(state.metric.data, state.metric.config.type, state.metric.years[i], state.selected);
+          metricValues[state.metric.years[i]] = calcValue(state.metric.data, state.metric.config.type,
+              state.metric.years[i], state.selected);
         }
         return metricValues;
       },
@@ -138,7 +140,8 @@ export default {
     }),
     mapGetters({
       legendTitle: 'legendTitle',
-    })),
+    }),
+  ),
   watch: {
     urlHash(newUrlHash) {
       location.hash = newUrlHash;

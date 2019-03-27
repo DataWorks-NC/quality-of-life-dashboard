@@ -49,13 +49,13 @@ export default {
     // The two "chart" computed variables filter the metric objects into arrays keyed by year, leaving null gaps where there's no data for a given year.
     countyValuesChart() {
       return this.years.map((year) => {
-        if (this.countyValues && this.countyValues.hasOwnProperty(year)) return this.countyValues[year];
+        if (this.countyValues && this.countyValues.hasOwnProperty(year)) return { x: year, y: this.countyValues[year] };
         return null;
       });
     },
     valuesChart() {
       return this.years.map((year) => {
-        if (this.values && this.values.hasOwnProperty(year)) return this.values[year];
+        if (this.values && this.values.hasOwnProperty(year)) return { x: year, y: this.values[year] };
         return null;
       });
     },
@@ -89,10 +89,13 @@ export default {
         }),
         axisY: {
           labelInterpolationFnc(value, index) {
-            return abbrNum(round(Number(value), 2), 2);
+            return prettyNumber(value, metricConfig.decimals, metricConfig.prefix,
+                metricConfig.suffix);
           },
         },
         axisX: {
+          type: Chartist.AutoScaleAxis,
+          onlyInteger: true,
           labelInterpolationFnc(value, index) {
             if (len > 6) {
               return index % 2 === 0 ? value : null;
@@ -103,7 +106,7 @@ export default {
         plugins: [
           Chartist.plugins.tooltip({
             transformTooltipTextFnc(value) {
-              return prettyNumber(value, metricConfig.decimals, metricConfig.prefix,
+              return prettyNumber(value.split(',')[1], metricConfig.decimals, metricConfig.prefix,
                 metricConfig.suffix);
             },
           }),
@@ -134,7 +137,6 @@ export default {
           },
         }));
       }
-
       const chart = new Chartist.Line(`#ct-trendchart-${metricConfig.metric}`, {
         labels: this.years,
         series: [this.valuesChart, this.countyValuesChart],
