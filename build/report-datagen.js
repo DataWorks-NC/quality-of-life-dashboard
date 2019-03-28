@@ -133,20 +133,37 @@ _.each(siteConfig.geographies || ['geography'], (geography) => {
       //     });
       // });
 
-      // Set up outpout file stream to CSV
-      const outputFile = fs.createWriteStream(
+      // Set up output file stream to CSV
+      const dataFile = fs.createWriteStream(
           `public/download/${geography.id}.csv`);
-      outputFile.on('finish', function() {
+      dataFile.on('finish', function() {
         console.log(`Wrote downloadable CSV file for ${geography.id}`);
       });
-      outputFile.on('error', function(err) {
+      dataFile.on('error', function(err) {
         console.error(err.message);
       });
-      const outputCSV = stringify({delimiter: ','});
-      outputCSV.on('error', function(err) {
+
+      const dataCSV = stringify({delimiter: ','});
+      dataCSV.on('error', function(err) {
         console.error(err.message);
       });
-      outputCSV.pipe(outputFile);
+      dataCSV.pipe(dataFile);
+
+      // Set up output file stream to CSV
+      const weightsFile = fs.createWriteStream(
+          `public/download/${geography.id}-weights.csv`);
+      weightsFile.on('finish', function() {
+        console.log(`Wrote downloadable weights CSV file for ${geography.id}`);
+      });
+      weightsFile.on('error', function(err) {
+        console.error(err.message);
+      });
+
+      const weightsCSV = stringify({delimiter: ','});
+      weightsCSV.on('error', function(err) {
+        console.error(err.message);
+      });
+      weightsCSV.pipe(weightsFile);
 
       // Create CSV table for data output.
       let metricsList = null;
@@ -168,25 +185,37 @@ _.each(siteConfig.geographies || ['geography'], (geography) => {
                   year.slice(-4)));
           headerRow.unshift('Geography Id', 'Geography Label');
 
-          outputCSV.write(headerRow);
+          dataCSV.write(headerRow);
+          weightsCSV.write(headerRow);
         }
 
         // Then spit out one giant row for each geography with each metric value for each year, in order.
-        const outputRow = [geographyId.toString(), geography.label(geographyId)];
+        const dataRow = [geographyId, geography.label(geographyId)];
+        const weightsRow = [geographyId, geography.label(geographyId)];
         _.forEach(metricsList, (metric) => {
           const prefix = dataConfig[`m${metric.metric}`].prefix || '';
           const suffix = dataConfig[`m${metric.metric}`].suffix || '';
           _.forEach(metric.years, (year) => {
+            // Write metric data.
             if (metric.metric in geographyData && year in geographyData[metric.metric].map && geographyData[metric.metric].map[year]) {
-                outputRow.push(`${prefix}${geographyData[metric.metric].map[year]}${suffix}`);
+                dataRow.push(`${prefix}${geographyData[metric.metric].map[year]}${suffix}`);
             } else {
-              outputRow.push(null);
+              dataRow.push(null);
+            }
+
+            // Write weights file.
+            if (metric.metric in geographyData && 'w' in geographyData[metric.metric] && year in geographyData[metric.metric].w && geographyData[metric.metric].w[year]) {
+              weightsRow.push(geographyData[metric.metric].w[year]);
+            } else {
+              weightsRow.push(null);
             }
           })
         });
-        outputCSV.write(outputRow);
+        dataCSV.write(dataRow);
+        weightsCSV.write(weightsRow);
       });
-      outputCSV.end();
+      dataCSV.end();
+      weightsCSV.end();
     }
   });
 });
