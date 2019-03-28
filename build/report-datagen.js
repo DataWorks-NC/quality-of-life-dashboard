@@ -6,7 +6,7 @@ const async = require('async');
 
 const dest = './public/data/';
 const md5 = require('js-md5');
-const stringify = require('csv-stringify')
+const stringify = require('csv-stringify');
 const dataConfig = require('../data/config/data.js');
 const siteConfig = require('../data/config/site.js');
 const metric_calculations = require('../app/js/modules/metric_calculations.js');

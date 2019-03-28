@@ -11,7 +11,7 @@ const dataConfig = require('../data/config/data.js');
 // /////////////////////////////////////////////////
 // Create destination folders
 // /////////////////////////////////////////////////
-directoriesToMake = ['', 'data', 'data/meta', 'data/metric', 'downloads'];
+directoriesToMake = ['', 'data', 'data/meta', 'data/metric'];
 _.each(siteConfig.geographies, (geography) => {
   directoriesToMake.push('data/metric/' + geography.id);
 });
@@ -45,12 +45,6 @@ _.each(siteConfig.geographies || ['geography'], (geography) => {
     });
   });
 
-});
-
-// Copy data download file.
-fs.copyFile('data/download/qol-data.zip', 'public/downloads/qol-data.zip', (err) => {
-  if (err) return console.log(`Error on copying qol-data.zip: ${err.message}`);
-  console.log("Copied qol-data.zip to downloads");
 });
 
 // return true if convertable to number

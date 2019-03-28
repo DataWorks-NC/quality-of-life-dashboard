@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "start": "brunch watch --server --network --port 3000",
-    "build": "node $NODE_DEBUG_OPTION ./build/datagen.js && npx babel-node ./build/report-datagen.js && brunch build --production"
+    "build": "node $NODE_DEBUG_OPTION ./build/datagen.js && npx babel-node ./build/report-datagen.js && brunch build --production && zip -rj ./public/download.zip ./public/download "
   },
   "bundlesize": [
     {

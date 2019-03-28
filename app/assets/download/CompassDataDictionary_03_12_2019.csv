@@ -1,0 +1,64 @@
+"Neighborhood Compass Data Dictionary_June 1, 2018",,,,,
+Field,Title,Dimension,Geographies,Description,Source
+AVEAGE,Average Age of Death,Health,bg; t,The average age of death reported for individuals in a given blockgroup or tract.,North Carolina State Center for Health Statistics
+BACH,Percent with Bachelors Degree or More,Education,t,The percentage of adults 25 years or older that has a bachelor's or more advanced degree.,American Community Survey (ACS) 
+CKD_TOTAL,Chronic Kidney Disease Rate (w/Race and Sex Disaggregations),Health,t,The average age of death reported for individuals in a given blockgroup or tract.,Duke Health and Lincoln Community Health Center
+DIABETES_TOTAL,Diabetes Rate (w/Race and Sex Disaggregations),Health,t,The rate of adults with type 2 diabetes.,Duke Health and Lincoln Community Health Center
+HEARTATTACK_TOTAL,Heart Attack Rate (w/Race and Sex Disaggregations),Health,t,The rate of adults with incidents of myocardial infarction (heart attack).,Duke Health and Lincoln Community Health Center
+STROKE_TOTAL,Stroke Rate (w/Race and Sex Disaggregations),Health,t,The rate of adults that had an incident of stroke.,Duke Health and Lincoln Community Health Center
+PROXBANK,Households Within Walking Distance to Banks,Infrastructure & Amenities,bg,The percent of area households within a quarter-mile of a commercial bank or credit union.,City of Durham Transportation Department/County Tax Administration
+BIKEWK,Commuting to Work by Bicycle,Infrastructure & Amenities,bg,The percentage of workers commuting to work by bicycle.,American Community Survey (ACS) 
+PROXBUS,Households Within Walking Distance to Bus Stops,Infrastructure & Amenities,bg,The percent of households that are within one quarter-mile of DATA and Triangle Transit bus stops.,Triangle Transit/County Tax Administration
+CC45,Child Care Centers Rated 4- or 5-Stars,Education,bg,The percentage of licensed child care centers with 4- or 5-star ratings.,NC Division of Childcare and Early Education; Neighborhood Improvement Services
+CCC,Licensed Child Care Centers,Education,bg,"The number, per square mile, of licensed child care centers in a selected area.",NC Division of Childcare and Early Education; Neighborhood Improvement Services
+COB,Certificates of Occupancy (Commercial),Economy,bg,"The number of certificates of occupancy, per square mile, issued for commercial and industrial locations. ",Durham City/County Inspections Department
+COR,Certificates of Occupancy (Residential),Economy,bg,"The number of certificates of occupancy, per square mile, issued for residential locations. ",Durham City/County Inspections Department
+CPMTS,Commercial Building Permit Values,Economy,bg,The value per square mile of commercial building permits filed during the 2012 calendar year.,Durham City/County Inspections Department
+D_SQMI,Drug-Related Crimes,Safety,bg,The number of drug-related crimes per square mile that occurred in a calendar year.,"Durham Police Department, County Sheriff"
+DAYTRIP,Number of Daily Bus Arrivals,Infrastructure & Amenities,bg,The count of daytime bus arrivals for all routes in the selected blockgroup.,GoDurham/GoTriangle
+DRALONE,Percent of Commuters Driving Alone,Environment ,bg,The percentage of block group residents who commute to work by car or other vehicle with no other passengers.,American Community Survey (ACS) 
+EVETRIP,Number of Nightly Bus Arrivals,Infrastructure & Amenities,bg,The count of nighttime bus arrivals for all routes in the selected blockgroup.,GoDurham/GoTriangle
+PROXGR,Households Within Walking Distance to Full Service Grocers,Infrastructure & Amenities,bg,"The percent of area households within a quarter-mile of full-service, grocery stores.",City of Durham Transportation Department/County Tax Administration
+HMINC,Median Homebuyer Income,Housing,t,Median Homebuyer Income,"Home Mortgage Disclosure Act (HMDA) Database, Consumer Financial Protection Bureau"
+KWH,Average Monthly Household Electricity Use,Environment ,bg,"Electricity is a crucial component of modern life. Without it, we wouldn’t be able to use computers, cell phones, refrigerators, air conditioners, and all the myriad appliances and equipment that we have come to depend on. But using electricity can have negative environmental and financial impacts. Most of our electricity is generated from fossil fuels (coal and natural gas), which cause air pollution and contribute to climate change. In addition, the cost of electricity can be a burden on households. By becoming more efficient in how we use electricity, we can enjoy the comforts of modern life without causing undue pollution or wasting money. Understanding electricity use helps us understand inefficiencies and identify opportunities for conservation.  By looking at household electricity use by neighborhoods or block groups, we can identify which areas have opportunities to improve efficiency and target programs to help reduce energy use in those areas. People living in those areas can also see how their electricity use compares with other parts of our community and look to improve their efficiencies.",
+LUDIV,Land Use Diversity,Economy,bg,"The indexed value of diversity of land uses in these categories: agriculture, residential, commercial, recreation, industrial, community services, public services (utilities), wild and forested lands.",Durham County Tax Administration
+MEANRPMT,Average Residential Building Permit Value,Economy,bg,The average value of residential building permits for each boundary. These permits include new construction as well as renovations and exclude demolitions.,"Durham Police Department, County Sheriff"
+MEDAGE,Median Age,Demographics,bg,"The median age for the selected area, with half its residents being older and half younger.",American Community Survey (ACS) 
+MEDGRENT,Median Gross Rent,Housing,t,Median Gross Rent,American Community Survey (ACS) 
+MEDHV,Median Home Value,Housing,t,Median Home Value,US2010 Longitudinal Tract Database
+MEDINC,Median Household Income ,Economy,bg; t,Median household income for the selected block groups,American Community Survey (ACS) 
+P_SQMI,Crimes Involving Property,Safety,bg,The number of crimes involving property per square mile that occurred in a calendar year.,"Durham Police Department, County Sheriff"
+PARKS,Households Within Walking Distance to Parks and Trails,Infrastructure & Amenities,bg,Households Within Walking Distance to Parks and Trails (1/4 mile Euclidean distance).,City of Durham Parks and Recreation
+PCI,Per Capita Income,Economy,bg,Per capita income for individuals in the selected blockgroup.,American Community Survey (ACS) 
+PCTC30,Percent Commuting 30 Minutes or More,Environment ,bg,The percentage of block group residents whose commute to work takes 30 minutes or more (one-way).,American Community Survey (ACS) 
+PCTIMP,Impervious Area,Environment ,bg,The percent of the selected area covered by exposed impervious surfaces.,"Environmental Protection Agency, EnviroAtlas "
+PCTRENT,Renter-Occupied Housing,Housing,bg,The percentage of housing in the selected blockgroup that is renter-occupied.,American Community Survey (ACS) 
+PCTSSI,Supplemental Security Income,Economy,bg,The percent of households receiving Supplemental Security Income from the federal Social Security Administration.,American Community Survey (ACS) 
+PCTTREE,Tree Canopy,Environment ,bg,The percent of the selected area covered by tree canopy.,"Environmental Protection Agency, EnviroAtlas "
+PROXPH,Households Within Walking Distance to Pharmacies,Infrastructure & Amenities,bg,The percent of area households within a quarter-mile of pharmacies.,City of Durham Transportation Department/County Tax Administration
+POP,Total Population,Demographics,bg; t,The total population of the selected block group.,U.S. Decennial Census
+POPDENS,Population Density,Demographics,bg,The density of population within the selected block group.,U.S. Decennial Census
+PRUNSD,Poor and Unsound Housing Conditions,Housing,bg,"The percent of residential properties that are in poor or unsound state of repair, showing marked deterioration or potentially uninhabitable. ",Durham County Tax Administration
+PT65UP,Retirement-Age Population,Demographics,bg,The percent of the total population 65 years of age and older.,U.S. Decennial Census
+PTASNL,Asian,Demographics,bg; t,The percentage of the blockgroup population that is Asian  and not Latino or Hispanic.,U.S. Decennial Census
+PTBLKNL,Black/African American,Demographics,bg; t,The percentage of the blockgroup population that is Black or African American and not Latino or Hispanic,U.S. Decennial Census
+PTGNRL,General Election Participation,Engagement,bg,The percent of active voters voting in the 2012 general election.,Durham County Board of Elections
+PTLAT,Hispanic/Latino,Demographics,bg; t,The percentage of the blockgroup population that is Latino or Hispanic.,U.S. Decennial Census
+PTOTHNL,Other Race,Demographics,bg,The percentage of the blockgroup population that report Other or Multiple Race categories  and not Latino or Hispanic.,U.S. Decennial Census
+PTPRIM,Primary Election Participation,Engagement,bg,The percent of active voters voting in the 2012 primary election.,Durham County Board of Elections
+PTUND18,Youth Population,Demographics,bg,The percent of the total population under 18 years of age.,U.S. Decennial Census
+PTWHNL,White/Caucasian,Demographics,bg; t,The percentage of the blockgroup population that is White or Caucasian.,U.S. Decennial Census
+R_AVGYR,Average Age of Residential Property,Housing,bg,The average year built of all types of residential construction.,Durham County Tax Administration
+RCODE,Minimum housing code violations ,Housing,bg,Minimum housing code violations per 100 dwelling units.,City of Durham Neighborhood Improvement Services
+REDIV,Race/Ethnic Diversity,Demographics,bg,The indexed value of racial and ethnic diversity in the selected blockgroup.,U.S. Decennial Census
+REVAL,Percent Change in Property Values ,Housing,bg,"The median rate of change for every residential property in a blockgroup, conciding with the most recent property revaluation 2014-2016.",Durham County Tax Administration
+RPMTS,Residential Building Permit Values,Economy,bg,The value per square mile of residential building permits filed during the 2012 calendar year.,Durham City/County Inspections Department
+SUMEJECT,Summary Ejectment Filings,Housing,bg,"Summary ejectments are the first of two court processes for formally evicting a tenant (the second being the writ of possession). Evictions happen for a wide variety of direct reasons, from a tenant violating the terms of a lease to a landlord wrongfully displacing a tenant.",Durham County Sheriff's Department
+SWTORD,Sidewalk-to-Roadway Ratio,Infrastructure & Amenities,bg,The ratio of sidewalk length to road length in the selected area.,City of Durham Public Works/Transportation
+UNFOWN,Monthly Owners Costs 30% or More of Income,Housing,bg,The percent of owner-occupied units that cost owners 30% or more of their monthly income. This measurement is related to home owners with mortgages.,American Community Survey (ACS) 
+UNFRENT,Rent 30% or More of Income,Housing,bg,The percent of renters spending 30% or more of their monthly income on housing and housing-related costs.,American Community Survey (ACS) 
+V_SQMI,Crimes with a Violent Component,Safety,bg,The number of crimes with a violent component per square mile that occurred in a calendar year.,"Durham Police Department, County Sheriff"
+VCODE,Automotive Code Violations,Environment ,bg,Automotive code violations per 100 dwelling units.,City of Durham Neighborhood Improvement Services
+WCODE,Unmaintained Property Violations,Housing,bg,Unmaintained property violations per 100 dwelling units.,City of Durham Neighborhood Improvement Services
+WKHOME,Working from Home,Infrastructure & Amenities,bg,The percentage of workers who report their primary workplace to be their home.,American Community Survey (ACS) 
+WLKWK,Commuting to Work by Foot,Infrastructure & Amenities,bg,The percentage of workers commuting to work by foot.,American Community Survey (ACS) 
