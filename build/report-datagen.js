@@ -136,21 +136,21 @@ _.each(siteConfig.geographies || ['geography'], (geography) => {
       // Set up outpout file stream to CSV
       const outputFile = fs.createWriteStream(
           `public/download/${geography.id}.csv`);
+      outputFile.on('finish', function() {
+        console.log(`Wrote downloadable CSV file for ${geography.id}`);
+      });
+      outputFile.on('error', function(err) {
+        console.error(err.message);
+      });
       const outputCSV = stringify({delimiter: ','});
       outputCSV.on('error', function(err) {
         console.error(err.message);
       });
       outputCSV.pipe(outputFile);
-      outputCSV.on('finish', function() {
-        outputFile.end();
-        console.log(`Wrote downloadable CSV file for ${geography.id}`);
-      });
 
       // Create CSV table for data output.
       let metricsList = null;
-      console.log(geographyMetricsCached);
       _.forOwn(geographyMetricsCached, (geographyData, geographyId) => {
-        console.log(geographyId);
         if (!metricsList) {
           metricsList = [];
 
@@ -166,19 +166,19 @@ _.each(siteConfig.geographies || ['geography'], (geography) => {
           const headerRow = _.flatMap(metricsList, metric => _.map(metric.years,
               year => dataConfig[`m${metric.metric}`].title + ", " +
                   year.slice(-4)));
-          headerRow.unshift('Geography Id');
+          headerRow.unshift('Geography Id', 'Geography Label');
 
           outputCSV.write(headerRow);
-          console.log(headerRow);
         }
 
         // Then spit out one giant row for each geography with each metric value for each year, in order.
-        const outputRow = [geographyId];
+        const outputRow = [geographyId.toString(), geography.label(geographyId)];
         _.forEach(metricsList, (metric) => {
+          const prefix = dataConfig[`m${metric.metric}`].prefix || '';
+          const suffix = dataConfig[`m${metric.metric}`].suffix || '';
           _.forEach(metric.years, (year) => {
-            if (metric.metric in geographyData && year in
-                geographyData[metric.metric].map) {
-              outputRow.push(geographyData[metric.metric].map[year])
+            if (metric.metric in geographyData && year in geographyData[metric.metric].map && geographyData[metric.metric].map[year]) {
+                outputRow.push(`${prefix}${geographyData[metric.metric].map[year]}${suffix}`);
             } else {
               outputRow.push(null);
             }
