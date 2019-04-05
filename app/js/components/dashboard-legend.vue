@@ -1,5 +1,5 @@
 <template lang="html">
-  <div v-if="metricConfig" id="legend" class="top left">
+  <div v-if="metric.config" id="legend" class="top left">
     <div>
       <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=" class="background-print-img" alt="white background for printing">
       <div class="legendposition">
@@ -10,21 +10,21 @@
         <div v-if="selected.length > 0" class="metricbox">
           <span class="metrictype">SELECTED</span>
           <span class="metricvalue">{{ selectedValue }}</span>
-          <span v-if="metricConfig.label" class="metriclabel">{{ metricConfig.label.toLowerCase() }}</span>
-          <span v-if="metricConfig.raw_label && selected.length > 0 && selectedValueRaw" class="metric-raw">
+          <span v-if="metric.config.label" class="metriclabel">{{ metric.config.label.toLowerCase() }}</span>
+          <span v-if="metric.config.raw_label && selected.length > 0 && selectedValueRaw" class="metric-raw">
             <span>or</span>
             <span class="metricvalue metricraw">{{ selectedValueRaw }}</span>
-            <span class="metriclabel" v-html="metricConfig.raw_label.toLowerCase()"/>
+            <span class="metriclabel" v-html="metric.config.raw_label.toLowerCase()"/>
           </span>
         </div>
         <div class="metricbox">
           <span class="metrictype">COUNTY</span>
           <span class="metricvalue">{{ areaValue }}</span>
-          <span v-if="metricConfig.label" class="metriclabel">{{ metricConfig.label.toLowerCase() }}</span>
-          <span v-if="metricConfig.raw_label && areaValueRaw" class="metric-raw">
+          <span v-if="metric.config.label" class="metriclabel">{{ metric.config.label.toLowerCase() }}</span>
+          <span v-if="metric.config.raw_label && areaValueRaw" class="metric-raw">
             <span>or</span>
             <span class="metricvalue metricraw">{{ areaValueRaw }}</span>
-            <span class="metriclabel" v-html="metricConfig.raw_label.toLowerCase()"/>
+            <span class="metriclabel" v-html="metric.config.raw_label.toLowerCase()"/>
           </span>
         </div>
       </div>
@@ -78,20 +78,19 @@ export default {
   data: () => ({
     selectedValue: null,
     selectedValueRaw: null,
-    areaValue: null,
-    areaValueRaw: null,
     colors: config.colors,
   }),
   computed: mapState({
     breaks: 'breaks',
     highlight: 'highlight',
-    metricConfig(state) { return state.metric.config; },
-    metricData(state) { return state.metric.data; },
+    metric: 'metric',
     selected: 'selected',
     year: 'year',
+    areaValue(state) { return prettyNumber(state.metric.averageValues[state.year].value, state.metric.config.decimals, state.metric.config.prefix, state.metric.config.suffix, state.metric.config.commas); },
+    areaValueRaw(state) { return prettyNumber(state.metric.averageValues[state.year].rawValue, 0, state.metric.config.prefix); },
   }),
   watch: {
-    'metricData': 'processData',
+    'metric': 'processData',
     'selected': 'processSelected',
     'year': 'processYear',
   },
@@ -108,7 +107,7 @@ export default {
     },
     getBreakIds(n) {
       const _this = this;
-      const data = this.metricData.map;
+      const data = this.metric.data.map;
       const breaks = this.breaks;
       const ids = [];
 
@@ -125,18 +124,17 @@ export default {
     },
 
     abbrNumber(value) {
-      return legendLabelNumber(value, this.metricConfig);
+      return legendLabelNumber(value, this.metric.config);
     },
     processData() {
-      if (!this.metricData || !this.metricConfig) return;
-      this.processArea();
+      if (!this.metric.data || !this.metric.config) return;
       this.processSelected();
     },
     processSelected() {
-      if (!this.metricData || !this.metricConfig) return;
+      if (!this.metric.data || !this.metric.config) return;
 
-      const metricConfig = this.metricConfig;
-      const metricData = this.metricData;
+      const metricConfig = this.metric.config;
+      const metricData = this.metric.data;
 
       const selectedValue = calcValue(metricData, metricConfig.type, this.year, this.selected);
       this.selectedValue = prettyNumber(selectedValue, metricConfig.decimals, metricConfig.prefix, metricConfig.suffix, metricConfig.commas);
@@ -149,30 +147,7 @@ export default {
         this.selectedValueRaw = prettyNumber(rawValue, 0, metricConfig.prefix);
       }
     },
-    processArea() {
-      if (!this.metricData || !this.metricConfig) return;
-
-      const metricConfig = this.metricConfig;
-      const metricData = this.metricData;
-      const keys = Object.keys(this.metricData.map);
-
-      if (metricConfig.world_val && metricConfig.world_val[`y_${this.year}`]) {
-        this.areaValue = prettyNumber(metricConfig.world_val[`y_${this.year}`], metricConfig.decimals, metricConfig.prefix, metricConfig.suffix, metricConfig.commas);
-      } else {
-        const areaValue = calcValue(metricData, metricConfig.type, this.year, keys);
-        this.areaValue = prettyNumber(areaValue, metricConfig.decimals, metricConfig.prefix, metricConfig.suffix, metricConfig.commas);
-      }
-      if (metricConfig.raw_label) {
-        const rawArray = wValsToArray(metricData.map, metricData.w, [this.year], keys);
-        let rawValue = sum(rawArray);
-        if (metricConfig.suffix === '%') {
-          rawValue /= 100;
-        }
-        this.areaValueRaw = prettyNumber(rawValue, 0, metricConfig.prefix);
-      }
-    },
     processYear() {
-      this.processArea();
       this.processSelected();
     },
     position() {

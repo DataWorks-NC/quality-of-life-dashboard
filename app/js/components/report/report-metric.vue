@@ -17,11 +17,11 @@
         </tbody>
       </table>
       <div v-if="years.length > 1" class="metric-trendchart">
-        <TrendChart v-if="chartMetricValues && chartCountyAverages"
+        <TrendChart v-if="metricValues && countyAverages"
                     :metric-config="metric"
                     :years="years"
-                    :values="chartMetricValues"
-                    :average-values="chartCountyAverages"
+                    :values="metricValues"
+                    :county-values="countyAverages"
                     :selected="[]"
         />
       </div>
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import TrendChart from './report-chart.vue';
+import TrendChart from '../trend-chart.vue';
 import MoreInfo from './report-more-info.vue';
 import { prettyNumber } from '../../modules/number_format';
 
@@ -68,18 +68,6 @@ export default {
     },
     notNull() {
       return (Object.values(this.metricValues).filter(v => (v !== null)).length > 0);
-    },
-    chartMetricValues() {
-      return this.years.map((year) => {
-        if (this.metricValues.hasOwnProperty(year)) return this.metricValues[year];
-        return null;
-      });
-    },
-    chartCountyAverages() {
-      return this.years.map((year) => {
-        if (this.countyAverages.hasOwnProperty(year)) return this.countyAverages[year];
-        return null;
-      });
     },
   },
   methods: {
