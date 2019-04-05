@@ -135,7 +135,7 @@ _.each(siteConfig.geographies || ['geography'], (geography) => {
 
       // Set up output file stream to CSV
       const dataFile = fs.createWriteStream(
-          `public/download/${geography.id}.csv`);
+          `public/download/DurhamNeighborhoodCompass-${geography.id}.csv`);
       dataFile.on('finish', function() {
         console.log(`Wrote downloadable CSV file for ${geography.id}`);
       });
@@ -151,7 +151,7 @@ _.each(siteConfig.geographies || ['geography'], (geography) => {
 
       // Set up output file stream to CSV
       const weightsFile = fs.createWriteStream(
-          `public/download/${geography.id}-weights.csv`);
+          `public/download/DurhamNeighborhoodCompass-${geography.id}-weights.csv`);
       weightsFile.on('finish', function() {
         console.log(`Wrote downloadable weights CSV file for ${geography.id}`);
       });
@@ -186,7 +186,10 @@ _.each(siteConfig.geographies || ['geography'], (geography) => {
           headerRow.unshift('Geography Id', 'Geography Label');
 
           dataCSV.write(headerRow);
-          weightsCSV.write(headerRow);
+          weightsCSV.write(headerRow.map((label, index) => {
+            if (index < 2) return label;
+            return `Weight for ${label}`;
+          }));
         }
 
         // Then spit out one giant row for each geography with each metric value for each year, in order.
@@ -219,3 +222,41 @@ _.each(siteConfig.geographies || ['geography'], (geography) => {
     }
   });
 });
+
+// Write the data config to a readable spreadsheet
+const dataFile = fs.createWriteStream(
+    `public/download/DurhamNeighborhoodCompass-DataDictionary.csv`);
+dataFile.on('finish', function() {
+  console.log(`Wrote data dictionary file`);
+});
+dataFile.on('error', function(err) {
+  console.error(err.message);
+});
+
+const dataCSV = stringify({delimiter: ','});
+dataCSV.on('error', function(err) {
+  console.error(err.message);
+});
+dataCSV.pipe(dataFile);
+
+dataCSV.write(['Metric title', 'Metric category', 'Metric code', 'Aggregation type', 'Label for the value', 'Label for the raw value (value * weight)', 'Geographies available', 'Metadata link']);
+
+Object.values(dataConfig)
+  .sort((a, b) => {
+  if (a.title < b.title) return -1;
+  if (b.title < a.title) return 1;
+  return 0;
+  })
+  .forEach((m) => {
+  dataCSV.write([
+      m.title,
+      m.category,
+      m.metric,
+      m.type,
+      m.label,
+      m.raw_label,
+      m.geographies.join(', '),
+      `${siteConfig.qoldashboardURL}data/meta/m${m.metric}.html`,
+  ]);
+});
+dataCSV.end();
