@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "start": "brunch watch --server --network --port 3000",
-    "build": "node $NODE_DEBUG_OPTION ./build/datagen.js && npx babel-node ./build/report-datagen.js && brunch build --production"
+    "build": "./build/datagen.sh && brunch build --production"
   },
   "bundlesize": [
     {
@@ -37,6 +37,7 @@
     "chartist-plugin-axistitle": "^0.0.4",
     "chartist-plugin-tooltip": "^0.0.11",
     "cssnano-brunch": "^1.1.8",
+    "csv-stringify": "^5.3.0",
     "csvtojson": "^1.1.12",
     "handlebars-brunch": "^2.10.0",
     "imagemin-brunch": "^1.1.0",
