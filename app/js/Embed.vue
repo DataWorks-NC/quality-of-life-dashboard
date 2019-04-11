@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 import config from './modules/config';
 
@@ -27,10 +27,14 @@ export default {
       mapConfig: config.mapConfig,
     };
   },
-  computed: mapState({
-    metric: 'metric',
-    urlHash: 'urlHash',
-  }),
+  computed: Object.assign(
+      mapState({
+        metric: 'metric',
+      }),
+      mapGetters({
+        urlHash: 'urlHash',
+      })
+  ),
   beforeCreate() {
     // Check if there is an existing hash and use it, otherwise redirect to a random metric.
     if (location.hash) {
