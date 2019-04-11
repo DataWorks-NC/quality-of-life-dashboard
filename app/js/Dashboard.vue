@@ -115,11 +115,7 @@ export default {
     mapState({
       printMode: 'printMode',
       metric: 'metric',
-      urlHash(state) {
-        if (!state.metricId || !state.geography.id) return '';
-        return `${state.printMode ? 'print/' : ''}${state.metricId}/${state.geography.id}/${state.selected.map(
-            g => encodeURIComponent(g)).join(',')}`;
-      },
+      urlHash: 'urlHash',
       chartValues(state) {
         if (!state.selected.length || state.metric.years.length <= 1) return {};
         const metricValues = {};

@@ -29,12 +29,7 @@ export default {
   },
   computed: mapState({
     metric: 'metric',
-    urlHash(state) {
-      if (!state.metricId || !state.geography.id) return '';
-      return `${state.printMode ? 'print/' : ''}${state.metricId}/${state.geography.id}/${state.selected.map(
-        g => encodeURIComponent(g),
-      ).join(',')}`;
-    },
+    urlHash: 'urlHash',
   }),
   beforeCreate() {
     // Check if there is an existing hash and use it, otherwise redirect to a random metric.
