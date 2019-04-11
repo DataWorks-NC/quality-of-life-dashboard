@@ -16,10 +16,14 @@
     },
     {
       "path": "./public/app.js",
-      "maxSize": "25 kB"
+      "maxSize": "27.5 kB"
     },
     {
       "path": "./public/report.js",
+      "maxSize": "15 kB"
+    },
+    {
+      "path": "./public/embed.js",
       "maxSize": "15 kB"
     }
   ],
