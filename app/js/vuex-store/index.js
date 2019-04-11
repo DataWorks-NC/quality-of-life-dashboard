@@ -47,6 +47,10 @@ export default new Vuex.Store({
       else if (state.metric.config) return state.metric.config.title + ', ' + state.year;
       return '';
     },
+    urlHash: state => {
+      if (!state.metricId || !state.geography.id) return '';
+      return `${state.printMode ? 'print/' : ''}${state.metricId}/${state.geography.id}/${state.selected.map(g => encodeURIComponent(g)).join(',')}`;
+    },
   },
   mutations: {
     clearSelected(state) {

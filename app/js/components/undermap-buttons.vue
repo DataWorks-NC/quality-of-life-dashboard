@@ -21,7 +21,7 @@
         data-printmap
         @click="loadEmbed"
       >
-        <span class="mdl-chip__text">Print Map</span>
+        <span class="mdl-chip__text">Print or Embed Map</span>
       </button>
     </p>
   </div>
