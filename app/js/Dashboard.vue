@@ -1,5 +1,5 @@
 <template>
-  <div class="mdl-layout__content" :class="printMode ? 'print' : ''">
+  <div class="mdl-layout__content" :class="printMode ? 'print' : ''" id="mdl-main-frame">
     <div v-if="!printMode">
       <div class="mdl-grid">
         <tabs/>
@@ -193,6 +193,7 @@ export default {
       // Add print mode class to body.
       if (this.printMode) {
         document.getElementsByTagName('body')[0].classList.add('print');
+        document.getElementById('mdl-main-frame').scrollTo(0,0); // Scroll to top.
       } else {
         document.getElementsByTagName('body')[0].classList.remove('print');
       }
