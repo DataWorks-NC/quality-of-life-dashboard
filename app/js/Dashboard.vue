@@ -5,7 +5,7 @@
         <tabs/>
         <div class="mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--8-col">
           <div class="map-container" style="position: relative">
-            <dashboard-map :mapbox-access-token="privateConfig.mapboxAccessToken" :map-config="mapConfig"/>
+            <dashboard-map :mapbox-access-token="config.privateConfig.mapboxAccessToken" :map-config="config.mapConfig"/>
             <dashboard-legend/>
           </div>
           <div class="flexcontainer">
@@ -33,7 +33,7 @@
         </div>
       </div>
       <div class="mdl-grid demo-cards">
-        <div v-if="siteConfig.contactForm" class="mdl-typography--text-center mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet comment-container">
+        <div v-if="config.siteConfig.contactForm" class="mdl-typography--text-center mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet comment-container">
           <div class="comment-form">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label is-focused">
               <input id="contact-email" class="mdl-textfield__input" type="email" required autocomplete="off">
@@ -60,7 +60,7 @@
       <dashboard-footer/>
     </div>
     <div v-else>
-      <print-mode :map-config="mapConfig" :private-config="privateConfig"/>
+      <print-mode :config="config"/>
     </div>
   </div>
 </template>
@@ -106,16 +106,13 @@ export default {
   },
   data() {
     return {
-      siteConfig: config.siteConfig,
-      privateConfig: config.privateConfig,
-      mapConfig: config.mapConfig,
+      config: config,
     };
   },
   computed: Object.assign(
     mapState({
       printMode: 'printMode',
       metric: 'metric',
-      urlHash: 'urlHash',
       chartValues(state) {
         if (!state.selected.length || state.metric.years.length <= 1) return {};
         const metricValues = {};
@@ -136,6 +133,7 @@ export default {
     }),
     mapGetters({
       legendTitle: 'legendTitle',
+      urlHash: 'urlHash',
     }),
   ),
   watch: {
@@ -178,6 +176,7 @@ export default {
       this.$store.dispatch('changeMetric', getHash(hashOffset));
     } else {
       this.$store.dispatch('randomMetric');
+      location.hash = this.$store.getters.urlHash;
     }
   },
   mounted() {
@@ -195,10 +194,10 @@ export default {
     },
     setTitle() {
       if (this.legendTitle) {
-        document.title = `${this.siteConfig.title} - ${this.legendTitle}`;
+        document.title = `${this.config.siteConfig.title} - ${this.legendTitle}`;
       }
       else {
-        document.title = this.siteConfig.title;
+        document.title = this.config.siteConfig.title;
       }
     },
   },
