@@ -19,7 +19,7 @@
 export default {
   name: 'PrintMapHeader',
   props: [
-      'config'
+      'config',
   ],
   computed: {
     title: {
@@ -31,8 +31,7 @@ export default {
       },
     },
     embedcode() {
-      return `<iframe id="nbhdCompassMap" style="width: 100%; max-width: 600px; min-width: 250px; height: 600px; min-height: 600px; margin-top: 10px; margin-bottom: 10px; display: block; border-width: 0px;" scrolling="yes" src="${this.config.siteConfig.qoldashboardURL}embed.html#${this.$store.getters.urlHash.replace(
-          'print/', '')}"></iframe>`;
+      return `<iframe id="nbhdCompassMap" style="width: 100%; max-width: 600px; min-width: 250px; height: 600px; min-height: 600px; margin-top: 10px; margin-bottom: 10px; display: block; border-width: 0px;" scrolling="yes" src="${this.config.siteConfig.qoldashboardURL}embed.html#${this.$store.getters.urlHash.replace('print/', '')}"></iframe>`;
     },
   },
   mounted() {
