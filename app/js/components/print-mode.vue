@@ -1,6 +1,6 @@
 <template functional>
   <div class="mdl-grid">
-    <print-map-header/>
+    <print-map-header :config="config"/>
     <img src="./img/report-logo.png" alt="DataWorks NC logo" class="header__logo">
     <div class="map mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--12-col">
       <main class="map-container" style="position: relative">
@@ -8,12 +8,6 @@
         <dashboard-legend/>
       </main>
       <footer>Map from the Durham Neighborhood Compass, a project of DataWorks NC. Visit <a href="https://compass.durhamnc.gov">the compass</a> to build your own map!</footer>
-    </div>
-    <div class="mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--12-col">
-      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label is-dirty">
-        <textarea :value="embedcode" id="embedcode" class="mdl-textfield__input" type="text" name="embedcode" maxlength="200" aria-label="Copy code to embed this map in another website" onclick="this.select()" ref="embedcode" rows="3"></textarea>
-        <label for="embedcode" class="mdl-textfield__label">Or, use the following code to embed this map in another website</label>
-      </div>
     </div>
   </div>
 </template>
@@ -33,17 +27,6 @@ export default {
   props: [
     'config',
   ],
-  computed: {
-    embedcode() {
-      return `<iframe id="nbhdCompassMap" style="width: 100%; max-width: 600px; min-width: 250px; height: 600px; min-height: 600px; margin-top: 10px; margin-bottom: 10px; display: block; border-width: 0px;" scrolling="yes" src="${this.config.siteConfig.qoldashboardURL}embed.html#${this.$store.getters.urlHash.replace('print/','')}"></iframe>`;
-    },
-  },
-  mounted() {
-    this.$refs.embedcode.dispatchEvent(new Event('input'));
-  },
-  updated() {
-    this.$refs.embedcode.dispatchEvent(new Event('input'));
-  },
 };
 </script>
 
@@ -57,7 +40,7 @@ body.print {
 }
 
 .print .mdl-grid {
-  max-width: 8in;
+  max-width: 8.5in;
   padding: 0.25in;
 }
 
@@ -88,10 +71,6 @@ body.print {
   padding: 0;
 }
 
-.mdl-textfield {
-  width: 90%;
-}
-
 @media print {
   .print .map-container {
     height: 8in;
@@ -113,10 +92,6 @@ body.print {
   }
 
   .mapboxgl-popup {
-    display: none;
-  }
-
-  .mdl-cell {
     display: none;
   }
 }
