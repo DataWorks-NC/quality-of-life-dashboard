@@ -147,9 +147,25 @@ export default {
       this.setTitle();
     },
   },
-  beforeCreate() {
+  beforeMount() {
     // Check if there is an existing hash and use it, otherwise redirect to a random metric.
     if (location.hash) {
+      this.processHash();
+    } else {
+      this.$store.dispatch('randomMetric');
+      location.hash = this.$store.getters.urlHash;
+    }
+  },
+  mounted() {
+    this.setPrintClass();
+    this.setTitle();
+    window.addEventListener('hashchange', this.processHash);
+  },
+  beforeDestroy() {
+    window.removeEventListener('hashchange', this.processHash);
+  },
+  methods: {
+    processHash() {
       // Helper function to get the current page hash.
       function getHash(pos = 0) {
         const hash = decodeURI(location.hash).split('/');
@@ -165,6 +181,9 @@ export default {
         this.$store.commit('setPrintMode');
         hashOffset = 1;
       }
+      else {
+        this.$store.commit('setPrintMode', false);
+      }
 
       // Hash has the form #[print]/metricId/geographyId/selectedid1,selectedid2
       if (getHash(hashOffset + 1)) {
@@ -174,16 +193,7 @@ export default {
         this.$store.commit('setSelected', getHash(hashOffset + 2).split(','));
       }
       this.$store.dispatch('changeMetric', getHash(hashOffset));
-    } else {
-      this.$store.dispatch('randomMetric');
-      location.hash = this.$store.getters.urlHash;
-    }
-  },
-  mounted() {
-    this.setPrintClass();
-    this.setTitle();
-  },
-  methods: {
+    },
     setPrintClass() {
       // Add print mode class to body.
       if (this.printMode) {

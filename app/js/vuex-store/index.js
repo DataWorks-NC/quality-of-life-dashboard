@@ -186,12 +186,15 @@ export default new Vuex.Store({
     },
 
     // In contrast to the mutation function by the same name, this checks to see if new data also needs to be loaded.
-    async setGeographyId({ commit, dispatch }, newGeographyId) {
+    async setGeographyId({ commit, dispatch, state }, newGeographyId) {
+      if (state.geography.id === newGeographyId) return;
       commit('setGeographyId', newGeographyId);
       return dispatch('loadMetricData');
     },
 
     async changeMetric({ commit, dispatch, state }, newMetricId) {
+      if (state.metricId === newMetricId) return;
+
       commit('setMetricId', newMetricId);
 
       // Check that data exists for this metric & geography, otherwise switch geography.
