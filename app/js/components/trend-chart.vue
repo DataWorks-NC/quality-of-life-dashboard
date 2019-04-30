@@ -12,7 +12,7 @@
 
 <script>
 import Chartist from 'chartist';
-import { abbrNum, round, prettyNumber } from '../modules/number_format';
+import { prettyNumber } from '../modules/number_format';
 
 require('../modules/chartist.axis.title.js');
 require('../modules/chartist.tooltip.js');
@@ -42,8 +42,6 @@ export default {
       required: false,
       default: '',
     },
-
-    // TODO: handle selected values.
   },
   computed: {
     // The two "chart" computed variables filter the metric objects into arrays keyed by year, leaving null gaps where there's no data for a given year.
@@ -59,9 +57,6 @@ export default {
         return null;
       });
     },
-  },
-  watch: {
-    countyValuesChart() { this.renderChart(); },
   },
   mounted() {
     this.renderChart();
