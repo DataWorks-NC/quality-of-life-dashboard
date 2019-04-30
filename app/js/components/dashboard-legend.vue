@@ -90,9 +90,12 @@ export default {
     areaValueRaw(state) { return prettyNumber(state.metric.averageValues[state.year].rawValue, 0, state.metric.config.prefix); },
   }),
   watch: {
-    'metric': 'processData',
+    'metric': 'processSelected',
     'selected': 'processSelected',
-    'year': 'processYear',
+    'year': 'processSelected',
+  },
+  mounted() {
+    this.processSelected()
   },
   methods: {
     changeHighlight(n) {
@@ -126,10 +129,6 @@ export default {
     abbrNumber(value) {
       return legendLabelNumber(value, this.metric.config);
     },
-    processData() {
-      if (!this.metric.data || !this.metric.config) return;
-      this.processSelected();
-    },
     processSelected() {
       if (!this.metric.data || !this.metric.config) return;
 
@@ -146,9 +145,6 @@ export default {
         }
         this.selectedValueRaw = prettyNumber(rawValue, 0, metricConfig.prefix);
       }
-    },
-    processYear() {
-      this.processSelected();
     },
     position() {
       const el = document.querySelector("#legend");
