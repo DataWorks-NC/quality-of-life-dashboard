@@ -177,7 +177,7 @@ export default {
       }
       let hashOffset = 0;
 
-      if (getHash(0).toLowerCase() === 'print') {
+      if (getHash(0) && getHash(0).toLowerCase() === 'print') {
         this.$store.commit('setPrintMode');
         hashOffset = 1;
       }
