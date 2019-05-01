@@ -11,7 +11,7 @@
 
 <script>
 import { mapState } from 'vuex';
-import { Line } from 'chartist';
+import Chartist from 'chartist';
 import isNumeric from '../modules/isnumeric';
 import { legendLabelNumber, prettyNumber } from '../modules/number_format';
 import { median } from '../modules/metric_calculations';
@@ -65,9 +65,16 @@ export default {
             showArea: false,
           },
         },
+        plugins: [
+          Chartist.plugins.tooltip({
+            transformTooltipTextFnc(value) {
+              return prettyNumber(value, _this.metric.config.decimals, _this.metric.config.prefix,
+                  _this.metric.config.suffix);
+            },
+          }),
+        ],
       };
-
-      this.chart = new Line('.ct-distributionchart', data, options);
+      this.chart = new Chartist.Line('.ct-distributionchart', data, options);
     },
     updateData() {
       const chartData = {
@@ -97,9 +104,9 @@ export default {
         chartData.labels.push(data[i].id);
         // set selected points
         if (_this.selected.indexOf(data[i].id) !== -1) {
-          dataArraySelected.push(data[i].val);
+          dataArraySelected.push({ meta: _this.$store.state.geography.label(data[i].id), value: data[i].val });
         } else {
-          dataArraySelected.push(null);
+          dataArraySelected.push(null); // This is needed to have padding values so that the selected points show up in the right place on x-axis.
         }
         // set median
         if (i === 0 || i === data.length - 1) {

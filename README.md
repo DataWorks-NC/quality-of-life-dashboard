@@ -21,10 +21,6 @@ git clone https://github.com/DataWorks-NC/durham-quality-of-life-data data
 npm install
 ```
 
-After running npm install, and after each fresh time re-running npm install, you may need to make a one-line correction to fix a bug in the Mapbox GL library which `npm` installs by default. From root of the repo, run
-
-`sed -i '' "s_require('rest');_require('rest/browser.js');_" node_modules/mapbox/lib/client.js`.
-
 You'll then need to populate `private.js` in the `data/config` directory, following the instructions in https://github.com/DataWorks-NC/durham-quality-of-life-data/blob/master/README.md.
 
 Then run
