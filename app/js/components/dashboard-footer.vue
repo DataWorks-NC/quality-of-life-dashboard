@@ -9,9 +9,11 @@
         with much &#9829; for the projects that make this site possible:
         <a href="https://www.openstreetmap.org/" target="_blank" rel="noopener">OpenStreetMap</a>,
         <a href="https://osm2vectortiles.org/" target="_blank" rel="noopener">OSM2VectorTiles</a>,
-        <a href="https://www.mapbox.com/mapbox-gl-js/api/" target="_blank" rel="noopener">Mapbox GL JS</a>,
-        <a href="https://vuejs.org/" target="_blank" rel="noopener">Vue.js</a>, and
-        <a href="https://getmdl.io/" target="_blank" rel="noopener">Material Design Lite</a>.
+        <a href="https://www.mapbox.com/mapbox-gl-js/api/" target="_blank" rel="noopener">MapboxGL JS</a>,
+        <a href="https://vuejs.org/" target="_blank" rel="noopener">Vue.js</a>,
+        <a href="https://getmdl.io/" target="_blank" rel="noopener">Material Design Lite</a>,
+        <a href="https://circleci.com/" target="_blank" rel="noopener">CircleCI</a>, and
+        <a href="https://browserstack.com/" target="_blank" rel="noopener">BrowserStack</a>.
       </p>
       <p class="logos">
         <a href="https://durhamnc.gov"><img src="img/cityLogo.png" alt="City of Durham logo" height="125px"></a>

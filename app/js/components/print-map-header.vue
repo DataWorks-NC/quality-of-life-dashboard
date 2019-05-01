@@ -13,6 +13,8 @@
     <div class="mdl-layout__spacer"></div>
     <button class="mdl-button mdl-button--colored mdl-js-button mdl-button--raised" @click="print()">PRINT THIS MAP</button>
     <button class="mdl-button mdl-js-button mdl-button--raised" @click="returnToDashboard()">BACK TO DASHBOARD</button>
+    <div class="mdl-layout__spacer"></div>
+    <div class="mdl-cell print__note">Please note: the print function works best on Chrome or Firefox browsers.</div>
   </div>
 </template>
 
@@ -76,6 +78,12 @@ export default {
 
 .embedcode {
   cursor: pointer;
+}
+
+.print__note {
+  width: auto;
+  font-style: italic;
+  padding-bottom: 0;
 }
 
 #embedcode__copied {
