@@ -28,10 +28,7 @@ export default {
     }
   },
 
-  // For some reason brunch doesn't like object spread syntax, so using Object.assign here.
-  computed: Object.assign(
-      mapState(['breaks', 'geography', 'highlight', 'metric', 'metricId', 'printMode', 'selected', 'year', 'zoomNeighborhoods']),
-  ),
+  computed: mapState(['breaks', 'geography', 'highlight', 'metric', 'metricId', 'printMode', 'selected', 'year', 'zoomNeighborhoods']),
 
   watch: {
     'selected': ['styleNeighborhoods', 'rescale'],
@@ -50,16 +47,10 @@ export default {
 
   methods: {
     initMap: function() {
-      const mapOptions = {
+      const mapOptions = Object.assign({
         container: 'map',
-        style: this.mapConfig.style,
         attributionControl: false,
-        zoom: this.mapConfig.zoom,
-        center: this.mapConfig.center,
-        maxBounds: this.mapConfig.maxBounds,
-        minZoom: this.mapConfig.minZoom,
-        preserveDrawingBuffer: this.mapConfig.preserveDrawingBuffer,
-      };
+      }, this.mapConfig);
       this.map = new mapboxgl.Map(mapOptions);
 
       const _this = this;
@@ -92,6 +83,7 @@ export default {
           bbox: [-79.01, 35.87, -78.7, 36.15],
           placeholder: 'Search for an address, neighborhood or landmark',
           zoom: 14,
+          mapboxgl: mapboxgl,
         }).on('result', (e) => {
           if (e.result) {
             // create the marker

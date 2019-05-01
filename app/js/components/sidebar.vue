@@ -15,7 +15,7 @@
         <template v-for="category in categories">
           <a class="mdl-navigation__link" href="javascript:void(0)" @click="changeFilter(category)">{{ category }}<svg class="mdl-color-text--blue-grey-400 icon icon-keyboard_arrow_right navright"><use href="#icon-keyboard_arrow_right"/></svg></a>
         </template>
-        <a class="mdl-navigation__link" download="downloads/qol-data.zip" @click="ga('send', 'event', 'download', 'metric zip file download')" >Download Data</a>
+        <a class="mdl-navigation__link" href="/download/download.zip" @click="ga('send', 'event', 'download', 'metric zip file download')">Download Data</a>
       </template>
     </nav>
   </div>

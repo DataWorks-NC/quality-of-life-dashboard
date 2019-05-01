@@ -5,6 +5,7 @@ import config from '../modules/config';
 import jenksBreaks from '../modules/jenksbreaks';
 import { gaEvent } from '../modules/tracking';
 import { fetchResponseJSON, fetchResponseHTML } from '../modules/fetch';
+import { calcValue, wValsToArray, sum } from '../modules/metric_calculations';
 
 Vue.use(Vuex);
 
@@ -14,6 +15,7 @@ export default new Vuex.Store({
       config: null,
       years: [],
       data: null,
+      averageValues: {},
     },
     breaks: [0, 0, 0, 0, 0, 0],
     selected: [],
@@ -45,6 +47,10 @@ export default new Vuex.Store({
       else if (state.metric.config) return state.metric.config.title + ', ' + state.year;
       return '';
     },
+    urlHash: state => {
+      if (!state.metricId || !state.geography.id) return '';
+      return `${state.printMode ? 'print/' : ''}${state.metricId}/${state.geography.id}/${state.selected.map(g => encodeURIComponent(g)).join(',')}`;
+    },
   },
   mutations: {
     clearSelected(state) {
@@ -71,8 +77,8 @@ export default new Vuex.Store({
     setMetricId(state, newMetricId) {
       state.metricId = newMetricId;
     },
-    setMetricConfig(state, metricConfig) {
-      state.metric = metricConfig;
+    setMetric(state, metric) {
+      state.metric = metric;
       Object.freeze(state.metric);
     },
     setMetricMetadata(state, metadata) {
@@ -139,10 +145,37 @@ export default new Vuex.Store({
           commit('removeSelectedByPos', i);
         }
       }
-      commit('setMetricConfig', {
+
+      // Calculate average values.
+      const metricConfig = config.dataConfig[`m${state.metricId}`];
+      const keys = Object.keys(metricJSON.map);
+      const averageValues = {};
+      years.forEach(year => {
+        let areaValue = null;
+        let areaValueRaw = null;
+        if (metricConfig.world_val &&
+            metricConfig.world_val[`y_${year}`]) {
+          areaValue = metricConfig.world_val[`y_${year}`];
+        } else {
+          areaValue = calcValue(metricJSON, metricConfig.type, year, keys);
+        }
+        if (metricConfig.raw_label) {
+          const rawArray = wValsToArray(metricJSON.map,
+              metricJSON.w, [year], keys);
+          let rawValue = sum(rawArray);
+          if (metricConfig.suffix === '%') {
+            rawValue /= 100;
+          }
+          areaValueRaw = rawValue;
+        }
+        averageValues[year] = { value: areaValue, rawValue: areaValueRaw };
+      });
+
+      commit('setMetric', {
         config: config.dataConfig[`m${state.metricId}`],
         years: years,
         data: metricJSON,
+        averageValues: averageValues,
       });
       commit('setYear', years[years.length - 1]);
       commit('setBreaks', jenksBreaks(metricJSON.map, years, nKeys, 5));
@@ -153,12 +186,15 @@ export default new Vuex.Store({
     },
 
     // In contrast to the mutation function by the same name, this checks to see if new data also needs to be loaded.
-    async setGeographyId({ commit, dispatch }, newGeographyId) {
+    async setGeographyId({ commit, dispatch, state }, newGeographyId) {
+      if (state.geography.id === newGeographyId) return;
       commit('setGeographyId', newGeographyId);
       return dispatch('loadMetricData');
     },
 
     async changeMetric({ commit, dispatch, state }, newMetricId) {
+      if (state.metricId === newMetricId) return;
+
       commit('setMetricId', newMetricId);
 
       // Check that data exists for this metric & geography, otherwise switch geography.

@@ -1,11 +1,11 @@
 <template>
-  <div class="mdl-layout__content" :class="printMode ? 'print' : ''">
+  <div class="mdl-layout__content" :class="printMode ? 'print' : ''" id="mdl-main-frame">
     <div v-if="!printMode">
       <div class="mdl-grid">
         <tabs/>
         <div class="mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--8-col">
           <div class="map-container" style="position: relative">
-            <dashboard-map :mapbox-access-token="privateConfig.mapboxAccessToken" :map-config="mapConfig"/>
+            <dashboard-map :mapbox-access-token="config.privateConfig.mapboxAccessToken" :map-config="config.mapConfig"/>
             <dashboard-legend/>
           </div>
           <div class="flexcontainer">
@@ -23,7 +23,7 @@
           <div class="demo-separator mdl-cell--1-col"/>
           <distribution-chart/>
           <div class="demo-separator mdl-cell--1-col"/>
-          <trend-chart/>
+          <trend-chart v-if="metric.config && metric.years && (chartValues || chartCountyValues)" :metric-config="metric.config" :years="metric.years.map(i => Number(i))" :values="chartValues" :county-values="chartCountyValues" framework="mdl"/>
           <div class="demo-separator mdl-cell--1-col"/>
           <feedback/>
           <div class="demo-separator mdl-cell--1-col"/>
@@ -33,7 +33,7 @@
         </div>
       </div>
       <div class="mdl-grid demo-cards">
-        <div v-if="siteConfig.contactForm" class="mdl-typography--text-center mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet comment-container">
+        <div v-if="config.siteConfig.contactForm" class="mdl-typography--text-center mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet comment-container">
           <div class="comment-form">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label is-focused">
               <input id="contact-email" class="mdl-textfield__input" type="email" required autocomplete="off">
@@ -60,7 +60,7 @@
       <dashboard-footer/>
     </div>
     <div v-else>
-      <print-mode :map-config="mapConfig" :private-config="privateConfig"/>
+      <print-mode :config="config"/>
     </div>
   </div>
 </template>
@@ -69,6 +69,7 @@
 import { mapGetters, mapState } from 'vuex';
 
 import config from './modules/config';
+import { calcValue } from './modules/metric_calculations';
 
 import DataTable from './components/datatable.vue';
 import DistributionChart from './components/distribution-chart.vue';
@@ -105,23 +106,36 @@ export default {
   },
   data() {
     return {
-      siteConfig: config.siteConfig,
-      privateConfig: config.privateConfig,
-      mapConfig: config.mapConfig,
+      config: config,
     };
   },
   computed: Object.assign(
     mapState({
       printMode: 'printMode',
       metric: 'metric',
-      urlHash(state) {
-        if (!state.metricId || !state.geography.id) return '';
-        return `${state.printMode ? 'print/' : ''}${state.metricId}/${state.geography.id}/${state.selected.map(g => encodeURIComponent(g)).join(',')}`;
+      chartValues(state) {
+        if (!state.selected.length || state.metric.years.length <= 1) return {};
+        const metricValues = {};
+        for (let i = 0; i < state.metric.years.length; i++) {
+          metricValues[state.metric.years[i]] = calcValue(state.metric.data, state.metric.config.type,
+              state.metric.years[i], state.selected);
+        }
+        return metricValues;
+      },
+      chartCountyValues(state) {
+        const averageValues = {};
+        const years = Object.keys(state.metric.averageValues);
+        for (let i = 0; i < years.length; i++) {
+          averageValues[years[i]] = state.metric.averageValues[years[i]].value;
+        }
+        return averageValues;
       },
     }),
     mapGetters({
       legendTitle: 'legendTitle',
-    })),
+      urlHash: 'urlHash',
+    }),
+  ),
   watch: {
     urlHash(newUrlHash) {
       location.hash = newUrlHash;
@@ -133,9 +147,25 @@ export default {
       this.setTitle();
     },
   },
-  beforeCreate() {
+  beforeMount() {
     // Check if there is an existing hash and use it, otherwise redirect to a random metric.
     if (location.hash) {
+      this.processHash();
+    } else {
+      this.$store.dispatch('randomMetric');
+      location.hash = this.$store.getters.urlHash;
+    }
+  },
+  mounted() {
+    this.setPrintClass();
+    this.setTitle();
+    window.addEventListener('hashchange', this.processHash);
+  },
+  beforeDestroy() {
+    window.removeEventListener('hashchange', this.processHash);
+  },
+  methods: {
+    processHash() {
       // Helper function to get the current page hash.
       function getHash(pos = 0) {
         const hash = decodeURI(location.hash).split('/');
@@ -151,6 +181,9 @@ export default {
         this.$store.commit('setPrintMode');
         hashOffset = 1;
       }
+      else {
+        this.$store.commit('setPrintMode', false);
+      }
 
       // Hash has the form #[print]/metricId/geographyId/selectedid1,selectedid2
       if (getHash(hashOffset + 1)) {
@@ -160,29 +193,22 @@ export default {
         this.$store.commit('setSelected', getHash(hashOffset + 2).split(','));
       }
       this.$store.dispatch('changeMetric', getHash(hashOffset));
-    } else {
-      this.$store.dispatch('randomMetric');
-    }
-  },
-  mounted() {
-    this.setPrintClass();
-    this.setTitle();
-  },
-  methods: {
+    },
     setPrintClass() {
       // Add print mode class to body.
       if (this.printMode) {
         document.getElementsByTagName('body')[0].classList.add('print');
+        document.getElementById('mdl-main-frame').scrollTo(0,0); // Scroll to top.
       } else {
         document.getElementsByTagName('body')[0].classList.remove('print');
       }
     },
     setTitle() {
       if (this.legendTitle) {
-        document.title = `${this.siteConfig.title} - ${this.legendTitle}`;
+        document.title = `${this.config.siteConfig.title} - ${this.legendTitle}`;
       }
       else {
-        document.title = this.siteConfig.title;
+        document.title = this.config.siteConfig.title;
       }
     },
   },

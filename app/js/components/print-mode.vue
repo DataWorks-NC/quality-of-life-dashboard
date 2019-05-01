@@ -1,10 +1,10 @@
 <template functional>
   <div class="mdl-grid">
-    <print-map-header/>
+    <print-map-header :config="config"/>
     <img src="./img/report-logo.png" alt="DataWorks NC logo" class="header__logo">
-    <div class="mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--12-col">
+    <div class="map mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--12-col">
       <main class="map-container" style="position: relative">
-        <dashboard-map :mapbox-access-token="privateConfig.mapboxAccessToken" :map-config="mapConfig"/>
+        <dashboard-map :mapbox-access-token="config.privateConfig.mapboxAccessToken" :map-config="Object.assign({ trackResize: false }, config.mapConfig)"/>
         <dashboard-legend/>
       </main>
       <footer>Map from the Durham Neighborhood Compass, a project of DataWorks NC. Visit <a href="https://compass.durhamnc.gov">the compass</a> to build your own map!</footer>
@@ -25,15 +25,22 @@ export default {
     PrintMapHeader,
   },
   props: [
-    'mapConfig',
-    'privateConfig',
+    'config',
   ],
 };
 </script>
 
 <style>
+body.print {
+  min-width: 8.5in;
+}
+
+.print .mdl-layout__container {
+  min-width: 8.5in;
+}
+
 .print .mdl-grid {
-  max-width: 8in;
+  max-width: 8.5in;
   padding: 0.25in;
 }
 
@@ -43,6 +50,7 @@ export default {
 
 .print #map {
   height: 8in;
+  min-width: 7.33in;
 }
 
 .print footer {
@@ -53,6 +61,14 @@ export default {
 
 .header__logo {
   display: none;
+}
+
+.mdl-cell {
+  padding: 8px;
+}
+
+.mdl-cell.map {
+  padding: 0;
 }
 
 @media print {
@@ -78,5 +94,9 @@ export default {
   .mapboxgl-popup {
     display: none;
   }
+}
+
+@page {
+  size: letter portrait;
 }
 </style>
