@@ -1,20 +1,20 @@
 <template>
   <div class="mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--12-col">
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label is-dirty">
-      <input v-model="title" id="maptitle" class="mdl-textfield__input" type="text" name="maptitle" maxlength="150" aria-label="Set a custom map title" ref="maptitle">
-      <label for="maptitle" class="mdl-textfield__label">Title</label>
+      <input id="maptitle" ref="maptitle" :aria-label="$t('printMapHeader.setTitle')" v-model="title" class="mdl-textfield__input" type="text" name="maptitle" maxlength="150">
+      <label for="maptitle" class="mdl-textfield__label">{{ $t('strings.title') || capitalize }}</label>
     </div>
     <div class="mdl-layout__spacer"></div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label is-dirty embedcode">
       <textarea :value="embedcode" id="embedcode" class="mdl-textfield__input" type="text" name="embedcode" maxlength="200"ref="embedcode" @click="selectAndCopy()" rows="2"></textarea>
-      <label for="embedcode" class="mdl-textfield__label" @click="selectAndCopy()">Copy the following code to embed this map in another website</label>
+      <label for="embedcode" class="mdl-textfield__label" @click="selectAndCopy()">{{ $t('printMapheader.copy') }}</label>
     </div>
-    <div :style="showCopiedIndicator ? 'opacity: 100;' : ''" id="embedcode__copied">Text copied to clipboard!</div>
+    <div :style="showCopiedIndicator ? 'opacity: 100;' : ''" id="embedcode__copied">{{ $t('printMapheader.copied') }}</div>
     <div class="mdl-layout__spacer"></div>
-    <button class="mdl-button mdl-button--colored mdl-js-button mdl-button--raised" @click="print()">PRINT THIS MAP</button>
-    <button class="mdl-button mdl-js-button mdl-button--raised" @click="returnToDashboard()">BACK TO DASHBOARD</button>
+    <button class="mdl-button mdl-button--colored mdl-js-button mdl-button--raised" @click="print()">{{ $t('printMapheader.print') || allcaps }}</button>
+    <button class="mdl-button mdl-js-button mdl-button--raised" @click="returnToDashboard()">{{ $t('printMapheader.back') || allcaps }}</button>
     <div class="mdl-layout__spacer"></div>
-    <div class="mdl-cell print__note">Please note: the print function works best on Chrome or Firefox browsers.</div>
+    <div class="mdl-cell print__note">{{ $t('printMapHeader.printNote') }}</div>
   </div>
 </template>
 

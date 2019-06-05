@@ -15,9 +15,9 @@ module.exports = {
     javascripts: {
       joinTo: {
         'vendor.js': /^(?!app)/,
-        'app.js': ['app/js/main.js', 'app/js/Dashboard.vue', 'app/js/vuex-store/index.js', /^app\/js\/modules/, /^app\/js\/components\/(?!report)/],
-        'report.js': ['app/js/report.js', 'app/js/components/trend-chart.vue', /^app\/js\/modules/, /^app\/js\/components\/report/],
-        'embed.js': ['app/js/embed.js', 'app/js/Embed.vue', 'app/js/components/dashboard-map.vue', 'app/js/components/dashboard-legend.vue','app/js/vuex-store/index.js', /^app\/js\/modules/],
+        'app.js': /^app/,
+        'report.js': ['app/js/report.js', 'app/js/components/trend-chart.vue', /^app\/js\/modules/, /^app\/js\/components\/report/, /^app\/lang/],
+        'embed.js': ['app/js/embed.js', 'app/js/Embed.vue', 'app/js/components/dashboard-map.vue', 'app/js/components/dashboard-legend.vue','app/js/vuex-store/index.js', /^app\/js\/modules/, /^app\/lang/],
       },
     },
     stylesheets: {
@@ -27,6 +27,9 @@ module.exports = {
         'app.css': /^app\/css/,
         'report.css': /^app\/css\/report/,
       },
+    },
+    templates: {
+      joinTo: 'app.js',
     },
   },
   npm: {

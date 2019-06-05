@@ -1,9 +1,9 @@
 <template lang="html" functional>
   <p class="text-muted">
-    <a :href="twitter" aria-label="Share on Twitter" target="_blank" rel="noopener"><svg class="icon icon-twitter-with-circle"><use href="#icon-twitter-with-circle"/></svg></a>
-    <a :href="facebook" aria-label="Share on Facebook" target="_blank" rel="noopener"><svg class="icon icon-facebook-with-circle"><use href="#icon-facebook-with-circle"/></svg></a>
-    <a :href="linkedin" aria-label="Share on LinkedIn" target="_blank" rel="noopener"><svg class="icon icon-linkedin-with-circle"><use href="#icon-linkedin-with-circle"/></svg></a>
-    <a href="https://github.com/DataWorks-NC/quality-of-life-dashboard" aria-label="View project on Github"><svg class="icon icon-brand-github"><use href="#icon-brand-github"/></svg></a>
+    <a :href="twitter" :aria-label="$t('social.twitter')" target="_blank" rel="noopener"><svg class="icon icon-twitter-with-circle"><use href="#icon-twitter-with-circle"/></svg></a>
+    <a :href="facebook" :aria-label="$t('social.facebook')" target="_blank" rel="noopener"><svg class="icon icon-facebook-with-circle"><use href="#icon-facebook-with-circle"/></svg></a>
+    <a :href="linkedin" :aria-label="$t('social.linkedIn')" target="_blank" rel="noopener"><svg class="icon icon-linkedin-with-circle"><use href="#icon-linkedin-with-circle"/></svg></a>
+    <a :aria-label="$t('social.viewGitHub')" href="https://github.com/DataWorks-NC/quality-of-life-dashboard"><svg class="icon icon-brand-github"><use href="#icon-brand-github"/></svg></a>
   </p>
 </template>
 

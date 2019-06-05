@@ -7,7 +7,7 @@
         class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect selected-clear"
         @click="clearSelected"
       >
-        <span class="mdl-chip__text">Clear Selected</span>
+        <span class="mdl-chip__text">{{ $t('undermapButtons.clear') }}</span>
       </button>
       <button
         v-if="siteConfig.qolreportURL" :class="{'undermap-buttons__active' : selected.length}"
@@ -16,14 +16,14 @@
         data-fullreport
         @click="loadReport"
       >
-        <span class="mdl-chip__text">Report</span>
+        <span class="mdl-chip__text">{{ $t('undermapButtons.report') }}</span>
       </button>
       <button
         class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect undermap-buttons__active"
         data-printmap
         @click="loadEmbed"
       >
-        <span class="mdl-chip__text">Print or Embed Map</span>
+        <span class="mdl-chip__text">{{ $t('undermapButtons.printEmbed') }}</span>
       </button>
     </p>
   </div>

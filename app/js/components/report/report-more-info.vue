@@ -1,6 +1,6 @@
 <template>
   <div class="metric-more-info">
-    <div class="metric-more-info__title" @click="toggleMoreInfo"><h3>{{ collapsed ? 'Show more info' : 'Hide more info' }}</h3></div>
+    <div class="metric-more-info__title" @click="toggleMoreInfo"><h3>{{ collapsed ? $t('reportMoreInfo.show') : $t('reportMoreInfo.hide') }}</h3></div>
     <div v-show="!collapsed" class="metric-more-info__body" v-html="moreInfo"/>
   </div>
 </template>

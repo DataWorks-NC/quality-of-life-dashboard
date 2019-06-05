@@ -3,7 +3,7 @@
     <div class="flex-container">
       <div class="flex-left">
         <div class="playpause">
-          <input id="playpause" :checked="!animationPlaying" type="checkbox" value="None" name="check" title="Start or stop playing through data timeseries by year" @change="play">
+          <input id="playpause" :checked="!animationPlaying" :title="$t('yearSlider.startStop')" type="checkbox" value="None" name="check" @change="play">
           <label for="playpause"/>
         </div>
       </div>
@@ -12,7 +12,7 @@
                :value="year" type="range"
                step="1" list="ticks" @change="changeYear">
         <datalist id="ticks">
-          <option v-for="tickYear in metric.years">
+          <option v-for="tickYear in metric.years" :key="tickYear">
             {{ tickYear }}
           </option>
         </datalist>
@@ -22,7 +22,7 @@
       </div>
     </div>
     <div class="flex-container">
-      <label for="yearslider">use slider to choose a data year to view</label>
+      <label for="yearslider">{{ $t('yearSlider.useSlider') }}</label>
     </div>
   </div>
 </template>

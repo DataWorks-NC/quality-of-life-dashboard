@@ -2,21 +2,17 @@
   <div class="page page-front">
     <div class="row">
       <div class="col-xs-12">
-        <img class="logo-image" src="img/report-logo.png" alt="Durham Neighborhood Compass">
+        <img class="logo-image" src="img/report-logo.png" :alt="$t('strings.DurhamneighborhoodCompass')">
         <h2 class="subtitle">{{ reportTitle }}</h2>
       </div>
     </div>
     <div class="row">
       <div class="col-sm-6">
-        <p>
-          The <a href="/">Neighborhood Compass</a> is a primary community resource for information that is regularly-updated, serving meaningful data to the community openly.
-        </p>
-        <p>
-          Each year the Compass grows and learns along with its users, adding data sets with strong community resonance and longitudinal importance.
-        </p>
-        <p>
-          A quantitative project with qualitative values.
-        </p>
+        <i18n path="reportSummary.about[0]" tag="p">
+          <a place="compassLink" href="/">{{ $t('strings.DurhamNeighborhoodCompass') }}</a>
+        </i18n>
+        <i18n path="reportSummary.about[1]" tag="p"/>
+        <i18n path="reportSummary.about[2]" tag="p"/>
       </div>
       <div class="col-sm-6">
         <ReportMap :map-config="mapConfig" :geography-id="geographyId" :selected-geographies="areaIds"/>
@@ -27,14 +23,14 @@
         <table class="metric-box">
           <tbody>
             <tr>
-              <td v-for="metric in summaryMetrics.slice(0,3)">
+              <td v-for="metric in summaryMetrics.slice(0,3)" :key="metric.metric">
                 <h2>{{ metric.category }}</h2>
                 <h3>{{ prettyValue(metric) }} {{ metric.raw_label }}</h3>
                 <h4>{{ metric.title }}</h4>
               </td>
             </tr>
             <tr>
-              <td v-for="metric in summaryMetrics.slice(3,6)">
+              <td v-for="metric in summaryMetrics.slice(3,6)" :key="metric.metric">
                 <h2>{{ metric.category }}</h2>
                 <h3>{{ prettyValue(metric) }} {{ metric.raw_label }}</h3>
                 <h4>{{ metric.title }}</h4>

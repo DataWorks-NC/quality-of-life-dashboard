@@ -1,9 +1,9 @@
 <template lang="html">
   <div class="qol-chart mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop">
     <div class="scatterplot mdl-typography--text-center">
-      <h1>Data Distribution, {{ year }}</h1>
-      <span v-show="selected.length > 0"><svg class="icon legend legend-selected"><use href="#icon-lens"/></svg> Selected</span>
-      <span><svg class="icon legend legend-median"><use href="#icon-more_horiz"/></svg> Median {{ median }}</span>
+      <h1>{{ $t('distributionChart.DataDistribution') }}, {{ year }}</h1>
+      <span v-show="selected.length > 0"><svg class="icon legend legend-selected"><use href="#icon-lens"/></svg> {{ $t('strings.selected') || capitalize }}</span>
+      <span><svg class="icon legend legend-median"><use href="#icon-more_horiz"/></svg> {{ $t('strings.median') || capitalize }} {{ median }}</span>
       <div class="ct-distributionchart"/>
     </div>
   </div>

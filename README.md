@@ -74,3 +74,15 @@ Sprites come from `gh-pages` branch of https://github.com/maputnik/osm-liberty. 
 ## Testing
 
 We test with the help of [![Browserstack logo](https://raw.githubusercontent.com/DataWorks-NC/quality-of-life-dashboard/master/app/assets/img/browserstack-logo.png)](https://browserstack.com/)
+
+## Translations
+
+All text in the app is dynamically loaded using vue-i18n from the `en.json` and `es.json` files in `app/lang`. The codename for a string needs to match across both files. There are two utility functions in the app as well to more exaily import/export translations:
+
+* `npm run export-translations` - Parses the `en.json` and `es.json` files and outputs a fresh CSV with one column listing every string key, one column with the English version of that text, and another column with the Spanish version of that text. This is a good way to export strings so that translators can work with them.
+
+* `npm run import-translations` - Reads the `translations.csv` file and recreates `en.json` and `es.json` files based on that.
+
+### To add new text to the app
+
+Create the string keys and string items in either English or Spanish in the `en.json` or `es.json` files. If you then run the export_translations script immediately followed by the import_translations script, both languages `json` files will be populated with blank placeholders for any missing text.

@@ -1,35 +1,37 @@
 <template>
   <div class="d-print-none">
-    <a class="metric-selector__title" @click.prevent="collapsed=!collapsed">Customize this report</a>
+    <a class="metric-selector__title" @click.prevent="collapsed=!collapsed">{{ $t('reportSelector.customize') }}</a>
     <div v-if="!collapsed" :class="collapsed ? 'collapsed' : ''" class="page page-category metric-selector">
       <div class="row metric-selector__body">
         <div class="col-xs-11">
-          <p>You can customize this report to show only the metrics or categories that are relevant to your interests. Here's how:
+          <p>{{ $t('reportSelector.instructionsIntro') }}
             <ul>
-              <li>Click on the title of a category to hide or show all of the metrics in that category.</li>
-              <li>Click on the title of an individual metric to hide or show just that metric.</li>
-              <li>If you want to choose a different part of the city to view for this report, you'll need to <a href="/">go back to the dashboard and make a new selection</a></li>
-              <li>Share your customized report using the following URL: <a :href="getReportURL()" class="metric-selector__report-link">{{ getReportURL() }}</a></li>
+              <li>{{ $t('reportSelector.instructions[0]') }}</li>
+              <li>{{ $t('reportSelector.instructions[1]') }}</li>
+              <i18n path="reportSelector.instructions[2]" tag="li">
+                <a place="goBack" href="/">{{ $t('reportSelector.goBack') }}</a>
+              </i18n>
+              <li>{{ $t('reportSelector.instructions[3]') }}<a :href="getReportURL()" class="metric-selector__report-link">{{ getReportURL() }}</a></li>
             </ul>
           </p>
         </div>
-        <div class="col-xs-1"><a @click.prevent="collapsed=true">Close</a></div>
+        <div class="col-xs-1"><a @click.prevent="collapsed=true">{{ $t('strings.close') || capitalize }}</a></div>
       </div>
       <div class="row metric-selector__body">
         <div v-for="category in hiddenCategories" class="col-xs-12 col-sm-6 col-md-4">
           <div :key="category.name" class="list-group">
-            <a :class="category.visible ? 'active' : ''" class="list-group-item list-group-item-action" @click.prevent="toggleCategory(category.name)">{{ category.name }}<p class="metric-selector__tip">Click to show this category</p></a>
+            <a :class="category.visible ? 'active' : ''" class="list-group-item list-group-item-action" @click.prevent="toggleCategory(category.name)">{{ category.name }}<p class="metric-selector__tip">{{ $t('reportSelector.categoryTip') }}</p></a>
           </div>
         </div>
       </div>
       <div class="row metric-selector__body">
-        <div class="col-xs-12"><h4>Metrics shown in your report</h4>
+        <div class="col-xs-12"><h4>{{ $t('reportSelector.metricsShown') }}</h4>
         </div>
-        <div v-for="category in visibleCategories" class="col-xs-12 col-sm-6 col-md-4">
-          <div :key="category.name" class="list-group">
+        <div v-for="category in visibleCategories" :key="category.name" class="col-xs-12 col-sm-6 col-md-4">
+          <div class="list-group">
             <a :class="category.visible ? 'active' : ''" class="list-group-item list-group-item-action" @click.prevent="toggleCategory(category.name)">{{ category.name }}</a>
             <div v-if="category.visible" class="list-group metric-selector__sub-metrics">
-              <a v-for="metric in category.metrics" :class="metric.visible ? 'active' : ''" class="list-group-item list-group-item-action metric-selector__sub-metric" @click.prevent="toggleMetric(metric)">{{ metric.title }}</a>
+              <a v-for="metric in category.metrics" :key="metric.metric" :class="metric.visible ? 'active' : ''" class="list-group-item list-group-item-action metric-selector__sub-metric" @click.prevent="toggleMetric(metric)">{{ metric.title }}</a>
             </div>
           </div>
         </div>

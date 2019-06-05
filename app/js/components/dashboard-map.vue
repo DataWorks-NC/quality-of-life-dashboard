@@ -81,7 +81,7 @@ export default {
           accessToken: _this.mapboxAccessToken,
           country: 'us',
           bbox: [-79.01, 35.87, -78.7, 36.15],
-          placeholder: 'Search for an address, neighborhood or landmark',
+          placeholder: this.$t('map.SearchPlaceholder'),
           zoom: 14,
           mapboxgl: mapboxgl,
         }).on('result', (e) => {

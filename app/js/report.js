@@ -11,6 +11,7 @@ import {
 import ReportSummary from './components/report/report-summary';
 import ReportBody from './components/report/report-body';
 import ReportSelector from './components/report/report-selector';
+import i18n from '../lang/lang';
 
 import 'vueify/lib/insert-css'; // required for .vue file <style> tags
 
@@ -169,6 +170,7 @@ ReportBody.data = function () {
 const summaryMetrics = siteConfig.summaryMetrics.map((id) => dataConfig[id]);
 
 new Vue({
+  i18n,
   el: 'report-body',
   render: h => h(ReportBody),
 });
@@ -184,6 +186,7 @@ ReportSelector.data = function () {
 };
 
 new Vue({
+  i18n,
   el: 'report-selector',
   render: h => h(ReportSelector),
 });

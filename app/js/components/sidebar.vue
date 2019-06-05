@@ -5,17 +5,15 @@
     </header>
     <nav class="demo-navigation mdl-navigation mdl-color--blue-grey-900">
       <template v-if="filterVal">
-        <a class="mdl-navigation__link" href="javascript:void(0)" @click="changeFilter(null)"><svg class="mdl-color-text--blue-grey-400 icon icon-keyboard_arrow_left navleft"><use href="#icon-keyboard_arrow_left"/></svg>Back</a>
+        <a class="mdl-navigation__link" href="javascript:void(0)" @click="changeFilter(null)"><svg class="mdl-color-text--blue-grey-400 icon icon-keyboard_arrow_left navleft"><use href="#icon-keyboard_arrow_left"/></svg>{{ $t('strings.back') || capitalize }}k</a>
         <template v-for="m in filteredMetrics">
-          <a class="mdl-navigation__link mdl-navigation__link-end" href="javascript:void(0)" @click="changeMetric(m.metric)">{{ m.title }}</a>
+          <a :key="m.metric" class="mdl-navigation__link mdl-navigation__link-end" href="javascript:void(0)" @click="changeMetric(m.metric)">{{ m.title }}</a>
         </template>
       </template>
       <template v-else >
-        <span class="sidebar-title">Explore the Data</span>
-        <template v-for="category in categories">
-          <a class="mdl-navigation__link" href="javascript:void(0)" @click="changeFilter(category)">{{ category }}<svg class="mdl-color-text--blue-grey-400 icon icon-keyboard_arrow_right navright"><use href="#icon-keyboard_arrow_right"/></svg></a>
-        </template>
-        <a class="mdl-navigation__link" href="/download/download.zip" @click="ga('send', 'event', 'download', 'metric zip file download')">Download Data</a>
+        <span class="sidebar-title">{{ $t('sidebar.explore') }}</span>
+        <a v-for="category in categories" :key="category" class="mdl-navigation__link" href="javascript:void(0)" @click="changeFilter(category)">{{ category }}<svg class="mdl-color-text--blue-grey-400 icon icon-keyboard_arrow_right navright"><use href="#icon-keyboard_arrow_right"/></svg></a>
+        <a class="mdl-navigation__link" href="/download/download.zip" @click="ga('send', 'event', 'download', 'metric zip file download')">{[ $t('sidebar.download') }}</a>
       </template>
     </nav>
   </div>

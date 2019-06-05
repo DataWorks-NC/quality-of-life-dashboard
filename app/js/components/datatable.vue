@@ -7,14 +7,14 @@
             <th class="mdl-data-table__cell--non-numeric">
               <span :title="geography.description" class="tooltip">{{ geography.name }}</span>
             </th>
-            <th>{{ year }} Value <span v-if="metric.config.label">({{ metric.config.label }})</span>
+            <th>{{ year }} {{ $t('strings.value') || capitalize }} <span v-if="metric.config.label">({{ metric.config.label }})</span>
             </th>
-            <th v-if="metric.data.a">Accuracy</th>
-            <th v-if="metric.years.length > 1">Trend<br>{{ trendStartYear }}-{{ trendEndYear }}
+            <th v-if="metric.data.a">{{ $t('strings.accuracy') || capitalize }}</th>
+            <th v-if="metric.years.length > 1">{{ $t('strings.trend') || capitalize }}<br>{{ trendStartYear }}-{{ trendEndYear }}
             </th>
-            <th v-if="metric.config.raw_label">Number of {{ metric.config.raw_label }}
+            <th v-if="metric.config.raw_label">{{ $t('strings.numberOf') || capitalize }} {{ metric.config.raw_label }}
             </th>
-            <th v-if="metric.years.length > 1 && metric.config.raw_label">Trend<br>{{ trendStartYear }}-{{ trendEndYear }}
+            <th v-if="metric.years.length > 1 && metric.config.raw_label">{{ $t('strings.trend') || capitalize }}<br>{{ trendStartYear }}-{{ trendEndYear }}
             </th>
           </tr>
         </thead>
@@ -33,7 +33,7 @@
     <p class="mdl-typography--text-right">
       <a download="data.csv" class="mdl-button mdl-js-button mdl-js-ripple-effect download"
          @click="downloadTable('#datatable table')">
-        Download
+        {{ $t('strings.download') || capitalize }}
       </a>
     </p>
   </div>

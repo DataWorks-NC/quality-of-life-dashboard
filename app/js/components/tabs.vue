@@ -2,23 +2,20 @@
   <div class="mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-color--white category-tabs no-print">
     <div class="mdl-tabs mdl-js-tabs">
       <div class="mdl-tabs__tab-bar mdl-typography--text--center">
-        <template v-for="category in categories">
-          <a
-            :class="['mdl-tabs__tab', metric.config && category.name === metric.config.category ? 'is-active' : '']"
-            :href="`#${category.id}-panel`"
-            :key="category.id"
-            @click="changeFilter(category.name)"
-          >{{ category.name }}</a>
-        </template>
+        <a
+          v-for="category in categories"
+          :class="['mdl-tabs__tab', metric.config && category.name === metric.config.category ? 'is-active' : '']"
+          :href="`#${category.id}-panel`"
+          :key="category.id"
+          @click="changeFilter(category.name)"
+        >{{ category.name }}</a>
       </div>
 
       <template v-for="category in categories">
         <div :class="['mdl-tabs__panel', metric.config && category.name === metric.config.category ? 'is-active': '']" :id="`${category.id}-panel`" :key="category.id">
-          <template v-for="m in metricsByCategory[category.name]">
-            <button :class="['mdl-chip', m.metric === metricId ? 'is-active' : '']" type="button" @click="changeMetric(m.metric)" :key="m.metric">
-              <span class="mdl-chip__text">{{ m.title }}</span>
-            </button>
-          </template>
+          <button v-for="m in metricsByCategory[category.name]" :key="m.metric" :class="['mdl-chip', m.metric === metricId ? 'is-active' : '']" type="button" @click="changeMetric(m.metric)">
+            <span class="mdl-chip__text">{{ m.title }}</span>
+          </button>
         </div>
       </template>
 

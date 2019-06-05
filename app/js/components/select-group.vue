@@ -1,10 +1,10 @@
 <template>
   <p v-if="validSelectGroups" class="selectgroup">
-    <span class="selectgroup__instructions">Or, select a</span>
+    <span class="selectgroup__instructions">{{ $t('selectGroup.orSelectA') }}</span>
     <template v-for="(group, groupKey, groupIndex) in selectGroups">
-      <span v-if="groupIndex === (Object.keys(selectGroups).length - 1)" class="selectgroup__instructions">or</span>
-      <button :id="`selectgroup-${groupIndex}`" :disabled="!group.hasOwnProperty(geography.id)" class="mdl-button mdl-js-button mdl-button--primary"><span>{{ groupKey }}</span></button>
-      <ul :for="`selectgroup-${groupIndex}`" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+      <span v-if="groupIndex === (Object.keys(selectGroups).length - 1)" :key="groupKey" class="selectgroup__instructions">{{ $t('strings.or') }}</span>
+      <button :key="groupKey" :id="`selectgroup-${groupIndex}`" :disabled="!group.hasOwnProperty(geography.id)" class="mdl-button mdl-js-button mdl-button--primary"><span>{{ groupKey }}</span></button>
+      <ul :for="`selectgroup-${groupIndex}`" :key="`selectgroup-${groupIndex}`" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
         <li v-for="(item, key) in group[geography.id]" :key="key" class="mdl-menu__item" @click="select(item, key, groupKey)">{{ key }}</li>
       </ul>
     </template>
@@ -27,7 +27,7 @@ export default {
     geography: 'geography',
     // Returns null if there is a valid select group, non-null otherwise.
     validSelectGroups(state) {
-      return Object.keys(this.selectGroups).find(g => this.selectGroups[g].hasOwnProperty(state.geography.id));
+      return Object.keys(this.selectGroups).find(g => state.geography.id in this.selectGroups[g]);
     },
   }),
   methods: {

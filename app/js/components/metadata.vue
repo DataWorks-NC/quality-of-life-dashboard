@@ -1,10 +1,10 @@
 <template lang="html" functional>
   <div v-if="metadata" id="metadata">
-    <h3>Why This is Important</h3>
+    <h3>{{ $t('metadata.whyImportant') }}</h3>
     <div v-html="important"/>
-    <h3>About the Data</h3>
+    <h3>{{ $t("metadata.about") }}</h3>
     <div v-html="about"/>
-    <h4>Additional Resources</h4>
+    <h4>{{ $t("metadata.resources") }}</h4>
     <div v-html="resources"/>
   </div>
 </template>
@@ -14,6 +14,7 @@ import { mapState } from 'vuex';
 
 import getSubstringIndex from '../modules/substring-nth';
 
+// TODO: Simplify this code!
 export default {
   name: 'Metadata',
   computed: mapState({

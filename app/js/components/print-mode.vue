@@ -1,13 +1,15 @@
 <template functional>
   <div class="mdl-grid">
     <print-map-header :config="config"/>
-    <img src="./img/report-logo.png" alt="DataWorks NC logo" class="header__logo">
+    <img :alt="$t('strings.DataWorksNCLogo')" src="./img/report-logo.png" class="header__logo">
     <div class="map mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--12-col">
       <main class="map-container" style="position: relative">
         <dashboard-map :mapbox-access-token="config.privateConfig.mapboxAccessToken" :map-config="Object.assign({ trackResize: false }, config.mapConfig)"/>
         <dashboard-legend/>
       </main>
-      <footer>Map from the Durham Neighborhood Compass, a project of DataWorks NC. Visit <a href="https://compass.durhamnc.gov">the compass</a> to build your own map!</footer>
+      <i18n path="printMode.footerText" tag="footer">
+        <a place="compassLink" href="https://compass.durhamnc.gov">{{ $t('strings.theCompass') }}</a>
+      </i18n>
     </div>
   </div>
 </template>

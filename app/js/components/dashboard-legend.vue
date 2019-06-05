@@ -1,14 +1,14 @@
 <template lang="html">
   <div v-if="metric.config" id="legend" class="top left">
     <div>
-      <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=" class="background-print-img" alt="white background for printing">
+      <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=" class="background-print-img" aria-hidden="true">
       <div class="legendposition">
-        <a href="javascript:void(0)" title="Move Table of Contents" @click="position()"><svg class="icon"><use href="#icon-zoom_out_map"/></svg></a>
+        <a :title="$t('legend.MoveTableOfContents')" href="javascript:void(0)" @click="position()"><svg class="icon"><use href="#icon-zoom_out_map"/></svg></a>
       </div>
       <h1 class="title">{{ $store.getters.legendTitle }}</h1>
       <div class="metricboxes">
         <div v-if="selected.length > 0" class="metricbox">
-          <span class="metrictype">SELECTED</span>
+          <span class="metrictype">{{ $t('strings.selected') || allcaps }}</span>
           <span class="metricvalue">{{ selectedValue }}</span>
           <span v-if="metric.config.label" class="metriclabel">{{ metric.config.label.toLowerCase() }}</span>
           <span v-if="metric.config.raw_label && selected.length > 0 && selectedValueRaw" class="metric-raw">
@@ -18,7 +18,7 @@
           </span>
         </div>
         <div class="metricbox">
-          <span class="metrictype">COUNTY</span>
+          <span class="metrictype">{{ $t('strings.county') || allcaps }}</span>
           <span class="metricvalue">{{ areaValue }}</span>
           <span v-if="metric.config.label" class="metriclabel">{{ metric.config.label.toLowerCase() }}</span>
           <span v-if="metric.config.raw_label && areaValueRaw" class="metric-raw">
@@ -30,8 +30,9 @@
       </div>
       <div class="legend">
         <svg v-if="breaks" id="maplegend" xmlns="https://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" viewBox="0 0 248.4 39.2" role="img" aria-labelledby="svgTitle">
-          <title id="svgTitle">Choropleth legend</title>
+          <title id="svgTitle">{{ $t('legend.ChoroplethLegend') }}</title>
           <g transform="translate(20.714293 -851.75475)">
+            <!--     @TODO add aria labels for these mouseover actions       -->
             <rect :style="{fill: colors[0]}" y="865.9" x="-20.7" height="25" width="50" @click="selectBreak(0)" @mouseover="changeHighlight(0)" @mouseout="changeHighlight(-1)" />
             <rect :style="{fill: colors[1]}" width="50" height="25" x="28.9" y="865.9" @click="selectBreak(1)" @mouseover="changeHighlight(1)" @mouseout="changeHighlight(-1)" />
             <rect :style="{fill: colors[2]}" width="50" height="25" x="78.5" y="865.9" @click="selectBreak(2)" @mouseover="changeHighlight(2)" @mouseout="changeHighlight(-1)" />

@@ -5,11 +5,11 @@
       <table v-if="metricValues" class="table table-striped metric-table">
         <tbody>
           <tr>
-            <th class="metric-table__year">Year</th>
-            <th class="metric-table__feature-value">Feature Value</th>
-            <th v-if="countyAverages" class="metric-table__county-average">County Average</th>
+            <th class="metric-table__year">{{ $t('strings.year') || capitalize }}</th>
+            <th class="metric-table__feature-value">{{ $t('strings.FeatureValue') }}</th>
+            <th v-if="countyAverages" class="metric-table__county-average">{{ $t('strings.CountyAverage') }}</th>
           </tr>
-          <tr v-for="year in years">
+          <tr v-for="year in years" :key="year">
             <td class="metric-table__year">{{ year }}</td>
             <td class="metric-table__feature-value">{{ prettify(metricValues[year]) }}</td>
             <td v-if="countyAverages" class="metric-table__county-average">{{ prettify(countyAverages[year]) }}</td>
@@ -25,7 +25,7 @@
                     :selected="[]"
         />
       </div>
-    <MoreInfo :href="`data/meta/m${metric.metric}.html`"></MoreInfo>
+      <MoreInfo :href="`data/meta/m${metric.metric}.html`"></MoreInfo>
     </div>
   </div>
 </template>

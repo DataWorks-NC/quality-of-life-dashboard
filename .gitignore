@@ -14,4 +14,6 @@ yarn.lock
 .envrc
 .env
 .Rhistory
+pwmetrics-config.report.local.js
+pwmetrics-config.local.js
 .python-version
