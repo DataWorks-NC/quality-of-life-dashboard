@@ -3,6 +3,7 @@
     <p style="margin-top: 0;">
       <button
         :class="{'undermap-buttons__active' : selected.length}"
+        :disabled="!selected.length"
         class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect selected-clear"
         @click="clearSelected"
       >
@@ -10,6 +11,7 @@
       </button>
       <button
         v-if="siteConfig.qolreportURL" :class="{'undermap-buttons__active' : selected.length}"
+        :disabled="!selected.length"
         class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
         data-fullreport
         @click="loadReport"
