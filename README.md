@@ -66,10 +66,7 @@ To deploy, run `python .circleci/deploy.py` (make sure that `python-dotenv` is i
 
 ## Map glyphs & sprites
 
-Current deployment includes mapbox glyphs for Roboto, generated using https://github.com/orangemug/font-glyphs. Originally these were pulled in from orangemug.github.io, but we're
-currently self-hosting in order to get around an adblock rule which was blocking orangemug.github.io.
-
-To regenerate/refresh glyphs, copy `glyphs` from `gh-pages` branch of the https://github.com/orangemug/font-glyphs repository into `app/assets/glyphs`. Building glyphs locally does not currently seem to work, at least on Mac OS X.
+Glyphs currently hosted remotely by http://glfonts.lukasmartinelli.ch/. Hosting locally is complicated! But could be needed in the future to switch away from Roboto.
 
 Sprites come from `gh-pages` branch of https://github.com/maputnik/osm-liberty. If you update the sprites file, you may need to check for missing sprites as there are a few variant spellings in the data which are missing from the sprites `json` file.
 
