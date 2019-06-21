@@ -9,7 +9,8 @@ Long-term, think about re-introducing LESS compilation or SCSS into the project.
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 html {
-    font-family: sans-serif;
+    font-family: Roboto, 'Helvetica Neue', 'Calibri', 'Liberation Sans',
+    sans-serif;
     -ms-text-size-adjust: 100%;
     -webkit-text-size-adjust: 100%;
 }
@@ -1077,7 +1078,6 @@ html {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 body {
-    font-family: sans-serif;
     font-size: 14px;
     line-height: 1.42857143;
     color: #333333;
@@ -5957,7 +5957,6 @@ button.close {
     position: absolute;
     z-index: 1070;
     display: block;
-    font-family: sans-serif;
     font-style: normal;
     font-weight: normal;
     letter-spacing: normal;
@@ -6075,7 +6074,6 @@ button.close {
     display: none;
     max-width: 276px;
     padding: 1px;
-    font-family: sans-serif;
     font-style: normal;
     font-weight: normal;
     letter-spacing: normal;
@@ -7257,9 +7255,6 @@ body {
     padding-top: 0;
 }
 
-.vis {
-    font-family: sans-serif;
-}
 .vis h4 {
     font-size: 1em;
     font-weight: normal;

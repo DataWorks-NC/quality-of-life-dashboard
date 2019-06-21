@@ -496,4 +496,12 @@ export default {
 .mapboxgl-ctrl-geocoder input[type="text"] {
     color: rgba(0, 0, 0, 0.8);
 }
+
+#map .mapboxgl-ctrl-geocoder {
+  font-family: inherit;
+}
+
+div#map {
+  font-family: inherit;
+}
 </style>
