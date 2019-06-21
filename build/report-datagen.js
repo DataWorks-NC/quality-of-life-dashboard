@@ -119,19 +119,18 @@ _.each(siteConfig.geographies || ['geography'], (geography) => {
           });
 
       // Write a file for each geography with just the metrics for that geography.
-      // _.forOwn(geographyMetricsCached, (value, key) => {
-      //   value.geography_name = key;
-      //   let filename = key;
-      //   if (geography.id === 'neighborhood') {
-      //     filename = md5(key);
-      //   }
-      //   fs.writeFile(path.join(dest, `report/${geography.id}/${filename}.json`),
-      //     jsonminify(JSON.stringify(value)),
-      //     (err) => {
-      //       if (err) return console.log(`Error saving report JSON for ${geography.id} ${filename} (${key}): ${err.message}`);
-      //       console.log(`Saved report JSON for ${geography.id} ${filename} (${key})`);
-      //     });
-      // });
+      _.forOwn(geographyMetricsCached, (value, key) => {
+        let filename = key;
+        if (geography.id === 'neighborhood') {
+          filename = md5(key);
+        }
+        fs.writeFile(path.join(dest, `report/${geography.id}/${filename}.json`),
+          jsonminify(JSON.stringify(Object.assign( { 'geography_name': key }, value))),
+          (err) => {
+            if (err) return console.log(`Error saving report JSON for ${geography.id} ${filename} (${key}): ${err.message}`);
+            console.log(`Saved report JSON for ${geography.id} ${filename} (${key})`);
+          });
+      });
 
       // Set up output file stream to CSV
       const dataFile = fs.createWriteStream(
@@ -170,13 +169,16 @@ _.each(siteConfig.geographies || ['geography'], (geography) => {
       _.forOwn(geographyMetricsCached, (geographyData, geographyId) => {
         if (!metricsList) {
           metricsList = [];
-
           // Use the first geography to populate header row with names of metrics & the years they contain.
           _.forOwn(geographyData, (value, key) => {
-            metricsList.push({
-              metric: key,
-              years: Object.keys(value.map),
-            });
+            if (!value.map) {
+              console.log(`Error on ${key} ${value}`);
+            } else {
+              metricsList.push({
+                metric: key,
+                years: Object.keys(value.map),
+              });
+            }
           });
 
           // Now generate the human readable header row for the CSV table.
