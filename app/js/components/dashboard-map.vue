@@ -327,11 +327,14 @@ export default {
       });
     },
 
-    rescale: function() {
+    rescale: function(newSelected=null, oldSelected=null) {
       try {
         if (this.selected.length) {
           return this.zoomToIds(this.selected);
-        } else return this.zoomToFullExtent();
+        } else if (!oldSelected) {
+          // Only zoom to full extent if you did not just deselect.
+          return this.zoomToFullExtent();
+        }
       }
       catch (e) {
         return;
@@ -492,5 +495,13 @@ export default {
 
 .mapboxgl-ctrl-geocoder input[type="text"] {
     color: rgba(0, 0, 0, 0.8);
+}
+
+#map .mapboxgl-ctrl-geocoder {
+  font-family: inherit;
+}
+
+div#map {
+  font-family: inherit;
 }
 </style>
