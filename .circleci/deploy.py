@@ -24,10 +24,12 @@ if len(sys.argv) < 2:
 dir_path = sys.argv[1]
 
 # Create .azure directory ahead of time to avoid race condition in azure code.
-try:
-  os.mkdir('~/.azure')
-except OSError as e:
-  pass
+dirs = ['~/.azure', '~/.azure/commands', '~/.azure/logs', '~/.azure/telemetry']
+for dir in dirs:
+  try:
+    os.mkdir(dir)
+  except OSError as e:
+    pass
 
 extensions = set()
 MAX_WORKERS = 20
