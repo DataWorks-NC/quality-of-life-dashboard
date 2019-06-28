@@ -23,6 +23,12 @@ if len(sys.argv) < 2:
     print("Must include path to the files to deploy as an argument")
 dir_path = sys.argv[1]
 
+# Create .azure directory ahead of time to avoid race condition in azure code.
+try:
+  os.mkdir('~/.azure')
+except OSError as e:
+  pass
+
 extensions = set()
 MAX_WORKERS = 20
 
