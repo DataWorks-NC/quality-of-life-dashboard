@@ -6,7 +6,7 @@ const path = require('path');
 const _ = require('lodash');
 const stringify = require('csv-stringify');
 
-const translationFilePath = path.join(__dirname, '../app/lang/');
+const translationFilePath = path.join(__dirname, '../src/locales/');
 const languages = ['en', 'es'];
 
 let output = {};

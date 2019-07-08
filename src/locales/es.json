@@ -1,0 +1,116 @@
+{
+ "undefined": "deslice para elegir año de datos para ver",
+ "strings": {
+  "accuracy": "exactitud",
+  "and": "y",
+  "back": "atrás",
+  "close": "cerrar",
+  "county": "condado",
+  "download": "descargar",
+  "median": "mediana",
+  "numberOf": "número de",
+  "or": "o",
+  "selected": "seleccionado/s",
+  "theCompass": "el compass",
+  "title": "título",
+  "trend": "tendencia",
+  "value": "valor",
+  "CityOfCharlotte": "Ciudad de Charlotte",
+  "CityOfDurhamLogo": "Logo de la Ciudad de Durham",
+  "CountyAverage": "Promedio del condado",
+  "FeatureValue": "Valor de la característica",
+  "DataWorksNCLogo": "Logo de DataWorks NC",
+  "DurhamCountyLogo": "Logo del Condado de Durham",
+  "DurhamNeighborhoodCompass": "Durham Neighborhood Compass",
+  "MecklenburgCounty": "Condado de Mecklenburg",
+  "TrendingDown": "Bajando",
+  "TrendingFlat": "Sin cambios",
+  "TrendingUp": "Aumentando",
+  "changeLanguage": "View in English"
+ },
+ "dashboard": {
+  "moveToC": "Mover Tabla de Contenido"
+ },
+ "distributionChart": {
+  "DataDistribution": "Distribución de los datos"
+ },
+ "feedback": {
+  "JoinMailingList": "Únase a nuestra lista de correo",
+  "ShareFeedbacK": "Comparta sus opiniones o preguntas"
+ },
+ "footer": {
+  "credits": "Vea el código de Neighborhood Compass en {GitHub}. Basado en el código creado por {MecklenburgCounty}, la {Charlotte}, y {UNCC} con mucho &#9829; por los proyectos que hacen posible este sitio: {OpenStreetMap}, {OSM2VectorTiles}, {MapboxGLJS}, {VueJS}, {MDL}, {CircleCI}, y {BrowserStack}."
+ },
+ "geographySwitcher": {
+  "instructions": "Seleccione una lugar geográfico de base (dependiendo del conjunto de datos, pueden haber distintos lugares disponibles)."
+ },
+ "legend": {
+  "MoveTableOfContents": "Mover Tabla de Contenido",
+  "ChoroplethLegend": "Referencias cloropléticas"
+ },
+ "map": {
+  "SearchPlaceholder": "Busque una dirección, vecindario o punto de referencia"
+ },
+ "metadata": {
+  "about": "Sobre los datos",
+  "resources": "Recursos Adicionales",
+  "whyImportant": "Qué lo hace importante"
+ },
+ "printMapHeader": {
+  "back": "Volver al Dashboard",
+  "copied": "Texto copiado en portapapeles!",
+  "copy": "Copiar el siguiente código para incrustar este mapa en otro sitio web",
+  "print": "Imprimir este mapa",
+  "printNote": "Atención: esta función de impresión funciona mejor en los buscadores Chrome o Firefox.",
+  "setTitle": "Personalizar el título del mapa"
+ },
+ "printMode": {
+  "footerText": "Mapa extraído de Durham Neighborhood Compass, un proyecto de DataWorks NC. Visite {compassLink} para generar su propio mapa!"
+ },
+ "reportMoreInfo": {
+  "hide": "Mostrar menos información",
+  "show": "Mostrar más información"
+ },
+ "reportSelector": {
+  "categoryTip": "Haga clic para mostrar esta categoría",
+  "customize": "Personalizar este informe",
+  "goBack": "volver al dashboard y hacer nueva selección",
+  "instructionsIntro": "Ud. puede personalizar este informe para mostrar solo los indicadores o categorías que son relevantes para sus intereses. Cómo hacerlo:",
+  "instructions": [
+   "Haga clic en el título de una categoría para ocultar o mostrar todos los indicadores de esa categoría.",
+   "Haga clic en el título de un indicador determinado para ocultarlo o mostrarlo.",
+   "Si quiere elegir una parte distinta de la ciudad para ver este informe, necesitará {goBack}",
+   "Comparta su informe personalizado usando el siguiente URL:"
+  ],
+  "metricsShown": "Indicadores presentados en su informe"
+ },
+ "reportSummary": {
+  "about": [
+   "El {compassLink} es un recurso de información primario de la comunidad que es actualizado regularmente, que proporciona abiertamente valiosa información a la comunidad.",
+   "Cada año el Compass crece y aprende junto con sus usuarios, sumando conjuntos de datos que tengan sentido para la comunidad y cuya importancia sea transversal.",
+   "Un proyecto cuantitativo con valores cualitativos."
+  ]
+ },
+ "selectGroup": {
+  "orSelectA": "O, seleccione un/a"
+ },
+ "sidebar": {
+  "download": "Descargue los datos",
+  "explore": "Explore los datos"
+ },
+ "social": {
+  "facebook": "Comparta en Facebook",
+  "linkedIn": "Comparta en LinkedIn",
+  "twitter": "Comparta en Twitter",
+  "viewGitHub": "Vea el proyecto en GitHub"
+ },
+ "undermapButtons": {
+  "clear": "Borre selección",
+  "printEmbed": "Imprima o incruste el mapa",
+  "report": "Informe"
+ },
+ "yearSlider": {
+  "startStop": "Comenzar o terminar reproducción de datos en series de tiempo por año",
+  "useSlider": "deslice para elegir año de datos para ver"
+ }
+}

@@ -2,9 +2,8 @@
 
 # Automate the data generation process
 
-node $NODE_DEBUG_OPTION ./build/datagen.js
-npx babel-node ./build/report-datagen.js
-cp -r ./app/assets/download/* ./public/download
+node --experimental-modules ./build/datagen.mjs
+node --experimental-modules ./build/report-datagen.mjs
 pushd ./public/download
 zip -r download.zip ./
 popd

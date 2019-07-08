@@ -1,0 +1,71 @@
+﻿key,en,es
+strings.accuracy,accuracy,exactitud
+strings.and,and,y
+strings.back,back,atrás
+strings.close,close,cerrar
+strings.county,county,condado
+strings.download,download,descargar
+strings.median,median,mediana
+strings.numberOf,number of,número de
+strings.or,or,o
+strings.selected,selected,seleccionado/s
+strings.theCompass,the compass,el compass
+strings.title,title,título
+strings.trend,trend,tendencia
+strings.value,value,valor
+strings.CityOfCharlotte,City of Charlotte,Ciudad de Charlotte
+strings.CityOfDurhamLogo,City of Durham logo,Logo de la Ciudad de Durham
+strings.CountyAverage,County Average,Promedio del condado
+strings.FeatureValue,Feature Value,Valor de la característica
+strings.DataWorksNCLogo,DataWorks NC logo,Logo de DataWorks NC
+strings.DurhamCountyLogo,Durham County logo,Logo del Condado de Durham
+strings.DurhamNeighborhoodCompass,Durham Neighborhood Compass,Durham Neighborhood Compass
+strings.MecklenburgCounty,Mecklenburg County,Condado de Mecklenburg
+strings.TrendingDown,Trending Down,Bajando
+strings.TrendingFlat,Trending Flat,Sin cambios
+strings.TrendingUp,Trending Up,Aumentando
+dashboard.moveToC,Move Table of Contents,Mover Tabla de Contenido
+distributionChart.DataDistribution,Data Distribution,Distribución de los datos
+feedback.JoinMailingList,Join our mailing list,Únase a nuestra lista de correo
+feedback.ShareFeedbacK,Share feedback or questions,Comparta sus opiniones o preguntas
+footer.credits,"View the Neighborhood Compass code on {GitHub}. Based on code created by {MecklenburgCounty}, the {Charlotte}, and {UNCC} with much &#9829; for the projects that make this site possible: {OpenStreetMap}, {OSM2VectorTiles}, {MapboxGLJS}, {VueJS}, {MDL}, {CircleCI}, and {BrowserStack}.","Vea el código de Neighborhood Compass en {GitHub}. Basado en el código creado por {MecklenburgCounty}, la {Charlotte}, y {UNCC} con mucho &#9829; por los proyectos que hacen posible este sitio: {OpenStreetMap}, {OSM2VectorTiles}, {MapboxGLJS}, {VueJS}, {MDL}, {CircleCI}, y {BrowserStack}."
+geographySwitcher.instructions,"Select a base geography (depending on the dataset, different geographies may be available).","Seleccione una lugar geográfico de base (dependiendo del conjunto de datos, pueden haber distintos lugares disponibles)."
+legend.MoveTableOfContents,Move Table of Contents,Mover Tabla de Contenido
+legend.ChoroplethLegend,Choropleth legend,Referencias cloropléticas
+map.SearchPlaceholder,"Search for an address, neighborhood or landmark","Busque una dirección, vecindario o punto de referencia"
+metadata.about,About the Data,Sobre los datos
+metadata.resources,Additional Resources,Recursos Adicionales
+metadata.whyImportant,Why This is Important,Qué lo hace importante
+printMapHeader.back,Back to dashboard,Volver al Dashboard
+printMapHeader.copied,Text copied to clipboard!,Texto copiado en portapapeles!
+printMapHeader.copy,Copy the following code to embed this map in another website,Copiar el siguiente código para incrustar este mapa en otro sitio web
+printMapHeader.print,Print this map,Imprimir este mapa
+printMapHeader.printNote,Please note: the print function works best on Chrome or Firefox browsers.,Atención: esta función de impresión funciona mejor en los buscadores Chrome o Firefox.
+printMapHeader.setTitle,Set a custom map title,Personalizar el título del mapa
+printMode.footerText,"Map from the Durham Neighborhood Compass, a project of DataWorks NC. Visit {compassLink} to build your own map!","Mapa extraído de Durham Neighborhood Compass, un proyecto de DataWorks NC. Visite {compassLink} para generar su propio mapa!"
+reportMoreInfo.hide,Hide more info,Mostrar menos información
+reportMoreInfo.show,Show more info,Mostrar más información
+reportSelector.categoryTip,Click to show this category,Haga clic para mostrar esta categoría
+reportSelector.customize,Customize this report,Personalizar este informe
+reportSelector.goBack,go back to the dashboard and make a new selection,volver al dashboard y hacer nueva selección
+reportSelector.instructionsIntro,You can customize this report to show only the metrics or categories that are relevant to your interests. Here's how:,Ud. puede personalizar este informe para mostrar solo los indicadores o categorías que son relevantes para sus intereses. Cómo hacerlo:
+reportSelector.instructions[0],Click on the title of a category to hide or show all of the metrics in that category.,Haga clic en el título de una categoría para ocultar o mostrar todos los indicadores de esa categoría.
+reportSelector.instructions[1],Click on the title of an individual metric to hide or show just that metric.,Haga clic en el título de un indicador determinado para ocultarlo o mostrarlo.
+reportSelector.instructions[2],"If you want to choose a different part of the city to view for this report, you'll need to {goBack}","Si quiere elegir una parte distinta de la ciudad para ver este informe, necesitará {goBack}"
+reportSelector.instructions[3],Share your customized report using the following URL: ,Comparta su informe personalizado usando el siguiente URL: 
+reportSelector.metricsShown,Metrics shown in your report,Indicadores presentados en su informe
+reportSummary.about[0],"The {compassLink} is a primary community resource for information that is regularly-updated, serving meaningful data to the community openly.","El {compassLink} es un recurso de información primario de la comunidad que es actualizado regularmente, que proporciona abiertamente valiosa información a la comunidad."
+reportSummary.about[1],"Each year the Compass grows and learns along with its users, adding data sets with strong community resonance and longitudinal importance.","Cada año el Compass crece y aprende junto con sus usuarios, sumando conjuntos de datos que tengan sentido para la comunidad y cuya importancia sea transversal."
+reportSummary.about[2],A quantitative project with qualitative values.,Un proyecto cuantitativo con valores cualitativos.
+selectGroup.orSelectA,"Or, select a","O, seleccione un/a"
+sidebar.download,Download the Data,Descargue los datos
+sidebar.explore,Explore the Data,Explore los datos
+social.facebook,Share on Facebook,Comparta en Facebook
+social.linkedIn,Share on LinkedIn,Comparta en LinkedIn
+social.twitter,Share on Twitter,Comparta en Twitter
+social.viewGitHub,View the project on GitHub,Vea el proyecto en GitHub
+undermapButtons.clear,Clear Selected,Borre selección
+undermapButtons.printEmbed,Print or Embed Map,Imprima o incruste el mapa
+undermapButtons.report,Report,Informe
+yearSlider.startStop,Start or stop playing through data timeseries by year,Comenzar o terminar reproducción de datos en series de tiempo por año
+yearSlider.useSlider,use slider to choose a data year to view,deslice para elegir año de datos para ver

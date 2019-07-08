@@ -5,6 +5,7 @@
     "quotes": "off",
     "vue/max-attributes-per-line": "off",
     "max-len": "off",
-    "import/no-unresolved": "off"
+    "import/no-unresolved": "off",
+    "no-param-reassign": "off"
   }
 }

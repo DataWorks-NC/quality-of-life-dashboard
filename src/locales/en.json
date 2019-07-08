@@ -1,0 +1,116 @@
+{
+ "strings": {
+  "accuracy": "accuracy",
+  "and": "and",
+  "back": "back",
+  "close": "close",
+  "county": "county",
+  "download": "download",
+  "median": "median",
+  "numberOf": "number of",
+  "or": "or",
+  "selected": "selected",
+  "theCompass": "the compass",
+  "title": "title",
+  "trend": "trend",
+  "value": "value",
+  "CityOfCharlotte": "City of Charlotte",
+  "CityOfDurhamLogo": "City of Durham logo",
+  "CountyAverage": "County Average",
+  "FeatureValue": "Feature Value",
+  "DataWorksNCLogo": "DataWorks NC logo",
+  "DurhamCountyLogo": "Durham County logo",
+  "DurhamNeighborhoodCompass": "Durham Neighborhood Compass",
+  "MecklenburgCounty": "Mecklenburg County",
+  "TrendingDown": "Trending Down",
+  "TrendingFlat": "Trending Flat",
+  "TrendingUp": "Trending Up",
+  "changeLanguage": "Ver en español"
+ },
+ "dashboard": {
+  "moveToC": "Move Table of Contents"
+ },
+ "distributionChart": {
+  "DataDistribution": "Data Distribution"
+ },
+ "feedback": {
+  "JoinMailingList": "Join our mailing list",
+  "ShareFeedbacK": "Share feedback or questions"
+ },
+ "footer": {
+  "credits": "View the Neighborhood Compass code on {GitHub}. Based on code created by {MecklenburgCounty}, the {Charlotte}, and {UNCC} with much &#9829; for the projects that make this site possible: {OpenStreetMap}, {OSM2VectorTiles}, {MapboxGLJS}, {VueJS}, {MDL}, {CircleCI}, and {BrowserStack}."
+ },
+ "geographySwitcher": {
+  "instructions": "Select a base geography (depending on the dataset, different geographies may be available)."
+ },
+ "legend": {
+  "MoveTableOfContents": "Move Table of Contents",
+  "ChoroplethLegend": "Choropleth legend"
+ },
+ "map": {
+  "SearchPlaceholder": "Search for an address, neighborhood or landmark"
+ },
+ "metadata": {
+  "about": "About the Data",
+  "resources": "Additional Resources",
+  "whyImportant": "Why This is Important"
+ },
+ "printMapHeader": {
+  "back": "Back to dashboard",
+  "copied": "Text copied to clipboard!",
+  "copy": "Copy the following code to embed this map in another website",
+  "print": "Print this map",
+  "printNote": "Please note: the print function works best on Chrome or Firefox browsers.",
+  "setTitle": "Set a custom map title"
+ },
+ "printMode": {
+  "footerText": "Map from the Durham Neighborhood Compass, a project of DataWorks NC. Visit {compassLink} to build your own map!"
+ },
+ "reportMoreInfo": {
+  "hide": "Hide more info",
+  "show": "Show more info"
+ },
+ "reportSelector": {
+  "categoryTip": "Click to show this category",
+  "customize": "Customize this report",
+  "goBack": "go back to the dashboard and make a new selection",
+  "instructionsIntro": "You can customize this report to show only the metrics or categories that are relevant to your interests. Here's how:",
+  "instructions": [
+   "Click on the title of a category to hide or show all of the metrics in that category.",
+   "Click on the title of an individual metric to hide or show just that metric.",
+   "If you want to choose a different part of the city to view for this report, you'll need to {goBack}",
+   "Share your customized report using the following URL:"
+  ],
+  "metricsShown": "Metrics shown in your report"
+ },
+ "reportSummary": {
+  "about": [
+   "The {compassLink} is a primary community resource for information that is regularly-updated, serving meaningful data to the community openly.",
+   "Each year the Compass grows and learns along with its users, adding data sets with strong community resonance and longitudinal importance.",
+   "A quantitative project with qualitative values."
+  ]
+ },
+ "selectGroup": {
+  "orSelectA": "Or, select a"
+ },
+ "sidebar": {
+  "download": "Download the Data",
+  "explore": "Explore the Data"
+ },
+ "social": {
+  "facebook": "Share on Facebook",
+  "linkedIn": "Share on LinkedIn",
+  "twitter": "Share on Twitter",
+  "viewGitHub": "View the project on GitHub"
+ },
+ "undermapButtons": {
+  "clear": "Clear Selected",
+  "printEmbed": "Print or Embed Map",
+  "report": "Report"
+ },
+ "yearSlider": {
+  "startStop": "Start or stop playing through data timeseries by year",
+  "useSlider": "use slider to choose a data year to view"
+ },
+ "undefined": "use slider to choose a data year to view"
+}
