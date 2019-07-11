@@ -5,14 +5,14 @@
         <thead>
           <tr>
             <th class="mdl-data-table__cell--non-numeric">
-              <span :title="geography.description" class="tooltip">{{ geography.name }}</span>
+              <span :title="$t(`geographies.${geography.id}.description`)" class="tooltip">{{ $t(`geographies.${geography.id}.name`) }}</span>
             </th>
-            <th>{{ year }} {{ $t('strings.value') || capitalize }} <span v-if="metric.config.label">({{ metric.config.label }})</span>
+            <th>{{ curYear }} {{ $t('strings.value') || capitalize }} <span v-if="metric.config.label">({{ $t('metricLabels.' + metric.config.label) }})</span>
             </th>
             <th v-if="metric.data.a">{{ $t('strings.accuracy') || capitalize }}</th>
             <th v-if="metric.years.length > 1">{{ $t('strings.trend') || capitalize }}<br>{{ trendStartYear }}-{{ trendEndYear }}
             </th>
-            <th v-if="metric.config.raw_label">{{ $t('strings.numberOf') || capitalize }} {{ metric.config.raw_label }}
+            <th v-if="metric.config.raw_label">{{ $t('strings.numberOf') || capitalize }} {{ $t('metricLabels.' + metric.config.raw_label) }}
             </th>
             <th v-if="metric.years.length > 1 && metric.config.raw_label">{{ $t('strings.trend') || capitalize }}<br>{{ trendStartYear }}-{{ trendEndYear }}
             </th>
@@ -20,7 +20,7 @@
         </thead>
         <tbody>
           <tr v-for="row in dataTable" :key="row.geogIndex" @mouseover="highlight(row.geogIndex)" @mouseout="highlight([])">
-            <td class="mdl-data-table__cell--non-numeric">{{ geography.label(row.geogIndex) }}</td>
+            <td class="mdl-data-table__cell--non-numeric">{{ $i18n.locale === 'en' ? geography.label(row.geogIndex) : geography.label_es(row.geogIndex) }}</td>
             <td>{{ row.value }}</td>
             <td v-if="row.accuracy"> &#177; {{ row.accuracy }}</td>
             <td v-if="metric.years.length > 1 && row.trend" v-html="row.trend"/>

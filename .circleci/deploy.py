@@ -56,7 +56,7 @@ for extension in extensions:
         "upload-batch", 
         "--connection-string",
         os.getenv('AZURE_STORAGE_CONNECTION_STRING'),"-s", 
-        "public", 
+        dir_path,
         "-d", 
         os.getenv('AZURE_DESTINATION_BLOB'), 
         "--pattern", 

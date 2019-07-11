@@ -86,6 +86,8 @@ import TrendChart from './components/trend-chart.vue';
 import UndermapButtons from './components/undermap-buttons.vue';
 import YearSlider from './components/year-slider.vue';
 
+const materialDesignLite = require('material-design-lite');
+
 export default {
   name: 'Dashboard',
   components: {
@@ -144,6 +146,10 @@ export default {
   mounted() {
     this.setPrintClass();
     this.setTitle();
+    // Force material design lite to register dynamic components in the DOM *after* dashboard has loaded.
+    // componentHandler is a global defined by the material design library at load time.
+    componentHandler.upgradeDom();
+    document.dispatchEvent(new Event("x-app-rendered"));
   },
   methods: {
     setPrintClass() {

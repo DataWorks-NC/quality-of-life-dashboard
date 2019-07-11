@@ -25,7 +25,19 @@
   "TrendingDown": "Trending Down",
   "TrendingFlat": "Trending Flat",
   "TrendingUp": "Trending Up",
-  "changeLanguage": "Ver en español"
+  "ChangeLanguage": "Ver en español",
+  "DownloadData": "Download Data",
+  "metricCategories": {
+   "Civic Engagement": "Civic Engagement",
+   "Demographics": "Demographics",
+   "Economy": "Economy",
+   "Education": "Education",
+   "Environment": "Environment",
+   "Health": "Health",
+   "Housing": "Housing",
+   "Infrastructure and Amenities": "Infrastructure and Amenities",
+   "Safety": "Safety"
+  }
  },
  "dashboard": {
   "moveToC": "Move Table of Contents"
@@ -35,10 +47,39 @@
  },
  "feedback": {
   "JoinMailingList": "Join our mailing list",
-  "ShareFeedbacK": "Share feedback or questions"
+  "ShareFeedback": "Share feedback or questions"
  },
  "footer": {
-  "credits": "View the Neighborhood Compass code on {GitHub}. Based on code created by {MecklenburgCounty}, the {Charlotte}, and {UNCC} with much &#9829; for the projects that make this site possible: {OpenStreetMap}, {OSM2VectorTiles}, {MapboxGLJS}, {VueJS}, {MDL}, {CircleCI}, and {BrowserStack}."
+  "credits": "View the Neighborhood Compass code on {0}. Based on code created by {1}, the {2}, and {3} with much ♥ for the projects that make this site possible: {4}, {5}, {6}, {7}, {8}, {9}, and {10}.",
+  "links": [
+   {
+    "href": "http://www.dataworks-nc.org",
+    "text": "About"
+
+   },
+   {
+    "href": "http://www.opendurham.org/",
+    "text": "Open Durham - Neighborhood Histories"
+   },
+   {
+    "href": "http://www.durhamhoods.com/",
+    "text": "Durham Hoods - Neighborhood Maps and Mailing List Hub"
+   },
+   {
+    "href": "https://opendurham.nc.gov/pages/home/",
+    "text": "City of Durham Open Data Portal"
+   }
+  ]
+ },
+ "geographies": {
+  "tract": {
+   "name": "Census Tracts",
+   "description": "Area containing containing between 1,200 and 8,000 people. Census tract boundaries usually follow features like major roads, rivers, or municipal boundaries. Most tracts contain one or two neighborhoods."
+  },
+  "blockgroup": {
+   "name": "Census Blockgroups",
+   "description": "A census blockgroup is made up of several city blocks and usually contains between 600 and 3,000 people. Sometimes a blockgroup is the size of a neighborhood, but most neighborhoods are larger than a single blockgroup."
+  }
  },
  "geographySwitcher": {
   "instructions": "Select a base geography (depending on the dataset, different geographies may be available)."
@@ -54,6 +95,36 @@
   "about": "About the Data",
   "resources": "Additional Resources",
   "whyImportant": "Why This is Important"
+ },
+ "metricLabels": {
+  "years": "years",
+  "adults": "adults",
+  "people": "people",
+  "centers": "centers",
+  "centers per sq mi": "centers per sq mi",
+  "of households": "of households",
+  "homes near clinics": "homes near clinics",
+  "certificates per sq mi": "certificates per sq mi",
+  "certificates": "certificates",
+  "permits": "permits",
+  "permits per sq mi": "permits per sq mi",
+  "commuters": "commuters",
+  "incidents": "incidents",
+  "incidents per sq mi": "incidents per sq mi",
+  "renter households": "renter households",
+  "people receiving SSI": "people receiving SSI",
+  "people per sq mi": "people per sq mi",
+  "households": "households",
+  "dwelling units in poor or unsound state of repair": "dwelling units in poor or unsound state of repair",
+  "voters": "voters",
+  "young people": "young people",
+  "crimes": "crimes",
+  "crimes per sq mi": "crimes per sq mi",
+  "violations":  "violations",
+  "violations per sq mi": "violations per sq mi",
+  "per sq mi": "per sq mi",
+  "evictions per sq mi": "evictions per sq mi",
+  "ratio of sidewalks to roadways": "ratio of sidewalks to roadways"
  },
  "printMapHeader": {
   "back": "Back to dashboard",

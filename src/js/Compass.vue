@@ -1,16 +1,16 @@
 <template>
-<div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-header">
+<div>
   <header class="mdl-layout__header mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
     <div aria-label="sidebar menu" aria-expanded="false" role="button" tabindex="0" id="sidebar-hamburger-button" class="mdl-layout__drawer-button">
       <svg class="icon icon-menu mdl-color-text--blue-grey-50"><use xmlns:xlink="https://www.w3.org/1999/xlink" xlink:href="#icon-menu"/></svg>
     </div>
     <div class="mdl-layout__header-row">
-      <span class="mdl-layout-title"><a href="./"><img src="img/logo.png" alt="Durham Neighborhood Compass"></a></span>
+      <span class="mdl-layout-title"><a href="./"><img src="../assets/img/logo.png" :alt="$t('strings.DurhamNeighborhoodCompass')"></a></span>
       <div class="mdl-layout-spacer"/>
       <div class="header-nav" style="height: 54px;">
         <nav class="mdl-navigation">
-          <a class="mdl-navigation__link mdl-typography--text-uppercase mdl-color-text--blue-grey-50" @click="swapLanguage()">{{ $t('strings.changeLanguage')}}</a>
-          <a class="mdl-navigation__link mdl-typography--text-uppercase mdl-color-text--blue-grey-50" @click="ga('send', 'event', 'download', 'metric zip file download')" href="/download/download.zip">Download Data</a>
+          <a class="mdl-navigation__link mdl-typography--text-uppercase mdl-color-text--blue-grey-50" @click="swapLanguage()">{{ $t('strings.ChangeLanguage')}}</a>
+          <a class="mdl-navigation__link mdl-typography--text-uppercase mdl-color-text--blue-grey-50" @click="gaEvent('send', 'event', 'download', 'metric zip file download')" href="/download/download.zip">{{ $t('strings.DownloadData') }}</a>
         </nav>
       </div>
     </div>
@@ -23,6 +23,8 @@
 <script>
 import Dashboard from './Dashboard';
 import NavSidebar from './components/sidebar';
+
+import { gaEvent } from './modules/tracking';
 
 export default {
   name: 'Compass',
@@ -51,7 +53,7 @@ export default {
   mounted() {
     // Set query string parameters from store.
     this.storeWatchers = [
-      this.$store.watch(state => state.selected, (selected) => { this.$router.push({ query: { ...this.$route.query, selected } }); }),
+      this.$store.watch(state => state.selected, (selected) => { if (selected && selected.length) { this.$router.push({ query: { ...this.$route.query, selected } }); } }),
       this.$store.watch(state => state.printMode, (printMode) => {
         if (printMode) {
           this.$router.push({ query: {...this.$route.query, mode: 'print' } });
@@ -78,6 +80,7 @@ export default {
       const newRoute = Object.assign({}, this.$route);
       this.$router.push(Object.assign(newRoute, { params: newRouteParams }));
     },
+    gaEvent,
   },
 };
 

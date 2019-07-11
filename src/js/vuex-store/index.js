@@ -38,17 +38,17 @@ export default new Vuex.Store({
     },
     printMode: false,
     customLegendTitle: '',
-    language: 'en'
+    language: 'en',
   },
   getters: {
-    reportUrl: state => '',
-    embedUrl: state => '',
+    reportUrl: state => '', // TODO: Delete
+    embedUrl: state => '', // TODO: Delete
     legendTitle: state => {
       if (state.customLegendTitle) return state.customLegendTitle;
       else if (state.metric.config) return state.metric.config.title + ', ' + state.year;
       return '';
     },
-    urlHash: state => {
+    urlHash: state => { // TODO: Delete
       if (!state.metricId || !state.geography.id) return '';
       return `${state.printMode ? 'print/' : ''}${state.metricId}/${state.geography.id}/${state.selected.map(g => encodeURIComponent(g)).join(',')}`;
     },
@@ -192,8 +192,8 @@ export default new Vuex.Store({
         return;
       }
       // TODO: Check that language code is valid.
-
-      return await dispatch('loadMetricMetadata');
+      commit('setLanguage', newLanguage);
+      return dispatch('loadMetricMetadata');
     },
     async loadMetricMetadata({ commit, state }) {
       let metricMetadata = await fetchResponseHTML(`/data/meta/${state.language}/m${state.metricId}.html`);
@@ -204,7 +204,7 @@ export default new Vuex.Store({
     async setGeographyId({ commit, dispatch, state }, newGeographyId) {
       if (state.geography.id === newGeographyId) return;
       commit('setGeographyId', newGeographyId);
-      return await dispatch('loadMetricData');
+      return dispatch('loadMetricData');
     },
 
     async changeMetric({ commit, dispatch, state }, params) {
@@ -214,18 +214,22 @@ export default new Vuex.Store({
         commit('setGeographyId', params.newGeographyId);
       }
 
-      if (state.metricId === params.newMetricId) return;
-
-      commit('setMetricId', params.newMetricId);
-      gaEvent('metric', config.dataConfig[`m${params.newMetricId}`].title.trim(), config.dataConfig[`m${params.newMetricId}`].category.trim());
-      return await Promise.all([ dispatch('loadMetricData'), dispatch('loadMetricMetadata') ]);
+      if (state.metricId !== params.newMetricId) {
+        commit('setMetricId', params.newMetricId);
+        gaEvent('metric',
+          config.dataConfig[`m${params.newMetricId}`].title.trim(),
+          config.dataConfig[`m${params.newMetricId}`].category.trim());
+        // Only load metadata if the metric has changed.
+        return Promise.all([dispatch('loadMetricData'), dispatch('loadMetricMetadata')]);
+      }
+      return dispatch('loadMetricData');
     },
 
     // Set a random metric.
     async randomMetric({ dispatch }) {
       const metricIds = Object.keys(config.dataConfig);
       const metric = config.dataConfig[metricIds[Math.floor(Math.random() * (metricIds.length + 1))]];
-      return await dispatch('changeMetric', { newMetricId: metric.metric });
+      return dispatch('changeMetric', { newMetricId: metric.metric });
     },
     async playYearAnimation({ commit, state }) {
       // set current index and advance one

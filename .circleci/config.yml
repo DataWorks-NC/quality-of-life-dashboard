@@ -38,12 +38,12 @@ jobs:
 
       # run tests!
       - run: npm run build
-      - run: npx bundlesize
+#     - run: npx bundlesize
       - run: mkdir /tmp/workspace
       - persist_to_workspace:
           root: .
           paths:
-            - public/*
+            - dist/*
             - .circleci/*
   deploy_prod:
     docker:
@@ -56,9 +56,9 @@ jobs:
           working_directory: /tmp/workspace/
 
       # Add robots file for production.
-      - run: cp /tmp/workspace/.circleci/robots-prod.txt /tmp/workspace/public/robots.txt
+      - run: cp /tmp/workspace/.circleci/robots-prod.txt /tmp/workspace/dist/robots.txt
       - run:
-          command: python .circleci/deploy.py /tmp/workspace/public
+          command: python .circleci/deploy.py /tmp/workspace/dist
           working_directory: /tmp/workspace/
           environment:
             AZURE_DESTINATION_BLOB: "prod"
@@ -72,7 +72,7 @@ jobs:
           command: pip install -r .circleci/requirements.txt
           working_directory: /tmp/workspace/
       - run:
-          command: python .circleci/deploy.py /tmp/workspace/public
+          command: python .circleci/deploy.py /tmp/workspace/dist
           working_directory: /tmp/workspace/
           environment:
             AZURE_DESTINATION_BLOB: "dev"
@@ -94,7 +94,7 @@ jobs:
       # Save google auth credentials to the file they're supposed to be in so as to avoid having to manually authorize.
       - run: mkdir /home/circleci/.credentials
       - run: echo $PWMETRICS_GOOGLE_CREDENTIALS > /home/circleci/.credentials/sheets.googleapis.com-nodejs-pwmetrics.json
-      - run: npx pwmetrics http://nbhdcompassdev.azurewebsites.us/#PTLAT/tract/ --config=./.circleci/pwmetrics-config.js
+      - run: npx pwmetrics http://nbhdcompassdev.azurewebsites.us/compass/PTLAT/tract/ --config=./.circleci/pwmetrics-config.js
       - run: npx pwmetrics http://nbhdcompassdev.azurewebsites.us/report.html#blockgroup/370630019001 --config=./.circleci/pwmetrics-config.report.js
 
 workflows:

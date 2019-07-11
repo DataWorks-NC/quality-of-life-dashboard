@@ -3,7 +3,7 @@
     <div class="scatterplot mdl-typography--text-center">
       <h1>{{ $t('distributionChart.DataDistribution') }}, {{ year }}</h1>
       <span v-show="selected.length > 0"><svg class="icon legend legend-selected"><use href="#icon-lens"/></svg> {{ $t('strings.selected') || capitalize }}</span>
-      <span><svg class="icon legend legend-median"><use href="#icon-more_horiz"/></svg> {{ $t('strings.median') || capitalize }} {{ median }}</span>
+      <span v-if="mounted"><svg class="icon legend legend-median" <use href="#icon-more_horiz"/></svg> {{ $t('strings.median') || capitalize }} {{ median }}</span>
       <div class="ct-distributionchart"/>
     </div>
   </div>
@@ -18,6 +18,7 @@ import { median } from '../modules/metric_calculations';
 
 export default {
   name: 'DistributionChart',
+  data: () => ({ mounted: false }),
   computed: mapState(['breaks', 'metric', 'selected', 'year']),
   watch: {
     'metric.data': 'renderChart',
@@ -29,6 +30,7 @@ export default {
     this.median = null;
     this.chart = null;
     this.chartData = null;
+    this.mounted = true;
   },
   methods: {
     renderChart() {

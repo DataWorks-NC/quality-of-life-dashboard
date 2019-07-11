@@ -1,4 +1,8 @@
 @import url("./material.css");
+@import url("./modules/material.css");
+@import url("./modules/contactus.css");
+@import url("./modules/footer.css");
+@import url("./modules/intro.css");
 @import url("./report/report.css");
 
 *,

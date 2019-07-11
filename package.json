@@ -5,11 +5,11 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "build-data": "./build/datagen.sh",
     "lint": "vue-cli-service lint",
-    "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/locales/**/*.json'",
-    "build-site": "npm run build-data && npm run build-resources && brunch build --production",
+    "build-data": "./build/datagen.sh",
+    "build-site": "npm run build-data && npm run build",
     "export-translations": "node ./build/export_translations.js",
+    "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/locales/**/*.json'",
     "import-translations": "node ./build/import_translations.js"
   },
   "dependencies": {
@@ -48,10 +48,12 @@
     "eslint-plugin-vue": "^5.0.0",
     "lint-staged": "^8.1.5",
     "marked": "^0.7.0",
+    "prerender-spa-plugin": "^3.2.1",
     "pwmetrics": "^4.2.1",
     "sass": "^1.22.3",
     "sass-loader": "^7.1.0",
     "vue-cli-plugin-i18n": "^0.6.0",
+    "vue-cli-plugin-prerender-spa": "^1.1.5",
     "vue-template-compiler": "^2.6.10"
   },
   "eslintConfig": {

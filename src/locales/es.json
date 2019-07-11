@@ -26,7 +26,8 @@
   "TrendingDown": "Bajando",
   "TrendingFlat": "Sin cambios",
   "TrendingUp": "Aumentando",
-  "changeLanguage": "View in English"
+  "ChangeLanguage": "View in English",
+  "DownloadData": ""
  },
  "dashboard": {
   "moveToC": "Mover Tabla de Contenido"
@@ -39,7 +40,7 @@
   "ShareFeedbacK": "Comparta sus opiniones o preguntas"
  },
  "footer": {
-  "credits": "Vea el código de Neighborhood Compass en {GitHub}. Basado en el código creado por {MecklenburgCounty}, la {Charlotte}, y {UNCC} con mucho &#9829; por los proyectos que hacen posible este sitio: {OpenStreetMap}, {OSM2VectorTiles}, {MapboxGLJS}, {VueJS}, {MDL}, {CircleCI}, y {BrowserStack}."
+  "credits": "Vea el código de Neighborhood Compass en {0}. Basado en el código creado por {1}, la {2}, y {3} con mucho ♥ por los proyectos que hacen posible este sitio: {4}, {5}, {6}, {7}, {8}, {9}, y {10}."
  },
  "geographySwitcher": {
   "instructions": "Seleccione una lugar geográfico de base (dependiendo del conjunto de datos, pueden haber distintos lugares disponibles)."

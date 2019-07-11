@@ -1,11 +1,12 @@
 <template lang="html">
   <footer class="mdl-grid">
     <div class="mdl-typography--text-center mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet">
-      <p v-if="siteConfig.links" class="site-links" >
-        <a v-for="link in siteConfig.links" :href="link.href" target="_blank" rel="noopener">{{ link.text }}</a>
+      <p v-if="$t('footer.links')" class="site-links">
+        <a v-for="link in $t('footer.links')" :key="link.text" :href="link.href" target="_blank" rel="noopener">{{ link.text }}</a>
       </p>
       <i18n path="footer.credits" tag="p">
-        <a place="github" href="https://github.com/DataWorks-NC/quality-of-life-dashboard">Github</a>
+        <!-- Note: named places in i18n aren't working as described here, so the underlying footer.credits string currently uses numbered places -->
+        <a place="GitHub" href="https://github.com/DataWorks-NC/quality-of-life-dashboard">GitHub</a>
         <a place="MecklenburgCounty" href="https://charmeck.org/mecklenburg/county/Pages/Default.aspx">{{ $t("strings.MecklenburgCounty") }}</a>
         <a place="Charlotte" href="https://charmeck.org/city/charlotte/Pages/default.aspx">{{ $t("strings.CityOfCharlotte")}}</a>
         <a place="UNCC" href="https://www.uncc.edu/">UNC Charlotte</a>
@@ -18,9 +19,9 @@
         <a place="BrowserStack" href="https://browserstack.com/" target="_blank" rel="noopener">BrowserStack</a>.
       </i18n>
       <p class="logos">
-        <a href="https://durhamnc.gov"><img src="img/cityLogo.png" :alt="$t('strings.CityOfDurhamLogo')" height="125px"></a>
-        <a href="https://www.dataworks-nc.org"><img src="img/dwLogo.png" :alt="$t('strings.DataWorksNCLogo')" height="50px"></a>
-        <a href="https://dconc.gov"><img src="img/countyLogo.png" :alt="$t('strings.DurhamCountyLogo')" height="125px"></a>
+        <a href="https://durhamnc.gov"><img src="../../assets/img/cityLogo.png" :alt="$t('strings.CityOfDurhamLogo')" height="125px"></a>
+        <a href="https://www.dataworks-nc.org"><img src="../../assets/img/dwLogo.png" :alt="$t('strings.DataWorksNCLogo')" height="50px"></a>
+        <a href="https://dconc.gov"><img src="../../assets/img/countyLogo.png" :alt="$t('strings.DurhamCountyLogo')" height="125px"></a>
       </p>
     </div>
   </footer>

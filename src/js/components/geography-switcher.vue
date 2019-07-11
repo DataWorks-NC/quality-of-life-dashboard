@@ -1,9 +1,9 @@
 <template lang="html">
   <div v-if="validGeographies" id="geography-switcher" class="mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop geography-switcher">
     <template v-for="geography in validGeographies">
-      <button :key="geography.id" :class="['mdl-chip', geography.id === selectedGeography.id ? 'is-active' : '', geography.isAvailable ? '' : 'is-disabled']" type="button" :disabled="!geography.isAvailable" @click="changeGeography(geography.id)" >
+      <button :key="geography.id" :class="['mdl-chip', geography.id === selectedGeography.id ? 'is-active' : '', geography.isAvailable ? '' : 'is-disabled']" type="button" :disabled="!geography.isAvailable" @click="changeGeography(geography.id)">
         <!--        @TODO does this need a label or for tag for accessibility? -->
-        <span class="mdl-chip__text">{{ geography.name }}</span>
+        <span class="mdl-chip__text">{{ $t(`geographies.${geography.id}.name`) }}</span>
       </button>
     </template>
     <div class="geography-switcher--instructions">{{ $t('geographySwitcher.instructions') }}</div>

@@ -6,7 +6,6 @@
 export default {
   name: 'App',
   mounted() {
-    const Material = require('material-design-lite');
   },
 };
 </script>

@@ -7,12 +7,12 @@
           :class="['mdl-tabs__tab', category.name === categoryShown ? 'is-active' : '']"
           :key="category.id"
           @click="changeFilter(category.name)"
-        >{{ category.name }}</a>
+        >{{ $t(`strings.metricCategories['${category.name}']`) }}</a>
       </div>
 
         <div class="mdl-tabs__panel is-active" :id="`${categoryShown}-panel`" :key="categoryShown">
           <button v-for="m in metricsByCategory[categoryShown]" :key="m.metric" :class="['mdl-chip', m.metric === metricId ? 'is-active' : '']" type="button" @click="changeMetric(m.metric)">
-            <span class="mdl-chip__text">{{ m.title }}</span>
+            <span class="mdl-chip__text">{{ $i18n.locale === 'es' ? m.title_es : m.title }}</span>
           </button>
         </div>
 

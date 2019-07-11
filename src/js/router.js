@@ -10,7 +10,7 @@ Vue.use(Router);
 const routes = [
   {
     name: 'compass',
-    path: '/:locale/compass/:metric/:geography_level',
+    path: '/:locale/compass/:metric/:geography_level/',
     component: Compass,
     beforeEnter(to, from, next) {
       // Note: this code only gets called once when Compass component first loads.
@@ -48,8 +48,9 @@ const routes = [
     },
   },
   {
+    name: 'homepage',
     path: '*',
-    redirect: '/en/compass',
+    redirect: '/en/compass/', // TODO: Customize language here possibly.
   },
 ];
 

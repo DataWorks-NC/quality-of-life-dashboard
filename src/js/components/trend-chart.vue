@@ -2,7 +2,7 @@
   <div v-if="years.length > 1"
        :class="framework === 'mdl' ? 'qol-chart mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop mdl-typography--text-center' : 'qol-chart'">
     <div class="trendchart">
-      <h1 v-if="metricConfig">{{ metricConfig.title }}</h1>
+      <h1 v-if="metricConfig">{{ $i18n.locale === 'en' ? metricConfig.title : metricConfig.title_es }}</h1>
       <span class="legend"><svg class="icon legend-county"><use href="#icon-trending_up"/></svg> {{ $t('strings.county') || capitalize }}</span>
       <span class="legend"><svg class="icon legend-selected"><use href="#icon-trending_up"/></svg> {{ $t('strings.selected') || capitalize }}</span>
       <div :id="'ct-trendchart-' + metricConfig.metric" class="ct-trendchart"/>

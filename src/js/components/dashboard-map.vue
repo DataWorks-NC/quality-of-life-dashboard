@@ -222,10 +222,10 @@ export default {
           const feature = features[0];
           const { id } = feature.properties;
           const data = _this.metric.data.map[id][`y_${_this.year}`];
-          const geographyLabel = _this.geography.label(id);
+          const geographyLabel = _this.$i18n === 'en' ? _this.geography.label(id) : _this.geography.label_es(id);
           const val = prettyNumber(data, _this.metric.config.decimals, _this.metric.config.prefix,
             _this.metric.config.suffix, _this.metric.config.commas);
-          const label = _this.metric.config.label ? ` ${_this.metric.config.label}` : '';
+          const label = _this.metric.config.label ? ` ${_this.$t('metricLabels.' + _this.metric.config.label)}` : '';
           popup.setLngLat(map.unproject(e.point))
             .setHTML(
               `<div style="text-align: center; margin: 0; padding: 0;"><h3 style="font-size: 1.2em; margin: 0; padding: 0; line-height: 1em; font-weight: bold;">${geographyLabel}</h3>${val}${label}</div>`,

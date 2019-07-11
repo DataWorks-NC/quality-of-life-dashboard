@@ -10,21 +10,21 @@
         <div v-if="selected.length > 0" class="metricbox">
           <span class="metrictype">{{ $t('strings.selected') || allcaps }}</span>
           <span class="metricvalue">{{ selectedValue }}</span>
-          <span v-if="metric.config.label" class="metriclabel">{{ metric.config.label.toLowerCase() }}</span>
+          <span v-if="metric.config.label" class="metriclabel">{{ $t('metricLabels.' + metric.config.label.toLowerCase()) }}</span>
           <span v-if="metric.config.raw_label && selected.length > 0 && selectedValueRaw" class="metric-raw">
             <span>or</span>
             <span class="metricvalue metricraw">{{ selectedValueRaw }}</span>
-            <span class="metriclabel" v-html="metric.config.raw_label.toLowerCase()"/>
+            <span class="metriclabel" v-html="$t('metricLabels.' + metric.config.raw_label.toLowerCase())"/>
           </span>
         </div>
         <div class="metricbox">
           <span class="metrictype">{{ $t('strings.county') || allcaps }}</span>
           <span class="metricvalue">{{ areaValue }}</span>
-          <span v-if="metric.config.label" class="metriclabel">{{ metric.config.label.toLowerCase() }}</span>
+          <span v-if="metric.config.label" class="metriclabel">{{ $t('metricLabels.' + metric.config.label.toLowerCase()) }}</span>
           <span v-if="metric.config.raw_label && areaValueRaw" class="metric-raw">
             <span>or</span>
             <span class="metricvalue metricraw">{{ areaValueRaw }}</span>
-            <span class="metriclabel" v-html="metric.config.raw_label.toLowerCase()"/>
+            <span class="metriclabel" v-html="$t('metricLabels.' + metric.config.raw_label.toLowerCase())"/>
           </span>
         </div>
       </div>
