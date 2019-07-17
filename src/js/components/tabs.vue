@@ -5,17 +5,19 @@
         <a
           v-for="category in categories"
           :class="['mdl-tabs__tab', category.name === categoryShown ? 'is-active' : '']"
+          :href="`#${category.id}-panel`"
           :key="category.id"
           @click="changeFilter(category.name)"
         >{{ $t(`strings.metricCategories['${category.name}']`) }}</a>
       </div>
 
-        <div class="mdl-tabs__panel is-active" :id="`${categoryShown}-panel`" :key="categoryShown">
-          <button v-for="m in metricsByCategory[categoryShown]" :key="m.metric" :class="['mdl-chip', m.metric === metricId ? 'is-active' : '']" type="button" @click="changeMetric(m.metric)">
+      <template v-for="category in categories">
+      <div :class="['mdl-tabs__panel', category.name === categoryShown ? 'is-active' : '']" :id="`${category.id}-panel`" :key="category.id">
+          <button v-for="m in metricsByCategory[category.name]" :key="m.metric" :class="['mdl-chip', m.metric === metricId ? 'is-active' : '']" type="button" @click="changeMetric(m.metric)">
             <span class="mdl-chip__text">{{ $i18n.locale === 'es' ? m.title_es : m.title }}</span>
           </button>
         </div>
-
+      </template>
     </div>
   </div>
 </template>
@@ -38,7 +40,7 @@ export default {
       return config.categories.map(c => ({ id: c.replace(/\s+/g, ''), name: c }));
     },
     categoryShown() {
-      return this.filterVal || this.metric.config.category;
+      return this.filterVal || (this.metric.config && this.metric.config.category);
     }
   }),
 

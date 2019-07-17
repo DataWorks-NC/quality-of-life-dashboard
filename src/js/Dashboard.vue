@@ -4,6 +4,7 @@
       <div class="mdl-grid">
         <tabs/>
         <div class="mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--8-col">
+          <div v-if="metric.config">
           <div class="map-container" style="position: relative">
             <dashboard-map :mapbox-access-token="config.privateConfig.mapboxAccessToken" :map-config="config.mapConfig"/>
             <dashboard-legend/>
@@ -17,14 +18,23 @@
           <data-table/>
           <div class="demo-separator mdl-cell--1-col"/>
           <metadata/>
+          </div>
+          <div v-else>
+            <div class="flexcontainer">
+              <div class="flex-item">
+                <h2>{{ $t('welcome.title') }}</h2>
+                <p>{{ $t('welcome.text') }}</p>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="demo-cards mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-grid mdl-grid--no-spacing">
-          <geography-switcher/>
-          <div class="demo-separator mdl-cell--1-col"/>
-          <distribution-chart/>
-          <div class="demo-separator mdl-cell--1-col"/>
+          <geography-switcher v-if="metric.config"/>
+          <div class="demo-separator mdl-cell--1-col" v-if="metric.config"/>
+          <distribution-chart v-if="metric.config"/>
+          <div class="demo-separator mdl-cell--1-col" v-if="metric.config"/>
           <trend-chart v-if="metric.config && metric.years && (chartValues || chartCountyValues)" :metric-config="metric.config" :years="metric.years.map(i => Number(i))" :values="chartValues" :county-values="chartCountyValues" framework="mdl"/>
-          <div class="demo-separator mdl-cell--1-col"/>
+          <div class="demo-separator mdl-cell--1-col" v-if="metric.config"/>
           <feedback/>
           <div class="demo-separator mdl-cell--1-col"/>
           <div class="mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop mdl-typography--text-center">
@@ -77,7 +87,6 @@ import Feedback from './components/feedback.vue';
 import DashboardFooter from './components/dashboard-footer.vue';
 import GeographySwitcher from './components/geography-switcher.vue';
 import DashboardLegend from './components/dashboard-legend.vue';
-import DashboardMap from './components/dashboard-map.vue';
 import Metadata from './components/metadata.vue';
 import PrintMode from './components/print-mode.vue';
 import Social from './components/social.vue';
@@ -97,7 +106,7 @@ export default {
     DashboardFooter,
     GeographySwitcher,
     DashboardLegend,
-    DashboardMap,
+    DashboardMap: () => import(/* webpackChunkName: "dashboard-map" */ './components/dashboard-map.vue'),
     Metadata,
     PrintMode,
     Social,
@@ -148,7 +157,7 @@ export default {
     this.setTitle();
     // Force material design lite to register dynamic components in the DOM *after* dashboard has loaded.
     // componentHandler is a global defined by the material design library at load time.
-    componentHandler.upgradeDom();
+    if (typeof componentHandler !== 'undefined' && 'upgradeDom' in componentHandler) { componentHandler.upgradeDom() };
     document.dispatchEvent(new Event("x-app-rendered"));
   },
   methods: {

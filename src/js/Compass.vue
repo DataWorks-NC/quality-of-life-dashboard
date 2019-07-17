@@ -38,17 +38,20 @@ export default {
     };
   },
   beforeRouteUpdate(to, from, next) {
-    this.$store.dispatch('changeMetric', { newMetricId: to.params.metric, newGeographyId: to.params.geography_level }).then(() => {
-      if ('selected' in to.query) {
-        this.$store.commit('setSelected', to.query.selected);
-      }
-      if ('mode' in to.query && to.query.mode === 'print') {
-        this.$store.commit('setPrintMode', true);
-      } else {
-        this.$store.commit('setPrintMode', false);
-      }
-      next();
-    });
+    if (to.params.metric) {
+      this.$store.dispatch('changeMetric', {newMetricId: to.params.metric, newGeographyId: to.params.geography_level}).
+        then(() => {
+          if ('selected' in to.query) {
+            this.$store.commit('setSelected', to.query.selected);
+          }
+          if ('mode' in to.query && to.query.mode === 'print') {
+            this.$store.commit('setPrintMode', true);
+          } else {
+            this.$store.commit('setPrintMode', false);
+          }
+          next();
+        });
+    }
   },
   mounted() {
     // Set query string parameters from store.

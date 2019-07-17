@@ -49,8 +49,13 @@ const routes = [
   },
   {
     name: 'homepage',
+    path: '/:locale/',
+    component: Compass,
+  },
+  {
+    name: 'wildcard',
     path: '*',
-    redirect: '/en/compass/', // TODO: Customize language here possibly.
+    redirect: { name: 'homepage', params: { locale: 'en' } }, // TODO: Customize language here possibly.
   },
 ];
 
