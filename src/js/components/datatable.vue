@@ -7,14 +7,14 @@
             <th class="mdl-data-table__cell--non-numeric">
               <span :title="$t(`geographies.${geography.id}.description`)" class="tooltip">{{ $t(`geographies.${geography.id}.name`) }}</span>
             </th>
-            <th>{{ curYear }} {{ $t('strings.value') || capitalize }} <span v-if="metric.config.label">({{ $t('metricLabels.' + metric.config.label) }})</span>
+            <th>{{ curYear }} {{ $t('strings.value') | capitalize }} <span v-if="metric.config.label">({{ $t('metricLabels.' + metric.config.label) }})</span>
             </th>
-            <th v-if="metric.data.a">{{ $t('strings.accuracy') || capitalize }}</th>
-            <th v-if="metric.years.length > 1">{{ $t('strings.trend') || capitalize }}<br>{{ trendStartYear }}-{{ trendEndYear }}
+            <th v-if="metric.data.a">{{ $t('strings.accuracy') | capitalize }}</th>
+            <th v-if="metric.years.length > 1">{{ $t('strings.trend') | capitalize }}<br>{{ trendStartYear }}-{{ trendEndYear }}
             </th>
-            <th v-if="metric.config.raw_label">{{ $t('strings.numberOf') || capitalize }} {{ $t('metricLabels.' + metric.config.raw_label) }}
+            <th v-if="metric.config.raw_label">{{ $t('strings.numberOf') | capitalize }} {{ $t('metricLabels.' + metric.config.raw_label) }}
             </th>
-            <th v-if="metric.years.length > 1 && metric.config.raw_label">{{ $t('strings.trend') || capitalize }}<br>{{ trendStartYear }}-{{ trendEndYear }}
+            <th v-if="metric.years.length > 1 && metric.config.raw_label">{{ $t('strings.trend') | capitalize }}<br>{{ trendStartYear }}-{{ trendEndYear }}
             </th>
           </tr>
         </thead>
@@ -33,7 +33,7 @@
     <p class="mdl-typography--text-right">
       <a download="data.csv" class="mdl-button mdl-js-button mdl-js-ripple-effect download"
          @click="downloadTable('#datatable table')">
-        {{ $t('strings.download') || capitalize }}
+        {{ $t('strings.download') | capitalize }}
       </a>
     </p>
   </div>

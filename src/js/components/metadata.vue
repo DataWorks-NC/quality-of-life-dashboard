@@ -1,30 +1,26 @@
 <template lang="html">
-  <div v-if="metadata" id="metadata">
-    <h3>{{ $t('metadata.whyImportant') }}</h3>
-    <div v-html="important"/>
-    <h3>{{ $t("metadata.about") }}</h3>
-    <div v-html="about"/>
-    <h4>{{ $t("metadata.resources") }}</h4>
-    <div v-html="resources"/>
+  <div id="metadata">
+    <h3 v-if="metadataImportant">
+      {{ $t('metadata.whyImportant') }}
+    </h3>
+    <div v-html="metadataImportant" />
+    <h3 v-if="metadataAbout">
+      {{ $t("metadata.about") }}
+    </h3>
+    <div v-html="metadataAbout" />
+    <h4 v-if="metadataResources">
+      {{ $t("metadata.resources") }}
+    </h4>
+    <div v-html="metadataResources" />
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapGetters } from 'vuex';
 
-import getSubstringIndex from '../modules/substring-nth';
-
-// TODO: Simplify this code!
 export default {
   name: 'Metadata',
-  computed: mapState({
-    metadata: 'metadata',
-    important: state => state.metadata.substring(getSubstringIndex(state.metadata, '</h3>', 1) + 5, getSubstringIndex(state.metadata, '<h3', 2)),
-    resources: state => state.metadata.substring(getSubstringIndex(state.metadata, '</h3>', 3) + 5, state.metadata.length).replace(/\<table/g, '<table class="meta-table table"'),
-    about: state => state.metadata.substring(getSubstringIndex(state.metadata, '</h3>', 2) + 5, getSubstringIndex(state.metadata, '<h3', 3))
-
-  }),
-  // TODO is this still needed after fetch? scrollTo(document.querySelector('.mdl-layout__content'), 0, 600);
+  computed: mapGetters(['metadataAbout', 'metadataImportant', 'metadataResources']),
 };
 </script>
 

@@ -2,9 +2,9 @@
   <div class="qol-chart mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop">
     <div class="scatterplot mdl-typography--text-center">
       <h1>{{ $t('distributionChart.DataDistribution') }}, {{ year }}</h1>
-      <span v-show="selected.length > 0"><svg class="icon legend legend-selected"><use href="#icon-lens"/></svg> {{ $t('strings.selected') || capitalize }}</span>
-      <span v-if="mounted"><svg class="icon legend legend-median" <use href="#icon-more_horiz"/></svg> {{ $t('strings.median') || capitalize }} {{ median }}</span>
-      <div class="ct-distributionchart"/>
+      <span v-show="selected.length > 0"><svg class="icon legend legend-selected"><use href="#icon-lens" /></svg> {{ $t('strings.selected') | capitalize }}</span>
+      <span v-if="mounted"><svg class="icon legend legend-median"><use href="#icon-more_horiz" /></svg> {{ $t('strings.median') | capitalize }} {{ median }}</span>
+      <div class="ct-distributionchart" />
     </div>
   </div>
 </template>
@@ -21,7 +21,7 @@ export default {
   data: () => ({ mounted: false }),
   computed: mapState(['breaks', 'metric', 'selected', 'year']),
   watch: {
-    'metric.data': 'renderChart',
+    'metric': 'renderChart',
     'selected': 'renderChart',
     'year': 'renderChart',
   },
@@ -30,13 +30,13 @@ export default {
     this.median = null;
     this.chart = null;
     this.chartData = null;
+    this.renderChart();
     this.mounted = true;
   },
   methods: {
     renderChart() {
       const data = this.updateData();
       if (!data) return;
-      const _this = this;
 
       const options = {
         showLine: false,
@@ -48,12 +48,10 @@ export default {
           bottom: 0,
         },
         axisX: {
-          labelInterpolationFnc(value, index) {
-            return null;
-          },
+          labelInterpolationFnc: () => null,
         },
         axisY: {
-          labelInterpolationFnc: (value, index) => (legendLabelNumber(value, _this.metric.config)),
+          labelInterpolationFnc: value => legendLabelNumber(value, this.metric.config),
         },
         series: {
           'series-selected': {
@@ -69,10 +67,9 @@ export default {
         },
         plugins: [
           Chartist.plugins.tooltip({
-            transformTooltipTextFnc(value) {
-              return prettyNumber(value, _this.metric.config.decimals, _this.metric.config.prefix,
-                  _this.metric.config.suffix);
-            },
+            appendToBody: true,
+            transformTooltipTextFnc: value => prettyNumber(value, this.metric.config.decimals, this.metric.config.prefix,
+              this.metric.config.suffix),
           }),
         ],
       };
@@ -84,7 +81,7 @@ export default {
         series: [],
       };
       const _this = this;
-      const metric = this.metric;
+      const { metric } = this;
       if (!metric.data) return;
 
       // get values
@@ -101,12 +98,12 @@ export default {
       const dataArrayMedian = [];
       const dataArraySelected = [];
 
-      for (let i = 0; i < data.length; i++) {
+      for (let i = 0; i < data.length; i += 1) {
         // set chart labels
         chartData.labels.push(data[i].id);
         // set selected points
         if (_this.selected.indexOf(data[i].id) !== -1) {
-          dataArraySelected.push({ meta: _this.$store.state.geography.label(data[i].id), value: data[i].val });
+          dataArraySelected.push({ meta: (_this.$i18n.locale === 'es' ? _this.$store.state.geography.label_es(data[i].id) : _this.$store.state.geography.label(data[i].id)), value: data[i].val });
         } else {
           dataArraySelected.push(null); // This is needed to have padding values so that the selected points show up in the right place on x-axis.
         }
@@ -164,7 +161,7 @@ export default {
       const dataArray = [];
       const keys = Object.keys(data);
 
-      for (let i = 0; i < keys.length; i++) {
+      for (let i = 0; i < keys.length; i += 1) {
         if (isNumeric(data[keys[i]][`y_${year}`])) {
           dataArray.push({ "id": keys[i], "val": data[keys[i]][`y_${year}`] });
         }

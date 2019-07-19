@@ -8,7 +8,7 @@ import i18n from '../lang/lang';
 
 import 'vueify/lib/insert-css'; // required for .vue file <style> tags
 
-import embed from './Embed.vue';
+import embed from './views/Embed.vue';
 
 // to fix vue not including modules bug
 import 'mapbox-gl';

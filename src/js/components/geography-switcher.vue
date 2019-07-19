@@ -6,8 +6,10 @@
         <span class="mdl-chip__text">{{ $t(`geographies.${geography.id}.name`) }}</span>
       </button>
     </template>
-    <div class="geography-switcher--instructions">{{ $t('geographySwitcher.instructions') }}</div>
-    <select-group/>
+    <div class="geography-switcher--instructions">
+      {{ $t('geographySwitcher.instructions') }}
+    </div>
+    <select-group />
   </div>
 </template>
 
@@ -34,8 +36,8 @@ export default {
   }),
   methods: {
     changeGeography(id) {
-      const newParams = Object.assign(this.$route.params, { geography_level: id });
-      this.$router.push({ name: 'compass', params: newParams });
+      const newParams = Object.assign(this.$route.params, { geographyLevel: id });
+      this.$router.push({ name: 'compass', params: newParams, query: this.$route.query });
     },
   },
 };
@@ -43,19 +45,6 @@ export default {
 </script>
 
 <style scoped>
-    .mdl-chip {
-        margin: 2px;
-        cursor: pointer;
-    }
-    .mdl-chip.is-active {
-        background: #00688B;
-        color: white;
-        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12);
-    }
-    .mdl-chip.is-disabled {
-        opacity: 0.25;
-        cursor: inherit;
-    }
     .geography-switcher {
         padding: 10px;
     }

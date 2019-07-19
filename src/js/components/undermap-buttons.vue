@@ -10,7 +10,7 @@
         <span class="mdl-chip__text">{{ $t('undermapButtons.clear') }}</span>
       </button>
       <button
-        v-if="siteConfig.qolreportURL" :class="{'undermap-buttons__active' : selected.length}"
+        :class="{'undermap-buttons__active' : selected.length}"
         :disabled="!selected.length"
         class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect"
         data-fullreport
@@ -42,13 +42,17 @@ export default {
   computed: mapState(['selected']),
   methods: {
     loadReport() {
-      window.open(this.$store.getters.reportUrl);
+      this.$router.push({ name: 'report', params: this.$route.params, query: { ...this.$route.query, legendTitle: undefined } });
     },
     clearSelected() {
-      this.$store.commit('setSelected', []);
+      this.$router.push({
+        query: {
+          ...this.$route.query, selected: [], reportTitle: undefined, legendTitle: undefined,
+        },
+      });
     },
     loadEmbed() {
-      this.$store.commit('setPrintMode');
+      this.$router.push({ query: { ...this.$route.query, mode: 'print' } });
     },
   },
 };
@@ -58,11 +62,15 @@ export default {
 span {
     opacity: 0.25;
 }
+.mdl-button {
+  margin-left: 0.5em;
+}
 .undermap-buttons__active {
-    background: #00688B;
+    background: #68089e;
 }
 .undermap-buttons__active span {
     opacity: 1;
     color: white;
+    line-height: 13px;
 }
 </style>

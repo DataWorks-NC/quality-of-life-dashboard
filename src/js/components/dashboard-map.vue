@@ -16,19 +16,21 @@ import config from '../modules/config';
 export default {
   // You would think to just name this component 'Map', but <map> is in the HTML5 spec!
   name: 'DashboardMap',
-  props: ['mapboxAccessToken', 'mapConfig'],
+  props: {
+    mapboxAccessToken: String,
+    mapConfig: Object,
+  },
 
   data() {
     return {
       isPitched3D: false,
       locationPopup: null,
       mapLoaded: false,
-      publicPath: process.env.BASE_URL,
       colors: config.colors,
     };
   },
 
-  computed: mapState(['breaks', 'geography', 'highlight', 'metric', 'metricId', 'printMode', 'selected', 'year', 'zoomNeighborhoods']),
+  computed: mapState(['breaks', 'geography', 'highlight', 'metric', 'metricId', 'printMode', 'selected', 'year']),
 
   watch: {
     'selected': ['styleNeighborhoods', 'rescale'],
@@ -41,6 +43,7 @@ export default {
 
   mounted() {
     this.map = null;
+    this.geocoder = null;
     this.mapMetricId = this.metricId;
     this.initMap();
   },
@@ -77,59 +80,39 @@ export default {
       map.addControl(new mapboxgl.GeolocateControl(), 'top-right');
 
       if (!this.printMode) {
-        map.addControl(new MapboxGlGeocoder({
+        this.geocoder = new MapboxGlGeocoder({
           accessToken: _this.mapboxAccessToken,
           country: 'us',
           bbox: [-79.01, 35.87, -78.7, 36.15],
           placeholder: this.$t('map.SearchPlaceholder'),
           zoom: 14,
+          marker: true,
           mapboxgl,
         }).on('result', (e) => {
           if (e.result) {
-            // create the marker
-            const markers = {
-              "type": "FeatureCollection",
-              "features": [
-                {
-                  "type": "Feature",
-                  "geometry": {
-                    "type": "Point",
-                    "coordinates": e.result.center,
-                  },
-                }],
-            };
+            // Clear selection and select underlying area. Remove duplicates by casting to Set.
+            const features = Array.from(
+              new Set(
+                map.queryRenderedFeatures(
+                  map.project(e.result.center),
+                  { layers: [`${_this.geography.id}-fill`] },
+                )
+                  .map(g => g.properties.id),
+              ),
+            );
 
-            if (map.getLayer("point")) {
-              map.getSource("point").setData(markers);
-            } else {
-              map.addLayer({
-                "id": "point",
-                "type": "symbol",
-                "source": {
-                  "type": "geojson",
-                  "data": markers,
-                },
-                "layout": {
-                  "icon-image": "star_15",
-                  "icon-size": 2,
-                },
-              });
-            }
-
-            // Clear selection and select underlying area
-            const features = map.queryRenderedFeatures(map.project(e.result.center),
-              { layers: [`${_this.geography.id}-fill-extrude`] }).map(g => g.properties.id);
-            _this.$store.commit('setSelected', features);
+            _this.$router.push({ query: { ..._this.$route.query, selected: features } });
             _this.zoomToIds(features);
           }
-        }).on('clear', (e) => {
+        }).on('clear', () => {
           if (map.getLayer('point')) {
             map.getSource('point').setData({
               "type": "FeatureCollection",
               "features": [],
             });
           }
-        }), 'bottom-right');
+        });
+        map.addControl(this.geocoder, 'bottom-right');
       }
 
       // disable map rotation until 3D support added
@@ -161,12 +144,10 @@ export default {
 
       if (pitched) {
         map.setLayoutProperty(`${_this.geography.id}`, 'visibility', 'none');
-        map.moveLayer(`${_this.geography.id}-fill-extrude`);
-        map.setPaintProperty(`${_this.geography.id}-fill-extrude`, 'fill-extrusion-height', _this.getHeight());
+        map.setLayoutProperty(`${_this.geography.id}-fill-extrude`, 'visibility', 'visible');
       } else {
         map.setLayoutProperty(`${_this.geography.id}`, 'visibility', 'visible');
-        map.moveLayer(`${_this.geography.id}-fill-extrude`, 'building');
-        map.setPaintProperty(`${_this.geography.id}-fill-extrude`, 'fill-extrusion-height', 0);
+        map.setLayoutProperty(`${_this.geography.id}-fill-extrude`, 'visibility', 'none');
       }
     },
     initMapEvents() {
@@ -178,17 +159,13 @@ export default {
         closeOnClick: false,
       });
 
-      map.on('rotate', (e) => {
-        if (map.getPitch() >= 20) {
-          _this.isPitched3D = true;
-        } else {
-          _this.isPitched3D = false;
-        }
+      map.on('rotate', () => {
+        _this.isPitched3D = (map.getPitch() >= 20);
       });
 
       // on feature click add or remove from selected set
       map.on('click', (e) => {
-        const features = map.queryRenderedFeatures(e.point, { layers: [`${_this.geography.id}-fill-extrude`] });
+        const features = map.queryRenderedFeatures(e.point, { layers: [`${_this.geography.id}-fill`] }).filter(f => _this.metric.data.map[f.properties.id][`y_${_this.year}`] !== null); // Only allow select when metric value is not null;
         if (!features.length) {
           return;
         }
@@ -197,9 +174,9 @@ export default {
         const featureIndex = _this.selected.indexOf(feature.properties.id);
 
         if (featureIndex === -1) {
-          _this.$store.commit('addToSelected', feature.properties.id);
+          _this.addToSelected(feature.properties.id);
         } else {
-          _this.$store.commit('removeSelectedByPos', featureIndex);
+          _this.removeFromSelected(feature.properties.id);
         }
       });
 
@@ -211,24 +188,26 @@ export default {
           if (!_this.metric.config || !_this.metric.data) {
             return;
           }
-          const features = map.queryRenderedFeatures(e.point, { layers: [`${_this.geography.id}-fill-extrude`] });
-          map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
+          const features = map.queryRenderedFeatures(e.point, { layers: [`${_this.geography.id}-fill`] }).filter(f => _this.metric.data.map[f.properties.id][`y_${_this.year}`] !== null); // Only show popup when metric value is not null
 
           if (!features.length) {
             popup.remove();
+            map.getCanvas().style.cursor = '';
             return;
           }
+
+          map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
 
           const feature = features[0];
           const { id } = feature.properties;
           const data = _this.metric.data.map[id][`y_${_this.year}`];
-          const geographyLabel = _this.$i18n === 'en' ? _this.geography.label(id) : _this.geography.label_es(id);
+          const geographyLabel = _this.$i18n.locale === 'en' ? _this.geography.label(id) : _this.geography.label_es(id);
           const val = prettyNumber(data, _this.metric.config.decimals, _this.metric.config.prefix,
             _this.metric.config.suffix, _this.metric.config.commas);
-          const label = _this.metric.config.label ? ` ${_this.$t('metricLabels.' + _this.metric.config.label)}` : '';
+          const label = _this.metric.config.label ? ` ${_this.$t(`metricLabels.${_this.metric.config.label}`)}` : '';
           popup.setLngLat(map.unproject(e.point))
             .setHTML(
-              `<div style="text-align: center; margin: 0; padding: 0;"><h3 style="font-size: 1.2em; margin: 0; padding: 0; line-height: 1em; font-weight: bold;">${geographyLabel}</h3>${val}${label}</div>`,
+              `<div style="text-align:center; margin:0; padding:0;"><h3 style="font-size:1.2em; margin:0; padding:0; line-height:1em; font-weight:bold;">${geographyLabel}</h3>${val}${label}</div>`,
             )
             .addTo(map);
         });
@@ -247,13 +226,22 @@ export default {
       }, this.mapConfig.neighborhoodsSelectedBefore);
 
       map.addLayer({
+        'id': `${this.geography.id}-fill`,
+        'type': 'fill',
+        'source': this.geography.id,
+      }, this.mapConfig.neighborhoodsBefore);
+
+      map.addLayer({
         'id': `${this.geography.id}-fill-extrude`,
         'type': 'fill-extrusion',
         'source': this.geography.id,
+        'layout': {
+          'visibility': 'none',
+        },
         'paint': {
           'fill-extrusion-opacity': 1,
         },
-      }, this.mapConfig.neighborhoodsBefore);
+      }, this.mapConfig.neighborhoodsSelectedBefore);
 
       // neighborhood boundaries
       map.addLayer({
@@ -270,17 +258,24 @@ export default {
 
     styleNeighborhoods() {
       const { map } = this;
-      const _this = this;
-      if (map.getLayer(`${_this.geography.id}`)) {
-        map.setPaintProperty(`${_this.geography.id}`, 'line-color', _this.getOutlineColor());
-        map.setPaintProperty(`${_this.geography.id}`, 'line-width', _this.getOutlineWidth());
+      if (map.getLayer(`${this.geography.id}`)) {
+        map.setPaintProperty(`${this.geography.id}`, 'line-color', this.getOutlineColor());
+        map.setPaintProperty(`${this.geography.id}`, 'line-width', this.getOutlineWidth());
       }
-      if (map.getLayer(`${_this.geography.id}-fill-extrude`)) {
-        map.setPaintProperty(`${_this.geography.id}-fill-extrude`, 'fill-extrusion-color', _this.getColors());
 
-        if (_this.isPitched3D) {
-          map.setPaintProperty(`${_this.geography.id}-fill-extrude`, 'fill-extrusion-height', _this.getHeight());
-        }
+      const colors = this.getColors();
+
+      if (map.getLayer(`${this.geography.id}-fill`)) {
+        map.setPaintProperty(`${this.geography.id}-fill`, 'fill-color', colors);
+      }
+      if (map.getLayer(`${this.geography.id}-fill-extrude`)) {
+        map.setPaintProperty(`${this.geography.id}-fill-extrude`, 'fill-extrusion-color', { ...colors, default: 'rgb(242,243,240)' });
+        map.setPaintProperty(`${this.geography.id}-fill-extrude`, 'fill-extrusion-height', this.getHeight());
+      }
+
+      // Clear the pin that gets dropped on address search when user clears selection.
+      if (!this.selected.length && this.geocoder) {
+        this.geocoder.clear();
       }
     },
 
@@ -302,8 +297,8 @@ export default {
 
     updateGeography(newGeography, oldGeography) {
       if (!this.geography.id) return;
-      const oldMapLayers = [`${oldGeography.id}`, `${oldGeography.id}-fill-extrude`, `${oldGeography.id}-outlines`];
-      const newMapLayers = [`${newGeography.id}`, `${newGeography.id}-fill-extrude`, `${newGeography.id}-outlines`];
+      const oldMapLayers = [`${oldGeography.id}`, `${oldGeography.id}-fill`, `${oldGeography.id}-fill-extrude`, `${oldGeography.id}-outlines`];
+      const newMapLayers = [`${newGeography.id}`, `${newGeography.id}-fill`, `${newGeography.id}-outlines`];
       const _this = this;
 
       if (!this.map.getSource(newGeography.id)) {
@@ -326,7 +321,7 @@ export default {
       });
     },
 
-    rescale(newSelected = null, oldSelected = null) {
+    rescale(oldSelected = null) {
       try {
         if (this.selected.length) {
           return this.zoomToIds(this.selected);
@@ -335,7 +330,7 @@ export default {
           return this.zoomToFullExtent();
         }
       } catch (e) {
-
+        return null;
       }
     },
     zoomToFullExtent() {
@@ -413,11 +408,10 @@ export default {
         }
       };
 
-      const _this = this;
-      Object.keys(_this.metric.data.map).forEach((id) => {
-        const value = _this.metric.data.map[id][`y_${_this.year}`];
+      Object.keys(this.metric.data.map).forEach((id) => {
+        const value = this.metric.data.map[id][`y_${this.year}`];
 
-        if (_this.highlight.indexOf(id) !== -1) {
+        if (this.highlight.indexOf(id) !== -1) {
           stops.push([id, '#F7E55B']);
         } else if (value !== null) {
           stops.push([id, color(value)]);
@@ -426,22 +420,22 @@ export default {
 
       return {
         property: 'id',
-        default: 'rgb(242,243,240)',
+        default: 'rgba(242,243,240,0)',
         type: 'categorical',
         stops,
       };
     },
     getHeight() {
-      const _this = this;
+      if (!this.metric.data) return;
+
       const stops = [];
-      const data = _this.metric.data.map;
       const heightAdjust = x => (
-        (x - _this.breaks[0])
-          * 3000 / (_this.breaks[this.breaks.length - 1] - _this.breaks[0])
+        (x - this.breaks[0])
+          * 3000 / (this.breaks[this.breaks.length - 1] - this.breaks[0])
       );
 
-      Object.keys(data).forEach((id) => {
-        const value = data[id][`y_${_this.year}`];
+      Object.keys(this.metric.data.map).forEach((id) => {
+        const value = this.metric.data.map[id][`y_${this.year}`];
         if (value !== null) {
           stops.push([id, heightAdjust(value)]);
         }
@@ -458,6 +452,15 @@ export default {
       const longitudes = features.reduce((i, f) => (i.concat(f.geometry.coordinates[0].map(c => c[0]))), []);
       const latitudes = features.reduce((i, f) => (i.concat(f.geometry.coordinates[0].map(c => c[1]))), []);
       return [[Math.min(...longitudes), Math.min(...latitudes)], [Math.max(...longitudes), Math.max(...latitudes)]];
+    },
+    addToSelected(featureId) {
+      this.$router.push({ query: { ...this.$route.query, selected: this.selected.concat(featureId) } });
+    },
+    removeFromSelected(featureId) {
+      const i = this.selected.indexOf(featureId);
+      if (i !== -1) {
+        this.$router.push({ query: { ...this.$route.query, selected: this.selected.slice(0, i).concat(this.selected.slice(i + 1)) } });
+      }
     },
   },
 };

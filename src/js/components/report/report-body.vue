@@ -1,15 +1,13 @@
 <template>
   <div>
-    <ReportCategory v-for="c in categories" :key="c.name" :category="c" :metric-values="metricValues[c.name]" :county-averages="countyAverages[c.name]"/>
+    <ReportCategory v-for="c in categories" :key="c.name" :category="c" :metric-values="metricValues[c.originalName]" :county-averages="countyAverages[c.originalName]" />
   </div>
 </template>
 
 <script>
-// This component also tracks app state and is responsible for updating the location hash as needed.
+import { mapState } from 'vuex';
 
 import ReportCategory from './report-category';
-
-import { getHash } from '../../modules/tracking';
 
 export default {
   name: 'ReportBody',
@@ -17,31 +15,23 @@ export default {
     ReportCategory,
   },
   computed: {
-    locationHash() {
-      const currentHash = [getHash(0), getHash(1), getHash(2)].map(s => s ? s : ''); // All the other components of the hash.
-      const metricHash = this.categories.reduce((hash, category) => {
-        if (!category.visible) {
-          return {
-            hash: hash.hash,
-            needed: true,
-          };
-        } else {
-          const visibleMetrics = category.metrics.filter(m => m.visible);
-          const newHashPart = visibleMetrics.map(m => m.metric).join(',');
-          if (visibleMetrics.length !== category.metrics.length) {
-            hash.needed = true;
-          }
-          return {
-            hash: hash.hash + newHashPart,
-            needed: visibleMetrics.length !== category.metrics.length ? true : hash.needed,
-          };
+    ...mapState({
+      metricValues: state => state.report.metricValues,
+      countyAverages: state => state.report.countyAverages,
+    }),
+    categories() {
+      return this.$store.getters.visibleCategories.map(
+        categoryName => ({
+          name: this.$t(`strings.metricCategories['${categoryName}']`),
+          originalName: categoryName,
+          metrics: Object.values(this.$store.state.report.metrics)
+            .filter(m => m.category === categoryName && m.visible)
+            .map(m => ({ ...m, name: (this.$i18n.locale === 'es' ? m.title_es : m.title) }))
+            .sort((a, b) => this.$i18n.localizedStringCompareFn(a.name, b.name)),
         }
-      }, { hash: '', needed: false });
-      return `${currentHash[0]}/${currentHash[1]}/${currentHash[2]}/${metricHash.needed ? metricHash.hash : ''}`;
+        ),
+      ).sort((a, b) => this.$i18n.localizedStringCompareFn(a.name, b.name));
     },
-  },
-  watch: {
-    locationHash(newHash) { location.hash = newHash; },
   },
 };
 </script>

@@ -1,9 +1,11 @@
-<template functional>
+<template>
   <div class="page page-front">
     <div class="row">
       <div class="col-xs-12">
-        <img class="logo-image" src="img/report-logo.png" :alt="$t('strings.DurhamneighborhoodCompass')">
-        <h2 class="subtitle">{{ reportTitle }}</h2>
+        <img class="logo-image" :src="require('../../../assets/img/report-logo.png')" :alt="$t('strings.DurhamNeighborhoodCompass')">
+        <h2 class="subtitle">
+          {{ reportTitle }}
+        </h2>
       </div>
     </div>
     <div class="row">
@@ -11,11 +13,11 @@
         <i18n path="reportSummary.about[0]" tag="p">
           <a place="compassLink" href="/">{{ $t('strings.DurhamNeighborhoodCompass') }}</a>
         </i18n>
-        <i18n path="reportSummary.about[1]" tag="p"/>
-        <i18n path="reportSummary.about[2]" tag="p"/>
+        <i18n path="reportSummary.about[1]" tag="p" />
+        <i18n path="reportSummary.about[2]" tag="p" />
       </div>
       <div class="col-sm-6">
-        <ReportMap :map-config="mapConfig" :geography-id="geographyId" :selected-geographies="areaIds"/>
+        <ReportMap :map-config="mapConfig" :geography-id="geographyId" :selected-geographies="selected" />
       </div>
     </div>
     <div id="metric-summary-box" class="row">
@@ -24,16 +26,16 @@
           <tbody>
             <tr>
               <td v-for="metric in summaryMetrics.slice(0,3)" :key="metric.metric">
-                <h2>{{ metric.category }}</h2>
-                <h3>{{ prettyValue(metric) }} {{ metric.raw_label }}</h3>
-                <h4>{{ metric.title }}</h4>
+                <h2>{{ $t(`strings.metricCategories.${metric.category}`) }}</h2>
+                <h3>{{ prettyValue(metric) }} {{ metric.raw_label ? $t(`metricLabels.['${metric.raw_label}']`) : '' }}</h3>
+                <h4>{{ $i18n.locale === 'es' ? metric.title_es : metric.title }}</h4>
               </td>
             </tr>
             <tr>
               <td v-for="metric in summaryMetrics.slice(3,6)" :key="metric.metric">
-                <h2>{{ metric.category }}</h2>
-                <h3>{{ prettyValue(metric) }} {{ metric.raw_label }}</h3>
-                <h4>{{ metric.title }}</h4>
+                <h2>{{ $t(`strings.metricCategories.${metric.category}`) }}</h2>
+                <h3>{{ prettyValue(metric) }} {{ metric.raw_label ? $t(`metricLabels['${metric.raw_label}']`) : '' }}</h3>
+                <h4>{{ $i18n.locale === 'es' ? metric.title_es : metric.title }}</h4>
               </td>
             </tr>
           </tbody>
@@ -44,13 +46,21 @@
 </template>
 
 <script>
-import ReportMap from './report-map';
 import { prettyNumber } from '../../modules/number_format';
+
+const ReportMap = () => import(/* webpackChunkName: "report-map" */ './report-map.vue');
 
 export default {
   name: 'ReportSummary',
   components: {
     ReportMap,
+  },
+  props: {
+    summaryMetrics: Array,
+    geographyId: String,
+    selected: Array,
+    mapConfig: Object,
+    reportTitle: String,
   },
   methods: {
     prettyValue(metric) {

@@ -1,11 +1,14 @@
 <template lang="html">
   <div v-if="years.length > 1"
-       :class="framework === 'mdl' ? 'qol-chart mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop mdl-typography--text-center' : 'qol-chart'">
+       :class="framework === 'mdl' ? 'qol-chart mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop mdl-typography--text-center' : 'qol-chart'"
+  >
     <div class="trendchart">
-      <h1 v-if="metricConfig">{{ $i18n.locale === 'en' ? metricConfig.title : metricConfig.title_es }}</h1>
-      <span class="legend"><svg class="icon legend-county"><use href="#icon-trending_up"/></svg> {{ $t('strings.county') || capitalize }}</span>
-      <span class="legend"><svg class="icon legend-selected"><use href="#icon-trending_up"/></svg> {{ $t('strings.selected') || capitalize }}</span>
-      <div :id="'ct-trendchart-' + metricConfig.metric" class="ct-trendchart"/>
+      <h1 v-if="metricConfig">
+        {{ $i18n.locale === 'en' ? metricConfig.title : metricConfig.title_es }}
+      </h1>
+      <span class="legend"><svg class="icon legend-county"><use href="#icon-trending_up" /></svg> {{ $t('strings.county') | capitalize }}</span>
+      <span class="legend"><svg class="icon legend-selected"><use href="#icon-trending_up" /></svg> {{ $t('strings.selected') | capitalize }}</span>
+      <div :id="'ct-trendchart-' + metricConfig.metric" class="ct-trendchart" />
     </div>
   </div>
 </template>
@@ -13,8 +16,7 @@
 <script>
 import Chartist from '../modules/chartist';
 
-import { prettyNumber } from '../modules/number_format';
-
+import { legendLabelNumber, prettyNumber } from '../modules/number_format';
 
 export default {
   name: 'TrendChart',
@@ -25,11 +27,11 @@ export default {
     },
     values: {
       type: Object,
-      required: true,
+      default: () => {},
     },
     countyValues: {
       type: Object,
-      required: true,
+      default: () => {},
     },
     metricConfig: {
       type: Object,
@@ -46,13 +48,13 @@ export default {
     // The two "chart" computed variables filter the metric objects into arrays keyed by year, leaving null gaps where there's no data for a given year.
     countyValuesChart() {
       return this.years.map((year) => {
-        if (this.countyValues && this.countyValues.hasOwnProperty(year)) return { x: year, y: this.countyValues[year] };
+        if (this.countyValues && year in this.countyValues) return { x: year, y: this.countyValues[year] };
         return null;
       });
     },
     valuesChart() {
       return this.years.map((year) => {
-        if (this.values && this.values.hasOwnProperty(year)) return { x: year, y: this.values[year] };
+        if (this.values && year in this.values) return { x: year, y: this.values[year] };
         return null;
       });
     },
@@ -68,7 +70,7 @@ export default {
       // Render chart, but only if all the data is here (so render only once).
       // Filter i=>i call returns true only if the array contains at least one non-null value.
       if (this.years.length <= 1) return;
-      const metricConfig = this.metricConfig;
+      const { metricConfig } = this;
       const len = this.years[this.years.length - 1] - this.years[0];
       const options = {
         fullWidth: true,
@@ -82,15 +84,12 @@ export default {
           fillHoles: true,
         }),
         axisY: {
-          labelInterpolationFnc(value, index) {
-            return prettyNumber(value, metricConfig.decimals, metricConfig.prefix,
-                metricConfig.suffix);
-          },
+          labelInterpolationFnc: value => legendLabelNumber(value, metricConfig),
         },
         axisX: {
           type: Chartist.AutoScaleAxis,
           onlyInteger: true,
-          labelInterpolationFnc(value, index) {
+          labelInterpolationFnc: (value, index) => {
             if (len > 6) {
               return index % 2 === 0 ? value : null;
             }
@@ -99,10 +98,9 @@ export default {
         },
         plugins: [
           Chartist.plugins.tooltip({
-            transformTooltipTextFnc(value) {
-              return prettyNumber(value.split(',')[1], metricConfig.decimals, metricConfig.prefix,
-                metricConfig.suffix);
-            },
+            appendToBody: true,
+            transformTooltipTextFnc: value => prettyNumber(value.split(',')[1], metricConfig.decimals, metricConfig.prefix,
+              metricConfig.suffix),
           }),
         ],
       };
@@ -133,7 +131,7 @@ export default {
       }
       const chart = new Chartist.Line(`#ct-trendchart-${metricConfig.metric}`, {
         labels: this.years,
-        series: [this.valuesChart, this.countyValuesChart],
+        series: [this.countyValuesChart, this.valuesChart],
       }, options);
 
       // Animation.
@@ -162,12 +160,12 @@ export default {
 </script>
 
 <style lang="css">
-    .qol-chart .ct-series-a .ct-line,
-    .qol-chart .ct-series-a .ct-point {
-        stroke: #00688B;
-    }
     .qol-chart .ct-series-b .ct-line,
     .qol-chart .ct-series-b .ct-point {
+        stroke: #00688B;
+    }
+    .qol-chart .ct-series-a .ct-line,
+    .qol-chart .ct-series-a .ct-point {
         stroke: orange;
     }
     .ct-trendchart {
@@ -177,43 +175,13 @@ export default {
         font-size: 10px;
         fill: rgba(0, 0, 0, 0.6);
     }
-    .chartist-tooltip {
-        position: absolute;
-        display: inline-block;
-        opacity: 0;
-        min-width: 5em;
-        padding: .5em;
-        background: rgba(0, 0, 0, 0.85);
-        color: #ccc;
-        font-family: Oxygen, Helvetica, Arial, sans-serif;
-        font-weight: 700;
-        text-align: center;
-        pointer-events: none;
-        z-index: 1;
-        border-radius: 5px;
-        transition: opacity .2s linear;
-    }
-    .chartist-tooltip:before {
-        content: "";
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        width: 0;
-        height: 0;
-        margin-left: -15px;
-        border: 15px solid transparent;
-        border-top-color: rgba(0, 0, 0, 0.85);
-    }
-    .chartist-tooltip.tooltip-show {
-        opacity: 1;
-    }
     .ct-area,
     .ct-line {
         pointer-events: none;
     }
     .ct-line {
-        fill: transparent;
-        stroke-width: 2px;
+      fill: transparent;
+      stroke-width: 2px;
     }
 </style>
 

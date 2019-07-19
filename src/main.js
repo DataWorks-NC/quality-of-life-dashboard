@@ -1,15 +1,16 @@
 import Vue from 'vue';
+import VueAnalytics from 'vue-analytics';
 
 import store from './js/vuex-store';
 import router from './js/router';
 import i18n from './js/i18n';
+import config from './js/modules/config';
 
 import App from './js/App';
 
 import 'mapbox-gl/dist/mapbox-gl.css';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import './css/main.css';
-
-i18n.locale = 'es';
 
 Vue.config.productionTip = false;
 
@@ -19,18 +20,6 @@ Vue.config.productionTip = false;
 router.beforeEach((to, from, next) => {
   // Language handling.
   let language = to.params.locale;
-  // Params can't be set on these routes so they need to be set manually
-  if (to.name === 'home-es') {
-    language = 'es';
-  } else if (to.name === 'home-en') {
-    // If user was redirected from the root URL, check browser language first.
-    if (from.path === '/' && language === 'es') {
-      language = navigator.language.toLowerCase().substr(0, 2);
-      next('home-es');
-    } else {
-      language = 'en';
-    }
-  }
 
   if (!language) {
     language = i18n.locale;
@@ -39,61 +28,75 @@ router.beforeEach((to, from, next) => {
   }
   to.params.locale = language;
 
-  // Sync store language setting up with i18n setting so that fresh metadata can be fetched.
-  store.dispatch('setLanguage', language).then(next);
+  store.dispatch('setLanguage', language).then(() => {
+    // Set title
+    let title = i18n.t('strings.DurhamNeighborhoodCompass');
+    const description = store.getters.metadataImportant !== '' ? store.getters.metadataImportant.replace(/<p>/, '').replace(/<\/p>/, '') : i18n.t('strings.about');
 
-  // Set title
-  // let title = '';
-  // if (to.name.indexOf('home') === 0) {
-  //   title = i18n.t(`strings.pageTitles.home`);
-  // }
-  // else {
-  //   title = i18n.t(`strings.pageTitles.${to.name}`, to.params);
-  // }
-  // if (title.indexOf('strings') === 0) {
-  //   title = i18n.t('strings.pageTitles.home');
-  // }
-  // document.title = title;
+    if (to.name === 'report') {
+      const reportTitle = store.getters.reportTitle;
+      if (reportTitle !== '') {
+        title = `${title} - ${reportTitle}`;
+      }
+    } else {
+      const legendTitle = store.getters.legendTitle;
+      if (legendTitle !== '') {
+        title = `${title} - ${legendTitle}`;
+      }
+    }
 
-  // Set metadata. For now just use a single description for all pages except tracts.
+    document.title = title;
 
-  // Find old metatags.
-  // const metaTags = Array.from(document.querySelectorAll('[data-vue-router-controlled]'));
-  //
-  // let description = i18n.t('strings.pageMetaDescriptions.home');
-  // if (to.name === 'infosheet' && store.getters.dataLoaded) {
-  //   // Use dynamic tract diabetes data in meta if possible.
-  //   // @TODO: Replace this with better text.
-  //   description = store.getters.currentTractTitle;
-  // }
-  //
-  // const metaTagDefinitions = {
-  //   description: {
-  //     content:
-  //     description,
-  //   },
-  //   ogTitle: {
-  //     content:
-  //     title,
-  //   },
-  //   ogUrl: {
-  //     content:
-  //       siteConfig.baseUrl + to.fullPath,
-  //   },
-  //   ogDescription: {
-  //     content:
-  //     description,
-  //   },
-  //   ogType: {
-  //     content: to.name === 'infosheet' ? 'article' : 'website',
-  //   },
-  // };
-  //
-  // metaTags.map((tag) => {
-  //   const tagDef = metaTagDefinitions[tag.getAttribute('data-vue-router-controlled')];
-  //   if (!tagDef) { return; }
-  //   Object.keys(tagDef).forEach((key) => { tag.setAttribute(key, tagDef[key]); });
-  // });
+    // Find old metatags.
+    const metaTags = Array.from(document.querySelectorAll('[data-vue-router-controlled]'));
+
+    const newUrl = router.resolve(to).href;
+
+    const metaTagDefinitions = {
+      linkCanonical: {
+        href: `https://compass.durhamnc.gov${newUrl}`,
+      },
+      linkEn: {
+        href: `https://compass.durhamnc.gov${
+          router.resolve({ ...to, params: { ...to.params, locale: 'en' } }).href}`,
+      },
+      linkEs: {
+        href: `https://compass.durhamnc.gov${
+          router.resolve({ ...to, params: { ...to.params, locale: 'es' } }).href}`,
+      },
+      description: {
+        content:
+        description,
+      },
+      ogTitle: {
+        content:
+        title,
+      },
+      ogUrl: {
+        content:
+          newUrl,
+      },
+      ogDescription: {
+        content:
+        description,
+      },
+      ogType: {
+        content: to.name === 'report' ? 'article' : 'website',
+      },
+    };
+
+    metaTags.forEach((tag) => {
+      const tagDef = metaTagDefinitions[tag.getAttribute('data-vue-router-controlled')];
+      if (!tagDef) {
+        return;
+      }
+      Object.keys(tagDef).forEach((key) => {
+        tag.setAttribute(key, tagDef[key]);
+      });
+    });
+
+    next();
+  });
 });
 
 Vue.filter('allcaps', (value) => {
@@ -101,16 +104,31 @@ Vue.filter('allcaps', (value) => {
   return String(value).toUpperCase();
 });
 
-Vue.filter('capitalize', function (value) {
+Vue.filter('capitalize', (value) => {
   if (!value) return '';
   return String(value).charAt(0).toUpperCase() + String(value).slice(1);
 });
 
+// Set string compare function based on locale dynamically.
+const stringCompareEn = new Intl.Collator('en').compare;
+const stringCompareEs = new Intl.Collator('es').compare;
+i18n.localizedStringCompareFn = (a, b) => (i18n.locale === 'es' ? stringCompareEs(a, b) : stringCompareEn(a, b));
+
+// Google analytics
+Vue.use(VueAnalytics, {
+  id: config.privateConfig.googleAnalyticsId,
+  router,
+  debug: {
+    sendHitTask: process.env.NODE_ENV === 'production',
+  },
+});
+
 /* eslint-disable no-new */
+/* eslint-disable no-unused-vars */
 const app = new Vue({
   i18n,
   store,
   router,
   el: '#app',
-  render: h => h(App)
+  render: h => h(App),
 });

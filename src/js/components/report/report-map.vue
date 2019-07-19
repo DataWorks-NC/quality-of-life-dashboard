@@ -1,6 +1,6 @@
-<template>
+<template lang="html">
   <div>
-    <div id="map"/>
+    <div id="map" />
   </div>
 </template>
 
@@ -28,7 +28,7 @@ export default {
   },
   methods: {
     initMap() {
-      const mapConfig = this.mapConfig;
+      const { mapConfig } = this;
       const mapOptions = {
         container: 'map',
         interactive: false,
@@ -52,7 +52,7 @@ export default {
       map.once('style.load', () => {
         map.addSource('neighborhoods', {
           type: 'geojson',
-          data: `data/${_this.geographyId}.geojson.json`,
+          data: `/data/${_this.geographyId}.geojson.json`,
         });
 
         // neighborhood boundaries

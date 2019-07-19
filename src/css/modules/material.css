@@ -46,7 +46,7 @@
   bottom: 19px;
 }
 
-.demo-layout .mdl-layout__header .mdl-layout__drawer-button {
+.mdl-layout__header .mdl-layout__drawer-button {
   color: rgba(0, 0, 0, 0.54);
   margin: 0 5px;
   outline: none;
@@ -63,31 +63,9 @@
   border: none;
 }
 
-/* iOS Safari specific workaround */
-
-.demo-drawer .mdl-menu__container {
-  z-index: -1;
-}
-
-.demo-drawer .demo-navigation {
-  z-index: -2;
-}
-
-/* END iOS Safari specific workaround */
-
-.demo-drawer .mdl-menu .mdl-menu__item {
+.mdl-menu .mdl-menu__item {
   display: flex;
   align-items: center;
-}
-
-.demo-drawer-header {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 16px 16px 5px;
-  height: 151px;
-  background: url(../../assets/img/logo.svg) center center;
 }
 
 .demo-avatar-dropdown {
@@ -102,7 +80,7 @@
   flex-grow: 1;
 }
 
-.demo-layout .demo-navigation .mdl-navigation__link {
+.mdl-navigation__link {
   display: flex !important;
   flex-direction: row;
   align-items: center;
@@ -111,12 +89,12 @@
   padding: 8px 40px;
 }
 
-.demo-layout .demo-navigation .mdl-navigation__link:hover {
+.mdl-navigation__link:hover {
   background-color: #00bcd4;
   color: #37474f;
 }
 
-.demo-navigation .mdl-navigation__link .material-icons {
+.mdl-navigation__link .material-icons {
   font-size: 24px;
   color: rgba(255, 255, 255, 0.56);
   margin-right: 32px;

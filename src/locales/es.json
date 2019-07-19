@@ -1,6 +1,6 @@
 {
- "undefined": "deslice para elegir año de datos para ver",
  "strings": {
+  "about":  "El Durham Neighborhood Compass es un recurso de información primario de la comunidad que es actualizado regularmente, que proporciona abiertamente valiosa información a la comunidad. Cada año el Compass crece y aprende junto con sus usuarios, sumando conjuntos de datos que tengan sentido para la comunidad y cuya importancia sea transversal. Un proyecto cuantitativo con valores cualitativos.",
   "accuracy": "exactitud",
   "and": "y",
   "back": "atrás",
@@ -12,9 +12,11 @@
   "or": "o",
   "selected": "seleccionado/s",
   "theCompass": "el compass",
+  "opensInNewWindow": "(abriré en nueva ventana)",
   "title": "título",
   "trend": "tendencia",
   "value": "valor",
+  "year": "año",
   "CityOfCharlotte": "Ciudad de Charlotte",
   "CityOfDurhamLogo": "Logo de la Ciudad de Durham",
   "CountyAverage": "Promedio del condado",
@@ -27,7 +29,18 @@
   "TrendingFlat": "Sin cambios",
   "TrendingUp": "Aumentando",
   "ChangeLanguage": "View in English",
-  "DownloadData": ""
+  "DownloadData": "Descargar datos",
+  "metricCategories": {
+   "Civic Engagement": "Participación cívica",
+   "Demographics": "Datos demográficos",
+   "Economy": "Economía",
+   "Education": "Educación",
+   "Environment": "Medio ambiente",
+   "Health": "Salud",
+   "Housing": "Vivienda",
+   "Infrastructure and Amenities": "Infraestructura y comodidades",
+   "Safety": "Seguridad"
+  }
  },
  "dashboard": {
   "moveToC": "Mover Tabla de Contenido"
@@ -37,10 +50,39 @@
  },
  "feedback": {
   "JoinMailingList": "Únase a nuestra lista de correo",
-  "ShareFeedbacK": "Comparta sus opiniones o preguntas"
+  "ShareFeedbacK": "Comparta sus opiniones o preguntas",
+  "ShareFeedback": "Comparta sus opiniones o preguntas"
  },
  "footer": {
-  "credits": "Vea el código de Neighborhood Compass en {0}. Basado en el código creado por {1}, la {2}, y {3} con mucho ♥ por los proyectos que hacen posible este sitio: {4}, {5}, {6}, {7}, {8}, {9}, y {10}."
+  "credits": "Vea el código de Neighborhood Compass en {0}. Basado en el código creado por {1}, la {2}, y {3} con mucho ♥ por los proyectos que hacen posible este sitio: {4}, {5}, {6}, {7}, {8}, {9}, y {10}.",
+  "links": [
+   {
+    "href": "http://www.dataworks-nc.org",
+    "text": "Sobre DataWorksNC"
+   },
+   {
+    "href": "http://www.opendurham.org/",
+    "text": "Open Durham - Historias de los vecindarios"
+   },
+   {
+    "href": "http://www.durhamhoods.com/",
+    "text": "Vecindarios de Durham - Mapas de vecindarios y centro de lista de correo"
+   },
+   {
+    "href": "https://opendurham.nc.gov/pages/home/",
+    "text": "Portal de información abierta de la ciudad de Durham"
+   }
+  ]
+ },
+ "geographies": {
+  "tract": {
+   "name": "Zonas Censales",
+   "description": "Area containing containing between 1,200 and 8,000 people. Census tract boundaries usually follow features like major roads, rivers, or municipal boundaries. Most tracts contain one or two neighborhoods."
+  },
+  "blockgroup": {
+   "name": "Grupos de Bloque",
+   "description": "A census blockgroup is made up of several city blocks and usually contains between 600 and 3,000 people. Sometimes a blockgroup is the size of a neighborhood, but most neighborhoods are larger than a single blockgroup."
+  }
  },
  "geographySwitcher": {
   "instructions": "Seleccione una lugar geográfico de base (dependiendo del conjunto de datos, pueden haber distintos lugares disponibles)."
@@ -93,11 +135,16 @@
   ]
  },
  "selectGroup": {
-  "orSelectA": "O, seleccione un/a"
+  "orSelectA": "O, seleccione un",
+  "City Council Ward": "Distrito",
+  "School Assignment Zone": "Zona Escolar Asignada",
+  "Ward 1": "Distrito 1",
+  "Ward 2": "Distrito 2",
+  "Ward 3": "Distrito 3"
  },
  "sidebar": {
   "download": "Descargue los datos",
-  "explore": "Explore los datos"
+  "choose": "Elija una categoría"
  },
  "social": {
   "facebook": "Comparta en Facebook",
@@ -113,5 +160,40 @@
  "yearSlider": {
   "startStop": "Comenzar o terminar reproducción de datos en series de tiempo por año",
   "useSlider": "deslice para elegir año de datos para ver"
+ },
+ "metricLabels": {
+  "years": "años",
+  "adults": "adultos",
+  "people": "personas",
+  "centers": "centros",
+  "centers per sq mi": "centros por milla cuadrada",
+  "of households": "de los hogares",
+  "homes near clinics": "viviendas cerca de clínicas",
+  "certificates per sq mi": "certificados por milla cuadrada",
+  "certificates": "certificados",
+  "permits": "permisos",
+  "permits per sq mi": "permisos por milla cuadrada",
+  "commuters": "personas que viajan",
+  "incidents": "incidentes",
+  "incidents per sq mi": "incidentes por milla cuadrada",
+  "renter households": "hogares que arriendan",
+  "people receiving SSI": "personas recibiendo SSI",
+  "people per sq mi": "personas por milla cuadrada",
+  "households": "hogares",
+  "dwelling units in poor or unsound state of repair": "unidades de vivienda en estado de reparación escaso y defectuoso",
+  "voters": "votantes",
+  "young people": "jóvenes",
+  "crimes": "delitos",
+  "crimes per sq mi": "delitos por milla cuadrada",
+  "violations": "violaciones",
+  "violations per sq mi": "violaciones por milla cuadrada",
+  "per sq mi": "por milla cuadrada",
+  "evictions per sq mi": "desalojos por milla cuadrada",
+  "evictions": "desalojos",
+  "ratio of sidewalks to roadways": "proporción de aceras a carreteras",
+  "total dollars": "en total"
+ },
+ "welcome": {
+  "title": "¡Bienvenidos al Neighborhood Compass de Durham!"
  }
 }

@@ -9,8 +9,9 @@ const selectGroups = require('../../../data/config/selectgroups');
 
 // Sort dataConfig alphabetically by metric and category
 let dataConfigTemp = [];
+// eslint-disable-next-line no-restricted-syntax
 for (const key in dataConfigUnsorted) {
-  if (dataConfigUnsorted.hasOwnProperty(key)) {
+  if (key in dataConfigUnsorted) {
     const t = dataConfigUnsorted[key];
     t._key = key;
     dataConfigTemp.push(t);
@@ -29,8 +30,8 @@ const categories = dataConfigTemp.reduce((categoriesArray, curVal) => { if (cate
 
 const metricsByCategory = _.fromPairs(
   categories.map(
-      category => [category, Object.values(dataConfig).filter(metric => metric.category === category)]
-  )
+    category => [category, Object.values(dataConfig).filter(metric => metric.category === category)],
+  ),
 );
 
 export default {

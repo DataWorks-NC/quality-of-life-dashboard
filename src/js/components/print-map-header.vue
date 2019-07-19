@@ -1,20 +1,28 @@
 <template>
   <div class="mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--12-col">
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label is-dirty">
-      <input id="maptitle" ref="maptitle" :aria-label="$t('printMapHeader.setTitle')" v-model="title" class="mdl-textfield__input" type="text" name="maptitle" maxlength="150">
-      <label for="maptitle" class="mdl-textfield__label">{{ $t('strings.title') || capitalize }}</label>
+      <input id="maptitle" ref="maptitle" v-model="title" :aria-label="$t('printMapHeader.setTitle')" class="mdl-textfield__input" type="text" name="maptitle" maxlength="150">
+      <label for="maptitle" class="mdl-textfield__label">{{ $t('strings.title') | capitalize }}</label>
     </div>
-    <div class="mdl-layout__spacer"></div>
+    <div class="mdl-layout__spacer" />
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label is-dirty embedcode">
-      <textarea :value="embedcode" id="embedcode" class="mdl-textfield__input" type="text" name="embedcode" maxlength="200"ref="embedcode" @click="selectAndCopy()" rows="2"></textarea>
-      <label for="embedcode" class="mdl-textfield__label" @click="selectAndCopy()">{{ $t('printMapheader.copy') }}</label>
+      <textarea id="embedcode" ref="embedcode" :value="embedcode" class="mdl-textfield__input" type="text" name="embedcode" maxlength="200" rows="2" @click="selectAndCopy()" />
+      <label for="embedcode" class="mdl-textfield__label" @click="selectAndCopy()">{{ $t('printMapHeader.copy') }}</label>
     </div>
-    <div :style="showCopiedIndicator ? 'opacity: 100;' : ''" id="embedcode__copied">{{ $t('printMapheader.copied') }}</div>
-    <div class="mdl-layout__spacer"></div>
-    <button class="mdl-button mdl-button--colored mdl-js-button mdl-button--raised" @click="print()">{{ $t('printMapheader.print') || allcaps }}</button>
-    <button class="mdl-button mdl-js-button mdl-button--raised" @click="returnToDashboard()">{{ $t('printMapheader.back') || allcaps }}</button>
-    <div class="mdl-layout__spacer"></div>
-    <div class="mdl-cell print__note">{{ $t('printMapHeader.printNote') }}</div>
+    <div id="embedcode__copied" :style="showCopiedIndicator ? 'opacity: 100;' : ''">
+      {{ $t('printMapHeader.copied') }}
+    </div>
+    <div class="mdl-layout__spacer" />
+    <button class="mdl-button mdl-button--colored mdl-js-button mdl-button--raised" @click="print()">
+      {{ $t('printMapHeader.print') | allcaps }}
+    </button>
+    <button class="mdl-button mdl-js-button mdl-button--raised" @click="returnToDashboard()">
+      {{ $t('printMapHeader.back') | allcaps }}
+    </button>
+    <div class="mdl-layout__spacer" />
+    <div class="mdl-cell print__note">
+      {{ $t('printMapHeader.printNote') }}
+    </div>
   </div>
 </template>
 
@@ -22,10 +30,11 @@
 export default {
   name: 'PrintMapHeader',
   props: [
-      'config',
+    'config',
   ],
   data() {
     return {
+      baseURL: process.env.VUE_APP_BASE_URL || 'https://compass.durhamnc.gov',
       showCopiedIndicator: false,
       copiedIndicatorInterval: null,
     };
@@ -33,14 +42,15 @@ export default {
   computed: {
     title: {
       set(title) {
-        this.$store.commit('setCustomLegendTitle', title);
+        this.$store.commit('setLegendTitle', title);
       },
       get() {
         return this.$store.getters.legendTitle;
       },
     },
     embedcode() {
-      return `<iframe id="nbhdCompassMap" style="width: 100%; max-width: 600px; min-width: 250px; height: 600px; min-height: 600px; margin-top: 10px; margin-bottom: 10px; display: block; border-width: 0px;" scrolling="yes" src="${this.config.siteConfig.qoldashboardURL}embed.html#${this.$store.getters.urlHash.replace('print/', '')}"></iframe>`;
+      const embedURL = this.$router.resolve({ name: 'embed', params: this.$route.params, query: { ...this.$route.query, legendTitle: this.title, mode: undefined } }).href;
+      return `<iframe id="nbhdCompassMap" style="width: 100%; max-width: 600px; min-width: 250px; height: 600px; min-height: 600px; margin-top: 10px; margin-bottom: 10px; display: block; border-width: 0px;" scrolling="yes" src="${this.baseURL}${embedURL}"></iframe>`;
     },
   },
   mounted() {
@@ -65,7 +75,7 @@ export default {
       this.copiedIndicatorInterval = window.setInterval(() => { this.showCopiedIndicator = false; }, 5000);
     },
     returnToDashboard() {
-      this.$store.commit('setPrintMode', false);
+      this.$router.push({ query: { ...this.$route.query, mode: undefined, legendTitle: undefined } });
     },
   },
 };

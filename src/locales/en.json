@@ -1,5 +1,6 @@
 {
  "strings": {
+  "about": "The Durham Neighborhood Compassis a primary community resource for information that is regularly-updated, serving meaningful data to the community openly. Each year the Compass grows and learns along with its users, adding data sets with strong community resonance and longitudinal importance. A quantitative project with qualitative values.",
   "accuracy": "accuracy",
   "and": "and",
   "back": "back",
@@ -8,12 +9,14 @@
   "download": "download",
   "median": "median",
   "numberOf": "number of",
+  "opensInNewWindow": "(opens in new window)",
   "or": "or",
   "selected": "selected",
   "theCompass": "the compass",
   "title": "title",
   "trend": "trend",
   "value": "value",
+  "year": "year",
   "CityOfCharlotte": "City of Charlotte",
   "CityOfDurhamLogo": "City of Durham logo",
   "CountyAverage": "County Average",
@@ -47,7 +50,8 @@
  },
  "feedback": {
   "JoinMailingList": "Join our mailing list",
-  "ShareFeedback": "Share feedback or questions"
+  "ShareFeedback": "Share feedback or questions",
+  "ShareFeedbacK": ""
  },
  "footer": {
   "credits": "View the Neighborhood Compass code on {0}. Based on code created by {1}, the {2}, and {3} with much ♥ for the projects that make this site possible: {4}, {5}, {6}, {7}, {8}, {9}, and {10}.",
@@ -55,7 +59,6 @@
    {
     "href": "http://www.dataworks-nc.org",
     "text": "About"
-
    },
    {
     "href": "http://www.opendurham.org/",
@@ -120,11 +123,13 @@
   "young people": "young people",
   "crimes": "crimes",
   "crimes per sq mi": "crimes per sq mi",
-  "violations":  "violations",
+  "violations": "violations",
   "violations per sq mi": "violations per sq mi",
   "per sq mi": "per sq mi",
   "evictions per sq mi": "evictions per sq mi",
-  "ratio of sidewalks to roadways": "ratio of sidewalks to roadways"
+  "evictions": "evictions",
+  "ratio of sidewalks to roadways": "ratio of sidewalks to roadways",
+  "total dollars": "in total"
  },
  "printMapHeader": {
   "back": "Back to dashboard",
@@ -162,11 +167,16 @@
   ]
  },
  "selectGroup": {
-  "orSelectA": "Or, select a"
+  "orSelectA": "Or, select a",
+  "City Council Ward": "City Council Ward",
+  "School Assignment Zone": "School Assignment Zone",
+  "Ward 1": "Ward 1",
+  "Ward 2": "Ward 2",
+  "Ward 3": "Ward 3"
  },
  "sidebar": {
   "download": "Download the Data",
-  "explore": "Explore the Data"
+  "choose": "Select a category"
  },
  "social": {
   "facebook": "Share on Facebook",
@@ -184,7 +194,6 @@
   "useSlider": "use slider to choose a data year to view"
  },
  "welcome": {
-  "title": "Welcome to the Durham Neighborhood Compass!",
-  "text": "Here are some things you can do.."
+  "title": "Welcome to the Durham Neighborhood Compass!"
  }
 }

@@ -1,7 +1,9 @@
 <template>
   <div class="metric-more-info">
-    <div class="metric-more-info__title" @click="toggleMoreInfo"><h3>{{ collapsed ? $t('reportMoreInfo.show') : $t('reportMoreInfo.hide') }}</h3></div>
-    <div v-show="!collapsed" class="metric-more-info__body" v-html="moreInfo"/>
+    <div class="metric-more-info__title" @click="toggleMoreInfo">
+      <h3>{{ collapsed ? $t('reportMoreInfo.show') : $t('reportMoreInfo.hide') }}</h3>
+    </div>
+    <div v-show="!collapsed" class="metric-more-info__body" v-html="moreInfo" />
   </div>
 </template>
 
@@ -19,7 +21,10 @@ export default {
   },
   methods: {
     toggleMoreInfo() {
-      if (!this.collapsed) return this.collapsed = true;
+      if (!this.collapsed || !this.href) {
+        this.collapsed = true;
+        return;
+      }
       const _this = this;
       return fetchResponseHTML(this.href).then((result) => {
         _this.moreInfo = result;

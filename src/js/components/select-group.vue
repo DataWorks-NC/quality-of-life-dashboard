@@ -3,9 +3,13 @@
     <span class="selectgroup__instructions">{{ $t('selectGroup.orSelectA') }}</span>
     <template v-for="(group, groupKey, groupIndex) in selectGroups">
       <span v-if="groupIndex === (Object.keys(selectGroups).length - 1)" :key="groupKey" class="selectgroup__instructions">{{ $t('strings.or') }}</span>
-      <button :key="`${groupKey}_button`" :id="`selectgroup-${groupIndex}`" :disabled="!group.hasOwnProperty(geography.id)" class="mdl-button mdl-js-button mdl-button--primary"><span>{{ groupKey }}</span></button>
-      <ul :for="`selectgroup-${groupIndex}`" :key="`selectgroup-${groupIndex}`" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
-        <li v-for="(item, key) in group[geography.id]" :key="key" class="mdl-menu__item" @click="select(item, key, groupKey)">{{ key }}</li>
+      <button :id="`selectgroup-${groupIndex}`" :key="`${groupKey}_button`" :disabled="!group.hasOwnProperty(geography.id)" class="mdl-button mdl-js-button mdl-button--primary">
+        <span>{{ $t(`selectGroup['${groupKey}']`) }}</span>
+      </button>
+      <ul :key="`selectgroup-${groupIndex}`" :for="`selectgroup-${groupIndex}`" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+        <li v-for="(item, key) in group[geography.id]" :key="key" class="mdl-menu__item" @click="select(item, key, groupKey)">
+          {{ $te(`selectGroup['${key}']`) ? $t(`selectGroup['${key}']`) : key }}
+        </li>
       </ul>
     </template>
   </p>
@@ -30,11 +34,18 @@ export default {
       return Object.keys(this.selectGroups).find(g => state.geography.id in this.selectGroups[g]);
     },
   }),
+  mounted() {
+    // Sometimes mdl is not binding to the dropdown menus in the geography switcher, so re-run this manually.
+    /* eslint-disable no-undef */
+    if (typeof componentHandler !== 'undefined' && 'upgradeDom' in componentHandler) {
+      componentHandler.upgradeDom();
+    }
+    /* eslint-enable */
+  },
   methods: {
     select(item, key, groupKey) {
-      this.$store.commit('setSelected', item);
-      this.$store.commit('setZoomNeighborhoods', item.slice(0)); // why??
-      this.$store.commit('setSelectGroupName', `${key} (${groupKey})`);
+      const selectGroupName = `${this.$te(`selectGroup['${key}']`) ? this.$t(`selectGroup['${key}']`) : key} (${this.$t(`selectGroup['${groupKey}']`)})`;
+      this.$router.push({ query: { ...this.$route.query, selected: item, reportTitle: selectGroupName } });
     },
   },
 };

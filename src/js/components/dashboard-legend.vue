@@ -3,33 +3,35 @@
     <div>
       <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=" class="background-print-img" aria-hidden="true">
       <div class="legendposition">
-        <a :title="$t('legend.MoveTableOfContents')" href="javascript:void(0)" @click="position()"><svg class="icon"><use href="#icon-zoom_out_map"/></svg></a>
+        <a :title="$t('legend.MoveTableOfContents')" href="javascript:void(0)" @click="position()"><svg class="icon"><use href="#icon-zoom_out_map" /></svg></a>
       </div>
-      <h1 class="title">{{ $store.getters.legendTitle }}</h1>
+      <h1 class="title">
+        {{ $store.getters.legendTitle }}
+      </h1>
       <div class="metricboxes">
         <div v-if="selected.length > 0" class="metricbox">
-          <span class="metrictype">{{ $t('strings.selected') || allcaps }}</span>
+          <span class="metrictype">{{ $t('strings.selected') | allcaps }}</span>
           <span class="metricvalue">{{ selectedValue }}</span>
           <span v-if="metric.config.label" class="metriclabel">{{ $t('metricLabels.' + metric.config.label.toLowerCase()) }}</span>
           <span v-if="metric.config.raw_label && selected.length > 0 && selectedValueRaw" class="metric-raw">
-            <span>or</span>
+            <span>{{ $t('strings.or') }}</span>
             <span class="metricvalue metricraw">{{ selectedValueRaw }}</span>
-            <span class="metriclabel" v-html="$t('metricLabels.' + metric.config.raw_label.toLowerCase())"/>
+            <span class="metriclabel" v-html="$t('metricLabels.' + metric.config.raw_label.toLowerCase())" />
           </span>
         </div>
         <div class="metricbox">
-          <span class="metrictype">{{ $t('strings.county') || allcaps }}</span>
+          <span class="metrictype">{{ $t('strings.county') | allcaps }}</span>
           <span class="metricvalue">{{ areaValue }}</span>
           <span v-if="metric.config.label" class="metriclabel">{{ $t('metricLabels.' + metric.config.label.toLowerCase()) }}</span>
           <span v-if="metric.config.raw_label && areaValueRaw" class="metric-raw">
-            <span>or</span>
+            <span>{{ $t('strings.or') }}</span>
             <span class="metricvalue metricraw">{{ areaValueRaw }}</span>
-            <span class="metriclabel" v-html="$t('metricLabels.' + metric.config.raw_label.toLowerCase())"/>
+            <span class="metriclabel" v-html="$t('metricLabels.' + metric.config.raw_label.toLowerCase())" />
           </span>
         </div>
       </div>
       <div class="legend">
-        <svg v-if="breaks" id="maplegend" xmlns="https://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" viewBox="0 0 248.4 39.2" role="img" aria-labelledby="svgTitle">
+        <svg v-if="breaks" id="maplegend" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" viewBox="0 0 248.4 39.2" role="img" aria-labelledby="svgTitle">
           <title id="svgTitle">{{ $t('legend.ChoroplethLegend') }}</title>
           <g transform="translate(20.714293 -851.75475)">
             <!--     @TODO add aria labels for these mouseover actions       -->
@@ -64,9 +66,9 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import config from '../modules/config';
 
-import { mapState } from 'vuex';
 
 import {
   legendLabelNumber, prettyNumber,
@@ -75,7 +77,7 @@ import { calcValue, wValsToArray, sum } from '../modules/metric_calculations';
 
 export default {
   // You would think to just name this component 'Legend', but <legend> is in the HTML5 spec!
-  name: 'dashboard-legend',
+  name: 'DashboardLegend',
   data: () => ({
     selectedValue: null,
     selectedValueRaw: null,
@@ -96,7 +98,7 @@ export default {
     'year': 'processSelected',
   },
   mounted() {
-    this.processSelected()
+    this.processSelected();
   },
   methods: {
     changeHighlight(n) {
@@ -107,19 +109,17 @@ export default {
       }
     },
     selectBreak(n) {
-      this.$store.commit('setSelected', this.getBreakIds(n));
+      this.$router.push({ query: { ...this.$route.query, selected: this.getBreakIds(n) } });
     },
     getBreakIds(n) {
-      const _this = this;
       const data = this.metric.data.map;
-      const breaks = this.breaks;
       const ids = [];
 
       // loop through data to get id's
       Object.keys(data).forEach((id) => {
-        const value = data[id][`y_${_this.year}`];
+        const value = data[id][`y_${this.year}`];
 
-        if (value !== null && value >= breaks[n] && value <= breaks[n + 1]) {
+        if (value !== null && value >= this.breaks[n] && value < this.breaks[n + 1]) {
           ids.push(id.toString());
         }
       });
@@ -150,20 +150,15 @@ export default {
     position() {
       const el = document.querySelector("#legend");
 
-      // move to top left from bottom right
-      if (el.classList.contains("right")) {
+      if (el.classList.contains("right")) { // move to top left from bottom right
         el.classList.remove('bottom');
         el.classList.remove('right');
         el.classList.add('top');
         el.classList.add('left');
-      }
-      // move to bottom right from bottom left
-      else if (el.classList.contains("bottom")) {
+      } else if (el.classList.contains("bottom")) { // move to bottom right from bottom left
         el.classList.remove('left');
         el.classList.add('right');
-      }
-      // move to bottom left from top left
-      else if (el.classList.contains("top")) {
+      } else if (el.classList.contains("top")) { // move to bottom left from top left\n
         el.classList.remove('top');
         el.classList.add('bottom');
       }

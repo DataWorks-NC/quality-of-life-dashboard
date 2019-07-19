@@ -1,11 +1,11 @@
 <template>
   <div class="mdl-grid">
-    <print-map-header :config="config"/>
+    <print-map-header :config="config" />
     <img :alt="$t('strings.DataWorksNCLogo')" src="../../assets/img/report-logo.png" class="header__logo">
     <div class="map mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--12-col">
       <main class="map-container" style="position: relative">
-        <dashboard-map :mapbox-access-token="config.privateConfig.mapboxAccessToken" :map-config="Object.assign({ trackResize: false }, config.mapConfig)"/>
-        <dashboard-legend/>
+        <dashboard-map :mapbox-access-token="config.privateConfig.mapboxAccessToken" :map-config="Object.assign({ trackResize: false }, config.mapConfig)" />
+        <dashboard-legend />
       </main>
       <i18n path="printMode.footerText" tag="footer">
         <a place="compassLink" href="https://compass.durhamnc.gov">{{ $t('strings.theCompass') }}</a>
@@ -16,8 +16,9 @@
 
 <script>
 import DashboardLegend from './dashboard-legend.vue';
-import DashboardMap from './dashboard-map.vue';
 import PrintMapHeader from './print-map-header.vue';
+
+const DashboardMap = () => import(/* webpackChunkName: "dashboard-map" */ './dashboard-map.vue');
 
 export default {
   name: 'PrintMode',

@@ -1,16 +1,17 @@
-<template functional>
-  <div class="page page-category" v-if="category.visible && !category.metrics.every(m => !m.visible)">
+<template>
+  <div class="page page-category">
     <div class="row">
       <div class="col-xs-6 text-left">
-      <h1>{{ category.name }}</h1></div>
+        <h1>{{ category.name }}</h1>
+      </div>
     </div>
     <div class="row">
-      <div class="col-xs-12">
+      <div v-if="metricValues" class="col-xs-12">
         <ReportMetric v-for="m in category.metrics"
-                      :key="m.id"
+                      :key="m.metric"
                       :metric="m"
-                      :metric-values="metricValues.hasOwnProperty(m.metric) ? metricValues[m.metric] : null"
-                      :county-averages="countyAverages.hasOwnProperty(m.metric) ? countyAverages[m.metric] : null"
+                      :metric-values="metricValues && m.metric in metricValues ? metricValues[m.metric] : null"
+                      :county-averages="countyAverages && m.metric in countyAverages ? countyAverages[m.metric] : null"
                       :visible="m.visible"
         />
       </div>
