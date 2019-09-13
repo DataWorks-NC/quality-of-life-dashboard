@@ -1,20 +1,39 @@
 <template>
-  <div class="mdl-grid">
-    <print-map-header :config="config" />
-    <img :alt="$t('strings.DataWorksNCLogo')" src="../../assets/img/report-logo.png" class="header__logo">
-    <div class="map mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--12-col">
-      <main class="map-container" style="position: relative">
-        <dashboard-map :mapbox-access-token="config.privateConfig.mapboxAccessToken" :map-config="Object.assign({ trackResize: false }, config.mapConfig)" />
-        <dashboard-legend />
-      </main>
-      <i18n path="printMode.footerText" tag="footer">
-        <a place="compassLink" href="https://compass.durhamnc.gov">{{ $t('strings.theCompass') }}</a>
-      </i18n>
-    </div>
+  <div>
+    <v-app-bar dark class="d-print-none">
+      <v-toolbar-title>
+        <router-link :to="{ name: 'homepage' }">
+          <img src="../../assets/img/logo.png" :alt="$t('strings.DurhamNeighborhoodCompass')">
+        </router-link>
+      </v-toolbar-title>
+      <div class="flex-grow-1" />
+      <v-btn @click="print()">
+        <v-icon>{{ mdiPrinter }}</v-icon> {{ $t('printMapHeader.print') | allcaps }}
+      </v-btn>
+      <v-btn :to="{ query: { ...this.$route.query, mode: undefined, legendTitle: undefined } }">
+        <v-icon>{{ mdiArrowLeft }}</v-icon> {{ $t('printMapHeader.back') | allcaps }}
+      </v-btn>
+    </v-app-bar>
+    <v-content>
+      <print-map-header :config="config" class="d-print-none" />
+      <img :alt="$t('strings.DataWorksNCLogo')" :src="require('@/assets/img/report-logo.png')" class="header__logo">
+      <v-spacer />
+      <v-card class="map d-print-inline">
+        <div class="map-container" style="position: relative">
+          <dashboard-map :mapbox-access-token="config.privateConfig.mapboxAccessToken" :map-config="Object.assign({ trackResize: false }, config.mapConfig)" />
+          <dashboard-legend />
+        </div>
+        <i18n path="printMode.footerText" tag="p" class="print__footer">
+          <a place="compassLink" href="https://compass.durhamnc.gov">{{ $t('strings.theCompass') }}</a>
+        </i18n>
+      </v-card>
+    </v-content>
   </div>
 </template>
 
 <script>
+import { mdiPrinter, mdiArrowLeft } from "@mdi/js";
+
 import DashboardLegend from './dashboard-legend.vue';
 import PrintMapHeader from './print-map-header.vue';
 
@@ -30,6 +49,12 @@ export default {
   props: [
     'config',
   ],
+  data: () => ({ mdiPrinter, mdiArrowLeft }),
+  methods: {
+    print() {
+      window.print();
+    },
+  },
 };
 </script>
 
@@ -56,7 +81,7 @@ body.print {
   min-width: 7.33in;
 }
 
-.print footer {
+.print .print__footer {
   font-size: 8pt;
   padding: 0.125in;
   font-style: italic;
@@ -66,15 +91,10 @@ body.print {
   display: none;
 }
 
-.mdl-cell {
-  padding: 8px;
-}
-
-.mdl-cell.map {
-  padding: 0;
-}
-
 @media print {
+  .print .v-card {
+    padding: 0;
+  }
   .print .map-container {
     height: 8in;
   }

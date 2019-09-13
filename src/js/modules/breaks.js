@@ -1,3 +1,3 @@
-const breaksGnBu5 = ["rgb(238,250,227)", "rgb(186,228,188)", "rgb(123,204,196)", "rgb(67,162,202)", "rgb(8,104,172)"];
+const breaksGnBu5 = ["#b2f3ed", "#74ced5", "#418ea6", "#1a4d6f", "#00214d"];
 
 export default { breaksGnBu5 };

@@ -1,55 +1,69 @@
 <template>
-  <p class="text-muted">
-    <ExternalLink :href="twitter" :show-icon="false">
-      <svg class="icon icon-twitter-with-circle" :aria-label="$t('social.twitter')"><use href="#icon-twitter-with-circle" /></svg>
-    </ExternalLink>
-    <ExternalLink :href="facebook" :show-icon="false">
-      <svg class="icon icon-facebook-with-circle" :aria-label="$t('social.facebook')"><use href="#icon-facebook-with-circle" /></svg>
-    </ExternalLink>
-    <ExternalLink :href="linkedin" :show-icon="false">
-      <svg class="icon icon-linkedin-with-circle" :aria-label="$t('social.linkedIn')"><use href="#icon-linkedin-with-circle" /></svg>
-    </ExternalLink>
-    <ExternalLink href="https://github.com/DataWorks-NC/quality-of-life-dashboard" :show-icon="false">
-      <svg class="icon icon-brand-github" :aria-label="$t('social.viewGitHub')"><use href="#icon-brand-github" /></svg>
-    </ExternalLink>
-  </p>
+  <v-card>
+    <p class="title text-center">
+      {{ $t('strings.share') }}
+    </p>
+    <v-card-actions>
+      <div class="flex-grow-1" />
+      <ExternalLink :href="twitter" :show-icon="false" class="social__link">
+        <v-icon size="36px" color="#1DA1F2" :aria-label="$t('social.twitter')">
+          {{ mdiTwitterCircle }}
+        </v-icon>
+      </ExternalLink>
+      <ExternalLink :href="facebook" :show-icon="false" class="social__link">
+        <v-icon size="36px" color="#4E71A8" :aria-label="$t('social.facebook')">
+          {{ mdiFacebookBox }}
+        </v-icon>
+      </ExternalLink>
+      <ExternalLink :href="whatsapp" :show-icon="false" class="social__link">
+        <v-icon size="36px" color="#25D366" :aria-label="$t('social.linkedIn')">
+          {{ mdiWhatsapp }}
+        </v-icon>
+      </ExternalLink>
+      <router-link v-if="$route.name === 'compass'" :to="{ query: { ...this.$route.query, mode: 'print' } }" class="social__link">
+        <v-icon size="36px" color="#1686B0" :aria-label="$t('social.viewGitHub')">
+          {{ mdiPrinter }}
+        </v-icon>
+      </router-link>
+      <div class="flex-grow-1" />
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script>
+import {
+  mdiTwitterCircle, mdiFacebookBox, mdiPrinter, mdiWhatsapp,
+} from '@mdi/js';
 import { mapState } from 'vuex';
 
-import config from '../modules/config';
-
-import { computeHash } from '../modules/tracking';
 import ExternalLink from './external-link';
 
 export default {
   name: 'Social',
   components: { ExternalLink },
-  computed: mapState({
-    pageUrl(state) { return `${config.siteConfig.baseURL}#${computeHash(state.metricId, state.selected, state.geography.id)}`; },
-    twitter(state) { return `https://twitter.com/intent/tweet?url=${this.pageUrl}&text=${state.metric.config ? encodeURIComponent(state.metric.config.title) : ''}`; },
-    facebook() { return `https://www.facebook.com/sharer.php?u=${this.pageUrl}`; },
-    linkedin() { return `https://www.linkedin.com/shareArticle?url=${this.pageUrl}`; },
+  data: () => ({
+    baseUrl: process.env.VUE_APP_BASE_URL || 'https://compass.durhamnc.gov',
+    mdiTwitterCircle,
+    mdiFacebookBox,
+    mdiPrinter,
+    mdiWhatsapp,
   }),
+  computed: {
+    pageUrl() { return encodeURIComponent(this.baseUrl + this.$route.fullPath); },
+    facebook() { return `https://www.facebook.com/sharer.php?u=${this.pageUrl}`; },
+    whatsapp() { return `https://wa.me/?text=${this.pageUrl}`; },
+    ...mapState({
+      twitter(state) { return `https://twitter.com/intent/tweet?text=${state.metric.config ? encodeURIComponent(state.metric.config.title) : ''}&url=${this.pageUrl}`; },
+    }),
+  },
 };
 </script>
 
-<style lang="css" scoped>
-    .icon {
-        width: 24px;
-        height: 24px;
-    }
-    .icon-twitter-with-circle {
-        fill: #1DA1F2;
-    }
-    .icon-facebook-with-circle {
-        fill: #4E71A8;
-    }
-    .icon-linkedin-with-circle {
-        fill: #1686B0;
-    }
-    .icon-brand-github {
-        fill: #0F0F0F;
-    }
+<style scoped lang="css">
+.social__link {
+  margin: 0 0.5em;
+}
+.social__link svg:hover {
+  color: var(--v-accent-base) !important;
+}
 </style>

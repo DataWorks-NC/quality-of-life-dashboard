@@ -27,11 +27,6 @@ export default new Vuex.Store({
     selected: [],
     highlight: [],
     year: null,
-    yearAnimationHandler: { // Object to keep track of various aspects related to the year animation.
-      interval: null,
-      currentIndex: null,
-      playing: false,
-    },
     metadata: null,
     metricId: null,
     geography: {
@@ -89,25 +84,6 @@ export default new Vuex.Store({
     },
     setYear(state, year) {
       state.year = year;
-    },
-    nextYear(state) {
-      // Increment year. Used to handle animating the year.
-      state.yearAnimationHandler.currentIndex += 1;
-      if (state.yearAnimationHandler.currentIndex >= state.metric.years.length) {
-        state.yearAnimationHandler.currentIndex = 0;
-      }
-      state.year = state.metric.years[state.yearAnimationHandler.currentIndex];
-    },
-    setAnimationHandler(state, handler) {
-      if (!handler) {
-        state.yearAnimationHandler = {
-          interval: null,
-          currentIndex: null,
-          playing: false,
-        };
-      } else {
-        state.yearAnimationHandler = handler;
-      }
     },
     setBreaks(state, breaks) {
       state.breaks = Object.freeze(breaks);
@@ -237,23 +213,6 @@ export default new Vuex.Store({
       const metricIds = Object.keys(config.dataConfig);
       const metric = config.dataConfig[metricIds[Math.floor(Math.random() * (metricIds.length + 1))]];
       return dispatch('changeMetric', { newMetricId: metric.metric });
-    },
-    async playYearAnimation({ commit, state }) {
-      // set current index and advance one
-      commit('setAnimationHandler', {
-        playing: true,
-        currentIndex: state.metric.years.indexOf(state.year),
-        interval: setInterval(() => {
-          commit('nextYear');
-        }, 1750),
-      });
-      commit('nextYear');
-    },
-    async stopYearAnimation({ commit, state }) {
-      if (state.yearAnimationHandler) {
-        clearInterval(state.yearAnimationHandler.interval);
-        commit('setAnimationHandler', null);
-      }
     },
   },
 });

@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 
 import store from './vuex-store';
+import config from './modules/config';
 
 const Compass = () => import(/* webpackChunkName: "compass" */ './views/Compass');
 const Report = () => import(/* webpackChunkName: "report" */'./views/Report');
@@ -14,13 +15,11 @@ const routes = [
     name: 'compass',
     path: '/:locale/compass/:metric/:geographyLevel/',
     component: Compass,
-    pathToRegexpOptions: { strict: true },
   },
   {
     name: 'report',
     path: '/:locale/report/:geographyLevel/',
     component: Report,
-    pathToRegexpOptions: { strict: true },
   },
   {
     path: '/:locale/compass/:metric/',
@@ -46,7 +45,6 @@ const routes = [
       store.commit('clearMetric');
       next();
     },
-    pathToRegexpOptions: { strict: true },
   },
   {
     name: 'wildcard',
@@ -59,6 +57,22 @@ const router = new Router({
   mode: 'history',
   encodeQuery: true,
   routes,
+});
+
+// Validate params.
+// TODO: Make these dynamically pull valid values from config.
+router.beforeEach((to, from, next) => {
+  // eslint-disable-next-line no-undef
+  app.loading = true; // will be defined in main.js.
+  if (to.params.locale && ['en', 'es'].indexOf(to.params.locale) === -1) {
+    next({ ...to, params: { ...to.params, locale: 'en' } });
+  } else if (to.params.geographyLevel && ['blockgroup', 'tract'].indexOf(to.params.geographyLevel) === -1) {
+    next({ ...to, params: { ...to.params, geographyLevel: 'tract' } });
+  } else if (to.params.metric && !(`m${to.params.metric}` in config.dataConfig)) {
+    next({ name: 'homepage', params: { locale: ('locale' in to.params) ? to.params.locale : 'en' } });
+  } else {
+    next();
+  }
 });
 
 // Load geography & selected on each route.

@@ -1,18 +1,22 @@
 <template>
-  <p v-if="validSelectGroups" class="selectgroup">
-    <span class="selectgroup__instructions">{{ $t('selectGroup.orSelectA') }}</span>
+  <div v-if="validSelectGroups" id="selectgroup">
+    <span>{{ $t('selectGroup.orSelectA') }}</span>
     <template v-for="(group, groupKey, groupIndex) in selectGroups">
-      <span v-if="groupIndex === (Object.keys(selectGroups).length - 1)" :key="groupKey" class="selectgroup__instructions">{{ $t('strings.or') }}</span>
-      <button :id="`selectgroup-${groupIndex}`" :key="`${groupKey}_button`" :disabled="!group.hasOwnProperty(geography.id)" class="mdl-button mdl-js-button mdl-button--primary">
-        <span>{{ $t(`selectGroup['${groupKey}']`) }}</span>
-      </button>
-      <ul :key="`selectgroup-${groupIndex}`" :for="`selectgroup-${groupIndex}`" class="mdl-menu mdl-menu--bottom-left mdl-js-menu">
-        <li v-for="(item, key) in group[geography.id]" :key="key" class="mdl-menu__item" @click="select(item, key, groupKey)">
-          {{ $te(`selectGroup['${key}']`) ? $t(`selectGroup['${key}']`) : key }}
-        </li>
-      </ul>
+      <span v-if="groupIndex === (Object.keys(selectGroups).length - 1)" :key="groupKey">{{ $t('strings.or') }}</span>
+      <v-menu :key="`${groupKey}-menu`" offset-y allow-overflow>
+        <template v-slot:activator="{ on }">
+          <v-btn :id="`selectgroup-${groupIndex}`" :key="`${groupKey}_button`" text class="selectgroup__button" :disabled="!group.hasOwnProperty(geography.id)" v-on="on">
+            {{ $t(`selectGroup['${groupKey}']`) }}
+          </v-btn>
+        </template>
+        <v-list :key="`selectgroup-${groupIndex}`" :for="`selectgroup-${groupIndex}`">
+          <v-list-item v-for="(item, key) in group[geography.id]" :key="key" @click="select(item, key, groupKey)">
+            <v-list-item-title>{{ $te(`selectGroup['${key}']`) ? $t(`selectGroup['${key}']`) : key }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </template>
-  </p>
+  </div>
 </template>
 
 <script>
@@ -34,14 +38,6 @@ export default {
       return Object.keys(this.selectGroups).find(g => state.geography.id in this.selectGroups[g]);
     },
   }),
-  mounted() {
-    // Sometimes mdl is not binding to the dropdown menus in the geography switcher, so re-run this manually.
-    /* eslint-disable no-undef */
-    if (typeof componentHandler !== 'undefined' && 'upgradeDom' in componentHandler) {
-      componentHandler.upgradeDom();
-    }
-    /* eslint-enable */
-  },
   methods: {
     select(item, key, groupKey) {
       const selectGroupName = `${this.$te(`selectGroup['${key}']`) ? this.$t(`selectGroup['${key}']`) : key} (${this.$t(`selectGroup['${groupKey}']`)})`;
@@ -51,22 +47,25 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+#selectgroup {
+  margin-top: 10px;
+}
+
+.selectgroup__button {
+  &.v-btn {
+    padding: 0 0.25em;
+    text-transform: none;
+    letter-spacing: initial;
+    height: unset;
+  }
+  cursor: pointer;
+  text-decoration: underline;
+  color: var(--v-primary-base);
+}
+
 p {
     font-size: 0.9em;
     padding-top: 0.5em;
 }
-
-.selectgroup__instructions {
-  line-height: 36px;
-  float: left;
-}
-
-.selectgroup button {
-  padding: 0 0.5em;
-  text-transform: none;
-  display: inline;
-  float: left;
-}
-
 </style>

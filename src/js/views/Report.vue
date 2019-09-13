@@ -1,18 +1,20 @@
 <template>
-  <div id="app">
-    <div class="header d-print-none">
-      <a class="metric-selector__title" @click.prevent="selectorCollapsed=!selectorCollapsed">{{ $t('reportSelector.customize') }}</a>
-      <a class="language-switcher" @click="swapLanguage()">{{ $t('strings.ChangeLanguage') }}</a>
-      <report-selector :collapsed="selectorCollapsed" @collapse-selector="selectorCollapsed=true" />
-    </div>
-    <report-summary
-      :report-title="reportTitle"
-      :selected="selected"
-      :geography-id="geography.id"
-      :summary-metrics="summaryMetrics"
-      :map-config="mapConfig"
-    />
-    <report-body />
+  <div>
+    <report-nav />
+    <v-content>
+      <v-container fluid>
+        <report-summary
+          :report-title="reportTitle"
+          :selected="selected"
+          :geography-id="geography.id"
+          :summary-metrics="summaryMetrics"
+          :map-config="mapConfig"
+        />
+        <v-spacer />
+        <report-body />
+      </v-container>
+    </v-content>
+    <dashboard-footer />
   </div>
 </template>
 
@@ -20,20 +22,21 @@
 import { mapState, mapGetters } from 'vuex';
 import config from '../modules/config';
 
+import DashboardFooter from '../components/dashboard-footer.vue';
 import ReportSummary from '../components/report/report-summary';
 import ReportBody from '../components/report/report-body';
-import ReportSelector from '../components/report/report-selector';
+import ReportNav from '../components/report/report-nav';
 
 export default {
   name: 'Report',
   components: {
+    DashboardFooter,
+    ReportNav,
     ReportSummary,
-    ReportSelector,
     ReportBody,
   },
   data: () => ({
     mapConfig: config.mapConfig,
-    selectorCollapsed: true,
     storeWatchers: [],
   }),
   computed: { ...mapState(['geography', 'selected']), ...mapGetters(['reportTitle', 'summaryMetrics']) },
@@ -48,15 +51,6 @@ export default {
       }
       document.dispatchEvent(event);
     });
-  },
-  methods: {
-    swapLanguage() {
-      let newLanguage = 'es';
-      if (this.$i18n.locale === 'es') {
-        newLanguage = 'en';
-      }
-      this.$router.push({ params: { ...this.$route.params, locale: newLanguage }, query: this.$route.query });
-    },
   },
 };
 </script>

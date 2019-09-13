@@ -1,16 +1,20 @@
 <template lang="html">
-  <div v-if="validGeographies" id="geography-switcher" class="mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop geography-switcher">
+  <v-card v-if="validGeographies" class="geography-switcher">
     <template v-for="geography in validGeographies">
-      <button :key="geography.id" :class="['mdl-chip', geography.id === selectedGeography.id ? 'is-active' : '', geography.isAvailable ? '' : 'is-disabled']" type="button" :disabled="!geography.isAvailable" @click="changeGeography(geography.id)">
-        <!--        @TODO does this need a label or for tag for accessibility? -->
-        <span class="mdl-chip__text">{{ $t(`geographies.${geography.id}.name`) }}</span>
-      </button>
+      <v-btn
+        :key="geography.id"
+        :disabled="!geography.isAvailable"
+        :to="{ name: 'compass', params: {...$route.params, geographyLevel: geography.id }, query: $route.query }"
+        rounded
+      >
+        {{ $t(`geographies.${geography.id}.name`) }}
+      </v-btn>
     </template>
-    <div class="geography-switcher--instructions">
+    <p class="geography-switcher--instructions">
       {{ $t('geographySwitcher.instructions') }}
-    </div>
-    <select-group />
-  </div>
+    </p>
+    <select-group class="geography-switcher--instructions" />
+  </v-card>
 </template>
 
 <script>
@@ -34,22 +38,20 @@ export default {
       }));
     },
   }),
-  methods: {
-    changeGeography(id) {
-      const newParams = Object.assign(this.$route.params, { geographyLevel: id });
-      this.$router.push({ name: 'compass', params: newParams, query: this.$route.query });
-    },
-  },
 };
 
 </script>
 
-<style scoped>
-    .geography-switcher {
-        padding: 10px;
+<style lang="scss" scoped>
+  .geography-switcher {
+    .v-btn {
+    text-transform: none;
+    font-weight: normal;
+    letter-spacing: initial;
     }
-    .geography-switcher--instructions {
-        margin-top: 8px;
-        font-size: 0.9em;
-    }
+  }
+  .geography-switcher--instructions {
+      margin-top: 0.5em;
+      font-size: 0.9em;
+  }
 </style>

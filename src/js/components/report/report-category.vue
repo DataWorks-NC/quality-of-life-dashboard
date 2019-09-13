@@ -1,22 +1,25 @@
 <template>
-  <div class="page page-category">
-    <div class="row">
-      <div class="col-xs-6 text-left">
+  <v-container>
+    <v-row>
+      <v-col cols="12">
         <h1>{{ category.name }}</h1>
-      </div>
+      </v-col>
+    </v-row>
+    <div v-for="m in category.metrics" :key="m.metric">
+      <v-row>
+        <v-col cols="12">
+          <ReportMetric
+            :key="m.metric"
+            :metric="m"
+            :metric-values="metricValues && m.metric in metricValues ? metricValues[m.metric] : null"
+            :county-averages="countyAverages && m.metric in countyAverages ? countyAverages[m.metric] : null"
+            :visible="m.visible"
+          />
+        </v-col>
+      </v-row>
+      <v-spacer />
     </div>
-    <div class="row">
-      <div v-if="metricValues" class="col-xs-12">
-        <ReportMetric v-for="m in category.metrics"
-                      :key="m.metric"
-                      :metric="m"
-                      :metric-values="metricValues && m.metric in metricValues ? metricValues[m.metric] : null"
-                      :county-averages="countyAverages && m.metric in countyAverages ? countyAverages[m.metric] : null"
-                      :visible="m.visible"
-        />
-      </div>
-    </div>
-  </div>
+  </v-container>
 </template>
 
 <script>

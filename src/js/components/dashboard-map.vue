@@ -13,6 +13,9 @@ import { prettyNumber } from '../modules/number_format';
 import FullExtent from '../modules/map-fullextent';
 import config from '../modules/config';
 
+import 'mapbox-gl/dist/mapbox-gl.css';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+
 export default {
   // You would think to just name this component 'Map', but <map> is in the HTML5 spec!
   name: 'DashboardMap',
@@ -42,9 +45,13 @@ export default {
   },
 
   mounted() {
+    // Add these at mount time because they should not be reactive properties (don't want
+    // component to update each time they change).
     this.map = null;
     this.geocoder = null;
     this.mapMetricId = this.metricId;
+    this.addressMarker = null;
+    this.hoverPopup = null;
     this.initMap();
   },
 
@@ -60,9 +67,20 @@ export default {
       const { map } = _this;
       mapboxgl.accessToken = _this.mapboxAccessToken;
 
-      this.locationPopup = new mapboxgl.Popup({
-        closeButton: true,
+      this.addressPopup = new mapboxgl.Popup({
+        closeButton: false,
+        anchor: 'bottom-left',
+        className: 'address_popup',
+      });
+
+      this.addressMarker = new mapboxgl.Marker({
+        color: '#db3360',
+      }).setPopup(this.addressPopup);
+
+      this.hoverPopup = new mapboxgl.Popup({
+        closeButton: false,
         closeOnClick: false,
+        className: 'hover_popup',
       });
 
       // Zoom to county extent initially before map loads.
@@ -86,10 +104,15 @@ export default {
           bbox: [-79.01, 35.87, -78.7, 36.15],
           placeholder: this.$t('map.SearchPlaceholder'),
           zoom: 14,
-          marker: true,
+          marker: false,
+          flyTo: true,
           mapboxgl,
         }).on('result', (e) => {
           if (e.result) {
+            // Add marker
+            _this.addressPopup.setText(e.result.place_name.replace('North Carolina ', '').replace(', United States of America', ''));
+            _this.addressMarker.setLngLat(e.result.center).addTo(map).togglePopup();
+
             // Clear selection and select underlying area. Remove duplicates by casting to Set.
             const features = Array.from(
               new Set(
@@ -105,6 +128,10 @@ export default {
             _this.zoomToIds(features);
           }
         }).on('clear', () => {
+          if (_this.addressMarker) {
+            if (_this.addressPopup.isOpen()) _this.addressMarker.togglePopup();
+            _this.addressMarker.remove();
+          }
           if (map.getLayer('point')) {
             map.getSource('point').setData({
               "type": "FeatureCollection",
@@ -154,11 +181,6 @@ export default {
       const { map } = this;
       const _this = this;
 
-      const popup = new mapboxgl.Popup({
-        closeButton: false,
-        closeOnClick: false,
-      });
-
       map.on('rotate', () => {
         _this.isPitched3D = (map.getPitch() >= 20);
       });
@@ -181,8 +203,12 @@ export default {
       });
 
       // fix for popup cancelling click event on iOS
+      // TODO: evaluate if necessary
       const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
       if (!iOS) {
+        map.on('mouseleave', () => {
+          _this.hoverPopup.remove();
+        });
         // show feature info on mouse move
         map.on('mousemove', (e) => {
           if (!_this.metric.config || !_this.metric.data) {
@@ -191,7 +217,7 @@ export default {
           const features = map.queryRenderedFeatures(e.point, { layers: [`${_this.geography.id}-fill`] }).filter(f => _this.metric.data.map[f.properties.id][`y_${_this.year}`] !== null); // Only show popup when metric value is not null
 
           if (!features.length) {
-            popup.remove();
+            _this.hoverPopup.remove();
             map.getCanvas().style.cursor = '';
             return;
           }
@@ -205,7 +231,7 @@ export default {
           const val = prettyNumber(data, _this.metric.config.decimals, _this.metric.config.prefix,
             _this.metric.config.suffix, _this.metric.config.commas);
           const label = _this.metric.config.label ? ` ${_this.$t(`metricLabels.${_this.metric.config.label}`)}` : '';
-          popup.setLngLat(map.unproject(e.point))
+          _this.hoverPopup.setLngLat(map.unproject(e.point))
             .setHTML(
               `<div style="text-align:center; margin:0; padding:0;"><h3 style="font-size:1.2em; margin:0; padding:0; line-height:1em; font-weight:bold;">${geographyLabel}</h3>${val}${label}</div>`,
             )
@@ -351,7 +377,7 @@ export default {
       const _this = this;
 
       _this.selected.forEach((id) => {
-        stops.push([id, '#00688B']);
+        stops.push([id, '#68089e']);
       });
 
       const outline = {
@@ -466,7 +492,7 @@ export default {
 };
 </script>
 
-<style lang="css">
+<style lang="scss">
 #map {
     width: 100%;
     height: 600px;
@@ -503,4 +529,24 @@ export default {
 div#map {
   font-family: inherit;
 }
+
+.hover_popup {
+  z-index: 1000;
+}
+
+.address_popup {
+  color: white;
+  .mapboxgl-popup-tip {
+    border-top-color: #db3360;
+  }
+  .mapboxgl-popup-content {
+    background-color: #db3360;
+    font-weight: bold;
+    padding: 10px;
+    font-size: 12px;
+    line-height: 12px;
+  }
+
+}
+
 </style>

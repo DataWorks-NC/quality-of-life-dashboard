@@ -5,12 +5,11 @@ import store from './js/vuex-store';
 import router from './js/router';
 import i18n from './js/i18n';
 import config from './js/modules/config';
+import vuetify from './plugins/vuetify';
 
 import App from './js/App';
 
-import 'mapbox-gl/dist/mapbox-gl.css';
-import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-import './css/main.css';
+import './scss/main.scss';
 
 Vue.config.productionTip = false;
 
@@ -74,7 +73,7 @@ router.beforeEach((to, from, next) => {
       },
       ogUrl: {
         content:
-          newUrl,
+        newUrl,
       },
       ogDescription: {
         content:
@@ -99,6 +98,18 @@ router.beforeEach((to, from, next) => {
   });
 });
 
+/* eslint-disable no-new */
+/* eslint-disable no-unused-vars */
+const app = new Vue({
+  i18n,
+  store,
+  router,
+  el: '#app',
+  vuetify,
+  data: { loading: true },
+  render: h => h(App),
+});
+
 Vue.filter('allcaps', (value) => {
   if (!value) return '';
   return String(value).toUpperCase();
@@ -115,20 +126,16 @@ const stringCompareEs = new Intl.Collator('es').compare;
 i18n.localizedStringCompareFn = (a, b) => (i18n.locale === 'es' ? stringCompareEs(a, b) : stringCompareEn(a, b));
 
 // Google analytics
-Vue.use(VueAnalytics, {
-  id: config.privateConfig.googleAnalyticsId,
-  router,
-  debug: {
-    sendHitTask: process.env.NODE_ENV === 'production',
-  },
-});
+if ('googleAnalyticsId' in config.privateConfig && config.privateConfig.googleAnalyticsId) {
+  Vue.use(VueAnalytics, {
+    id: config.privateConfig.googleAnalyticsId,
+    router,
+    debug: {
+      sendHitTask: process.env.NODE_ENV === 'production',
+    },
+  });
+}
 
-/* eslint-disable no-new */
-/* eslint-disable no-unused-vars */
-const app = new Vue({
-  i18n,
-  store,
-  router,
-  el: '#app',
-  render: h => h(App),
+router.afterEach((to, from, next) => {
+  app.loading = false;
 });

@@ -1,11 +1,11 @@
 <template lang="html">
-  <div>
-    <div id="map" />
-  </div>
+  <div id="map" />
 </template>
 
 <script>
 import mapboxgl from 'mapbox-gl';
+
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 export default {
   name: 'ReportMap',

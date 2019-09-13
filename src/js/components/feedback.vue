@@ -1,14 +1,19 @@
 <template lang="html">
-  <div v-if="siteConfig && (siteConfig.feedbackUrl || siteConfig.signupEmbed)" class="mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop">
-    <div class="feedback-buttons">
-      <button v-if="siteConfig.feedbackUrl" class="mdl-button mdl-js-button mdl-button--raised" @click="openSurvey">{{ $t('feedback.ShareFeedback') }}</button>
-      <button v-if="siteConfig.signupEmbed" :class="showSignup ? 'is-active' : ''" class="mdl-button mdl-js-button mdl-button--raised" @click="showSignup = !showSignup">{{ $t('feedback.JoinMailingList') }}</button>
-    </div>
-    <div v-if="showSignup" class="signup-embed" v-html="siteConfig.signupEmbed"/>
-  </div>
+  <v-card v-if="siteConfig && (siteConfig.feedbackUrl || siteConfig.signupEmbed)">
+    <v-btn v-if="siteConfig.feedbackUrl" small @click="openSurvey">
+      {{ $t('feedback.ShareFeedback') }} <v-icon size="14px">
+        {{ mdiOpenInNew }}
+      </v-icon>
+    </v-btn>
+    <v-btn v-if="siteConfig.signupEmbed" small :input-value="showSignup" @click="showSignup = !showSignup">
+      {{ $t('feedback.JoinMailingList') }}
+    </v-btn>
+    <div v-if="showSignup" class="signup-embed" v-html="siteConfig.signupEmbed" />
+  </v-card>
 </template>
 
 <script>
+import { mdiOpenInNew } from "@mdi/js";
 import config from '../modules/config';
 
 export default {
@@ -16,6 +21,7 @@ export default {
   data: () => ({
     showSignup: false,
     siteConfig: config.siteConfig,
+    mdiOpenInNew,
   }),
   methods: {
     openSurvey() {
@@ -39,13 +45,14 @@ export default {
               flex: auto;
        }
        .signup-embed {
-              margin: 10px;
+            margin: 10px;
+         min-height: 120px;
        }
-       button:hover {
-              box-shadow:inset 0 0 0 2px rgba(0 , 104, 139, 0.4);
+       >>> #mc_embed_signup {
+         font-family: "Roboto";
        }
-       button.is-active {
-              background: #00688B;
-              color: white;
+
+       >>> #mc_embed_signup .button {
+         background-color: var(--v-primary-base);
        }
 </style>

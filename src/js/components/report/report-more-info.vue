@@ -1,10 +1,10 @@
 <template>
-  <div class="metric-more-info">
-    <div class="metric-more-info__title" @click="toggleMoreInfo">
-      <h3>{{ collapsed ? $t('reportMoreInfo.show') : $t('reportMoreInfo.hide') }}</h3>
-    </div>
-    <div v-show="!collapsed" class="metric-more-info__body" v-html="moreInfo" />
-  </div>
+  <v-expansion-panels focusable>
+    <v-expansion-panel @change="toggleMoreInfo">
+      <v-expansion-panel-header>{{ collapsed ? $t('reportMoreInfo.show') : $t('reportMoreInfo.hide') }}</v-expansion-panel-header>
+      <v-expansion-panel-content><div v-html="moreInfo" /></v-expansion-panel-content>
+    </v-expansion-panel>
+  </v-expansion-panels>
 </template>
 
 <script>

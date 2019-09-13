@@ -6,6 +6,7 @@
  */
 
 import Chartist from 'chartist';
+import "../../scss/chartist.min.css";
 
 const axisTitle = require('chartist-plugin-axistitle');
 require('chartist-plugin-tooltips');

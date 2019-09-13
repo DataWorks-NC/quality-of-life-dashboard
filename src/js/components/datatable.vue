@@ -1,45 +1,65 @@
 <template lang="html">
   <div v-if="selected.length > 0 && metric.data" id="datatable">
     <div class="tablescroll">
-      <table class="mdl-data-table mdl-js-data-table datatable">
+      <v-simple-table class="datatable">
         <thead>
           <tr>
-            <th class="mdl-data-table__cell--non-numeric">
+            <th>
               <span :title="$t(`geographies.${geography.id}.description`)" class="tooltip">{{ $t(`geographies.${geography.id}.name`) }}</span>
             </th>
-            <th>{{ curYear }} {{ $t('strings.value') | capitalize }} <span v-if="metric.config.label">({{ $t('metricLabels.' + metric.config.label) }})</span>
+            <th>
+              {{ curYear }} {{ $t('strings.value') | capitalize }} <span v-if="metric.config.label">({{ $t('metricLabels.' + metric.config.label) }})</span>
             </th>
-            <th v-if="metric.data.a">{{ $t('strings.accuracy') | capitalize }}</th>
-            <th v-if="metric.years.length > 1">{{ $t('strings.trend') | capitalize }}<br>{{ trendStartYear }}-{{ trendEndYear }}
+            <th v-if="metric.data.a">
+              {{ $t('strings.accuracy') | capitalize }}
             </th>
-            <th v-if="metric.config.raw_label">{{ $t('strings.numberOf') | capitalize }} {{ $t('metricLabels.' + metric.config.raw_label) }}
+            <th v-if="metric.years.length > 1">
+              {{ $t('strings.trend') | capitalize }}<br>{{ trendStartYear }}-{{ trendEndYear }}
             </th>
-            <th v-if="metric.years.length > 1 && metric.config.raw_label">{{ $t('strings.trend') | capitalize }}<br>{{ trendStartYear }}-{{ trendEndYear }}
+            <th v-if="metric.config.raw_label">
+              {{ $t('strings.numberOf') | capitalize }} {{ $t('metricLabels.' + metric.config.raw_label) }}
+            </th>
+            <th v-if="metric.years.length > 1 && metric.config.raw_label">
+              {{ $t('strings.trend') | capitalize }}<br>{{ trendStartYear }}-{{ trendEndYear }}
             </th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="row in dataTable" :key="row.geogIndex" @mouseover="highlight(row.geogIndex)" @mouseout="highlight([])">
-            <td class="mdl-data-table__cell--non-numeric">{{ $i18n.locale === 'en' ? geography.label(row.geogIndex) : geography.label_es(row.geogIndex) }}</td>
+            <td>{{ $i18n.locale === 'en' ? geography.label(row.geogIndex) : geography.label_es(row.geogIndex) }}</td>
             <td>{{ row.value }}</td>
-            <td v-if="row.accuracy"> &#177; {{ row.accuracy }}</td>
-            <td v-if="metric.years.length > 1 && row.trend" v-html="row.trend"/>
-            <td v-if="row.rawValue">{{ row.rawValue }}</td>
-            <td v-if="metric.years.length > 1 && row.rawTrend" v-html="row.rawTrend"/>
+            <td v-if="row.accuracy">
+              &#177;{{ row.accuracy }}
+            </td>
+            <td v-if="metric.years.length > 1 && row.trend">
+              <v-icon size="14px">
+                {{ row.trend.icon }}
+              </v-icon>{{ row.trend.label }}
+            </td>
+            <td v-if="row.rawValue">
+              {{ row.rawValue }}
+            </td>
+            <td v-if="metric.years.length > 1 && row.rawTrend">
+              <v-icon size="14px">
+                {{ row.rawTrend.icon }}
+              </v-icon>{{ row.rawTrend.label }}
+            </td>
           </tr>
         </tbody>
-      </table>
+      </v-simple-table>
     </div>
-    <p class="mdl-typography--text-right">
-      <a download="data.csv" class="mdl-button mdl-js-button mdl-js-ripple-effect download"
-         @click="downloadTable('#datatable table')">
+    <p class="text-right">
+      <v-btn text href="data.csv" download class="download"
+             @click="downloadTable('#datatable table')"
+      >
         {{ $t('strings.download') | capitalize }}
-      </a>
+      </v-btn>
     </p>
   </div>
 </template>
 
 <script>
+import { mdiTrendingDown, mdiTrendingNeutral, mdiTrendingUp } from '@mdi/js';
 import { mapState } from 'vuex';
 
 import table2csv from '../modules/table2csv';
@@ -72,32 +92,42 @@ export default {
         if (isNumeric(begin) && isNumeric(end)) {
           const trendVal = round(Number(begin), state.metric.config.decimals)
               - round(Number(end), state.metric.config.decimals);
-          return `${this.trendIcon(trendVal)} ${prettyNumber(trendVal, state.metric.config.decimals,
-            state.metric.config.prefix, state.metric.config.suffix,
-            state.metric.config.commas)}`;
+          return {
+            icon: this.trendIcon(trendVal),
+            label: prettyNumber(trendVal,
+              state.metric.config.decimals, state.metric.config.prefix,
+              state.metric.config.suffix, state.metric.config.commas),
+          };
         }
-        return '--';
+        return {
+          icon: null,
+          label: '--',
+        };
       };
 
       const rawTrend = (geogIndex) => {
-        const begin = state.metric.data.map[geogIndex][`y_${this.trendEndYear}`] *
-            state.metric.data.w[geogIndex][`y_${this.trendEndYear}`];
-        const end = state.metric.data.map[geogIndex][`y_${this.trendStartYear}`] *
-            state.metric.data.w[geogIndex][`y_${this.trendStartYear}`];
+        const begin = state.metric.data.map[geogIndex][`y_${this.trendEndYear}`]
+            * state.metric.data.w[geogIndex][`y_${this.trendEndYear}`];
+        const end = state.metric.data.map[geogIndex][`y_${this.trendStartYear}`]
+            * state.metric.data.w[geogIndex][`y_${this.trendStartYear}`];
 
         if (isNumeric(begin) && isNumeric(end)) {
           const trendVal = (begin - end) * (state.metric.config.suffix === '%' ? 0.01 : 1);
-          return `${this.trendIcon(trendVal)} ${prettyNumber(trendVal, 0)}`;
+          return {
+            icon: this.trendIcon(trendVal),
+            label: prettyNumber(trendVal, 0),
+          };
         }
-        return '--';
+        return {
+          icon: null,
+          trendVal: '--',
+        };
       };
 
-      const rawValue = (geogIndex) => {
-        return state.metric.data.w[geogIndex] && prettyNumber(state.metric.data.w[geogIndex][`y_${state.year}`] * state.metric.data.map[geogIndex][`y_${state.year}`] * (state.metric.config.suffix === '%' ? 0.01 : 1), 0, state.metric.config.prefix);
-      };
+      const rawValue = geogIndex => state.metric.data.w[geogIndex] && prettyNumber(state.metric.data.w[geogIndex][`y_${state.year}`] * state.metric.data.map[geogIndex][`y_${state.year}`] * (state.metric.config.suffix === '%' ? 0.01 : 1), 0, state.metric.config.prefix);
 
       return state.selected.map(geogIndex => ({
-        geogIndex: geogIndex,
+        geogIndex,
         value: prettyNumber(state.metric.data.map[geogIndex][`y_${state.year}`], state.metric.config.decimals, state.metric.config.prefix, state.metric.config.suffix, state.metric.config.commas),
         accuracy: state.metric.config.accuracy && prettyNumber(state.metric.data.a[geogIndex][`y_${state.year}`], state.metric.config.decimals, state.metric.config.prefix, state.metric.config.suffix, state.metric.config.commas),
         trend: trend(geogIndex),
@@ -106,6 +136,7 @@ export default {
       }));
     },
   }),
+  data: () => ({ mdiTrendingDown, mdiTrendingNeutral, mdiTrendingUp }),
   methods: {
     highlight(n) {
       this.$store.commit('setHighlight', n);
@@ -123,11 +154,11 @@ export default {
     },
     trendIcon(num) {
       if (num === 0) {
-        return '<svg class="icon"><use href="#icon-trending_flat"></use></svg>';
+        return this.mdiTrendingNeutral;
       } if (num > 0) {
-        return '<svg class="icon"><use href="#icon-trending_up"></use></svg>';
+        return this.mdiTrendingUp;
       }
-      return '<svg class="icon"><use href="#icon-trending_down"></use></svg>';
+      return this.mdiTrendingDown;
     },
   },
 };

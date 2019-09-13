@@ -1,6 +1,6 @@
 {
  "strings": {
-  "about": "The Durham Neighborhood Compassis a primary community resource for information that is regularly-updated, serving meaningful data to the community openly. Each year the Compass grows and learns along with its users, adding data sets with strong community resonance and longitudinal importance. A quantitative project with qualitative values.",
+  "about": "The Durham Neighborhood Compass is a primary community resource for information that is regularly-updated, serving meaningful data to the community openly. Each year the Compass grows and learns along with its users, adding data sets with strong community resonance and longitudinal importance. A quantitative project with qualitative values.",
   "accuracy": "accuracy",
   "and": "and",
   "back": "back",
@@ -12,7 +12,9 @@
   "opensInNewWindow": "(opens in new window)",
   "or": "or",
   "selected": "selected",
+  "share": "Share",
   "theCompass": "the compass",
+  "chooseATopic": "Choose a topic",
   "title": "title",
   "trend": "trend",
   "value": "value",

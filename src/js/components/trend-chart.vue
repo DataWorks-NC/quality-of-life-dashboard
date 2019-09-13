@@ -1,19 +1,22 @@
 <template lang="html">
   <div v-if="years.length > 1"
-       :class="framework === 'mdl' ? 'qol-chart mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop mdl-typography--text-center' : 'qol-chart'"
+       class="qol-chart"
   >
+    <p v-if="metricConfig" class="title text-center">
+      {{ $i18n.locale === 'en' ? metricConfig.title : metricConfig.title_es }}
+    </p>
+    <div class="legend text-center">
+      <span class="caption"><v-icon color="#778b91">{{ mdiTrendingUp }}</v-icon> {{ $t('strings.county') | capitalize }}</span>
+      <span class="caption"><v-icon color="accent">{{ mdiTrendingUp }}</v-icon> {{ $t('strings.selected') | capitalize }}</span>
+    </div>
     <div class="trendchart">
-      <h1 v-if="metricConfig">
-        {{ $i18n.locale === 'en' ? metricConfig.title : metricConfig.title_es }}
-      </h1>
-      <span class="legend"><svg class="icon legend-county"><use href="#icon-trending_up" /></svg> {{ $t('strings.county') | capitalize }}</span>
-      <span class="legend"><svg class="icon legend-selected"><use href="#icon-trending_up" /></svg> {{ $t('strings.selected') | capitalize }}</span>
       <div :id="'ct-trendchart-' + metricConfig.metric" class="ct-trendchart" />
     </div>
   </div>
 </template>
 
 <script>
+import { mdiTrendingUp } from '@mdi/js';
 import Chartist from '../modules/chartist';
 
 import { legendLabelNumber, prettyNumber } from '../modules/number_format';
@@ -44,6 +47,7 @@ export default {
       default: '',
     },
   },
+  data: () => ({ mdiTrendingUp }),
   computed: {
     // The two "chart" computed variables filter the metric objects into arrays keyed by year, leaving null gaps where there's no data for a given year.
     countyValuesChart() {
@@ -118,7 +122,7 @@ export default {
             textAnchor: 'middle',
           },
           axisY: {
-            axisTitle: metricConfig.label,
+            axisTitle: this.$t(`metricLabels.${metricConfig.label}`),
             axisClass: 'ct-axis-title',
             offset: {
               x: 0,
@@ -160,48 +164,43 @@ export default {
 </script>
 
 <style lang="css">
-    .qol-chart .ct-series-b .ct-line,
-    .qol-chart .ct-series-b .ct-point {
-        stroke: #00688B;
-    }
-    .qol-chart .ct-series-a .ct-line,
-    .qol-chart .ct-series-a .ct-point {
-        stroke: orange;
-    }
-    .ct-trendchart {
-        margin-left: 20px;
-    }
-    .ct-axis-title {
-        font-size: 10px;
-        fill: rgba(0, 0, 0, 0.6);
-    }
-    .ct-area,
-    .ct-line {
-        pointer-events: none;
-    }
-    .ct-line {
-      fill: transparent;
-      stroke-width: 2px;
-    }
+.ct-trendchart {
+  margin-top: 0.5em;
+}
+
+.qol-chart .ct-series-b .ct-line,
+.qol-chart .ct-series-b .ct-point {
+   stroke: var(--v-accent-base);
+}
+.qol-chart .ct-series-a .ct-line,
+.qol-chart .ct-series-a .ct-point {
+   stroke: #778b91;
+}
+.qol-chart .ct-series-a .ct-line {
+  stroke-dasharray: 5, 2;
+  stroke-width: 2;
+}
+.ct-axis-title {
+    font-size: 10px;
+    fill: rgba(0, 0, 0, 0.6);
+}
+.ct-area,
+.ct-line {
+    pointer-events: none;
+}
+.ct-line {
+  fill: transparent;
+  stroke-width: 2px;
+}
 </style>
 
 <style lang="css" scoped>
-    h1 {
-        font-size: 1.1em;
-        margin: 15px 0 0;
-    }
-    span.legend {
-        font-size: 0.8em;
+    .caption {
+      margin: 0 0.5em;
     }
     .icon {
         vertical-align: middle;
         width: 1.5em;
         height: 1.5em;
-    }
-    .legend-selected {
-        color: #00688B;
-    }
-    .legend-county {
-        color: orange;
     }
 </style>

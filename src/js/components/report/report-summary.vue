@@ -1,48 +1,41 @@
 <template>
-  <div class="page page-front">
-    <div class="row">
-      <div class="col-xs-12">
+  <v-card class="page page-front">
+    <v-row>
+      <v-col xs="12">
         <img class="logo-image" :src="require('../../../assets/img/report-logo.png')" :alt="$t('strings.DurhamNeighborhoodCompass')">
         <h2 class="subtitle">
           {{ reportTitle }}
         </h2>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-6">
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col sm="6">
         <i18n path="reportSummary.about[0]" tag="p">
           <a place="compassLink" href="/">{{ $t('strings.DurhamNeighborhoodCompass') }}</a>
         </i18n>
         <i18n path="reportSummary.about[1]" tag="p" />
         <i18n path="reportSummary.about[2]" tag="p" />
-      </div>
-      <div class="col-sm-6">
+      </v-col>
+      <v-col sm="6">
         <ReportMap :map-config="mapConfig" :geography-id="geographyId" :selected-geographies="selected" />
-      </div>
-    </div>
-    <div id="metric-summary-box" class="row">
-      <div class="col-xs-12 text-center">
-        <table class="metric-box">
-          <tbody>
-            <tr>
-              <td v-for="metric in summaryMetrics.slice(0,3)" :key="metric.metric">
-                <h2>{{ $t(`strings.metricCategories.${metric.category}`) }}</h2>
-                <h3>{{ prettyValue(metric) }} {{ metric.raw_label ? $t(`metricLabels.['${metric.raw_label}']`) : '' }}</h3>
-                <h4>{{ $i18n.locale === 'es' ? metric.title_es : metric.title }}</h4>
-              </td>
-            </tr>
-            <tr>
-              <td v-for="metric in summaryMetrics.slice(3,6)" :key="metric.metric">
+      </v-col>
+    </v-row>
+    <v-row id="metric-summary-box">
+      <v-col cols="12" class="text-center">
+        <v-container>
+          <v-row no-gutters align="stretch">
+            <v-col v-for="metric in summaryMetrics" :key="metric.metric" cols="4">
+              <v-card outlined tile>
                 <h2>{{ $t(`strings.metricCategories.${metric.category}`) }}</h2>
                 <h3>{{ prettyValue(metric) }} {{ metric.raw_label ? $t(`metricLabels['${metric.raw_label}']`) : '' }}</h3>
                 <h4>{{ $i18n.locale === 'es' ? metric.title_es : metric.title }}</h4>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-col>
+    </v-row>
+  </v-card>
 </template>
 
 <script>
@@ -56,11 +49,26 @@ export default {
     ReportMap,
   },
   props: {
-    summaryMetrics: Array,
-    geographyId: String,
-    selected: Array,
-    mapConfig: Object,
-    reportTitle: String,
+    summaryMetrics: {
+      type: Array,
+      default: () => [],
+    },
+    geographyId: {
+      type: String,
+      default: 'tract',
+    },
+    selected: {
+      type: Array,
+      default: () => [],
+    },
+    mapConfig: {
+      type: Object,
+      default: () => ({}),
+    },
+    reportTitle: {
+      type: String,
+      default: '',
+    },
   },
   methods: {
     prettyValue(metric) {

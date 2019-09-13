@@ -1,24 +1,33 @@
 <template lang="html">
-  <div class="qol-chart mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop">
-    <div class="scatterplot mdl-typography--text-center">
-      <h1>{{ $t('distributionChart.DataDistribution') }}, {{ year }}</h1>
-      <span v-show="selected.length > 0"><svg class="icon legend legend-selected"><use href="#icon-lens" /></svg> {{ $t('strings.selected') | capitalize }}</span>
-      <span v-if="mounted"><svg class="icon legend legend-median"><use href="#icon-more_horiz" /></svg> {{ $t('strings.median') | capitalize }} {{ median }}</span>
-      <div class="ct-distributionchart" />
+  <v-card>
+    <p class="title text-center">
+      {{ $t('distributionChart.DataDistribution') }}, {{ year }}
+    </p>
+    <div class="legend text-center">
+      <span v-show="selected.length > 0" class="caption"><v-icon color="accent" size="14px">{{ mdiCircle }}</v-icon> {{ $t('strings.selected') | capitalize }}</span>
+      <span v-if="mounted" class="caption"><v-icon size="14px" color="#666">{{ mdiDotsHorizontal }}</v-icon> {{ $t('strings.CountyAverage') }}: {{ countyAverageString }}</span>
     </div>
-  </div>
+    <div class="ct-distributionchart" />
+  </v-card>
 </template>
 
 <script>
+import { mdiCircle, mdiDotsHorizontal } from "@mdi/js";
+
 import { mapState } from 'vuex';
 import Chartist from '../modules/chartist';
 import isNumeric from '../modules/isnumeric';
 import { legendLabelNumber, prettyNumber } from '../modules/number_format';
-import { median } from '../modules/metric_calculations';
 
 export default {
   name: 'DistributionChart',
-  data: () => ({ mounted: false }),
+  props: {
+    countyValues: {
+      type: Object,
+      default: () => {},
+    },
+  },
+  data: () => ({ mounted: false, mdiCircle, mdiDotsHorizontal }),
   computed: mapState(['breaks', 'metric', 'selected', 'year']),
   watch: {
     'metric': 'renderChart',
@@ -27,7 +36,7 @@ export default {
   },
   mounted() {
     // Set these here rather than as data so they are not reactive.
-    this.median = null;
+    this.countyAverageString = null;
     this.chart = null;
     this.chartData = null;
     this.renderChart();
@@ -59,7 +68,7 @@ export default {
             showPoint: true,
             showArea: false,
           },
-          'series-median': {
+          'series-average': {
             showLine: true,
             showPoint: false,
             showArea: false,
@@ -73,6 +82,31 @@ export default {
           }),
         ],
       };
+
+      // Axis labels
+      if (this.metric.config.label) {
+        options.plugins.push(Chartist.plugins.ctAxisTitle({
+          axisX: {
+            axisTitle: '',
+            axisClass: 'ct-axis-title',
+            offset: {
+              x: 0,
+              y: 50,
+            },
+            textAnchor: 'middle',
+          },
+          axisY: {
+            axisTitle: this.$t(`metricLabels.${this.metric.config.label}`),
+            axisClass: 'ct-axis-title',
+            offset: {
+              x: 0,
+              y: -1,
+            },
+            flipTitle: false,
+            textAnchor: 'middle',
+          },
+        }));
+      }
       this.chart = new Chartist.Line('.ct-distributionchart', data, options);
     },
     updateData() {
@@ -86,8 +120,8 @@ export default {
 
       // get values
       const data = this.dataToSortedArray(metric.data.map, this.year);
-      const med = median(data.map(el => el.val));
-      _this.median = prettyNumber(med, metric.config.decimals, metric.config.prefix, metric.config.suffix, metric.config.commas);
+      const countyAverage = this.year in this.countyValues ? this.countyValues[this.year] : false;
+      _this.countyAverageString = prettyNumber(countyAverage, metric.config.decimals, metric.config.prefix, metric.config.suffix, metric.config.commas);
 
       // populate chart data
       const dataArrayA = [];
@@ -95,7 +129,7 @@ export default {
       const dataArrayC = [];
       const dataArrayD = [];
       const dataArrayE = [];
-      const dataArrayMedian = [];
+      const dataArrayCountyAverage = [];
       const dataArraySelected = [];
 
       for (let i = 0; i < data.length; i += 1) {
@@ -107,12 +141,8 @@ export default {
         } else {
           dataArraySelected.push(null); // This is needed to have padding values so that the selected points show up in the right place on x-axis.
         }
-        // set median
-        if (i === 0 || i === data.length - 1) {
-          dataArrayMedian.push(med);
-        } else {
-          dataArrayMedian.push(med);
-        }
+        // set county average
+        dataArrayCountyAverage.push(countyAverage);
 
         // set lines based on breaks
         if (data[i].val <= _this.breaks[1]) {
@@ -152,7 +182,9 @@ export default {
       chartData.series.push({ name: 'series-3', data: dataArrayC });
       chartData.series.push({ name: 'series-4', data: dataArrayD });
       chartData.series.push({ name: 'series-5', data: dataArrayE });
-      chartData.series.push({ name: 'series-median', data: dataArrayMedian });
+      if (countyAverage) {
+        chartData.series.push({ name: 'series-average', data: dataArrayCountyAverage });
+      }
       chartData.series.push({ name: 'series-selected', data: dataArraySelected });
 
       return chartData;
@@ -178,61 +210,49 @@ export default {
 </script>
 
 <style>
-    /* selected */
-    .ct-distributionchart .ct-point {
-        stroke: #00688B;
-    }
+.ct-distributionchart {
+  margin-top: 0.5em;
+}
+/* selected */
+.ct-distributionchart .ct-point {
+    stroke: var(--v-accent-base);
+}
 
-    /* distribution series */
-    .ct-distributionchart .ct-area {
-        fill-opacity: 1;
-    }
-    .ct-distributionchart .ct-series-a .ct-line, .ct-distributionchart .ct-series-a .ct-area {
-        stroke: rgb(238,250,227);
-        fill: rgb(238,250,227);
-    }
-    .ct-distributionchart .ct-series-b .ct-line, .ct-distributionchart .ct-series-b .ct-area {
-        stroke: rgb(186,228,188);
-        fill: rgb(186,228,188);
-    }
-    .ct-distributionchart .ct-series-c .ct-line, .ct-distributionchart .ct-series-c .ct-area {
-        stroke: rgb(123,204,196);
-        fill: rgb(123,204,196);
-    }
-    .ct-distributionchart .ct-series-d .ct-line, .ct-distributionchart .ct-series-d .ct-area {
-        stroke: rgb(67,162,202);
-        fill: rgb(67,162,202);
-    }
-    .ct-distributionchart .ct-series-e .ct-line, .ct-distributionchart .ct-series-e .ct-area {
-        stroke: rgb(8,104,172);
-        fill: rgb(8,104,172);
-    }
-    .ct-distributionchart .ct-series-f .ct-line {
-        stroke: #666;
-        stroke-dasharray: 5, 2;
-        stroke-width: 2;
-    }
+/* distribution series */
+.ct-distributionchart .ct-area {
+    fill-opacity: 1;
+}
+.ct-distributionchart .ct-series-a .ct-line, .ct-distributionchart .ct-series-a .ct-area {
+    stroke: #b2f3ed;
+    fill: #b2f3ed;
+}
+.ct-distributionchart .ct-series-b .ct-line, .ct-distributionchart .ct-series-b .ct-area {
+    stroke: #74ced5;
+    fill: #74ced5;
+}
+.ct-distributionchart .ct-series-c .ct-line, .ct-distributionchart .ct-series-c .ct-area {
+    stroke: #418ea6;
+    fill: #418ea6;
+}
+.ct-distributionchart .ct-series-d .ct-line, .ct-distributionchart .ct-series-d .ct-area {
+    stroke: #1a4d6f;
+    fill: #1a4d6f;
+}
+.ct-distributionchart .ct-series-e .ct-line, .ct-distributionchart .ct-series-e .ct-area {
+    stroke: #00214d;
+    fill: #00214d;
+}
+
+/* ct-series-f == county average */
+.ct-distributionchart .ct-series-f .ct-line {
+    stroke: #778b91;
+    stroke-dasharray: 5, 2;
+    stroke-width: 2;
+}
 </style>
 
 <style lang="css" scoped>
-
-    h1 {
-        font-size: 1.1em;
-        margin: 15px 0 0;
+    .caption {
+      margin: 0 0.5em;
     }
-    span {
-        font-size: 0.8em;
-    }
-    .legend {
-        font-size: 1.2em;
-    }
-    .legend-selected {
-        color: #00688B;
-    }
-    .legend-median {
-        fill: #666;
-        width: 14px;
-        height: 14px;
-    }
-
 </style>

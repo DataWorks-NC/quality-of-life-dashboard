@@ -68,7 +68,9 @@ To deploy, run `python .circleci/deploy.py ./dist` (make sure that `python-doten
 
 Glyphs currently hosted remotely by http://glfonts.lukasmartinelli.ch/. Hosting locally is complicated! But could be needed in the future to switch away from Roboto.
 
-Sprites come from `gh-pages` branch of https://github.com/maputnik/osm-liberty. If you update the sprites file, you may need to check for missing sprites as there are a few variant spellings in the data which are missing from the sprites `json` file.
+Sprites come from `gh-pages` branch of https://github.com/maputnik/osm-liberty, and in order to avoid CORS issues with Azure they are hosted in an AWS S3 bucket, `nbhd-compass-assets`, at the path `https://nbhd-compass-assets.s3.amazonaws.com/osm-liberty`.
+
+If you update the sprites file, you may need to check for missing sprites as there are a few variant spellings in the data which are missing from the sprites `json` file.
 
 
 ## Testing

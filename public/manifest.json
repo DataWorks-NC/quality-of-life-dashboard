@@ -4,18 +4,13 @@
     "short_name": "Compass",
     "icons": [
         {
-            "src": "img/ms-touch-icon-144x144.png",
+            "src": "img/apple-touch-icon-144x144.png",
             "sizes": "144x144",
             "type": "img/png"
         },
         {
-            "src": "img/chrome-touch-icon-192x192.png",
-            "sizes": "192x192",
-            "type": "img/png"
-        },
-        {
-            "src": "img/chrome-touch-icon-512x512.png",
-            "sizes": "512x512",
+            "src": "img/apple-touch-icon-152x152.png",
+            "sizes": "152x152",
             "type": "img/png"
         }
     ],

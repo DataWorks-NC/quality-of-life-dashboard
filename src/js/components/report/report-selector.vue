@@ -1,82 +1,93 @@
 <template>
-  <div v-if="!collapsed" :class="collapsed ? 'collapsed' : ''" class="page page-category metric-selector">
-    <div class="row metric-selector__body">
-      <div class="col-xs-11">
-        <p>
-          {{ $t('reportSelector.instructionsIntro') }}
-          <ul>
-            <li>{{ $t('reportSelector.instructions[0]') }}</li>
-            <li>{{ $t('reportSelector.instructions[1]') }}</li>
-            <i18n path="reportSelector.instructions[2]" tag="li">
-              <router-link place="goBack" :to="$store.state.lastCompassRoute ? $store.state.lastCompassRoute : { name: 'homepage', params: $route.params, query: { selected: $route.query.selected } }">
-                {{ $t('reportSelector.goBack') }}
-              </router-link>
-            </i18n>
-            <li>{{ $t('reportSelector.instructions[3]') }}<a :href="getReportURL()" class="metric-selector__report-link">{{ getReportURL() }}</a></li>
-          </ul>
-        </p>
-      </div>
-      <div class="col-xs-1">
-        <a @click.prevent="$emit('collapse-selector')">{{ $t('strings.close') | capitalize }}</a>
-      </div>
-    </div>
-    <div class="row metric-selector__body">
-      <div v-for="category in hiddenCategories" :key="category.originalName" class="col-xs-12 col-sm-6 col-md-4">
-        <div class="list-group">
-          <a class="list-group-item list-group-item-action" @click.prevent="toggleCategory(category.originalName, true)">{{ category.name }}<p class="metric-selector__tip">{{ $t('reportSelector.categoryTip') }}</p></a>
-        </div>
-      </div>
-    </div>
-    <div class="row metric-selector__body">
-      <div class="col-xs-12">
-        <h4>{{ $t('reportSelector.metricsShown') }}</h4>
-      </div>
-      <div v-for="category in visibleCategories" :key="category.originalName" class="col-xs-12 col-sm-6 col-md-4">
-        <div class="list-group">
-          <a class="active list-group-item list-group-item-action" @click.prevent="toggleCategory(category.originalName, false)">{{ category.name }}</a>
-          <div class="list-group metric-selector__sub-metrics">
-            <a v-for="metric in category.metrics" :key="metric.metric" :class="metric.visible ? 'active' : ''" class="list-group-item list-group-item-action metric-selector__sub-metric" @click.prevent="toggleMetric(metric)">{{ metric.name }}</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <v-row justify="center">
+    <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition" class="metric-selector">
+      <template v-slot:activator="{ on }">
+        <v-btn text v-on="on">
+          {{ $t('reportSelector.customize') }}
+        </v-btn>
+      </template>
+      <v-card class="metric-selector">
+        <v-toolbar dark>
+          <v-btn icon @click="dialog = false">
+            <v-icon>{{ mdiClose }}</v-icon>
+          </v-btn>
+          <v-toolbar-title>{{ $t('reportSelector.customize') }}</v-toolbar-title>
+        </v-toolbar>
+        <v-container>
+          <v-row>
+            <v-col>
+              {{ $t('reportSelector.instructionsIntro') }}
+              <ul>
+                <li>{{ $t('reportSelector.instructions[0]') }}</li>
+                <li>{{ $t('reportSelector.instructions[1]') }}</li>
+                <i18n path="reportSelector.instructions[2]" tag="li">
+                  <router-link place="goBack" :to="$store.state.lastCompassRoute ? $store.state.lastCompassRoute : { name: 'homepage', params: $route.params, query: { selected: $route.query.selected } }">
+                    {{ $t('reportSelector.goBack') }}
+                  </router-link>
+                </i18n>
+                <li>{{ $t('reportSelector.instructions[3]') }} <a :href="getReportURL()" class="metric-selector__report-link">{{ getReportURL() }}</a></li>
+              </ul>
+            </v-col>
+          </v-row>
+          <v-divider />
+          <v-row>
+            <v-col v-for="category in categories" :key="category.originalName" xs="12" sm="6" md="4">
+              <v-list>
+                <v-list-item :input-value="category.metrics.every(m=>m.visible)" class="metric-selector__category" :class="category.metrics.some(m => m.visible) && 'partially-active'" @click.prevent="toggleCategory(category)">
+                  <v-list-item-icon><v-icon>{{ category.metrics.every(m=>m.visible) ? mdiEye : mdiEyeOff }}</v-icon></v-list-item-icon><v-list-item-title class="title">
+                    {{ category.name }}
+                  </v-list-item-title>
+                </v-list-item>
+                <v-list>
+                  <v-list-item v-for="metric in category.metrics" :key="metric.metric" :input-value="metric.visible" :value="metric.visible" class="metric-selector__metric" icon @click.prevent="toggleMetric(metric)">
+                    <v-list-item-icon>
+                      <v-icon size="16px">
+                        {{ metric.visible ? mdiEye : mdiEyeOff }}
+                      </v-icon>
+                    </v-list-item-icon><v-list-item-title>{{ metric.name }}</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-list>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card>
+    </v-dialog>
+  </v-row>
 </template>
 
 <script>
+import { mdiClose, mdiEye, mdiEyeOff } from "@mdi/js";
 import { mapGetters, mapState } from 'vuex';
 import config from '../../modules/config';
 
 
 export default {
   name: 'ReportSelector',
-  props: {
-    collapsed: Boolean,
-  },
+  data: () => ({
+    dialog: false,
+    mdiClose,
+    mdiEye,
+    mdiEyeOff,
+  }),
   computed: {
     ...mapGetters([
       'reportTitle',
+      'visibleCategories',
     ]),
     ...mapState({
       categoryNames: state => state.report.categoryNames,
       metrics: state => state.report.metrics,
     }),
-    hiddenCategories() {
-      return this.$store.getters.hiddenCategories.map(
+
+    categories() {
+      return this.categoryNames.map(
         categoryName => ({
           name: this.$t(`strings.metricCategories['${categoryName}']`),
           originalName: categoryName,
-        }
-        ),
-      ).sort((a, b) => this.$i18n.localizedStringCompareFn(a.name, b.name));
-    },
-    visibleCategories() {
-      return this.$store.getters.visibleCategories.map(
-        categoryName => ({
-          name: this.$t(`strings.metricCategories['${categoryName}']`),
-          originalName: categoryName,
+          visible: this.visibleCategories.indexOf(categoryName) !== -1,
           metrics: Object.values(this.$store.state.report.metrics)
-            .filter(m => m.category === categoryName && m.visible)
+            .filter(m => m.category === categoryName)
             .map(m => ({ ...m, name: (this.$i18n.locale === 'es' ? m.title_es : m.title) }))
             .sort((a, b) => this.$i18n.localizedStringCompareFn(a.name, b.name)),
         }
@@ -85,8 +96,8 @@ export default {
     },
   },
   methods: {
-    toggleCategory(categoryName, visibility) {
-      this.$store.commit('toggleCategory', { categoryName, visibility });
+    toggleCategory(category) {
+      this.$store.commit('toggleCategory', { categoryName: category.originalName, visibility: !category.visible });
       this.updateRoute();
     },
     toggleMetric(metric) {
@@ -103,25 +114,43 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
   a {
     cursor: pointer;
   }
   .metric-selector__report-link {
-    word-wrap: break-word;
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  .collapsed {
-    background: rgb(204, 204, 204);
+  .metric-selector__metric, .metric-selector__category {
+    background-color: var(--v-background-base);
   }
-  .metric-selector__sub-metric {
-    padding: 5px 15px;
+  .metric-selector__metric {
+    padding-left: 30px;
   }
-  .metric-selector__sub-metric.active {
-    background-color: #669ECC;
-    border: #669ECC;
+  .metric-selector .v-list {
+    padding: 0;
   }
-  .metric-selector__tip {
-    color: #888;
+  .metric-selector .title {
+    margin: 0;
+  }
+  .metric-selector .v-list-item--active {
+    background-color: var(--v-primary-base);
+    color: white;
+    .v-icon {
+      color: var(--v-background-base);
+    }
+  }
+
+  .metric-selector .metric-selector__category.partially-active {
+    background-color: var(--v-primary-lighten2);
+  }
+
+  .metric-selector .metric-selector__category.v-list-item--active {
+    background-color: var(--v-primary-darken2);
   }
 </style>

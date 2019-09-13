@@ -3,11 +3,11 @@
     <div>
       <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=" class="background-print-img" aria-hidden="true">
       <div class="legendposition">
-        <a :title="$t('legend.MoveTableOfContents')" href="javascript:void(0)" @click="position()"><svg class="icon"><use href="#icon-zoom_out_map" /></svg></a>
+        <a :title="$t('legend.MoveTableOfContents')" href="javascript:void(0)" @click="position()"><v-icon>{{ mdiCursorMove }}</v-icon></a>
       </div>
-      <h1 class="title">
+      <p class="title">
         {{ $store.getters.legendTitle }}
-      </h1>
+      </p>
       <div class="metricboxes">
         <div v-if="selected.length > 0" class="metricbox">
           <span class="metrictype">{{ $t('strings.selected') | allcaps }}</span>
@@ -66,6 +66,7 @@
 </template>
 
 <script>
+import { mdiCursorMove } from '@mdi/js';
 import { mapState } from 'vuex';
 import config from '../modules/config';
 
@@ -79,6 +80,7 @@ export default {
   // You would think to just name this component 'Legend', but <legend> is in the HTML5 spec!
   name: 'DashboardLegend',
   data: () => ({
+    mdiCursorMove,
     selectedValue: null,
     selectedValueRaw: null,
     colors: config.colors,
@@ -167,151 +169,162 @@ export default {
 };
 </script>
 
-<style lang="css" scoped>
+<style lang="scss" scoped>
 #legend.top {
-    top: 0px;
+  top: 8px;
 }
+
 #legend.left {
-    left: 0px;
+  left: 8px;
 }
+
 #legend {
-    position: absolute;
-    width: 260px;
-    background: white;
-    /*box-shadow: 0 1px 3px #666, 0 6px 5px -5px #666;*/
+  position: absolute;
+  width: 260px;
+  background: white;
 }
 
 .legendposition {
-    position: absolute;
-    top: 0;
-    right: 0;
-    font-size: 0.8em;
-    z-index: 20;
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 0.8em;
 }
+
 .legendposition a {
-    color: #333;
-    opacity: 0.2;
-    transition: opacity 0.5s;
+  color: #333;
+  opacity: 0.2;
+  transition: opacity 0.5s;
 }
+
 .legendposition a:hover {
-    opacity: 0.8;
+  opacity: 0.8;
 }
+
 .legendposition .icon {
-    width: 14px;
-    height: 14px;
-    fill: #ccc;
+  width: 14px;
+  height: 14px;
+  fill: #ccc;
 }
 
 .title, .description, .legend, .metricboxes {
   position: relative;
-  z-index: 10;
 }
 
 .metricboxes {
-    padding: 3px 0 10px;
-    text-align: center;
-    display: flex;
-    flex-flow: row nowrap;
+  padding: 3px 0 10px;
+  text-align: center;
+  display: flex;
+  flex-flow: row nowrap;
 }
+
 .metricbox {
-    width: 50%;
-    padding: 0 10px;
-    margin: 0 auto;
+  width: 50%;
+  padding: 0 10px;
+  margin: 0 auto;
 
 }
+
 .metricbox span {
-    display: block;
-    font-size: 12px;
+  display: block;
+  font-size: 12px;
 }
+
 .metrictype {
-    font-weight: bold;
-    font-size: 12px;
-    color: #727272;
+  font-weight: bold;
+  font-size: 12px;
+  color: #727272;
 }
+
 .metricvalue {
-    margin-top: 0;
-    font-weight: bold;
-    font-size: 16px !important;
+  margin-top: 0;
+  font-weight: bold;
+  font-size: 16px !important;
 }
+
 .metricvalue.metricraw {
-    font-size: 13px !important;
+  font-size: 13px !important;
 }
+
 .metriclabel {
-    line-height: 1.3em;
+  line-height: 1.3em;
 }
 
 .title {
   padding: 10px 10px 7px;
-  border-bottom: 1px solid rgba(0,0,0,0.15);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
   word-wrap: break-word;
   font-size: 15px;
 }
 
 h1, h2 {
-    margin: 0;
-    line-height: normal;
+  margin: 0;
+  line-height: normal;
 }
+
 h1 {
-    font-weight: bold;
-    line-height: 20px;
+  font-weight: bold;
+  line-height: 20px;
 }
 
 h2 {
-    font-weight: normal;
+  font-weight: normal;
 }
 
 svg {
-    display: block;
-    width: 100%;
-    height: auto;
-    max-height: 41px;
-    /*pointer-events: none;*/ /* fix for ie11 click making legend disappear */
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 41px;
+  /*pointer-events: none;*/
+  /* fix for ie11 click making legend disappear */
 }
 
 .legendText {
-    font-family:'Roboto', sans-serif;
-    font-size: 10px;
-    letter-spacing:0px;
-    line-height:100%;
-    stroke-width:1px;
-    text-align:center;
-    text-anchor:middle;
-    word-spacing:0px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0px;
+  line-height: 100%;
+  stroke-width: 1px;
+  text-align: center;
+  text-anchor: middle;
+  word-spacing: 0px;
 }
 
 .legendText:first-of-type {
-    text-align:start;
-    text-anchor:start;
+  text-align: start;
+  text-anchor: start;
 }
+
 .legendText:last-of-type {
-    text-align:end;
-    text-anchor:end;
+  text-align: end;
+  text-anchor: end;
 }
 
-.background-print-img{
+.background-print-img {
+  display: none;
+}
+
+@media print {
+  .background-print-img {
+    display: block;
+    width: 100%;
+    height: 99%;
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+  .legendposition {
     display: none;
-}
-
-@media print{
-    .background-print-img{
-        display: block;
-        width:100%;
-        height: 99%;
-        position:absolute;
-        left: 0;
-        top: 0;
-    }
-    .legendposition {
-        display: none;
-    }
+  }
 }
 
 @media all and (max-width: 480px) {
-    .metric-raw {
-        display: none !important;
-    }
-    #legend {
-        width: 200px;
-    }
+  .metric-raw {
+    display: none !important;
+  }
+  #legend {
+    width: 200px;
+  }
 }
 </style>

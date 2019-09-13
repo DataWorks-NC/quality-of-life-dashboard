@@ -1,10 +1,10 @@
-<template functional>
-  <a v-bind="data.attrs"
-     target="_blank" rel="noopener" v-on="listeners"
-  ><slot /><i v-if="props.showIcon" class="material-icons external-link-icon" :aria-label=" parent.$t('strings.opensInNewWindow')">open_in_new</i><span v-else class="screenreader-only"> {{ parent.$t('strings.opensInNewWindow') }}</span></a>
+<template>
+  <a target="_blank" rel="noopener"><slot /><v-icon v-if="showIcon" class="material-icons external-link-icon" :aria-label=" $t('strings.opensInNewWindow')" size="14px">{{ mdiOpenInNew }}</v-icon><span v-else class="screenreader-only"> {{ $t('strings.opensInNewWindow') }}</span></a>
 </template>
 
 <script>
+import { mdiOpenInNew } from "@mdi/js";
+
 export default {
   name: 'ExternalLink',
   props: {
@@ -13,6 +13,7 @@ export default {
       default: () => true,
     },
   },
+  data: () => ({ mdiOpenInNew }),
 };
 </script>
 
@@ -21,6 +22,5 @@ export default {
     margin: -0.5em 0.1em 0 -0.2em;
     padding: 0;
     vertical-align: middle;
-    font-size: 14px;
   }
 </style>
