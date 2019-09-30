@@ -1,0 +1,22 @@
+{
+    "name": "Durham Neighborhood Compass",
+    "description": "Access data about Durham neighborhoods",
+    "short_name": "Compass",
+    "icons": [
+        {
+            "src": "img/apple-touch-icon-144x144.png",
+            "sizes": "144x144",
+            "type": "img/png"
+        },
+        {
+            "src": "img/apple-touch-icon-152x152.png",
+            "sizes": "152x152",
+            "type": "img/png"
+        }
+    ],
+    "start_url": "index.html",
+    "lang": "en-US",
+    "display": "standalone",
+    "background_color": "#1676D2",
+    "theme_color": "#1676D2"
+}

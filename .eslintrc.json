@@ -1,10 +1,17 @@
 {
   "extends": ["airbnb-base", "plugin:vue/recommended"],
+  "parserOptions": {
+    "parser": "babel-eslint"
+  },
   "rules": {
     "quote-props": "off",
     "quotes": "off",
     "vue/max-attributes-per-line": "off",
     "max-len": "off",
-    "import/no-unresolved": "off"
+    "import/no-unresolved": "off",
+    "no-param-reassign": "off",
+    "prefer-destructuring": "off",
+    "consistent-return": "off",
+    "no-underscore-dangle": "off"
   }
 }

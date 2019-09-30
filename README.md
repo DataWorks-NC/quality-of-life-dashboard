@@ -62,15 +62,29 @@ This project includes a python script, `.circleci/deploy.py` for pushing the web
 In order for this command to succeed, you'll need to have environment variables `AZURE_STORAGE_CONNECTION_STRING` and `AZURE_DESTINATION_BLOB` set to the connection string for your Azure storage container and the destination blob name, respectively. We recommend using `direnv` (https://direnv.net/) to track
 these environment variables, as described [here](https://www.taos.com/using-multiple-accounts-aws-cli-direnv/).
 
-To deploy, run `python .circleci/deploy.py` (make sure that `python-dotenv` is installed locally using `pip install python-dotenv`, and that the Microsoft Azure CLI is also installed). This will deploy everything in the `public` directory to the blob name set in `AZURE_DESTINATION_BLOB` This Azure hosting strategy follows [these instructions by Hao Luo](https://blog.lifeishao.com/2017/05/24/serving-your-static-sites-with-azure-blob-and-cdn).
+To deploy, run `python .circleci/deploy.py ./dist` (make sure that `python-dotenv` is installed locally using `pip install python-dotenv`, and that the Microsoft Azure CLI is also installed). This will deploy everything in the `public` directory to the blob name set in `AZURE_DESTINATION_BLOB` This Azure hosting strategy follows [these instructions by Hao Luo](https://blog.lifeishao.com/2017/05/24/serving-your-static-sites-with-azure-blob-and-cdn).
 
 ## Map glyphs & sprites
 
 Glyphs currently hosted remotely by http://glfonts.lukasmartinelli.ch/. Hosting locally is complicated! But could be needed in the future to switch away from Roboto.
 
-Sprites come from `gh-pages` branch of https://github.com/maputnik/osm-liberty. If you update the sprites file, you may need to check for missing sprites as there are a few variant spellings in the data which are missing from the sprites `json` file.
+Sprites come from `gh-pages` branch of https://github.com/maputnik/osm-liberty, and in order to avoid CORS issues with Azure they are hosted in an AWS S3 bucket, `nbhd-compass-assets`, at the path `https://nbhd-compass-assets.s3.amazonaws.com/osm-liberty`.
+
+If you update the sprites file, you may need to check for missing sprites as there are a few variant spellings in the data which are missing from the sprites `json` file.
 
 
 ## Testing
 
 We test with the help of [![Browserstack logo](https://raw.githubusercontent.com/DataWorks-NC/quality-of-life-dashboard/master/app/assets/img/browserstack-logo.png)](https://browserstack.com/)
+
+## Translations
+
+All text in the app is dynamically loaded using vue-i18n from the `en.json` and `es.json` files in `app/lang`. The codename for a string needs to match across both files. There are two utility functions in the app as well to more exaily import/export translations:
+
+* `npm run export-translations` - Parses the `en.json` and `es.json` files and outputs a fresh CSV with one column listing every string key, one column with the English version of that text, and another column with the Spanish version of that text. This is a good way to export strings so that translators can work with them.
+
+* `npm run import-translations` - Reads the `translations.csv` file and recreates `en.json` and `es.json` files based on that.
+
+### To add new text to the app
+
+Create the string keys and string items in either English or Spanish in the `en.json` or `es.json` files. If you then run the export_translations script immediately followed by the import_translations script, both languages `json` files will be populated with blank placeholders for any missing text.

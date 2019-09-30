@@ -1,0 +1,201 @@
+{
+ "strings": {
+  "about": "The Durham Neighborhood Compass is a primary community resource for information that is regularly-updated, serving meaningful data to the community openly. Each year the Compass grows and learns along with its users, adding data sets with strong community resonance and longitudinal importance. A quantitative project with qualitative values.",
+  "accuracy": "accuracy",
+  "and": "and",
+  "back": "back",
+  "close": "close",
+  "county": "county",
+  "download": "download",
+  "median": "median",
+  "numberOf": "number of",
+  "opensInNewWindow": "(opens in new window)",
+  "or": "or",
+  "selected": "selected",
+  "share": "Share",
+  "theCompass": "the compass",
+  "chooseATopic": "Choose a topic",
+  "title": "title",
+  "trend": "trend",
+  "value": "value",
+  "year": "year",
+  "CityOfCharlotte": "City of Charlotte",
+  "CityOfDurhamLogo": "City of Durham logo",
+  "CountyAverage": "County Average",
+  "FeatureValue": "Feature Value",
+  "DataWorksNCLogo": "DataWorks NC logo",
+  "DurhamCountyLogo": "Durham County logo",
+  "DurhamNeighborhoodCompass": "Durham Neighborhood Compass",
+  "MecklenburgCounty": "Mecklenburg County",
+  "TrendingDown": "Trending Down",
+  "TrendingFlat": "Trending Flat",
+  "TrendingUp": "Trending Up",
+  "ChangeLanguage": "Ver en español",
+  "DownloadData": "Download Data",
+  "metricCategories": {
+   "Civic Engagement": "Civic Engagement",
+   "Demographics": "Demographics",
+   "Economy": "Economy",
+   "Education": "Education",
+   "Environment": "Environment",
+   "Health": "Health",
+   "Housing": "Housing",
+   "Infrastructure and Amenities": "Infrastructure and Amenities",
+   "Safety": "Safety"
+  }
+ },
+ "dashboard": {
+  "moveToC": "Move Table of Contents"
+ },
+ "distributionChart": {
+  "DataDistribution": "Data Distribution"
+ },
+ "feedback": {
+  "JoinMailingList": "Join our mailing list",
+  "ShareFeedback": "Share feedback or questions",
+  "ShareFeedbacK": ""
+ },
+ "footer": {
+  "credits": "View the Neighborhood Compass code on {0}. Based on code created by {1}, the {2}, and {3} with much ♥ for the projects that make this site possible: {4}, {5}, {6}, {7}, {8}, {9}, and {10}.",
+  "links": [
+   {
+    "href": "http://www.dataworks-nc.org",
+    "text": "About"
+   },
+   {
+    "href": "http://www.opendurham.org/",
+    "text": "Open Durham - Neighborhood Histories"
+   },
+   {
+    "href": "http://www.durhamhoods.com/",
+    "text": "Durham Hoods - Neighborhood Maps and Mailing List Hub"
+   },
+   {
+    "href": "https://opendurham.nc.gov/pages/home/",
+    "text": "City of Durham Open Data Portal"
+   }
+  ]
+ },
+ "geographies": {
+  "tract": {
+   "name": "Census Tracts",
+   "description": "Area containing containing between 1,200 and 8,000 people. Census tract boundaries usually follow features like major roads, rivers, or municipal boundaries. Most tracts contain one or two neighborhoods."
+  },
+  "blockgroup": {
+   "name": "Census Blockgroups",
+   "description": "A census blockgroup is made up of several city blocks and usually contains between 600 and 3,000 people. Sometimes a blockgroup is the size of a neighborhood, but most neighborhoods are larger than a single blockgroup."
+  }
+ },
+ "geographySwitcher": {
+  "instructions": "Select a base geography (depending on the dataset, different geographies may be available)."
+ },
+ "legend": {
+  "MoveTableOfContents": "Move Table of Contents",
+  "ChoroplethLegend": "Choropleth legend"
+ },
+ "map": {
+  "SearchPlaceholder": "Search for an address, neighborhood or landmark"
+ },
+ "metadata": {
+  "about": "About the Data",
+  "resources": "Additional Resources",
+  "whyImportant": "Why This is Important"
+ },
+ "metricLabels": {
+  "years": "years",
+  "adults": "adults",
+  "people": "people",
+  "centers": "centers",
+  "centers per sq mi": "centers per sq mi",
+  "of households": "of households",
+  "homes near clinics": "homes near clinics",
+  "certificates per sq mi": "certificates per sq mi",
+  "certificates": "certificates",
+  "permits": "permits",
+  "permits per sq mi": "permits per sq mi",
+  "commuters": "commuters",
+  "incidents": "incidents",
+  "incidents per sq mi": "incidents per sq mi",
+  "renter households": "renter households",
+  "people receiving SSI": "people receiving SSI",
+  "people per sq mi": "people per sq mi",
+  "households": "households",
+  "dwelling units in poor or unsound state of repair": "dwelling units in poor or unsound state of repair",
+  "voters": "voters",
+  "young people": "young people",
+  "crimes": "crimes",
+  "crimes per sq mi": "crimes per sq mi",
+  "violations": "violations",
+  "violations per sq mi": "violations per sq mi",
+  "per sq mi": "per sq mi",
+  "evictions per sq mi": "evictions per sq mi",
+  "evictions": "evictions",
+  "ratio of sidewalks to roadways": "ratio of sidewalks to roadways",
+  "total dollars": "in total"
+ },
+ "printMapHeader": {
+  "back": "Back to dashboard",
+  "copied": "Text copied to clipboard!",
+  "copy": "Copy the following code to embed this map in another website",
+  "print": "Print this map",
+  "printNote": "Please note: the print function works best on Chrome or Firefox browsers.",
+  "setTitle": "Set a custom map title"
+ },
+ "printMode": {
+  "footerText": "Map from the Durham Neighborhood Compass, a project of DataWorks NC. Visit {compassLink} to build your own map!"
+ },
+ "reportMoreInfo": {
+  "hide": "Hide more info",
+  "show": "Show more info"
+ },
+ "reportSelector": {
+  "categoryTip": "Click to show this category",
+  "customize": "Customize this report",
+  "goBack": "go back to the dashboard and make a new selection",
+  "instructionsIntro": "You can customize this report to show only the metrics or categories that are relevant to your interests. Here's how:",
+  "instructions": [
+   "Click on the title of a category to hide or show all of the metrics in that category.",
+   "Click on the title of an individual metric to hide or show just that metric.",
+   "If you want to choose a different part of the city to view for this report, you'll need to {goBack}",
+   "Share your customized report using the following URL:"
+  ],
+  "metricsShown": "Metrics shown in your report"
+ },
+ "reportSummary": {
+  "about": [
+   "The {compassLink} is a primary community resource for information that is regularly-updated, serving meaningful data to the community openly.",
+   "Each year the Compass grows and learns along with its users, adding data sets with strong community resonance and longitudinal importance.",
+   "A quantitative project with qualitative values."
+  ]
+ },
+ "selectGroup": {
+  "orSelectA": "Or, select a",
+  "City Council Ward": "City Council Ward",
+  "School Assignment Zone": "School Assignment Zone",
+  "Ward 1": "Ward 1",
+  "Ward 2": "Ward 2",
+  "Ward 3": "Ward 3"
+ },
+ "sidebar": {
+  "download": "Download the Data",
+  "choose": "Select a category"
+ },
+ "social": {
+  "facebook": "Share on Facebook",
+  "linkedIn": "Share on LinkedIn",
+  "twitter": "Share on Twitter",
+  "viewGitHub": "View the project on GitHub"
+ },
+ "undermapButtons": {
+  "clear": "Clear Selected",
+  "printEmbed": "Print or Embed Map",
+  "report": "Report"
+ },
+ "yearSlider": {
+  "startStop": "Start or stop playing through data timeseries by year",
+  "useSlider": "use slider to choose a data year to view"
+ },
+ "welcome": {
+  "title": "Welcome to the Durham Neighborhood Compass!"
+ }
+}
