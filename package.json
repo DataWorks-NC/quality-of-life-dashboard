@@ -1,74 +1,127 @@
 {
-  "name": "qol-dashboard",
-  "version": "1.0.0",
-  "description": "",
-  "main": "app/main.js",
-  "author": "Tobin Bradley",
-  "license": "MIT",
+  "name": "Durham-Neighborhood-Compass",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "start": "brunch watch --server --network --port 3000",
-    "build": "./build/datagen.sh && brunch build --production"
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "build-data": "./build/datagen.sh",
+    "build-site": "npm run build-data && npm run build",
+    "export-translations": "node ./build/export_translations.js",
+    "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/locales/**/*.json'",
+    "import-translations": "node ./build/import_translations.js"
   },
-  "bundlesize": [
-    {
-      "path": "./public/vendor.js",
-      "maxSize": "400 kB"
-    },
-    {
-      "path": "./public/app.js",
-      "maxSize": "27.5 kB"
-    },
-    {
-      "path": "./public/report.js",
-      "maxSize": "15 kB"
-    },
-    {
-      "path": "./public/embed.js",
-      "maxSize": "15 kB"
-    }
-  ],
   "dependencies": {
-    "@babel/polyfill": "^7.2.5",
-    "@mapbox/mapbox-gl-geocoder": "^4.1.2",
-    "async": "^2.6.1",
-    "auto-reload-brunch": "^2.7.1",
-    "babel-brunch": "^6.1.1",
-    "babel-cli": "^6.26.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.7.0",
-    "brunch": "^2.10.17",
-    "chartist": "^0.11.0",
-    "chartist-plugin-axistitle": "^0.0.4",
-    "chartist-plugin-tooltip": "^0.0.11",
-    "cssnano-brunch": "^1.1.8",
-    "csv-stringify": "^5.3.0",
-    "csvtojson": "^1.1.12",
-    "handlebars-brunch": "^2.10.0",
-    "imagemin-brunch": "^1.1.0",
+    "@mapbox/mapbox-gl-geocoder": "^4.4.2",
+    "@mdi/js": "^4.4.95",
+    "chartist": "^0.11.4",
+    "chartist-plugin-axistitle": "0.0.4",
+    "chartist-plugin-tooltips": "0.0.17",
+    "core-js": "^2.6.5",
+    "csv-stringify": "^5.3.3",
     "js-md5": "^0.7.3",
     "jsonminify": "^0.4.1",
-    "lodash": "^4.17.11",
-    "mapbox-gl": "^0.54.0",
-    "marked": "^0.3.19",
+    "lodash": "^4.17.15",
+    "mapbox-gl": "^1.3.1",
     "material-design-lite": "^1.3.0",
-    "npm": "^6.7.0",
-    "postcss-brunch": "^2.10.1",
-    "postcss-cssnext": "^3.0.2",
-    "querystring": "^0.2.0",
-    "shelljs": "^0.8.3",
-    "uglify-js-brunch": "^2.10.0",
+    "regenerator-runtime": "^0.13.3",
+    "register-service-worker": "^1.6.2",
     "vue": "^2.6.10",
-    "vue-brunch": "2.x",
-    "vue-template-compiler": "^2.6.10",
-    "vuex": "^3.1.0",
+    "vue-analytics": "^5.17.2",
+    "vue-i18n": "^8.14.1",
+    "vue-router": "^3.1.3",
+    "vuetify": "^2.0.0",
+    "vuex": "^3.0.1",
     "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
-    "bundlesize": "^0.17.1",
-    "eslint": "^5.12.0",
-    "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.16.0",
-    "eslint-plugin-vue": "^4.7.1",
-    "pwmetrics": "^4.2.0"
+    "@babel/core": "^7.6.0",
+    "@vue/cli-plugin-babel": "^3.11.0",
+    "@vue/cli-plugin-eslint": "^3.11.0",
+    "@vue/cli-plugin-pwa": "^3.11.0",
+    "@vue/cli-service": "^3.11.0",
+    "@vue/eslint-config-airbnb": "^4.0.1",
+    "autoprefixer": "^9.6.1",
+    "babel-eslint": "^10.0.3",
+    "bundlesize": "^0.18.0",
+    "csv-parse": "^4.4.5",
+    "csvtojson": "^1.1.12",
+    "eslint": "^5.16.0",
+    "eslint-plugin-vue": "^5.0.0",
+    "lint-staged": "^8.1.5",
+    "marked": "^0.7.0",
+    "prerender-spa-plugin": "^3.2.1",
+    "pwmetrics": "^4.2.2",
+    "sass": "^1.22.12",
+    "sass-loader": "^7.1.0",
+    "vue-cli-plugin-i18n": "^0.6.0",
+    "vue-cli-plugin-prerender-spa": "^1.1.6",
+    "vue-cli-plugin-vuetify": "^0.6.3",
+    "vue-template-compiler": "^2.6.10",
+    "vuetify-loader": "^1.2.2"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "@vue/airbnb"
+    ],
+    "rules": {},
+    "parserOptions": {
+      "parser": "babel-eslint"
+    }
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 0.2%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "bundlesize": [
+    {
+      "path": "./dist/css/app.*.css",
+      "maxSize": "2 kB"
+    },
+    {
+      "path": "./dist/css/chunk-vendors.*.css",
+      "maxSize": "30 kB"
+    },
+    {
+      "path": "./dist/css/compass~report.*.css",
+      "maxSize": "10 kB"
+    },
+    {
+      "path": "./dist/css/!(app|chunk-vendors|compass~report).*.css",
+      "maxSize": "7.5 kB"
+    },
+    {
+      "path": "./dist/js/dashboard-map~report-map.*.js",
+      "maxSize": "175 kB"
+    },
+    {
+      "path": "./dist/js/chunk-vendors.*.js",
+      "maxSize": "100 kB"
+    },
+    {
+      "path": "./dist/js/!(dashboard-map~report-map|chunk-vendors).*.js",
+      "maxSize": "30 kB"
+    }
+  ],
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,vue}": [
+      "vue-cli-service lint",
+      "git add"
+    ]
   }
 }

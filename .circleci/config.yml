@@ -7,7 +7,7 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/node:9.11
+      - image: circleci/node:12-browsers
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -21,29 +21,31 @@ jobs:
       - run: git clone https://github.com/DataWorks-NC/durham-quality-of-life-data.git data
       - run: sed -i "s/MAPBOX_ACCESS_TOKEN/$MAPBOX_ACCESS_TOKEN/" .circleci/config.private.js
       - run: sed -i "s/ROLLBAR_ACCESS_TOKEN/$ROLLBAR_ACCESS_TOKEN/" .circleci/config.private.js
+      - run: sed -i "s/GOOGLE_ANALYTICS_ID/$GOOGLE_ANALYTICS_ID/" .circleci/config.private.js
       - run: cp ./.circleci/config.private.js data/config/private.js
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}
+          - v2-dependencies-{{ checksum "package.json" }}
           # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+          - v2-dependencies-
 
       - run: npm install
+      - run: npm install --only=dev
 
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+          key: v2-dependencies-{{ checksum "package.json" }}
 
       # run tests!
-      - run: npm run build
+      - run: npm run build-site
       - run: npx bundlesize
       - run: mkdir /tmp/workspace
       - persist_to_workspace:
           root: .
           paths:
-            - public/*
+            - dist/*
             - .circleci/*
   deploy_prod:
     docker:
@@ -56,9 +58,9 @@ jobs:
           working_directory: /tmp/workspace/
 
       # Add robots file for production.
-      - run: cp /tmp/workspace/.circleci/robots-prod.txt /tmp/workspace/public/robots.txt
+      - run: cp /tmp/workspace/.circleci/robots-prod.txt /tmp/workspace/dist/robots.txt
       - run:
-          command: python .circleci/deploy.py /tmp/workspace/public
+          command: python .circleci/deploy.py /tmp/workspace/dist
           working_directory: /tmp/workspace/
           environment:
             AZURE_DESTINATION_BLOB: "prod"
@@ -72,7 +74,7 @@ jobs:
           command: pip install -r .circleci/requirements.txt
           working_directory: /tmp/workspace/
       - run:
-          command: python .circleci/deploy.py /tmp/workspace/public
+          command: python .circleci/deploy.py /tmp/workspace/dist
           working_directory: /tmp/workspace/
           environment:
             AZURE_DESTINATION_BLOB: "dev"
@@ -87,15 +89,15 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package.json" }}
+            - v2-dependencies-{{ checksum "package.json" }}
             # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
+            - v2-dependencies-
       - run: npm install
       # Save google auth credentials to the file they're supposed to be in so as to avoid having to manually authorize.
       - run: mkdir /home/circleci/.credentials
       - run: echo $PWMETRICS_GOOGLE_CREDENTIALS > /home/circleci/.credentials/sheets.googleapis.com-nodejs-pwmetrics.json
-      - run: npx pwmetrics http://nbhdcompassdev.azurewebsites.us/#PTLAT/tract/ --config=./.circleci/pwmetrics-config.js
-      - run: npx pwmetrics http://nbhdcompassdev.azurewebsites.us/report.html#blockgroup/370630019001 --config=./.circleci/pwmetrics-config.report.js
+      - run: npx pwmetrics https://nbhdcompassdev.azurewebsites.us/en/compass/PTLAT/tract --config=./.circleci/pwmetrics-config.js
+      - run: npx pwmetrics https://nbhdcompassdev.azurewebsites.us/en/report/blockgroup?selected=370630019001 --config=./.circleci/pwmetrics-config.report.js
 
 workflows:
   version: 2
