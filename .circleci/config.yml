@@ -39,8 +39,8 @@ jobs:
           key: v2-dependencies-{{ checksum "package.json" }}
 
       # run tests!
-      - run: npm run build
-#     - run: npx bundlesize
+      - run: npm run build-site
+      - run: npx bundlesize
       - run: mkdir /tmp/workspace
       - persist_to_workspace:
           root: .
