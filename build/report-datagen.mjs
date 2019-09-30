@@ -6,9 +6,9 @@ import md5 from 'js-md5';
 import path from 'path';
 import stringify from 'csv-stringify';
 
-import siteConfig from '../data/config/site';
-import dataConfig from '../data/config/data';
-import metricCalculations from '../src/js/modules/metric_calculations';
+import siteConfig from '../data/config/site.js';
+import dataConfig from '../data/config/data.js';
+import metricCalculations from '../src/js/modules/metric_calculations.js';
 
 const { calcValue } = metricCalculations;
 

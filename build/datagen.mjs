@@ -1,12 +1,12 @@
 import fs from 'fs';
 import path from 'path';
 import jsonminify from 'jsonminify';
-import siteConfig from '../data/config/site';
+import siteConfig from '../data/config/site.js';
 import csv from 'csvtojson';
 import _ from 'lodash';
 const dest = './public/data/metric';
 import marked from 'marked';
-import dataConfig from '../data/config/data';
+import dataConfig from '../data/config/data.js';
 
 // /////////////////////////////////////////////////
 // Create destination folders
