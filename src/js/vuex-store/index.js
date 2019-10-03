@@ -171,8 +171,12 @@ export default new Vuex.Store({
       return dispatch('loadMetricMetadata');
     },
     async loadMetricMetadata({ commit, state }) {
-      const metricMetadata = await fetchResponseHTML(`/data/meta/${state.language}/m${state.metricId}.html`);
-      commit('setMetricMetadata', metricMetadata);
+      if (state.metricId) {
+        const metricMetadata = await fetchResponseHTML(
+          `/data/meta/${state.language}/m${state.metricId}.html`,
+        );
+        commit('setMetricMetadata', metricMetadata);
+      }
     },
 
     // In contrast to the mutation function by the same name, this checks to see if new data also needs to be loaded.
