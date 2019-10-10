@@ -47,7 +47,7 @@ jobs:
           paths:
             - dist/*
             - .circleci/*
-  deploy_prod:
+  deploy_prod: &DEPLOY_PROD
     docker:
       - image: microsoft/azure-cli
     steps:
@@ -64,6 +64,31 @@ jobs:
           working_directory: /tmp/workspace/
           environment:
             AZURE_DESTINATION_BLOB: "prod"
+
+  update_sitemap:
+    docker:
+      - image: circleci/node:jessie-browsers
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v2-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v2-dependencies-
+      - run: npm install
+      - run: npm install --only=dev
+      - run: npm run build-sitemap
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist/*
+
+  re_deploy_prod:
+    <<: *DEPLOY_PROD
+
   deploy_dev:
     docker:
       - image: microsoft/azure-cli
@@ -122,3 +147,19 @@ workflows:
             branches:
               only:
                 master
+
+#      - update_sitemap:
+#          requires:
+#            - deploy_prod
+#          filters:
+#            branches:
+#              only:
+#                master
+#
+#      - re_deploy_prod: # Re-deploy to prod after sitemap built.
+#          requires:
+#            - update_sitemap
+#          filters:
+#            branches:
+#              only:
+#                master
