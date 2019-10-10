@@ -2,7 +2,7 @@
   <div>
     <report-nav />
     <v-content>
-      <v-container fluid>
+      <v-container>
         <report-summary
           :report-title="reportTitle"
           :selected="selected"
