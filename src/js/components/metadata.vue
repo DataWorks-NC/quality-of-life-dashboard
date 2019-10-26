@@ -40,14 +40,12 @@ export default {
     padding: 0 10px;
 }
 h3 {
-    font-size: 2em;
     margin-top: 45px;
 }
 h3:first-of-type {
     margin-top: 0;
 }
 h4 {
-    font-size: 1.5em;
     margin-top: 1em;
 }
 </style>

@@ -1,5 +1,7 @@
-@import url("https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900");
+@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Montserrat&display=swap'); 
 
+@import "./typography.scss";
 @import "./modules/contactus.css";
 @import "./modules/footer.css";
 @import "./modules/intro.scss";
@@ -133,7 +135,7 @@
   //html,
   //body {
   //  color: #555;
-  //  font-family: Roboto, 'Helvetica Neue', 'Calibri', 'Liberation Sans',
+
   //  sans-serif;
   //  -webkit-font-smoothing: antialiased;
   //  -moz-osx-font-smoothing: grayscale;

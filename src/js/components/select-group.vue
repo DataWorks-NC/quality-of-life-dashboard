@@ -59,9 +59,12 @@ export default {
     letter-spacing: initial;
     height: unset;
   }
-  cursor: pointer;
-  text-decoration: underline;
-  color: var(--v-primary-base);
+
+  &.v-btn--text {
+    &::before {
+      margin: 0 0.25em;
+    }
+  }
 }
 
 p {

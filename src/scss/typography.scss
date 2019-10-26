@@ -1,0 +1,100 @@
+@import url("https://fonts.googleapis.com/css?family=Open+Sans&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Montserrat&display=swap");
+
+@mixin heading-font {
+  font-family: "Montserrat", sans-serif !important;
+}
+
+@mixin body-font {
+  font-family: "Open Sans", sans-serif;
+  font-size: 1em;
+  line-height: 1.75;
+}
+
+@mixin mobile-heading($size) {
+  @media (max-width: 768px) {
+    font-size: $size;
+  }
+}
+
+// Wrap in .v-application to override Vuetify defaults.
+.v-application {
+  @include body-font;
+
+  a:not(.v-btn):not(.v-tab),
+  .v-btn--text:not(.theme--dark):not(.download) {
+    color: var(--v-accent-base);
+    text-decoration: none;
+    position: relative;
+
+    &::before {
+      content: "";
+      background-color: transparent;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      opacity: 0.25;
+      border-bottom: 2px solid var(--v-accent-base);
+      border-radius: 0;
+      -webkit-transition: opacity 0.2s cubic-bezier(0.4, 0, 0.6, 1);
+      transition: opacity 0.2s cubic-bezier(0.4, 0, 0.6, 1);
+    }
+    &:hover {
+      &::before {
+        opacity: 0.65;
+        background-color: green;
+      }
+    }
+
+    &.v-btn--disabled {
+        &::before {
+            border-bottom: 2px solid rgba(0, 0, 0, 0.26);
+        }
+    }
+  }
+
+  .title {
+    @include heading-font;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @include heading-font;
+  }
+
+  h1 {
+    font-size: 3.052em;
+    @include mobile-heading(1.802em);
+  }
+
+  h2 {
+    font-size: 2.074em;
+    @include mobile-heading(1.602em);
+  }
+
+  h3 {
+    font-size: 1.728em;
+    @include mobile-heading(1.424em);
+  }
+
+  h4 {
+    font-size: 1.44em;
+    @include mobile-heading(1.266em);
+  }
+
+  h5 {
+    font-size: 1.2em;
+    @include mobile-heading(1.125em);
+  }
+
+  h6 {
+    font-size: 1em;
+    @include mobile-heading(1em);
+  }
+}

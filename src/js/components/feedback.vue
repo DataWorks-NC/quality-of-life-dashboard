@@ -48,9 +48,6 @@ export default {
             margin: 10px;
          min-height: 120px;
        }
-       >>> #mc_embed_signup {
-         font-family: "Roboto";
-       }
 
        >>> #mc_embed_signup .button {
          background-color: var(--v-primary-base);
