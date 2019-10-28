@@ -77,7 +77,7 @@ export default {
     setMetricValues(state, { metric, values }) {
       const metricConfig = dataConfig[`m${metric}`];
       if (!(metricConfig.category in state.metricValues)) {
-        state.metricValues[metricConfig.category] = {};
+        Vue.set(state.metricValues, metricConfig.category, {});
       }
       Vue.set(state.metricValues[metricConfig.category], metric, values);
     },
