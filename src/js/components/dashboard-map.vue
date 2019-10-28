@@ -206,7 +206,7 @@ export default {
       // TODO: evaluate if necessary
       const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
       if (!iOS) {
-        map.on('mouseleave', () => {
+        map.on('mouseleave', `${this.geography.id}-fill`, () => {
           _this.hoverPopup.remove();
         });
 
