@@ -151,7 +151,7 @@ router.beforeEach((to, from, next) => {
 
   if ('reportTitle' in to.query) {
     store.commit('setReportTitle', to.query.reportTitle);
-  } else if (store.report.state.reportTitle) {
+  } else if (store.state.report.reportTitle) {
     store.commit('setReportTitle', false);
   }
   if ('legendTitle' in to.query) {
