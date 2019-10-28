@@ -151,9 +151,13 @@ router.beforeEach((to, from, next) => {
 
   if ('reportTitle' in to.query) {
     store.commit('setReportTitle', to.query.reportTitle);
+  } else if (store.report.state.reportTitle) {
+    store.commit('setReportTitle', false);
   }
   if ('legendTitle' in to.query) {
     store.commit('setLegendTitle', to.query.legendTitle);
+  } else if (store.state.customLegendTitle !== '') {
+    store.commit('setLegendTitle', '');
   }
 
   const newTo = { ...to };
