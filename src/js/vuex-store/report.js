@@ -58,6 +58,11 @@ export default {
       Object.values(state.metrics).forEach((m) => { m.visible = false; });
     },
 
+    // Show all metrics.
+    showAllMetrics(state) {
+      Object.values(state.metrics).forEach((m) => { m.visible = true; });
+    },
+
     // Turn on or off all metrics within a particular category.
     toggleCategory(state, { categoryName, visibility }) {
       Object.keys(state.metrics).forEach((m) => {

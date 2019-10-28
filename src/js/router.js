@@ -91,6 +91,8 @@ router.beforeEach((to, from, next) => {
       selectedChanged = true;
       store.commit('setSelected', newSelected);
     }
+  } else if (store.state.selected && store.state.selected.length > 0) {
+    store.commit('setSelected', []);
   }
 
   if ('mode' in to.query && to.query.mode === 'print') {
@@ -116,17 +118,19 @@ router.beforeEach((to, from, next) => {
 
     if ('visibleCategories' in to.query || 'visibleMetrics' in to.query) {
       store.commit('hideAllMetrics');
-    }
-    if ('visibleCategories' in to.query) {
-      [].concat(to.query.visibleCategories).forEach((category) => {
-        store.commit('toggleCategory', { categoryName: category, visibility: true });
-      });
-    }
-    if ('visibleMetrics' in to.query) {
-      [].concat(to.query.visibleMetrics).forEach((metric) => {
-        // TODO: Flag to make usage of m prefix consistent.
-        store.commit('toggleMetric', { metricId: `m${metric}`, visibility: true });
-      });
+      if ('visibleCategories' in to.query) {
+        [].concat(to.query.visibleCategories).forEach((category) => {
+          store.commit('toggleCategory', { categoryName: category, visibility: true });
+        });
+      }
+      if ('visibleMetrics' in to.query) {
+        [].concat(to.query.visibleMetrics).forEach((metric) => {
+          // TODO: Flag to make usage of m prefix consistent.
+          store.commit('toggleMetric', { metricId: `m${metric}`, visibility: true });
+        });
+      }
+    } else {
+      store.commit('showAllMetrics');
     }
 
     if (!Object.keys(store.state.report.metricValues).length || selectedChanged) {
@@ -157,9 +161,6 @@ router.beforeEach((to, from, next) => {
   if (store.state.geography.id !== to.params.geographyLevel) {
     toChanged = true;
     newTo.params = { ...newTo.params, geographyLevel: store.state.geography.id };
-  }
-  if (store.state.selected && !('selected' in to.query)) {
-    newTo.query = { ...newTo.query, selected: store.state.selected };
   }
   if (toChanged) {
     return next(newTo);
