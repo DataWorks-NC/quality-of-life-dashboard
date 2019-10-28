@@ -4,6 +4,6 @@
 
 node --experimental-modules ./build/datagen.mjs
 node --experimental-modules ./build/report-datagen.mjs
-pushd ./public/download
+pushd ./public/download || exit 1;
 zip -r download.zip ./
-popd
+popd || exit;
