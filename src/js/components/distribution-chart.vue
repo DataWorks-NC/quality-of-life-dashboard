@@ -42,6 +42,11 @@ export default {
     this.renderChart();
     this.mounted = true;
   },
+  beforeDestroy() {
+    if (this.chart) {
+      this.chart.detach();
+    }
+  },
   methods: {
     renderChart() {
       const data = this.updateData();
@@ -116,7 +121,7 @@ export default {
       };
       const _this = this;
       const { metric } = this;
-      if (!metric.data) return;
+      if (!metric.data) return false;
 
       // get values
       const data = this.dataToSortedArray(metric.data.map, this.year);

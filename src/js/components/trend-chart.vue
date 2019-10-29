@@ -64,10 +64,16 @@ export default {
     },
   },
   mounted() {
+    this.chart = null;
     this.renderChart();
   },
   updated() {
     this.renderChart();
+  },
+  beforeDestroy() {
+    if (this.chart) {
+      this.chart.detach();
+    }
   },
   methods: {
     renderChart() {
@@ -133,13 +139,13 @@ export default {
           },
         }));
       }
-      const chart = new Chartist.Line(`#ct-trendchart-${metricConfig.metric}`, {
+      this.chart = new Chartist.Line(`#ct-trendchart-${metricConfig.metric}`, {
         labels: this.years,
         series: [this.countyValuesChart, this.valuesChart],
       }, options);
 
       // Animation.
-      chart.on('draw', (data) => {
+      this.chart.on('draw', (data) => {
         if (data.type === 'line') {
           data.element.animate({
             d: {

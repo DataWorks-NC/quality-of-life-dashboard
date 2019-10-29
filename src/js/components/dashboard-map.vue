@@ -206,9 +206,10 @@ export default {
       // TODO: evaluate if necessary
       const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
       if (!iOS) {
-        map.on('mouseleave', () => {
+        map.on('mouseleave', `${this.geography.id}-fill`, () => {
           _this.hoverPopup.remove();
         });
+
         // show feature info on mouse move
         map.on('mousemove', (e) => {
           if (!_this.metric.config || !_this.metric.data) {
@@ -365,10 +366,10 @@ export default {
       return durhamCountyBounds;
     },
     zoomToIds(ids) {
-      const zoomToFeatures = this.map.queryRenderedFeatures({ layers: [this.geography.id], filter: ['match', ['get', 'id'], ids, true, false] });
+      const zoomToFeatures = this.map.querySourceFeatures(this.geography.id, { filter: ['match', ['get', 'id'], ids, true, false] });
       if (!zoomToFeatures.length) { return; }
       const bounds = this.getBoundingBox(zoomToFeatures);
-      this.map.fitBounds(bounds, { padding: 50 });
+      this.map.fitBounds(bounds, { padding: 150 });
 
       return bounds;
     },
@@ -480,12 +481,16 @@ export default {
       return [[Math.min(...longitudes), Math.min(...latitudes)], [Math.max(...longitudes), Math.max(...latitudes)]];
     },
     addToSelected(featureId) {
-      this.$router.push({ query: { ...this.$route.query, selected: this.selected.concat(featureId) } });
+      const query = { ...this.$route.query, selected: this.selected.concat(featureId) };
+      delete query.reportTitle;
+      this.$router.push({ query });
     },
     removeFromSelected(featureId) {
       const i = this.selected.indexOf(featureId);
       if (i !== -1) {
-        this.$router.push({ query: { ...this.$route.query, selected: this.selected.slice(0, i).concat(this.selected.slice(i + 1)) } });
+        const query = { ...this.$route.query, selected: this.selected.slice(0, i).concat(this.selected.slice(i + 1)) };
+        delete query.reportTitle;
+        this.$router.push({ query });
       }
     },
   },
