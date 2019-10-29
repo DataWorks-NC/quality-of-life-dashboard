@@ -47,6 +47,7 @@ jobs:
           paths:
             - dist/*
             - .circleci/*
+
   deploy_prod: &DEPLOY_PROD
     docker:
       - image: microsoft/azure-cli

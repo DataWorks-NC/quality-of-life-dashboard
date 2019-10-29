@@ -32,5 +32,4 @@ deploy.sh
 /public/data
 
 # Auto-generated download files (some files in the /public/download directory do need to be tracked)
-/public/download/download.zip
 /public/download/*.csv

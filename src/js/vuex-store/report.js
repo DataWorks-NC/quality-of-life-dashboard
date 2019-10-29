@@ -30,6 +30,7 @@ export default {
     },
 
     hiddenCategories: state => state.categoryNames.filter(c => Object.values(state.metrics).some(m => m.category === c) && !Object.values(state.metrics).filter(m => m.category === c).some(m => m.visible)),
+
     reportTitle: (state, getters) => (state.reportTitle ? state.reportTitle : getters.areaNames.join(', ')),
 
     // Pull the most recent year for each metric listed in siteConfig.summaryMetrics for which we have valid metric values.
@@ -58,6 +59,11 @@ export default {
       Object.values(state.metrics).forEach((m) => { m.visible = false; });
     },
 
+    // Show all metrics.
+    showAllMetrics(state) {
+      Object.values(state.metrics).forEach((m) => { m.visible = true; });
+    },
+
     // Turn on or off all metrics within a particular category.
     toggleCategory(state, { categoryName, visibility }) {
       Object.keys(state.metrics).forEach((m) => {
@@ -77,7 +83,7 @@ export default {
     setMetricValues(state, { metric, values }) {
       const metricConfig = dataConfig[`m${metric}`];
       if (!(metricConfig.category in state.metricValues)) {
-        state.metricValues[metricConfig.category] = {};
+        Vue.set(state.metricValues, metricConfig.category, {});
       }
       Vue.set(state.metricValues[metricConfig.category], metric, values);
     },
