@@ -56,21 +56,42 @@
 </template>
 
 <script>
-import ExternalLink from './external-link';
+import ExternalLink from "./external-link";
 
 export default {
-  name: 'DashboardFooter',
+  name: "DashboardFooter",
   components: {
     ExternalLink,
   },
 };
 </script>
 
-<style lang="css" scoped>
+<style lang="scss" scoped>
 .logos {
   width: 100%;
-}
-.logos img {
+  a::before {
+    border-bottom: 0 !important;
+  }
+  img {
     padding: 1em;
+  }
+}
+.material-icons {
+  padding-right: 10px;
+}
+.mdl-cell {
+  padding: 10px 10px 0;
+}
+.site-links {
+  width: 100%;
+  a {
+    padding-left: 10px;
+    &::before {
+      margin-left: 10px;
+    }
+  }
+}
+p:last-child {
+  margin-bottom: 0;
 }
 </style>

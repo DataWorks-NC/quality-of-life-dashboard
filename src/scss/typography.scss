@@ -21,7 +21,7 @@
 .v-application {
   @include body-font;
 
-  a:not(.v-btn):not(.v-tab),
+  a:not(.v-btn):not(.v-tab):not(.social__link),
   .v-btn--text:not(.theme--dark):not(.download) {
     color: var(--v-accent-base);
     text-decoration: none;
@@ -44,7 +44,6 @@
     &:hover {
       &::before {
         opacity: 0.65;
-        background-color: green;
       }
     }
 
