@@ -1,5 +1,5 @@
-@import url("https://fonts.googleapis.com/css?family=Open+Sans&display=swap");
-@import url("https://fonts.googleapis.com/css?family=Montserrat&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,600&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Montserrat:400,600&display=swap");
 
 @mixin heading-font {
   font-family: "Montserrat", sans-serif !important;
@@ -22,35 +22,23 @@
   @include body-font;
 
   a:not(.v-btn):not(.v-tab):not(.social__link),
-  .v-btn--text:not(.theme--dark):not(.download) {
+  .v-btn--text:not(.theme--dark):not(.download):not(.v-btn--disabled) {
     color: var(--v-accent-base);
     text-decoration: none;
     position: relative;
 
-    &::before {
-      content: "";
-      background-color: transparent;
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      opacity: 0.25;
-      border-bottom: 2px solid var(--v-accent-base);
-      border-radius: 0;
-      -webkit-transition: opacity 0.2s cubic-bezier(0.4, 0, 0.6, 1);
-      transition: opacity 0.2s cubic-bezier(0.4, 0, 0.6, 1);
-    }
-    &:hover {
-      &::before {
-        opacity: 0.65;
+    span:first-child {
+      border-bottom: 2px solid rgba(104, 8, 158, 0.25);
+      -webkit-transition: 0.2s cubic-bezier(0.4, 0, 0.6, 1);
+      transition: 0.2s cubic-bezier(0.4, 0, 0.6, 1);
+
+      &:hover {
+        border-bottom: 2px solid rgba(104, 8, 158, 0.65);
       }
     }
 
-    &.v-btn--disabled {
-        &::before {
-            border-bottom: 2px solid rgba(0, 0, 0, 0.26);
-        }
+    &::before {
+      background-color: transparent;
     }
   }
 

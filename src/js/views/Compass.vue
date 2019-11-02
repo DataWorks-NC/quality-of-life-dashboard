@@ -235,6 +235,7 @@ export default {
     },
   },
   mounted() {
+    this.handleLinks();
     this.setPrintClass();
     // Force material design lite to register dynamic components in the DOM *after* dashboard has loaded.
     // componentHandler is a global defined by the material design library at load time.
@@ -263,6 +264,12 @@ export default {
         document.getElementsByTagName("body")[0].classList.remove("print");
       }
     },
+    handleLinks() {
+      const links = this.$el.getElementsByTagName('a');
+      for (let i = 0; i < links.length; i += 1) {
+        links[i].innerHTML = `<span class="link-underline">${links[i].innerHTML}</span>`;
+      }
+    },
   },
 };
 </script>
@@ -285,6 +292,10 @@ export default {
 
   .v-card.d-flex + .v-card.d-flex {
     margin-top: 25px;
+  }
+
+  .v-card > *:first-child:not(.v-btn):not(.v-chip) {
+    border-radius: inherit;
   }
 
   h2 {

@@ -84,11 +84,8 @@ export default {
 }
 .site-links {
   width: 100%;
-  a {
-    padding-left: 10px;
-    &::before {
-      margin-left: 10px;
-    }
+  a + a {
+    margin-left: 10px;
   }
 }
 p:last-child {

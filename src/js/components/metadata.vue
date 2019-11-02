@@ -21,6 +21,17 @@ import { mapGetters } from 'vuex';
 export default {
   name: 'Metadata',
   computed: mapGetters(['metadataAbout', 'metadataImportant', 'metadataResources']),
+  updated() {
+    this.handleLinks();
+  },
+  methods: {
+    handleLinks() {
+      const links = this.$el.getElementsByTagName('a');
+      for (let i = 0; i < links.length; i += 1) {
+        links[i].innerHTML = `<span class="link-underline">${links[i].innerHTML}</span>`;
+      }
+    },
+  },
 };
 </script>
 
