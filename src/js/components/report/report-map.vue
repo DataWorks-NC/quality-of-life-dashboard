@@ -106,12 +106,6 @@ export default {
 
 <style scoped>
 #map {
-    height: 400px;
-}
-
-#map img {
-    max-width: none;
-    min-width: 0px;
-    height: auto;
+  height: 400px;
 }
 </style>

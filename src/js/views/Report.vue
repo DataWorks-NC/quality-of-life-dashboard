@@ -54,22 +54,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.header {
-  max-width: 768px;
-  margin: 20px auto;
-}
-
-.metric-selector__title, .language-switcher {
-  color: #337ab7;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-
-.language-switcher {
-  float: right;
-  display: block;
-}
-</style>

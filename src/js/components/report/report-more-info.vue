@@ -49,20 +49,6 @@ export default {
 </script>
 
 <style lang="scss">
-.metric-more-info {
-  background: rgb(204, 204, 204);
-}
-.metric-more-info__title {
-  padding: 3px;
-  padding-left: 6px;
-  color: #337ab7;
-  cursor: pointer;
-}
-.metric-more-info__body {
-  background: white;
-  border: 3px solid rgb(204, 204, 204);
-  padding: 6px;
-}
 .v-expansion-panel::before {
   opacity: 0;
 }
@@ -95,9 +81,16 @@ export default {
   }
 }
 .v-expansion-panel-content__wrap {
-  h2,
   h3 {
-    font-size: 1.25em;
+    font-size: 1.25rem;
+  }
+
+  & > div {
+    h2:first-of-type,
+    p:first-of-type,
+    h3:first-of-type {
+      display: none;
+    }
   }
 
   table {

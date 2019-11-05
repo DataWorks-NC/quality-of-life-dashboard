@@ -134,7 +134,6 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-
   .metric-selector__metric, .metric-selector__category {
     background-color: var(--v-background-base);
   }
@@ -154,11 +153,9 @@ export default {
       color: var(--v-background-base);
     }
   }
-
   .metric-selector .metric-selector__category.partially-active {
     background-color: var(--v-primary-lighten2);
   }
-
   .metric-selector .metric-selector__category.v-list-item--active {
     background-color: var(--v-primary-darken2);
   }

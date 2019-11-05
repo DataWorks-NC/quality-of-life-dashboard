@@ -108,31 +108,15 @@ export default {
 h3 {
   font-size: 1.25em;
 }
-.metric-table {
-  th {
-    background: #eeeeee;
-  }
-}
-.metric-more-info__body h2:first-of-type {
-  display: none;
-}
-
-.metric-more-info__body p:first-of-type {
-  display: none;
-}
-
-.metric-more-info__body h3:first-of-type {
-  display: none;
-}
 td.metric-table__feature-value {
   background-color: #b2f3ed;
 }
 .theme--light.v-data-table tbody tr:nth-of-type(odd) {
-   background-color: #eff3f4;
-   &:hover {
-     background-color: #eff3f4;;
-   }
- }
+  background-color: #eff3f4;
+  &:hover {
+    background-color: #eff3f4;
+  }
+}
 .theme--light.v-data-table tbody tr:hover {
   background-color: white;
 }

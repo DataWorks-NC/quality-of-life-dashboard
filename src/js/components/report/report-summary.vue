@@ -103,6 +103,7 @@ export default {
 }
 .logo-image {
   height: 98px;
+  width: 408px;
 }
 .subtitle {
   font-size: 1.5em;
@@ -121,18 +122,6 @@ export default {
     bottom: -10px;
     left: 0;
   }
-}
-.logo-image {
-  width: 408px;
-}
-.hero {
-  height: 120px;
-}
-.subhero {
-  position: absolute;
-  top: 55px;
-  left: 105px;
-  right: 20px;
 }
 .v-card {
   p {
