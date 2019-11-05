@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="report">
     <report-nav />
     <v-content>
       <v-container>

@@ -25,7 +25,7 @@
                     {{ $t('reportSelector.goBack') }}
                   </router-link>
                 </i18n>
-                <li>{{ $t('reportSelector.instructions[3]') }} <a :href="getReportURL()" class="metric-selector__report-link">{{ getReportURL() }}</a></li>
+                <li>{{ $t('reportSelector.instructions[3]') }} <a :href="getReportURL()" class="metric-selector__report-link"><span class="link-underline">{{ getReportURL() }}</span></a></li>
               </ul>
             </v-col>
           </v-row>
@@ -95,6 +95,9 @@ export default {
       ).sort((a, b) => this.$i18n.localizedStringCompareFn(a.name, b.name));
     },
   },
+  updated() {
+    this.handleLinks();
+  },
   methods: {
     toggleCategory(category) {
       this.$store.commit('toggleCategory', { categoryName: category.originalName, visibility: !category.visible });
@@ -109,6 +112,12 @@ export default {
     },
     getReportURL() {
       return config.siteConfig.qoldashboardURL.slice(0, -1) + this.$route.fullPath;
+    },
+    handleLinks() {
+      const links = document.getElementsByTagName("a");
+      for (let i = 0; i < links.length; i += 1) {
+        links[i].innerHTML = `<span class="link-underline">${links[i].innerHTML}</span>`;
+      }
     },
   },
 };
