@@ -87,8 +87,7 @@ export default {
 
   & > div {
     h2:first-of-type,
-    p:first-of-type,
-    h3:first-of-type {
+    p:first-of-type {
       display: none;
     }
   }

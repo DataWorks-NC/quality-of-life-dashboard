@@ -54,3 +54,11 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.report {
+  .container {
+    max-width: 1000px;
+  }
+}
+</style>

@@ -36,7 +36,10 @@
           <v-row no-gutters align="stretch">
             <v-card v-for="metric in summaryMetrics" :key="metric.metric" width="33%" flat>
               <p class="stat-category">
-                {{ $t(`strings.metricCategories.${metric.category}`) }}
+                <a
+                  :href="`#${metric.category}`"
+                  class="stat-category-link"
+                >{{ $t(`strings.metricCategories.${metric.category}`) }}</a>
               </p>
               <p
                 class="highlighted-stat"
@@ -99,7 +102,7 @@ export default {
 
 <style lang="scss" scoped>
 .page.page-front {
-  padding: 10px 20px;
+  padding: 10px 25px;
 }
 .logo-image {
   height: 98px;
@@ -127,11 +130,21 @@ export default {
   p {
     margin: 0;
 
-    &.stat-category {
+    &.stat-category a {
       font-size: 1.25em;
       text-transform: uppercase;
       color: var(--v-primary-base);
       font-weight: 700;
+      text-decoration: none;
+      position: relative;
+      &:hover {
+        &::before {
+          content: "#";
+          position: absolute;
+          left: -20px;
+          color: rgba(0, 0, 0, 0.15);
+        }
+      }
     }
 
     &.highlighted-stat {
@@ -142,6 +155,7 @@ export default {
   &.v-card--flat {
     border-radius: 0;
     padding-bottom: 15px;
+    padding: 25px 35px;
     &:nth-child(-n + 3) {
       border-bottom: 1px solid #dce8ec;
     }

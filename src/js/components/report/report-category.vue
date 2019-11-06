@@ -2,7 +2,9 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <h2>{{ category.name }}</h2>
+        <h2 :id="category.name">
+          {{ category.name }}
+        </h2>
       </v-col>
     </v-row>
     <div v-for="m in category.metrics" :key="m.metric">
