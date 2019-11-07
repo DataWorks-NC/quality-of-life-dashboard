@@ -1,5 +1,5 @@
 <template>
-  <v-card class="page page-front">
+  <v-card id="summary" v-observe-visibility="visibilityOptions" class="page page-front">
     <v-row>
       <v-col xs="12">
         <img
@@ -37,7 +37,7 @@
             <v-card v-for="metric in summaryMetrics" :key="metric.metric" width="33%" flat>
               <p class="stat-category">
                 <a
-                  :href="`#${metric.category}`"
+                  :href="`#${formatAnchor(metric.category)}`"
                   class="stat-category-link"
                 >{{ $t(`strings.metricCategories.${metric.category}`) }}</a>
               </p>
@@ -56,6 +56,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 import { prettyNumber } from "../../modules/number_format";
 
 const ReportMap = () => import(/* webpackChunkName: "report-map" */ "./report-map.vue");
@@ -87,7 +88,18 @@ export default {
       default: "",
     },
   },
+  data() {
+    return {
+      visibilityOptions: {
+        callback: this.categoryVisible,
+        intersection: {
+          threshold: 0.1,
+        },
+      },
+    };
+  },
   methods: {
+    ...mapActions(['setActiveCategory']),
     prettyValue(metric) {
       return prettyNumber(
         metric.value,
@@ -95,6 +107,15 @@ export default {
         metric.prefix,
         metric.suffix,
       );
+    },
+    categoryVisible(isVisible, entry) {
+      if (!isVisible) {
+        return;
+      }
+      this.setActiveCategory(`${entry.target.id}`);
+    },
+    formatAnchor(category) {
+      return category.toLowerCase().replace(/\s/g, "-");
     },
   },
 };

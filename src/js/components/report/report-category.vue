@@ -1,10 +1,11 @@
 <template>
-  <v-container>
+  <v-container :id="`${formatAnchor(category.name)}-container`" v-observe-visibility="visibilityOptions">
     <v-row>
       <v-col cols="12">
-        <h2 :id="category.name">
+        <h2 :id="formatAnchor(category.name)">
           {{ category.name }}
         </h2>
+        <p>{{ $el }}</p>
       </v-col>
     </v-row>
     <div v-for="m in category.metrics" :key="m.metric">
@@ -25,6 +26,7 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import ReportMetric from "./report-metric";
 
 export default {
@@ -46,6 +48,29 @@ export default {
       type: Object,
       required: false,
       default: () => {},
+    },
+  },
+  data() {
+    return {
+      visibilityOptions: {
+        callback: this.categoryVisible,
+        throttle: 300,
+        intersection: {
+          threshold: 0.1,
+        },
+      },
+    };
+  },
+  methods: {
+    ...mapActions(["setActiveCategory"]),
+    formatAnchor(category) {
+      return category.toLowerCase().replace(/\s/g, "-");
+    },
+    categoryVisible(isVisible, entry) {
+      if (!isVisible) {
+        return;
+      }
+      this.setActiveCategory(`${entry.target.id}`);
     },
   },
 };

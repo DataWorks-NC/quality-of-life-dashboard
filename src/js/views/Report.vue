@@ -3,6 +3,7 @@
     <report-nav />
     <v-content>
       <v-container>
+        <report-jump-nav />
         <report-summary
           :report-title="reportTitle"
           :selected="selected"
@@ -26,6 +27,7 @@ import DashboardFooter from '../components/dashboard-footer.vue';
 import ReportSummary from '../components/report/report-summary';
 import ReportBody from '../components/report/report-body';
 import ReportNav from '../components/report/report-nav';
+import ReportJumpNav from '../components/report/report-jump-nav';
 
 export default {
   name: 'Report',
@@ -34,6 +36,7 @@ export default {
     ReportNav,
     ReportSummary,
     ReportBody,
+    ReportJumpNav,
   },
   data: () => ({
     mapConfig: config.mapConfig,
