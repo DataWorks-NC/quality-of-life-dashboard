@@ -37,7 +37,6 @@
                           <v-img
                             :src="require('../../assets/img/Choose_Metric.png')"
                             alt
-                            width="50%"
                           />
                           <v-card-text class="white--text">
                             <p
@@ -83,7 +82,6 @@
                           <v-img
                             :src="require('../../assets/img/Choose_Metric.png')"
                             alt
-                            width="50%"
                           />
                           <v-card-text class="white--text">
                             <p class="font-weight-bold">
@@ -97,7 +95,6 @@
                           <v-img
                             :src="require('../../assets/img/Find_Neighborhood.png')"
                             alt
-                            width="50%"
                           />
                           <v-card-text class="white--text">
                             <p
@@ -111,7 +108,6 @@
                           <v-img
                             :src="require('../../assets/img/Create_Report.png')"
                             alt
-                            width="50%"
                           />
                           <v-card-text class="white--text">
                             <p
@@ -281,6 +277,26 @@ export default {
 
   .v-card__text {
     font-size: 1em;
+    @media (max-width: 767px) {
+      font-size: 0.75em;
+      p {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .v-image {
+    overflow: hidden;
+
+    @media (min-width: 768px) {
+      width: 50%;
+    }
+  }
+
+  .v-card.d-flex {
+    @media (max-width: 767px) {
+      flex-direction: column;
+    }
   }
 
   .v-card.d-flex + .v-card.d-flex {
@@ -294,6 +310,9 @@ export default {
   h2 {
     font-size: 24px;
     margin-bottom: 0.75em;
+    @media (max-width: 767px) {
+      font-size: 20px;
+    }
   }
 
   h3 {
