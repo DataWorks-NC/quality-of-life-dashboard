@@ -5,7 +5,6 @@
         <h2 :id="formatAnchor(category.name)">
           {{ category.name }}
         </h2>
-        <p>{{ $el }}</p>
       </v-col>
     </v-row>
     <div v-for="m in category.metrics" :key="m.metric">
