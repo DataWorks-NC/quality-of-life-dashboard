@@ -1,7 +1,7 @@
 <template>
   <v-card id="summary" v-observe-visibility="visibilityOptions" class="page page-front">
     <v-row>
-      <v-col xs="12">
+      <v-col>
         <img
           class="logo-image"
           :src="require('../../../assets/img/report-logo.png')"
@@ -13,7 +13,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col sm="6">
+      <v-col cols="12" sm="6">
         <i18n path="reportSummary.about[0]" tag="p">
           <a place="compassLink" href="/">
             <span class="link-underline">{{ $t('strings.DurhamNeighborhoodCompass') }}</span>
@@ -22,7 +22,7 @@
         <i18n path="reportSummary.about[1]" tag="p" />
         <i18n path="reportSummary.about[2]" tag="p" />
       </v-col>
-      <v-col sm="6">
+      <v-col cols="12" sm="6">
         <ReportMap
           :map-config="mapConfig"
           :geography-id="geographyId"
@@ -34,7 +34,7 @@
       <v-col cols="12" class="text-center">
         <v-container>
           <v-row no-gutters align="stretch">
-            <v-card v-for="metric in summaryMetrics" :key="metric.metric" width="33%" flat>
+            <v-card v-for="metric in summaryMetrics" :key="metric.metric" flat>
               <p class="stat-category">
                 <a
                   :href="`#${formatAnchor(metric.category)}`"
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions } from "vuex";
 import { prettyNumber } from "../../modules/number_format";
 
 const ReportMap = () => import(/* webpackChunkName: "report-map" */ "./report-map.vue");
@@ -99,7 +99,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['setActiveCategory']),
+    ...mapActions(["setActiveCategory"]),
     prettyValue(metric) {
       return prettyNumber(
         metric.value,
@@ -128,6 +128,11 @@ export default {
 .logo-image {
   height: 98px;
   width: 408px;
+
+  @media (max-width: 767px) {
+    width: 100%;
+    height: auto;
+  }
 }
 .subtitle {
   font-size: 1.5em;
@@ -173,16 +178,26 @@ export default {
       font-weight: 600;
     }
   }
+
   &.v-card--flat {
     border-radius: 0;
     padding-bottom: 15px;
     padding: 25px 35px;
-    &:nth-child(-n + 3) {
-      border-bottom: 1px solid #dce8ec;
+    width: 33%;
+    @media (min-width: 768px) {
+      &:nth-child(-n + 3) {
+        border-bottom: 1px solid #dce8ec;
+      }
+      &:nth-child(3n + 2) {
+        border-left: 1px solid #dce8ec;
+        border-right: 1px solid #dce8ec;
+      }
     }
-    &:nth-child(3n + 2) {
-      border-left: 1px solid #dce8ec;
-      border-right: 1px solid #dce8ec;
+    @media (max-width: 767px) {
+      width: 100%;
+      & + .v-card--flat {
+        border-top: 1px solid #dce8ec;
+      }
     }
   }
 }

@@ -104,8 +104,12 @@ export default {
 
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 #map {
   height: 400px;
+
+  @media (max-width: 767px) {
+    width: 100%;
+  }
 }
 </style>
