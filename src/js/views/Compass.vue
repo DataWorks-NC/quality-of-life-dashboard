@@ -42,7 +42,12 @@
                             <p
                               class="font-weight-bold"
                             >
-                              Elija un tema del menú en la parte superior de la página
+                              Elija una categoría y un tema del menú en la parte superior de la página. Por ejemplo:
+                              <RouterLink :to="{name: 'compass', params: {metric: 'DIABETES_TOTAL', geographyLevel: 'tract'}}">
+                                Diabetes
+                              </RouterLink> o <RouterLink :to="{name: 'compass', params: {metric: 'CCC', geographyLevel: 'blockgroup'}}">
+                                Centros de Cuidado de Niños
+                              </RouterLink>.
                             </p>
                             <p>En teléfono celular, toque las tres líneas que se encuentran en la parte superior izquierda para abrir el menú</p>
                           </v-card-text>
@@ -85,7 +90,14 @@
                           />
                           <v-card-text class="white--text">
                             <p class="font-weight-bold">
-                              Choose a topic from the menu at top.
+                              Choose a category and topic from the menu at top. For example:
+                              <RouterLink :to="{name: 'compass', params: {metric: 'DIABETES_TOTAL', geographyLevel: 'tract'}}">
+                                Diabetes
+                              </RouterLink>, <RouterLink :to="{name: 'compass', params: {metric: 'SUMEJECT', geographyLevel: 'blockgroup'}}">
+                                Evictions
+                              </RouterLink>, or <RouterLink :to="{name: 'compass', params: {metric: 'CCC', geographyLevel: 'blockgroup'}}">
+                                Childcare Centers
+                              </RouterLink>.
                             </p>
                             <p>On a mobile device, tap the three lines at the top-left to open the menu.</p>
                           </v-card-text>
