@@ -33,20 +33,24 @@ export default {
 
 <style lang="css" scoped>
        .feedback-buttons {
-              display: flex;
-              align-items: center;
-              justify-content: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
        }
        button {
-              margin: 10px;
-              height: auto;
-              line-height: 1.5em;
-              padding: 5px;
-              flex: auto;
+          margin: 10px;
+          height: auto;
+          line-height: 1.5em;
+          padding: 5px;
+          flex: auto;
        }
        .signup-embed {
-            margin: 10px;
+         margin: 10px;
          min-height: 120px;
+       }
+
+       >>> #mc_embed_signup {
+         font-family: "Open Sans", sans-serif;
        }
 
        >>> #mc_embed_signup .button {

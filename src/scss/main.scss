@@ -1,8 +1,16 @@
 @import "./typography.scss";
 @import "./modules/contactus.css";
-@import "./modules/footer.css";
 @import "./modules/intro.scss";
 @import "./modules/a11y.css";
+
+// Make report more narrow on larger screens.
+.v-application {
+  @media (min-width: 1264px) {
+    .container {
+      max-width: 960px;
+    }
+  }
+}
 
 .v-btn:not(.v-btn--text):not(.v-btn--outlined):not(.v-btn--icon) {
   margin: 2px;
@@ -127,89 +135,6 @@
     min-height: 600px;
   }
 
-  // OLD STYLES
-
-  //html,
-  //body {
-  //  color: #555;
-
-  //  sans-serif;
-  //  -webkit-font-smoothing: antialiased;
-  //  -moz-osx-font-smoothing: grayscale;
-  //  letter-spacing: 0.02em;
-  //  font-size: 14px;
-  //  line-height: 1.4;
-  //}
-  //
-  ///* Temporary override for a vuetify setting */
-  //html {
-  //  overflow-y: auto !important;
-  //}
-
-  /* Here and in other .scss files, the styles are wrapped with v-application as a temporary override to ensure that current styles take precedence over vuetify defaults.
-
-  Todo: cleanup current styles and use vuetify defaults instead where possible */
-  //.v-application {
-  //  *,
-  //  ::after,
-  //  ::before {
-  //    box-sizing: border-box;
-  //  }
-  //
-  //  h1,
-  //  h2,
-  //  h3,
-  //  h4,
-  //  h5 {
-  //    color: #333;
-  //    line-height: 1.33;
-  //    margin-top: 20px;
-  //    margin-bottom: 10px;
-  //  }
-  //
-  //  p, h6 {
-  //    line-height: 1.33;
-  //  }
-  //
-  //  a {
-  //    text-decoration-skip-ink: auto;
-  //    color: rgb(211, 45, 101);
-  //  }
-  //
-  //  /* force content width to 100T */
-  //  .mdl-layout__content {
-  //    width: 100%;
-  //  }
-  //
-  //  /* sidebar */
-  //  .logo-img {
-  //    width: 100%;
-  //  }
-  //
-  //  .demo-drawer-header a {
-  //    text-decoration: none;
-  //    color: inherit;
-  //    padding-top: 5px;
-  //  }
-  //
-  //  .mdl-layout__drawer .mdl-navigation .mdl-navigation__link {
-  //    color: white !important;
-  //    font-weight: bold;
-  //  }
-  //
-  //  .mdl-layout__drawer .mdl-navigation .mdl-navigation__link:hover {
-  //    background-color: #68089e !important;
-  //  }
-  //
-
-  //
-  //  /* fix for mdl menu on linux screwing up page scrolling */
-  //  .mdl-menu,
-  //  .mdl-menu__container,
-  //  .mdl-menu__outline {
-  //    z-index: 0;
-  //  }
-  //
   /* for side by side elements */
   .flex-container {
     display: flex;
@@ -226,70 +151,7 @@
     margin-bottom: 5px;
   }
 
-  //
-  //  .icon {
-  //    display: inline-block;
-  //    width: 1em;
-  //    height: 1em;
-  //    stroke-width: 0;
-  //    stroke: currentColor;
-  //    fill: currentColor;
-  //  }
-  //
   input,
   textarea {
     outline: none;
   }
-
-//
-//  /* hide content on phones */
-//  @media (max-width: 520px) {
-//    .phoneHide {
-//      display: none;
-//    }
-//  }
-//
-//
-//
-//  /* Global button styling */
-//  .mdl-chip {
-//    margin: 2px;
-//    cursor: pointer;
-//  }
-//
-//  button.mdl-chip:hover {
-//    box-shadow: inset 0 0 0 2px rgba(104, 8, 158, 0.4);
-//  }
-//
-//  button.mdl-chip.is-disabled:hover {
-//    box-shadow: none;
-//  }
-//
-//  .mdl-chip.is-disabled {
-//    opacity: 0.25;
-//    cursor: inherit;
-//  }
-//
-//  .mdl-chip.is-active {
-//    background: #68089e;
-//    color: white;
-//    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12);
-//  }
-//
-//  /* Print styling for global components */
-//  .print #sidebar-hamburger-button {
-//    display: none;
-//  }
-//
-//  .print .header-nav {
-//    display: none;
-//  }
-//
-//  @media print {
-//    .mdl-layout__header {
-//      display: none;
-//    }
-//  }
-//
-//
-//}
