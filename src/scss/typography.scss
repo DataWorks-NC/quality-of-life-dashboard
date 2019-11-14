@@ -21,7 +21,7 @@
 .v-application {
   @include body-font;
 
-  a:not(.v-btn):not(.v-tab):not(.social__link),
+  a:not(.v-btn):not(.v-tab):not(.social__link):not(.get-started-link),
   .v-btn--text:not(.theme--dark):not(.download):not(.v-btn--disabled) {
     color: var(--v-accent-base);
     text-decoration: none;
