@@ -34,16 +34,22 @@
                       <div v-if="$i18n.locale === 'es'">
                         <h3>Cómo usarlo:</h3>
                         <v-card color="primary" height="250" class="d-flex">
-                          <v-img
-                            :src="require('../../assets/img/Choose_Metric.png')"
-                            alt
-                            width="50%"
-                          />
+                          <v-img :src="require('../../assets/img/Choose_Metric.png')" alt />
                           <v-card-text class="white--text">
-                            <p
-                              class="font-weight-bold"
-                            >
-                              Elija un tema del menú en la parte superior de la página
+                            <p class="font-weight-bold">
+                              Elija una categoría y un tema del menú en la parte superior de la página. Por ejemplo:
+                              <RouterLink
+                                :to="{name: 'compass', params: {metric: 'DIABETES_TOTAL', geographyLevel: 'tract'}}"
+                                class="get-started-link"
+                              >
+                                Diabetes
+                              </RouterLink>o
+                              <RouterLink
+                                :to="{name: 'compass', params: {metric: 'CCC', geographyLevel: 'blockgroup'}}"
+                                class="get-started-link"
+                              >
+                                Centros de Cuidado de Niños
+                              </RouterLink>.
                             </p>
                             <p>En teléfono celular, toque las tres líneas que se encuentran en la parte superior izquierda para abrir el menú</p>
                           </v-card-text>
@@ -80,25 +86,35 @@
                       <div v-else>
                         <h3>Here's how to get started:</h3>
                         <v-card color="primary" height="250" class="d-flex">
-                          <v-img
-                            :src="require('../../assets/img/Choose_Metric.png')"
-                            alt
-                            width="50%"
-                          />
+                          <v-img :src="require('../../assets/img/Choose_Metric.png')" alt />
                           <v-card-text class="white--text">
                             <p class="font-weight-bold">
-                              Choose a topic from the menu at top.
+                              Choose a category and topic from the menu at top. For example:
+                              <RouterLink
+                                :to="{name: 'compass', params: {metric: 'DIABETES_TOTAL', geographyLevel: 'tract'}}"
+                                class="get-started-link"
+                              >
+                                Diabetes
+                              </RouterLink>,
+                              <RouterLink
+                                :to="{name: 'compass', params: {metric: 'SUMEJECT', geographyLevel: 'blockgroup'}}"
+                                class="get-started-link"
+                              >
+                                Evictions
+                              </RouterLink>, or
+                              <RouterLink
+                                :to="{name: 'compass', params: {metric: 'CCC', geographyLevel: 'blockgroup'}}"
+                                class="get-started-link"
+                              >
+                                Childcare Centers
+                              </RouterLink>.
                             </p>
                             <p>On a mobile device, tap the three lines at the top-left to open the menu.</p>
                           </v-card-text>
                         </v-card>
 
                         <v-card color="primary" height="250" class="d-flex">
-                          <v-img
-                            :src="require('../../assets/img/Find_Neighborhood.png')"
-                            alt
-                            width="50%"
-                          />
+                          <v-img :src="require('../../assets/img/Find_Neighborhood.png')" alt />
                           <v-card-text class="white--text">
                             <p
                               class="font-weight-bold"
@@ -108,11 +124,7 @@
                           </v-card-text>
                         </v-card>
                         <v-card color="primary" height="250" class="d-flex">
-                          <v-img
-                            :src="require('../../assets/img/Create_Report.png')"
-                            alt
-                            width="50%"
-                          />
+                          <v-img :src="require('../../assets/img/Create_Report.png')" alt />
                           <v-card-text class="white--text">
                             <p
                               class="font-weight-bold"
@@ -281,6 +293,39 @@ export default {
 
   .v-card__text {
     font-size: 1em;
+
+    a {
+      color: white;
+      text-decoration: none;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+      -webkit-transition: 0.2s cubic-bezier(0.4, 0, 0.6, 1);
+      transition: 0.2s cubic-bezier(0.4, 0, 0.6, 1);
+
+      &:hover {
+        border-color:rgba(255, 255, 255, 1);
+      }
+    }
+
+    @media (max-width: 767px) {
+      font-size: 0.75em;
+      p {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .v-image {
+    overflow: hidden;
+
+    @media (min-width: 768px) {
+      width: 50%;
+    }
+  }
+
+  .v-card.d-flex {
+    @media (max-width: 767px) {
+      flex-direction: column;
+    }
   }
 
   .v-card.d-flex + .v-card.d-flex {
@@ -294,6 +339,9 @@ export default {
   h2 {
     font-size: 24px;
     margin-bottom: 0.75em;
+    @media (max-width: 767px) {
+      font-size: 20px;
+    }
   }
 
   h3 {
