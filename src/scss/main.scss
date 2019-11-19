@@ -3,15 +3,6 @@
 @import "./modules/intro.scss";
 @import "./modules/a11y.css";
 
-// Make report more narrow on larger screens.
-.v-application {
-  @media (min-width: 1264px) {
-    .container {
-      max-width: 960px;
-    }
-  }
-}
-
 .v-btn:not(.v-btn--text):not(.v-btn--outlined):not(.v-btn--icon) {
   margin: 2px;
   box-sizing: border-box;
