@@ -281,7 +281,6 @@ svg {
 }
 
 .legendText {
-  font-family: 'Roboto', sans-serif;
   font-size: 10px;
   letter-spacing: 0px;
   line-height: 100%;
