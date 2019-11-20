@@ -1,8 +1,9 @@
 <template>
-  <div>
+  <div class="report">
     <report-nav />
     <v-content>
       <v-container>
+        <report-jump-nav />
         <report-summary
           :report-title="reportTitle"
           :selected="selected"
@@ -26,6 +27,7 @@ import DashboardFooter from '../components/dashboard-footer.vue';
 import ReportSummary from '../components/report/report-summary';
 import ReportBody from '../components/report/report-body';
 import ReportNav from '../components/report/report-nav';
+import ReportJumpNav from '../components/report/report-jump-nav';
 
 export default {
   name: 'Report',
@@ -34,6 +36,7 @@ export default {
     ReportNav,
     ReportSummary,
     ReportBody,
+    ReportJumpNav,
   },
   data: () => ({
     mapConfig: config.mapConfig,
@@ -55,21 +58,10 @@ export default {
 };
 </script>
 
-<style scoped>
-.header {
-  max-width: 768px;
-  margin: 20px auto;
-}
-
-.metric-selector__title, .language-switcher {
-  color: #337ab7;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-
-.language-switcher {
-  float: right;
-  display: block;
+<style lang="scss" scoped>
+.report {
+  .container {
+    max-width: 1000px;
+  }
 }
 </style>

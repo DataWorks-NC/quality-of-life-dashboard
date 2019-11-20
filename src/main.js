@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import VueAnalytics from 'vue-analytics';
 
+import vueScrollto from 'vue-scrollto';
+import VueObserveVisibility from 'vue-observe-visibility';
 import store from './js/vuex-store';
 import router from './js/router';
 import i18n from './js/i18n';
@@ -97,6 +99,9 @@ router.beforeEach((to, from, next) => {
     next();
   });
 });
+
+Vue.use(vueScrollto);
+Vue.use(VueObserveVisibility);
 
 /* eslint-disable no-new */
 /* eslint-disable no-unused-vars */

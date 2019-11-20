@@ -1,8 +1,10 @@
 <template>
-  <v-container>
+  <v-container :id="`${formatAnchor(category.name)}-container`" v-observe-visibility="visibilityOptions">
     <v-row>
       <v-col cols="12">
-        <h1>{{ category.name }}</h1>
+        <h2 :id="formatAnchor(category.name)">
+          {{ category.name }}
+        </h2>
       </v-col>
     </v-row>
     <div v-for="m in category.metrics" :key="m.metric">
@@ -23,10 +25,11 @@
 </template>
 
 <script>
-import ReportMetric from './report-metric';
+import { mapMutations } from "vuex";
+import ReportMetric from "./report-metric";
 
 export default {
-  name: 'ReportCategory',
+  name: "ReportCategory",
   components: {
     ReportMetric,
   },
@@ -46,28 +49,49 @@ export default {
       default: () => {},
     },
   },
+  data() {
+    return {
+      visibilityOptions: {
+        callback: this.categoryVisible,
+        throttle: 300,
+        intersection: {
+          threshold: 0.1,
+        },
+      },
+    };
+  },
+  methods: {
+    ...mapMutations(["setActiveCategory"]),
+    formatAnchor(category) {
+      return category.toLowerCase().replace(/\s/g, "-");
+    },
+    categoryVisible(isVisible, entry) {
+      if (!isVisible) {
+        return;
+      }
+      this.setActiveCategory(`${entry.target.id}`);
+    },
+  },
 };
 </script>
 
-<style scoped>
-.page-category h1 {
-    margin: 0;
-    text-shadow: 1px 1px 1px #ccc;
-}
-.page-category .table {
-    margin-top: 30px;
-}
-.page-category .table td {
-    white-space: nowrap;
-    font-size: 0.9em;
-}
-.page-category .table td:first-of-type {
-    white-space: normal;
-}
-.page-category .report-column-selected {
-    background: #dce6f0;
-}
-.page-category .report-column-county {
-    background: #ecf0df;
+<style lang="scss" scoped>
+h2 {
+  font-size: 1.5em;
+  font-weight: 700;
+  position: relative;
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
+  text-transform: uppercase;
+
+  &::after {
+    content: "";
+    width: 150px;
+    height: 3px;
+    background-color: var(--v-primary-base);
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+  }
 }
 </style>

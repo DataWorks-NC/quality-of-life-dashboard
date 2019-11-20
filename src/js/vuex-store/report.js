@@ -14,6 +14,7 @@ export default {
     reportTitle: false, // Custom title for report.
     metricValues: {}, // Values for each metric in the report.
     countyAverages: {},
+    activeCategory: '',
   },
   getters: {
     areaNames: (state, getters, rootState) => rootState.selected.map(id => (rootState.language === 'es' ? rootState.geography.label_es(id) : rootState.geography.label(id))),
@@ -42,6 +43,7 @@ export default {
       }
       return metric;
     }),
+    activeCategory: state => state.activeCategory,
   },
   mutations: {
     // Populate metrics array on report data, which tracks visibility as well.
@@ -89,6 +91,9 @@ export default {
     },
     setCountyAverages(state, countyAverages) {
       state.countyAverages = countyAverages;
+    },
+    setActiveCategory(state, category) {
+      state.activeCategory = category;
     },
   },
   actions: {

@@ -38,7 +38,6 @@ export default {
         center: mapConfig.center,
         maxBounds: mapConfig.maxBounds,
         minZoom: mapConfig.minZoom,
-        preserveDrawingBuffer: mapConfig.preserveDrawingBuffer,
       };
 
       const map = new mapboxgl.Map(mapOptions);
@@ -78,7 +77,7 @@ export default {
           map.setPaintProperty('neighborhoods', 'line-width', 2);
         }
         if (map.getLayer('neighborhoods-fill-extrude')) {
-          map.setPaintProperty('neighborhoods-fill-extrude', 'fill-extrusion-color', '#F7E55B');
+          map.setPaintProperty('neighborhoods-fill-extrude', 'fill-extrusion-color', '#b2f3ed');
         }
 
         // Workaround to async issues with map.addLayer vs. map.queryRenderedFeatures
@@ -105,14 +104,12 @@ export default {
 
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 #map {
-    height: 400px;
-}
+  height: 400px;
 
-#map img {
-    max-width: none;
-    min-width: 0px;
-    height: auto;
+  @media (max-width: 767px) {
+    width: 100%;
+  }
 }
 </style>
