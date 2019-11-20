@@ -168,8 +168,5 @@ export default {
     async loadData({ dispatch }) {
       return Promise.all([dispatch('loadAreaData'), dispatch('loadCountyAverages')]);
     },
-    setActiveCategory({ commit }, category) {
-      commit('setActiveCategory', category);
-    },
   },
 };

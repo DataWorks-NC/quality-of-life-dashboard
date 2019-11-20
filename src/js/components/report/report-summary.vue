@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapMutations } from "vuex";
 import { prettyNumber } from "../../modules/number_format";
 
 const ReportMap = () => import(/* webpackChunkName: "report-map" */ "./report-map.vue");
@@ -99,7 +99,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["setActiveCategory"]),
+    ...mapMutations(["setActiveCategory"]),
     prettyValue(metric) {
       return prettyNumber(
         metric.value,

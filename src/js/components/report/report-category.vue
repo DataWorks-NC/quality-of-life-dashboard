@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapMutations } from "vuex";
 import ReportMetric from "./report-metric";
 
 export default {
@@ -61,7 +61,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["setActiveCategory"]),
+    ...mapMutations(["setActiveCategory"]),
     formatAnchor(category) {
       return category.toLowerCase().replace(/\s/g, "-");
     },

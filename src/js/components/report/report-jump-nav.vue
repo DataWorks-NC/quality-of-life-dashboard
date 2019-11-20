@@ -27,33 +27,27 @@ import { mapGetters } from "vuex";
 
 export default {
   name: "ReportJumpNav",
-  data() {
-    return {
-      activeTab: null,
-    };
-  },
-  created() {
-    this.$store.subscribe((mutation) => {
-      if (mutation.type === "setActiveCategory") {
-        if (this.activeCategory === 'summary') {
-          this.activeTab = 0;
-        } else {
-          const cat = this.activeCategory
-            .split("-")
-            .slice(0, -1)
-            .join(" ");
-          for (let i = 0; i < this.visibleCategories.length; i += 1) {
-            const item = this.visibleCategories[i].toLowerCase();
-            if (cat === item) {
-              this.activeTab = i + 1;
-            }
-          }
-        }
-      }
-    });
-  },
   computed: {
     ...mapGetters(["visibleCategories", "activeCategory"]),
+    activeTab: {
+      get() {
+        if (this.activeCategory === 'summary') {
+          return 0;
+        }
+        const cat = this.activeCategory.split("-").slice(0, -1).join(" ");
+        for (let i = 0; i < this.visibleCategories.length; i += 1) {
+          const item = this.visibleCategories[i].toLowerCase();
+          if (cat === item) {
+            return i + 1;
+          }
+        }
+        return null;
+      },
+      set() {
+        // Null but needed so we can use v-model without errors with activeTab. Could posslby move the
+        // v-scroll-to logic into this setter too at some point.
+      },
+    },
   },
   methods: {
     formatAnchor(category) {
