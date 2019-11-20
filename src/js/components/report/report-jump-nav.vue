@@ -3,13 +3,14 @@
     <v-col xs="12">
       <div>
         <v-tabs v-model="activeTab" background-color="primary" show-arrows dark>
-          <v-tab v-scroll-to="{ el: '#summary', offset: -150 }" exact rounded depressed>
+          <v-tab v-scroll-to="{ el: '#summary', offset: -150, cancelable: false }" tag="button" rounded depressed>
             Summary
           </v-tab>
           <v-tab
             v-for="category in visibleCategories"
             :key="formatAnchor(category)"
-            v-scroll-to="{ el: `#${formatAnchor(category)}`, offset: -60 }"
+            v-scroll-to="{ el: `#${formatAnchor(category)}`, offset: -60, cancelable: false }"
+            tag="button"
             rounded
             depressed
           >
