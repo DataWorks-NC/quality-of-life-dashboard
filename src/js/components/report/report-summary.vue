@@ -1,5 +1,5 @@
 <template>
-  <v-card id="summary" v-observe-visibility="visibilityOptions" class="page page-front">
+  <v-card :id="summaryId" v-observe-visibility="visibilityOptions" class="page page-front">
     <v-row>
       <v-col>
         <img
@@ -97,6 +97,11 @@ export default {
         },
       },
     };
+  },
+  computed: {
+    summaryId() {
+      return this.$t('strings.metricCategories.Summary').toLowerCase();
+    },
   },
   methods: {
     ...mapMutations(["setActiveCategory"]),

@@ -41,7 +41,8 @@
    "Health": "Health",
    "Housing": "Housing",
    "Infrastructure and Amenities": "Infrastructure and Amenities",
-   "Safety": "Safety"
+   "Safety": "Safety",
+   "Summary": "Summary"
   }
  },
  "dashboard": {
