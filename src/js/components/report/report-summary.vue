@@ -37,7 +37,7 @@
             <v-card v-for="metric in summaryMetrics" :key="metric.metric" flat>
               <p class="stat-category">
                 <a
-                  v-scroll-to="{ el: `#${formatAnchor(metric.category)}`, offset: -60 }"
+                  v-scroll-to="{ el: getAnchor(metric.category), offset: -60 }"
                   class="stat-category-link"
                 >{{ $t(`strings.metricCategories.${metric.category}`) }}</a>
               </p>
@@ -121,6 +121,9 @@ export default {
     },
     formatAnchor(category) {
       return category.toLowerCase().replace(/\s/g, "-");
+    },
+    getAnchor(categoryName) {
+      return `#${this.formatAnchor(this.$t(`strings.metricCategories['${categoryName}']`))}`;
     },
   },
 };
