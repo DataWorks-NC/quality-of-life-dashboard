@@ -40,7 +40,7 @@
       </v-btn>
 
       <template v-slot:extension>
-        <v-tabs v-model="categoryTab" show-arrows center-active class="d-none d-md-flex">
+        <v-tabs v-model="categoryTab" show-arrows center-active optional class="d-none d-md-flex">
           <v-tab
             v-for="category in categories"
             :key="category.id"
@@ -52,7 +52,7 @@
       </template>
     </v-app-bar>
 
-    <v-card class="d-none d-md-flex">
+    <v-card v-if="categoryTab" class="d-none d-md-flex">
       <v-tabs-items v-model="categoryTab" class="metric__buttons">
         <v-tab-item
           v-for="category in categories"

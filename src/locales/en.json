@@ -41,7 +41,8 @@
    "Health": "Health",
    "Housing": "Housing",
    "Infrastructure and Amenities": "Infrastructure and Amenities",
-   "Safety": "Safety"
+   "Safety": "Safety",
+   "Summary": "Summary"
   }
  },
  "dashboard": {
@@ -145,8 +146,8 @@
   "footerText": "Map from the Durham Neighborhood Compass, a project of DataWorks NC. Visit {compassLink} to build your own map!"
  },
  "reportMoreInfo": {
-  "hide": "Hide more info",
-  "show": "Show more info"
+  "hide": "Hide",
+  "show": "About the Data"
  },
  "reportSelector": {
   "categoryTip": "Click to show this category",
