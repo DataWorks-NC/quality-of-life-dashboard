@@ -1,5 +1,5 @@
 <template>
-  <v-card id="summary" v-observe-visibility="visibilityOptions" class="page page-front">
+  <v-card :id="summaryId" v-observe-visibility="visibilityOptions" class="page page-front">
     <v-row>
       <v-col>
         <img
@@ -37,7 +37,7 @@
             <v-card v-for="metric in summaryMetrics" :key="metric.metric" flat>
               <p class="stat-category">
                 <a
-                  v-scroll-to="{ el: `#${formatAnchor(metric.category)}`, offset: -60 }"
+                  v-scroll-to="{ el: getAnchor(metric.category), offset: -60 }"
                   class="stat-category-link"
                 >{{ $t(`strings.metricCategories.${metric.category}`) }}</a>
               </p>
@@ -98,6 +98,11 @@ export default {
       },
     };
   },
+  computed: {
+    summaryId() {
+      return this.$t('strings.metricCategories.Summary').toLowerCase();
+    },
+  },
   methods: {
     ...mapMutations(["setActiveCategory"]),
     prettyValue(metric) {
@@ -116,6 +121,9 @@ export default {
     },
     formatAnchor(category) {
       return category.toLowerCase().replace(/\s/g, "-");
+    },
+    getAnchor(categoryName) {
+      return `#${this.formatAnchor(this.$t(`strings.metricCategories['${categoryName}']`))}`;
     },
   },
 };

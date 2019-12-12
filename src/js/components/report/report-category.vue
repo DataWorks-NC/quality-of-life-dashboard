@@ -69,7 +69,7 @@ export default {
       if (!isVisible) {
         return;
       }
-      this.setActiveCategory(`${entry.target.id}`);
+      this.setActiveCategory(entry.target.id);
     },
   },
 };

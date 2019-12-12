@@ -35,9 +35,9 @@ export default {
     handleLinks() {
       const links = this.$el.getElementsByTagName("a");
       for (let i = 0; i < links.length; i += 1) {
-        links[
-          i
-        ].innerHTML = `<span class="link-underline">${links[i].innerHTML}</span>`;
+        if (!links[i].querySelector(".link-underline")) {
+          links[i].innerHTML = `<span class="link-underline">${links[i].innerHTML}</span>`;
+        }
       }
     },
   },

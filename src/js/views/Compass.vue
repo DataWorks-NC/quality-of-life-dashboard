@@ -39,13 +39,13 @@
                             <p class="font-weight-bold">
                               Elija una categoría y un tema del menú en la parte superior de la página. Por ejemplo:
                               <RouterLink
-                                :to="{name: 'compass', params: {metric: 'DIABETES_TOTAL', geographyLevel: 'tract'}}"
+                                :to="{name: 'compass', params: {locale: 'es', metric: 'DIABETES_TOTAL', geographyLevel: 'tract'}}"
                                 class="get-started-link"
                               >
                                 Diabetes
                               </RouterLink>o
                               <RouterLink
-                                :to="{name: 'compass', params: {metric: 'CCC', geographyLevel: 'blockgroup'}}"
+                                :to="{name: 'compass', params: {locale: 'es', metric: 'CCC', geographyLevel: 'blockgroup'}}"
                                 class="get-started-link"
                               >
                                 Centros de Cuidado de Niños
@@ -91,19 +91,19 @@
                             <p class="font-weight-bold">
                               Choose a category and topic from the menu at top. For example:
                               <RouterLink
-                                :to="{name: 'compass', params: {metric: 'DIABETES_TOTAL', geographyLevel: 'tract'}}"
+                                :to="{name: 'compass', params: {locale: 'en', metric: 'DIABETES_TOTAL', geographyLevel: 'tract'}}"
                                 class="get-started-link"
                               >
                                 Diabetes
                               </RouterLink>,
                               <RouterLink
-                                :to="{name: 'compass', params: {metric: 'SUMEJECT', geographyLevel: 'blockgroup'}}"
+                                :to="{name: 'compass', params: {locale: 'en', metric: 'SUMEJECT', geographyLevel: 'blockgroup'}}"
                                 class="get-started-link"
                               >
                                 Evictions
                               </RouterLink>, or
                               <RouterLink
-                                :to="{name: 'compass', params: {metric: 'CCC', geographyLevel: 'blockgroup'}}"
+                                :to="{name: 'compass', params: {locale: 'en', metric: 'CCC', geographyLevel: 'blockgroup'}}"
                                 class="get-started-link"
                               >
                                 Childcare Centers
