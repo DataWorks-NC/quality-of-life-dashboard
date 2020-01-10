@@ -104,11 +104,11 @@
     },
     {
       "path": "./dist/css/!(app|chunk-vendors|compass~report).*.css",
-      "maxSize": "7.5 kB"
+      "maxSize": "6 kB"
     },
     {
       "path": "./dist/js/dashboard-map~report-map.*.js",
-      "maxSize": "175 kB"
+      "maxSize": "190 kB"
     },
     {
       "path": "./dist/js/chunk-vendors.*.js",
