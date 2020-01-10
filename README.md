@@ -25,7 +25,7 @@ You'll then need to populate `private.js` in the `data/config` directory, follow
 
 Then run
 
-```bash`
+```bash
 npm run build
 npm start
 ```
