@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 module.exports = {
   flags: { // AKA feature flags
     runs: 5, // number or runs

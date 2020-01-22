@@ -4,7 +4,6 @@ import colors from './breaks';
 const mapConfig = require('../../../data/config/map.js');
 const siteConfig = require('../../../data/config/site.js');
 const dataConfigUnsorted = require('../../../data/config/data');
-const privateConfig = require('../../../data/config/private');
 const selectGroups = require('../../../data/config/selectgroups');
 
 // Sort dataConfig alphabetically by metric and category
@@ -40,7 +39,9 @@ export default {
   dataConfig, // Object where keys are metric IDs and values are config for that metric.
   mapConfig,
   metricsByCategory, // Object where keys are category names and properties are metrics within that category.
-  privateConfig,
   siteConfig,
   selectGroups,
+  privateConfig: {
+    mapboxAccessToken: process.env.VUE_APP_MAPBOX_ACCESS_TOKEN,
+  },
 };

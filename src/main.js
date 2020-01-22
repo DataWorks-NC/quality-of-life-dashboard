@@ -6,7 +6,6 @@ import VueObserveVisibility from 'vue-observe-visibility';
 import store from './js/vuex-store';
 import router from './js/router';
 import i18n from './js/i18n';
-import config from './js/modules/config';
 import vuetify from './plugins/vuetify';
 
 import App from './js/App';
@@ -131,9 +130,9 @@ const stringCompareEs = new Intl.Collator('es').compare;
 i18n.localizedStringCompareFn = (a, b) => (i18n.locale === 'es' ? stringCompareEs(a, b) : stringCompareEn(a, b));
 
 // Google analytics
-if ('googleAnalyticsId' in config.privateConfig && config.privateConfig.googleAnalyticsId) {
+if (process.env.VUE_APP_GOOGLE_ANALYTICS_ID) {
   Vue.use(VueAnalytics, {
-    id: config.privateConfig.googleAnalyticsId,
+    id: process.env.VUE_APP_GOOGLE_ANALYTICS_ID,
     router,
     debug: {
       sendHitTask: process.env.NODE_ENV === 'production',

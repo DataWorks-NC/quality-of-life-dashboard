@@ -9,6 +9,22 @@ const metricRoutes = ['en', 'es'].flatMap(
   ))),
 );
 
+const environmentDefaults = {
+  VUE_APP_GOOGLE_SEARCH_CONSOLE_VERIFICATION: '',
+  VUE_APP_GOOGLE_ANALYTICS_ID: false,
+  VUE_APP_I18N_LOCALE: 'en',
+  VUE_APP_I18N_FALLBACK_LOCALE: 'en',
+};
+
+process.env = {
+  ...environmentDefaults,
+  ...process.env,
+};
+
+if (!('VUE_APP_MAPBOX_ACCESS_TOKEN' in process.env) || process.env.VUE_APP_MAPBOX_ACCESS_TOKEN === '<FILL THIS IN>') {
+  console.error('VUE_APP_MAPBOX_ACCESS_TOKEN environment variable must be set! Try adding it to a .env file in the repo root.');
+}
+
 module.exports = {
 
   lintOnSave: false,
