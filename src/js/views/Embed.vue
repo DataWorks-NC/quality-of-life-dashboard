@@ -1,7 +1,7 @@
 <template>
   <v-content>
     <div class="map-container" style="position: relative">
-      <dashboard-map :mapbox-access-token="privateConfig.mapboxAccessToken" :map-config="mapConfig" />
+      <dashboard-map :mapbox-access-token="config.privateConfig.mapboxAccessToken" :map-config="mapConfig" />
       <dashboard-legend />
       <div class="map-popout-button">
         <router-link :to="{ name: 'compass', params: $route.params, query: { ...$route.query, legendTitle: undefined } }">
@@ -30,7 +30,6 @@ export default {
   data() {
     return {
       siteConfig: config.siteConfig,
-      privateConfig: config.privateConfig,
       mapConfig: config.mapConfig,
     };
   },
