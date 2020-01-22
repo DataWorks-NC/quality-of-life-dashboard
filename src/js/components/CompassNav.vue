@@ -3,7 +3,7 @@
     <v-app-bar dark extension-height="48px">
       <v-dialog v-model="drawer" fullscreen hide-overlay transition="dialog-bottom-transition">
         <template v-slot:activator="{ on }">
-          <v-app-bar-nav-icon class="d-md-none" @click="drawer = !drawer" />
+          <v-app-bar-nav-icon :aria-label="$t('strings.openMobileNav')" class="d-md-none" @click="drawer = !drawer" />
         </template>
         <v-card dark>
           <v-toolbar flat>
@@ -28,15 +28,16 @@
       </v-dialog>
       <v-toolbar-title>
         <router-link :to="{ name: 'homepage' }">
-          <img src="../../assets/img/logo.png" :alt="$t('strings.DurhamNeighborhoodCompass')">
+          <img src="../../assets/img/logo.png" :alt="$t('strings.DurhamNeighborhoodCompass')" class="d-none d-md-flex">
+          <img src="../../assets/img/logoMobile.png" :alt="$t('strings.DurhamNeighborhoodCompass')" class="d-md-none">
         </router-link>
       </v-toolbar-title>
       <div class="flex-grow-1" />
       <v-btn text @click="swapLanguage()">
         {{ $t('strings.ChangeLanguage') }}
       </v-btn>
-      <v-btn text href="/download/download.zip" @click="gaEvent('send', 'event', 'download', 'metric zip file download')">
-        {{ $t('strings.DownloadData') }}
+      <v-btn icon :aria-label="$t('strings.DownloadData')" href="/download/download.zip" @click="gaEvent('send', 'event', 'download', 'metric zip file download')">
+        <v-icon>{{ mdiDownload }}</v-icon>
       </v-btn>
 
       <template v-slot:extension>
@@ -69,7 +70,7 @@
 </template>
 
 <script>
-import { mdiClose } from '@mdi/js';
+import { mdiClose, mdiDownload } from '@mdi/js';
 import { mapState } from 'vuex';
 
 import { gaEvent } from '../modules/tracking';
@@ -83,6 +84,7 @@ export default {
     metricsByCategory: config.metricsByCategory,
     title: config.siteConfig.title,
     mdiClose,
+    mdiDownload,
   }),
   computed: {
     ...mapState(['metric', 'metricId']),
