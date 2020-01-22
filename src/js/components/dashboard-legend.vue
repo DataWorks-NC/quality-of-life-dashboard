@@ -3,7 +3,7 @@
     <div>
       <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=" class="background-print-img" aria-hidden="true">
       <div class="legendposition">
-        <a :title="$t('legend.MoveTableOfContents')" href="javascript:void(0)" @click="position()"><v-icon>{{ mdiCursorMove }}</v-icon></a>
+        <a class="no-underline" :title="$t('legend.MoveTableOfContents')" href="javascript:void(0)" @click="position"><v-icon>{{ mdiCursorMove }}</v-icon></a>
       </div>
       <p class="title">
         {{ $store.getters.legendTitle }}
@@ -149,6 +149,9 @@ export default {
         this.selectedValueRaw = prettyNumber(rawValue, 0, metricConfig.prefix);
       }
     },
+    /**
+     * Add query selectors to reposition the legend in a different corner.
+     */
     position() {
       const el = document.querySelector("#legend");
 
@@ -170,12 +173,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+/* #legend.top, .left, .bottom, and .right all need to be defined so that the legend reposition button works. */
 #legend.top {
   top: 8px;
 }
 
 #legend.left {
   left: 8px;
+}
+
+#legend.bottom {
+  bottom: 8px;
+}
+
+#legend.right {
+  right: 8px;
 }
 
 #legend {
@@ -189,6 +201,7 @@ export default {
   top: 0;
   right: 0;
   font-size: 0.8em;
+  z-index: 1000;
 }
 
 .legendposition a {

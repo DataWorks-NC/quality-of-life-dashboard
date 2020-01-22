@@ -282,6 +282,7 @@ export default {
 <style lang="scss" scoped>
 .map-container {
   min-height: 600px;
+  position: relative;
 }
 
 .landing-page {

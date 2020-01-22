@@ -46,7 +46,7 @@
   }
  },
  "dashboard": {
-  "moveToC": "Move Table of Contents"
+  "moveToC": "Click to move Table of Contents"
  },
  "distributionChart": {
   "DataDistribution": "Data Distribution"

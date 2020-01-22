@@ -46,7 +46,7 @@
   }
  },
  "dashboard": {
-  "moveToC": "Mover Tabla de Contenido"
+  "moveToC": "Haga clic para mover Tabla de Contenido"
  },
  "distributionChart": {
   "DataDistribution": "Distribución de los datos"
