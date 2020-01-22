@@ -33,7 +33,7 @@
                       <p>{{ $t('strings.about') }}</p>
                       <div v-if="$i18n.locale === 'es'">
                         <h3>Cómo usarlo:</h3>
-                        <v-card color="primary" height="250" class="d-flex">
+                        <v-card color="primary" class="d-flex">
                           <v-img :src="require('../../assets/img/Choose_Metric.png')" alt />
                           <v-card-text class="white--text">
                             <p class="font-weight-bold">
@@ -54,7 +54,7 @@
                             <p>En teléfono celular, toque las tres líneas que se encuentran en la parte superior izquierda para abrir el menú</p>
                           </v-card-text>
                         </v-card>
-                        <v-card color="primary" height="250" class="d-flex">
+                        <v-card color="primary" class="d-flex">
                           <v-img
                             :src="require('../../assets/img/Find_Neighborhood.png')"
                             alt
@@ -68,7 +68,7 @@
                             </p>
                           </v-card-text>
                         </v-card>
-                        <v-card color="primary" height="250" class="d-flex">
+                        <v-card color="primary" class="d-flex">
                           <v-img
                             :src="require('../../assets/img/Create_Report.png')"
                             alt
@@ -85,7 +85,7 @@
                       </div>
                       <div v-else>
                         <h3>Here's how to get started:</h3>
-                        <v-card color="primary" height="250" class="d-flex">
+                        <v-card color="primary" class="d-flex">
                           <v-img :src="require('../../assets/img/Choose_Metric.png')" alt />
                           <v-card-text class="white--text">
                             <p class="font-weight-bold">
@@ -113,7 +113,7 @@
                           </v-card-text>
                         </v-card>
 
-                        <v-card color="primary" height="250" class="d-flex">
+                        <v-card color="primary" class="d-flex">
                           <v-img :src="require('../../assets/img/Find_Neighborhood.png')" alt />
                           <v-card-text class="white--text">
                             <p
@@ -123,7 +123,7 @@
                             </p>
                           </v-card-text>
                         </v-card>
-                        <v-card color="primary" height="250" class="d-flex">
+                        <v-card color="primary" class="d-flex">
                           <v-img :src="require('../../assets/img/Create_Report.png')" alt />
                           <v-card-text class="white--text">
                             <p
@@ -282,6 +282,7 @@ export default {
 <style lang="scss" scoped>
 .map-container {
   min-height: 600px;
+  position: relative;
 }
 
 .landing-page {
