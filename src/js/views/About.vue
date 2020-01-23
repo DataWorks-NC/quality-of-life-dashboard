@@ -17,7 +17,7 @@
                     <h3>Here's how to get started:</h3>
                   </div>
 
-                  <i18n path="footer.credits" tag="p" class="site-credits text-center">
+                  <i18n path="footer.credits" tag="p">
                     <!-- Note: named places in i18n aren't working as described here, so the underlying footer.credits string currently uses numbered places -->
                     <ExternalLink place="GitHub" href="https://github.com/DataWorks-NC/quality-of-life-dashboard">
                       <span class="link-underline">GitHub</span>
@@ -65,9 +65,9 @@
 </template>
 
 <script>
-import CompassNav from "../components/CompassNav";
+import CompassNav from "../components/CompassNav.vue";
 import DashboardFooter from "../components/dashboard-footer.vue";
-import ExternalLink from "./external-link";
+import ExternalLink from "../components/external-link.vue";
 
 export default {
   name: "About",

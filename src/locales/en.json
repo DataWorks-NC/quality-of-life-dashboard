@@ -199,5 +199,9 @@
  },
  "welcome": {
   "title": "Welcome to the Durham Neighborhood Compass!"
+ },
+ "about": {
+  "link": "About",
+  "title": "About the Durham Neighborhood Compass"
  }
 }

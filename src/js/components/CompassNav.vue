@@ -33,6 +33,9 @@
         </router-link>
       </v-toolbar-title>
       <div class="flex-grow-1" />
+      <v-btn text :to="{name: 'about' }">
+        {{ $t('about.link') }}
+      </v-btn>
       <v-btn text @click="swapLanguage()">
         {{ $t('strings.ChangeLanguage') }}
       </v-btn>
