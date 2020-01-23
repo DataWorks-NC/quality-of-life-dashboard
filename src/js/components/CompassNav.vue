@@ -2,7 +2,10 @@
   <div>
     <v-app-bar dark extension-height="48px">
       <v-dialog v-model="drawer" fullscreen hide-overlay transition="dialog-bottom-transition">
-        <template v-slot:activator="{ on }">
+        <template v-slot:activator="{ // eslint-disable-next-line vue/no-unused-vars
+          on
+        }"
+        >
           <v-app-bar-nav-icon :aria-label="$t('strings.openMobileNav')" class="d-md-none" @click="drawer = !drawer" />
         </template>
         <v-card dark>
@@ -92,7 +95,7 @@ export default {
   computed: {
     ...mapState(['metric', 'metricId']),
     categories() {
-      return config.categories.map(c => ({ id: c.replace(/\s+/g, ''), name: this.$t(`strings.metricCategories['${c}']`), originalName: c }))
+      return config.categories.map((c) => ({ id: c.replace(/\s+/g, ''), name: this.$t(`strings.metricCategories['${c}']`), originalName: c }))
         .sort((a, b) => this.$i18n.localizedStringCompareFn(a.name, b.name));
     },
 
@@ -107,7 +110,7 @@ export default {
         return categoryId && `tab-${categoryId}`;
       },
       set(val) {
-        this.filterVal = this.categories.find(c => c.id === val.replace('tab-', ''));
+        this.filterVal = this.categories.find((c) => c.id === val.replace('tab-', ''));
       },
     },
   },
@@ -116,7 +119,7 @@ export default {
     categoryMetrics(categoryName) {
       if (categoryName && (categoryName in config.metricsByCategory)) {
         return config.metricsByCategory[categoryName]
-          .map(m => ({ metric: m.metric, name: (this.$i18n.locale === 'es' ? m.title_es : m.title) }))
+          .map((m) => ({ metric: m.metric, name: (this.$i18n.locale === 'es' ? m.title_es : m.title) }))
           .sort((a, b) => this.$i18n.localizedStringCompareFn(a.name, b.name));
       }
       return [];
