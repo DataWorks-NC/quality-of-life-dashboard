@@ -2,7 +2,7 @@
 #
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
 #
-version: 2
+version: 2.1
 jobs:
   build:
     docker:
@@ -19,10 +19,6 @@ jobs:
     steps:
       - checkout
       - run: git clone https://github.com/DataWorks-NC/durham-quality-of-life-data.git data
-      - run: sed -i "s/MAPBOX_ACCESS_TOKEN/$MAPBOX_ACCESS_TOKEN/" .circleci/config.private.js
-      - run: sed -i "s/ROLLBAR_ACCESS_TOKEN/$ROLLBAR_ACCESS_TOKEN/" .circleci/config.private.js
-      - run: sed -i "s/GOOGLE_ANALYTICS_ID/$GOOGLE_ANALYTICS_ID/" .circleci/config.private.js
-      - run: cp ./.circleci/config.private.js data/config/private.js
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -126,7 +122,7 @@ jobs:
       - run: npx pwmetrics https://nbhdcompassdev.azurewebsites.us/en/report/blockgroup?selected=370630019001 --config=./.circleci/pwmetrics-config.report.js
 
 workflows:
-  version: 2
+  version: 2.1
   build_and_deploy:
     jobs:
       - build

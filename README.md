@@ -1,10 +1,13 @@
-# Quality of Life Dashboard v3
+# Durham Neightorhood Compass
 
-A dashboard for community data and health. Forked from Tobin Bradley's work on Mecklenburg QoL dashboard. See their [demo site](http://mcmap.org/qol-dev).
+A dashboard for community data and health, maintained by [DataWorks NC](https://www.dataworks-nc.org) and [Research Action Design](https://rad.cat). Live at https://compass.durhamnc.gov
+
+## Original source
+This repo was forked from, and draws heavily on, Tobin Bradley's work on Mecklenburg QoL dashboard. See their [demo site](http://mcmap.org/qol-dev).
 
 The original Mecklenburg repository with old versions of the Dashboard is [here](https://github.com/tobinbradley/Mecklenburg-County-Quality-of-Life-Dashboard).
 
-## Related Projects
+### Related Projects
 
 *   [quality-of-life-embed](https://github.com/tobinbradley/quality-of-life-embed)
 *   [quality-of-life-report](https://github.com/tobinbradley/quality-of-life-report)
@@ -21,11 +24,11 @@ git clone https://github.com/DataWorks-NC/durham-quality-of-life-data data
 npm install
 ```
 
-You'll then need to populate `private.js` in the `data/config` directory, following the instructions in https://github.com/DataWorks-NC/durham-quality-of-life-data/blob/master/README.md.
+You'll then need to copy `.env.example` to a new `.env` file in the repo root and fill in (at minimum) the `VUE_APP_MAPBOX_ACCESS_TOKEN` with a valid mapbox access token. You can use this file to store other local environment variables (for example, for testing Google Analytics), but they're not strictly required.
 
 Then run
 
-```bash`
+```bash
 npm run build
 npm start
 ```
@@ -80,6 +83,12 @@ If you update the sprites file, you may need to check for missing sprites as the
 ## Testing
 
 We test with the help of [![Browserstack logo](https://raw.githubusercontent.com/DataWorks-NC/quality-of-life-dashboard/master/app/assets/img/browserstack-logo.png)](https://browserstack.com/)
+
+## Performance Testing
+
+We use pwmetrics to track how the deployed app code performs against Google Lighthouse metrics over time. For the most part, if you're running the site locally you won't want to use or mess with pwmetrics, but you can refer to `.circleci/pwmetrics-config.js` and the `.circleci/config.yml` file to better understand how pwmetrics is configured and used.
+
+We also try to track the generated bundle size of the app using bundlesize, which runs on each pull request in CircleCI to check generated files against limits which are set in `package.json`. Occasionally a file will go over that limit by a few kb here or there, and our current practice is just to adjust the bundlesize limits as needed until the build passes, but it's good to have the extra info.
 
 ## Translations
 

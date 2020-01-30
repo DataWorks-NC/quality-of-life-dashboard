@@ -31,6 +31,7 @@
   "TrendingFlat": "Sin cambios",
   "TrendingUp": "Aumentando",
   "ChangeLanguage": "View in English",
+  "openMobileNav": "Abrir el menú",
   "DownloadData": "Descargar datos",
   "metricCategories": {
    "Civic Engagement": "Participación cívica",
@@ -46,7 +47,7 @@
   }
  },
  "dashboard": {
-  "moveToC": "Mover Tabla de Contenido"
+  "moveToC": "Haga clic para mover Tabla de Contenido"
  },
  "distributionChart": {
   "DataDistribution": "Distribución de los datos"

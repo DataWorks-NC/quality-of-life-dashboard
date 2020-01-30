@@ -27,9 +27,10 @@ data
 deploy.sh
 .Rhistory
 .python-version
-.env
 .envrc
+.env
 /public/data
 
 # Auto-generated download files (some files in the /public/download directory do need to be tracked)
 /public/download/*.csv
+/public/download/download.zip
