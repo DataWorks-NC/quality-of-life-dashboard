@@ -58,25 +58,7 @@
   "ShareFeedbacK": ""
  },
  "footer": {
-  "credits": "View the Neighborhood Compass code on {0}. Based on code created by {1}, the {2}, and {3} with much ♥ for the projects that make this site possible: {4}, {5}, {6}, {7}, {8}, {9}, and {10}.",
-  "links": [
-   {
-    "href": "http://www.dataworks-nc.org",
-    "text": "About"
-   },
-   {
-    "href": "http://www.opendurham.org/",
-    "text": "Open Durham - Neighborhood Histories"
-   },
-   {
-    "href": "http://www.durhamhoods.com/",
-    "text": "Durham Hoods - Neighborhood Maps and Mailing List Hub"
-   },
-   {
-    "href": "https://opendurham.nc.gov/pages/home/",
-    "text": "City of Durham Open Data Portal"
-   }
-  ]
+  "radCredit": "Site maintained by {radLink}"
  },
  "geographies": {
   "tract": {

@@ -11,7 +11,11 @@
         <img src="../../assets/img/countyLogo.png" :alt="$t('strings.DurhamCountyLogo')" height="125px">
       </ExternalLink>
     </p>
-    <p class="logos overline text-center ">Site maintained by <ExternalLink href="https://rad.cat">Research Action Design</ExternalLink></p>
+    <i18n path="footer.radCredit" tag="p" class="logos overline text-center">
+      <ExternalLink place="radLink" href="https://rad.cat">
+        Research Action Design
+      </ExternalLink>
+    </i18n>
   </v-footer>
 </template>
 

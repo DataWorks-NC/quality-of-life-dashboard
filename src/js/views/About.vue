@@ -14,7 +14,15 @@
                     <h3>SPANISH TEXT TBD</h3>
                   </div>
                   <div v-else>
-                    <h3>Here's how to get started:</h3>
+                    <h3>How to use this site</h3>
+                    <p>To learn more about how to use the Compass, check out these video tutorials from DataWorks' fall 2019 student interns, Sydney and Jesse.</p>
+                    <iframe v-for="youtubeUrl in youtubeHowToUseUrls" :key="youtubeUrl" width="100%" height="315" :src="youtubeUrl" frameborder="0" allow="accelerometer; encrypted-media; gyroscope;" allowfullscreen class="youtube" />
+                    <h3>Get in touch with us</h3>
+                    <p>TO DO</p>
+                    <h3>Credits</h3>
+                    <p>TO DO</p>
+                    <h3>Resources</h3>
+                    <p>TO DO</p>
                   </div>
 
                   <i18n path="footer.credits" tag="p">
@@ -76,6 +84,9 @@ export default {
     DashboardFooter,
     ExternalLink,
   },
+  data: () => ({
+    youtubeHowToUseUrls: ["https://www.youtube.com/embed/_kgXqqjDsFA", "https://www.youtube.com/embed/e3nPdpHPpBc"],
+  }),
   mounted() {
     this.$nextTick(() => {
       let event;
@@ -97,6 +108,13 @@ export default {
 
     div {
       overflow: auto;
+    }
+
+    .youtube {
+      clear: both;
+      display: block;
+      margin-bottom: 16px;
+      max-width: 800px;
     }
 
     .v-card__text {
