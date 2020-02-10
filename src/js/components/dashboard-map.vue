@@ -243,21 +243,45 @@ export default {
     initNeighborhoods() {
       const { map } = this;
 
-      // selected neighborhood
-      map.addLayer({
-        'id': `${this.geography.id}`,
-        'type': 'line',
-        'source': this.geography.id,
-        'layout': {},
-        'paint': {},
-      }, this.mapConfig.neighborhoodsSelectedBefore);
-
+      // Choropleth fill layer for all tracts/blockgroups.
       map.addLayer({
         'id': `${this.geography.id}-fill`,
         'type': 'fill',
         'source': this.geography.id,
+        'paint': {
+          'fill-outline-color': 'rgba(0,0,0,1)',
+        },
       }, this.mapConfig.neighborhoodsBefore);
 
+      // Outlines selected tracts/blockgroups with a wider/brighter halo.
+      map.addLayer({
+        'id': `${this.geography.id}`,
+        'type': 'line',
+        'source': this.geography.id,
+        'filter': ['in', ['string', ['get', 'id']], ['literal', this.selected]],
+        'layout': {
+          'line-join': 'round',
+        },
+        'paint': {
+          'line-blur': 3,
+          'line-offset': -3,
+          'line-width': 8,
+          'line-color': '#D996FF',
+        },
+      }, this.mapConfig.neighborhoodsSelectedBefore);
+
+      // Choropleth fill layer selected tracts/blockgroups only.
+      map.addLayer({
+        'id': `${this.geography.id}-selected-fill`,
+        'filter': ['in', ['string', ['get', 'id']], ['literal', this.selected]],
+        'type': 'fill',
+        'paint': {
+          'fill-outline-color': '#68089e',
+        },
+        'source': this.geography.id,
+      }, this.mapConfig.neighborhoodsSelectedBefore);
+
+      // 3D layer
       map.addLayer({
         'id': `${this.geography.id}-fill-extrude`,
         'type': 'fill-extrusion',
@@ -268,35 +292,30 @@ export default {
         'paint': {
           'fill-extrusion-opacity': 1,
         },
-      }, this.mapConfig.neighborhoodsSelectedBefore);
-
-      // neighborhood boundaries
-      map.addLayer({
-        'id': `${this.geography.id}-outlines`,
-        'type': 'line',
-        'source': this.geography.id,
-        'layout': {},
-        'paint': {
-          'line-color': 'rgba(0,0,0,1)',
-          'line-width': 0.4,
-        },
-      }, this.mapConfig.neighborhoodsBefore);
+      }, this.mapConfig.threeDBefore);
     },
 
     styleNeighborhoods() {
       const { map } = this;
+      const colors = this.getColors();
+
+      const selectedFilter = ['in', ['string', ['get', 'id']], ['literal', this.selected]];
       if (map.getLayer(`${this.geography.id}`)) {
-        map.setPaintProperty(`${this.geography.id}`, 'line-color', this.getOutlineColor());
-        map.setPaintProperty(`${this.geography.id}`, 'line-width', this.getOutlineWidth());
+        map.setFilter(`${this.geography.id}`, selectedFilter);
       }
 
-      const colors = this.getColors();
+      if (map.getLayer(`${this.geography.id}-selected-fill`)) {
+        map.setFilter(`${this.geography.id}-selected-fill`, selectedFilter);
+        map.setPaintProperty(`${this.geography.id}-selected-fill`, 'fill-color', colors);
+      }
+
 
       if (map.getLayer(`${this.geography.id}-fill`)) {
         map.setPaintProperty(`${this.geography.id}-fill`, 'fill-color', colors);
       }
+
       if (map.getLayer(`${this.geography.id}-fill-extrude`)) {
-        map.setPaintProperty(`${this.geography.id}-fill-extrude`, 'fill-extrusion-color', { ...colors, default: 'rgb(242,243,240)' });
+        map.setPaintProperty(`${this.geography.id}-fill-extrude`, 'fill-extrusion-color', colors);
         map.setPaintProperty(`${this.geography.id}-fill-extrude`, 'fill-extrusion-height', this.getHeight());
       }
 
@@ -324,8 +343,8 @@ export default {
 
     updateGeography(newGeography, oldGeography) {
       if (!this.geography.id) return;
-      const oldMapLayers = [`${oldGeography.id}`, `${oldGeography.id}-fill`, `${oldGeography.id}-fill-extrude`, `${oldGeography.id}-outlines`];
-      const newMapLayers = [`${newGeography.id}`, `${newGeography.id}-fill`, `${newGeography.id}-outlines`];
+      const oldMapLayers = [`${oldGeography.id}`, `${oldGeography.id}-fill`, `${oldGeography.id}-selected-fill`, `${oldGeography.id}-fill-extrude`];
+      const newMapLayers = [`${newGeography.id}`, `${newGeography.id}-fill`, `${oldGeography.id}-selected-fill`];
       const _this = this;
 
       if (!this.map.getSource(newGeography.id)) {
@@ -373,85 +392,55 @@ export default {
 
       return bounds;
     },
-    getOutlineColor() {
-      const stops = [];
-      const _this = this;
 
-      _this.selected.forEach((id) => {
-        stops.push([id, '#68089e']);
-      });
-
-      const outline = {
-        property: 'id',
-        default: 'rgba(0,0,0,0)',
-        type: 'categorical',
-        stops,
-      };
-
-      if (stops.length > 0) {
-        return outline;
-      }
-      return outline.default;
-    },
-    getOutlineWidth() {
-      const stops = [];
-      const _this = this;
-
-      _this.selected.forEach((id) => {
-        stops.push([id, 4]);
-      });
-
-      const outlineSize = {
-        property: 'id',
-        default: 0,
-        type: 'categorical',
-        stops,
-      };
-
-      if (stops.length > 0) {
-        return outlineSize;
-      }
-      return outlineSize.default;
-    },
+    // Returns a Mapbox GL Expression assigning tract/blockgroup values to the color which matches their metric value
+    // using this.colors and this.breaks to set colors and break values. Also highlights tracts/blockgroups in yellow
+    // when their IDs are in this.highlight.
     getColors() {
       if (!this.metric.data) return;
 
-      const stops = [];
-      const { breaks } = this;
-      const { colors } = this;
+      // Array of arrays of IDs. Places 0-4 correspond to choropleth colors 1-5 and place 5 corresponds to highlight.
+      const stops = [[], [], [], [], [], []];
 
-      const color = function (val) {
+      const { breaks, colors } = this;
+
+      const getStop = (val) => {
         if (val <= breaks[1]) {
-          return colors[0];
-        }
-        if (val <= breaks[2]) {
-          return colors[1];
+          return 0;
+        } if (val <= breaks[2]) {
+          return 1;
         } if (val <= breaks[3]) {
-          return colors[2];
+          return 2;
         } if (val <= breaks[4]) {
-          return colors[3];
+          return 3;
         } if (val <= breaks[5]) {
-          return colors[4];
+          return 4;
         }
       };
 
       Object.keys(this.metric.data.map).forEach((id) => {
         const value = this.metric.data.map[id][`y_${this.year}`];
-
         if (this.highlight.indexOf(id) !== -1) {
-          stops.push([id, '#F7E55B']);
+          stops[5].push(id);
         } else if (value !== null) {
-          stops.push([id, color(value)]);
+          stops[getStop(value)].push(id);
         }
       });
 
-      return {
-        property: 'id',
-        default: 'rgba(242,243,240,0)',
-        type: 'categorical',
-        stops,
-      };
+      const returnExpression = ['case'];
+      colors.forEach((color, idx) => {
+        returnExpression.push(['in', ['string', ['get', 'id']], ['literal', stops[idx]]]);
+        returnExpression.push(color);
+      });
+
+      returnExpression.push(['in', ['string', ['get', 'id']], ['literal', stops[5]]]);
+      returnExpression.push('#F7E55B');
+      returnExpression.push(['rgb', 242, 243, 240]);
+
+      return returnExpression;
     },
+
+    // TODO: Update this function to use expression syntax instead of deprecated property function.
     getHeight() {
       if (!this.metric.data) return;
 
