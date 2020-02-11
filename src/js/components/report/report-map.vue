@@ -23,8 +23,11 @@ export default {
       default: () => [],
     },
   },
+  watch: {
+    '$i18n.locale': 'setLabelLanguage',
+  },
   mounted() {
-    this.initMap();
+    this.map = this.initMap();
   },
   methods: {
     initMap() {
@@ -48,20 +51,25 @@ export default {
 
       const _this = this;
       // after map initiated, grab geography and initiate/style neighborhoods
-      map.once('style.load', () => {
+      map.once('load', () => {
         map.addSource('neighborhoods', {
           type: 'geojson',
           data: `/data/${_this.geographyId}.geojson.json`,
         });
 
-        // neighborhood boundaries
+        // Neighborhood boundaries
         // TODO: Is `building` the right layer for this to be before?
         map.addLayer({
           id: 'neighborhoods',
           type: 'line',
           source: 'neighborhoods',
-          filter: ['match', ['get', 'id'], _this.selectedGeographies, true, false],
-        }, 'tunnel_motorway_link_casing');
+          paint: {
+            'line-color': '#00688B',
+            'line-width': 2,
+            'line-opacity': 0.75,
+          },
+          filter: ['in', ['string', ['get', 'id']], ['literal', _this.selectedGeographies]],
+        });
 
         map.addLayer({
           id: 'neighborhoods-fill-extrude',
@@ -69,35 +77,53 @@ export default {
           source: 'neighborhoods',
           paint: {
             'fill-extrusion-opacity': 1,
+            'fill-extrusion-color': '#b2f3ed',
           },
-          filter: ['match', ['get', 'id'], _this.selectedGeographies, true, false],
+          filter: ['in', ['string', ['get', 'id']], ['literal', _this.selectedGeographies]],
         }, 'waterway_river');
-        if (map.getLayer('neighborhoods')) {
-          map.setPaintProperty('neighborhoods', 'line-color', '#00688B');
-          map.setPaintProperty('neighborhoods', 'line-width', 2);
-        }
-        if (map.getLayer('neighborhoods-fill-extrude')) {
-          map.setPaintProperty('neighborhoods-fill-extrude', 'fill-extrusion-color', '#b2f3ed');
-        }
+
+        map.addLayer({
+          id: 'labels',
+          type: 'symbol',
+          source: 'neighborhoods',
+          layout: {
+            'text-font': ['Open Sans Semibold'],
+            'text-field': _this.$i18n.locale === 'es' ? '{label_es}' : '{label}',
+            'text-transform': 'uppercase',
+            'text-size': 12,
+            'text-allow-overlap': true,
+          },
+          paint: {
+            'text-halo-color': '#fff',
+            'text-halo-width': 2,
+          },
+          filter: ['in', ['string', ['get', 'id']], ['literal', _this.selectedGeographies]],
+        });
 
         // Workaround to async issues with map.addLayer vs. map.queryRenderedFeatures
         // @see https://github.com/mapbox/mapbox-gl-js/issues/4222#issuecomment-279446075
         function afterMapRenders() {
           if (!map.loaded()) { return; }
-
-          const visibleFeatures = map.queryRenderedFeatures({ layers: ['neighborhoods'] });
-          const bounds = _this.getBoundingBox(visibleFeatures);
-          map.fitBounds(bounds, { padding: 50 });
-          map.off('render', afterMapRenders);
+          if (map.getLayer('neighborhoods')) {
+            const visibleFeatures = map.queryRenderedFeatures({ layers: ['neighborhoods'] });
+            const bounds = _this.getBoundingBox(visibleFeatures);
+            map.fitBounds(bounds, { padding: 50 });
+            map.off('render', afterMapRenders);
+          }
         }
-
         map.on('render', afterMapRenders);
       });
+      return map;
     },
     getBoundingBox(features) {
       const longitudes = features.reduce((i, f) => (i.concat(f.geometry.coordinates[0].map(c => c[0]))), []);
       const latitudes = features.reduce((i, f) => (i.concat(f.geometry.coordinates[0].map(c => c[1]))), []);
       return [[Math.min(...longitudes), Math.min(...latitudes)], [Math.max(...longitudes), Math.max(...latitudes)]];
+    },
+    setLabelLanguage() {
+      if (this.map && this.map.getLayer('labels')) {
+        this.map.setLayoutProperty('labels', 'text-field', this.$i18n.locale === 'es' ? '{label_es}' : '{label}');
+      }
     },
   },
 };

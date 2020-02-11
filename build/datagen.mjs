@@ -36,7 +36,14 @@ _.each(siteConfig.geographies || ['geography'], (geography) => {
 
     // Add labels
     data = JSON.parse(data);
-    data.features = data.features.map((g) => {g.properties.label = geography.label(g.properties.id); return g;});
+    data.features = data.features.map((g) => {
+      g.properties = {
+        ...g.properties,
+        label: geography.label(g.properties.id),
+        label_es: geography.label_es(g.properties.id),
+      };
+      return g;
+    });
 
     data = JSON.stringify(data);
     fs.writeFile(`public/data/${geography.id}.geojson.json`, jsonminify(data), (err) => {

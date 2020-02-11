@@ -42,6 +42,7 @@ export default {
     'year': 'updateYear',
     'geography': 'updateGeography',
     'isPitched3D': 'toggle3D',
+    '$i18n.locale': 'setLabelLanguage',
   },
 
   mounted() {
@@ -147,7 +148,7 @@ export default {
       map.touchZoomRotate.disableRotation();
 
       // after map initiated, grab geography and initiate/style neighborhoods
-      map.once('style.load', () => {
+      map.once('load', () => {
         // Add tracts
         map.addSource(_this.geography.id, {
           type: 'geojson',
@@ -228,7 +229,7 @@ export default {
           const feature = features[0];
           const { id } = feature.properties;
           const data = _this.metric.data.map[id][`y_${_this.year}`];
-          const geographyLabel = _this.$i18n.locale === 'en' ? _this.geography.label(id) : _this.geography.label_es(id);
+          const geographyLabel = _this.$i18n.locale === 'es' ? feature.properties.label_es : feature.properties.label;
           const val = prettyNumber(data, _this.metric.config.decimals, _this.metric.config.prefix,
             _this.metric.config.suffix, _this.metric.config.commas);
           const label = _this.metric.config.label ? ` ${_this.$t(`metricLabels.${_this.metric.config.label}`)}` : '';
@@ -255,31 +256,65 @@ export default {
 
       // Outlines selected tracts/blockgroups with a wider/brighter halo.
       map.addLayer({
-        'id': `${this.geography.id}`,
-        'type': 'line',
-        'source': this.geography.id,
-        'filter': ['in', ['string', ['get', 'id']], ['literal', this.selected]],
-        'layout': {
+        id: `${this.geography.id}-selected-halo`,
+        type: 'line',
+        source: this.geography.id,
+        filter: ['in', ['string', ['get', 'id']], ['literal', this.selected]],
+        layout: {
           'line-join': 'round',
         },
-        'paint': {
+        paint: {
           'line-blur': 3,
           'line-offset': -3,
           'line-width': 8,
           'line-color': '#D996FF',
         },
-      }, this.mapConfig.neighborhoodsSelectedBefore);
+      }, this.mapConfig.neighborhoodsBefore);
 
       // Choropleth fill layer selected tracts/blockgroups only.
       map.addLayer({
-        'id': `${this.geography.id}-selected-fill`,
-        'filter': ['in', ['string', ['get', 'id']], ['literal', this.selected]],
-        'type': 'fill',
-        'paint': {
+        id: `${this.geography.id}-selected-outline`,
+        filter: ['in', ['string', ['get', 'id']], ['literal', this.selected]],
+        type: 'line',
+        layout: {
+          'line-join': 'round',
+        },
+        paint: {
+          'line-width': 3,
+          'line-color': '#68089e',
+        },
+        source: this.geography.id,
+      }, this.mapConfig.threeDBefore);
+
+      // Choropleth fill layer selected tracts/blockgroups only.
+      map.addLayer({
+        id: `${this.geography.id}-selected-fill`,
+        filter: ['in', ['string', ['get', 'id']], ['literal', this.selected]],
+        type: 'fill',
+        paint: {
           'fill-outline-color': '#68089e',
         },
-        'source': this.geography.id,
-      }, this.mapConfig.neighborhoodsSelectedBefore);
+        source: this.geography.id,
+      }, this.mapConfig.neighborhoodsBefore);
+
+      // Labels
+      map.addLayer({
+        id: `${this.geography.id}-labels`,
+        type: 'symbol',
+        source: this.geography.id,
+        layout: {
+          'text-font': ['Open Sans Semibold'],
+          'text-field': this.$i18n.locale === 'es' ? '{label_es}' : '{label}',
+          'text-transform': 'uppercase',
+          'text-size': 12,
+          'text-allow-overlap': true,
+        },
+        paint: {
+          'text-halo-color': 'rgba(255,255,255,0.75)',
+          'text-halo-width': 1,
+        },
+        filter: ['in', ['string', ['get', 'id']], ['literal', this.selected]],
+      });
 
       // 3D layer
       map.addLayer({
@@ -300,8 +335,16 @@ export default {
       const colors = this.getColors();
 
       const selectedFilter = ['in', ['string', ['get', 'id']], ['literal', this.selected]];
-      if (map.getLayer(`${this.geography.id}`)) {
-        map.setFilter(`${this.geography.id}`, selectedFilter);
+      if (map.getLayer(`${this.geography.id}-selected-halo`)) {
+        map.setFilter(`${this.geography.id}-selected-halo`, selectedFilter);
+      }
+
+      if (map.getLayer(`${this.geography.id}-labels`)) {
+        map.setFilter(`${this.geography.id}-labels`, selectedFilter);
+      }
+
+      if (map.getLayer(`${this.geography.id}-selected-outline`)) {
+        map.setFilter(`${this.geography.id}-selected-outline`, selectedFilter);
       }
 
       if (map.getLayer(`${this.geography.id}-selected-fill`)) {
@@ -343,8 +386,8 @@ export default {
 
     updateGeography(newGeography, oldGeography) {
       if (!this.geography.id) return;
-      const oldMapLayers = [`${oldGeography.id}`, `${oldGeography.id}-fill`, `${oldGeography.id}-selected-fill`, `${oldGeography.id}-fill-extrude`];
-      const newMapLayers = [`${newGeography.id}`, `${newGeography.id}-fill`, `${oldGeography.id}-selected-fill`];
+      const oldMapLayers = [`${oldGeography.id}-selected-halo`, `${oldGeography.id}-selected-outline`, `${oldGeography.id}-fill`, `${oldGeography.id}-selected-fill`, `${oldGeography.id}-fill-extrude`, `${oldGeography.id}-labels`];
+      const newMapLayers = [`${newGeography.id}-selected-halo`, `${newGeography.id}-selected-outline`, `${newGeography.id}-fill`, `${oldGeography.id}-selected-fill`, `${newGeography.id}-labels`];
       const _this = this;
 
       if (!this.map.getSource(newGeography.id)) {
@@ -480,6 +523,14 @@ export default {
         const query = { ...this.$route.query, selected: this.selected.slice(0, i).concat(this.selected.slice(i + 1)) };
         delete query.reportTitle;
         this.$router.push({ query });
+      }
+    },
+    setLabelLanguage() {
+      if (this.map && this.map.getLayer('tract-labels')) {
+        this.map.setLayoutProperty('tract-labels', 'text-field', this.$i18n.locale === 'es' ? '{label_es}' : '{label}');
+      }
+      if (this.map && this.map.getLayer('blockgroup-labels')) {
+        this.map.setLayoutProperty('blockgroup-labels', 'text-field', this.$i18n.locale === 'es' ? '{label_es}' : '{label}');
       }
     },
   },
