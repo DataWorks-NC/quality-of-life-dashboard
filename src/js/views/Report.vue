@@ -42,7 +42,11 @@ export default {
     mapConfig: config.mapConfig,
     storeWatchers: [],
   }),
-  computed: { ...mapState(['geography', 'selected']), ...mapGetters(['reportTitle', 'summaryMetrics']) },
+  computed: {
+    ...mapState(['geography', 'selected']),
+    ...mapGetters(['summaryMetrics']),
+    reportTitle() { return this.$store.getters.reportTitle || this.$t('strings.DurhamCounty'); },
+  },
   mounted() {
     this.$nextTick(() => {
       let event;

@@ -56,9 +56,9 @@ _.each(siteConfig.geographies || ['geography'], (geography) => {
         }
         try {
           contents = JSON.parse(data);
-        } catch (err) {
+        } catch (exception) {
           console.log(
-            `Error parsing ${dest}/metric/${geography.id}/m${metric.metric}.json: ${err.message}`,
+            `Error parsing ${dest}/metric/${geography.id}/m${metric.metric}.json: ${exception.message}`,
           );
           return callback();
         }

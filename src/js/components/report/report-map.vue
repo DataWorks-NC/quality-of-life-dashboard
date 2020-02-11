@@ -52,6 +52,7 @@ export default {
       const _this = this;
       // after map initiated, grab geography and initiate/style neighborhoods
       map.once('load', () => {
+        const selectedFilter = _this.selectedGeographies.length ? ['in', ['string', ['get', 'id']], ['literal', _this.selectedGeographies]] : ['boolean', true];
         map.addSource('neighborhoods', {
           type: 'geojson',
           data: `/data/${_this.geographyId}.geojson.json`,
@@ -59,17 +60,37 @@ export default {
 
         // Neighborhood boundaries
         // TODO: Is `building` the right layer for this to be before?
-        map.addLayer({
-          id: 'neighborhoods',
-          type: 'line',
-          source: 'neighborhoods',
-          paint: {
-            'line-color': '#00688B',
-            'line-width': 2,
-            'line-opacity': 0.75,
-          },
-          filter: ['in', ['string', ['get', 'id']], ['literal', _this.selectedGeographies]],
-        });
+        if (_this.selectedGeographies.length) {
+          map.addLayer({
+            id: 'neighborhoods',
+            type: 'line',
+            source: 'neighborhoods',
+            paint: {
+              'line-color': '#00688B',
+              'line-width': 2,
+              'line-opacity': 0.75,
+            },
+            filter: selectedFilter,
+          });
+
+          map.addLayer({
+            id: 'labels',
+            type: 'symbol',
+            source: 'neighborhoods',
+            layout: {
+              'text-font': ['Open Sans Semibold'],
+              'text-field': _this.$i18n.locale === 'es' ? '{label_es}' : '{label}',
+              'text-transform': 'uppercase',
+              'text-size': 12,
+              'text-allow-overlap': true,
+            },
+            paint: {
+              'text-halo-color': '#fff',
+              'text-halo-width': 2,
+            },
+            filter: selectedFilter,
+          });
+        }
 
         map.addLayer({
           id: 'neighborhoods-fill-extrude',
@@ -79,33 +100,15 @@ export default {
             'fill-extrusion-opacity': 1,
             'fill-extrusion-color': '#b2f3ed',
           },
-          filter: ['in', ['string', ['get', 'id']], ['literal', _this.selectedGeographies]],
+          filter: selectedFilter,
         }, 'waterway_river');
-
-        map.addLayer({
-          id: 'labels',
-          type: 'symbol',
-          source: 'neighborhoods',
-          layout: {
-            'text-font': ['Open Sans Semibold'],
-            'text-field': _this.$i18n.locale === 'es' ? '{label_es}' : '{label}',
-            'text-transform': 'uppercase',
-            'text-size': 12,
-            'text-allow-overlap': true,
-          },
-          paint: {
-            'text-halo-color': '#fff',
-            'text-halo-width': 2,
-          },
-          filter: ['in', ['string', ['get', 'id']], ['literal', _this.selectedGeographies]],
-        });
 
         // Workaround to async issues with map.addLayer vs. map.queryRenderedFeatures
         // @see https://github.com/mapbox/mapbox-gl-js/issues/4222#issuecomment-279446075
         function afterMapRenders() {
           if (!map.loaded()) { return; }
-          if (map.getLayer('neighborhoods')) {
-            const visibleFeatures = map.queryRenderedFeatures({ layers: ['neighborhoods'] });
+          if (map.getLayer('neighborhoods-fill-extrude')) {
+            const visibleFeatures = map.queryRenderedFeatures({ layers: ['neighborhoods-fill-extrude'] });
             const bounds = _this.getBoundingBox(visibleFeatures);
             map.fitBounds(bounds, { padding: 50 });
             map.off('render', afterMapRenders);

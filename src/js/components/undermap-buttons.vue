@@ -3,14 +3,13 @@
     <v-btn
       :disabled="!selected.length"
       :to="{ query: {
-        ...$route.query, selected: [], reportTitle: undefined, legendTitle: undefined,
+        ...$route.query, selected: [], reportTitle: undefined, legendTitle: undefined
       } }"
       dark
     >
       {{ $t('undermapButtons.clear') }}
     </v-btn>
     <v-btn
-      :disabled="!selected.length"
       :to="{ name: 'report', params: $route.params, query: { ...$route.query, legendTitle: undefined } }"
       dark
     >
