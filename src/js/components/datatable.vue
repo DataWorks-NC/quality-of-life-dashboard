@@ -126,7 +126,7 @@ export default {
 
       const rawValue = geogIndex => state.metric.data.w[geogIndex] && prettyNumber(state.metric.data.w[geogIndex][`y_${state.year}`] * state.metric.data.map[geogIndex][`y_${state.year}`] * (state.metric.config.suffix === '%' ? 0.01 : 1), 0, state.metric.config.prefix);
 
-      return state.selected.map(geogIndex => ({
+      return state.selected.sort().map(geogIndex => ({
         geogIndex,
         value: prettyNumber(state.metric.data.map[geogIndex][`y_${state.year}`], state.metric.config.decimals, state.metric.config.prefix, state.metric.config.suffix, state.metric.config.commas),
         accuracy: state.metric.config.accuracy && prettyNumber(state.metric.data.a[geogIndex][`y_${state.year}`], state.metric.config.decimals, state.metric.config.prefix, state.metric.config.suffix, state.metric.config.commas),
