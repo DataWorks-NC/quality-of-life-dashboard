@@ -271,7 +271,7 @@ export default {
         },
       }, this.mapConfig.neighborhoodsBefore);
 
-      // Choropleth fill layer selected tracts/blockgroups only.
+      // Dark purple outline layer selected tracts/blockgroups only.
       map.addLayer({
         id: `${this.geography.id}-selected-outline`,
         filter: ['in', ['string', ['get', 'id']], ['literal', this.selected]],
@@ -306,12 +306,12 @@ export default {
           'text-font': ['Open Sans Semibold'],
           'text-field': this.$i18n.locale === 'es' ? '{label_es}' : '{label}',
           'text-transform': 'uppercase',
-          'text-size': 12,
+          'text-size': ['interpolate', ['linear'], ['zoom'], 0, 8, 10, 12, 16, 24],
           'text-allow-overlap': true,
         },
         paint: {
-          'text-halo-color': 'rgba(255,255,255,0.75)',
-          'text-halo-width': 1,
+          'text-halo-color': '#fff',
+          'text-halo-width': ['interpolate', ['linear'], ['zoom'], 0, 1, 10, 1, 16, 2],
         },
         filter: ['in', ['string', ['get', 'id']], ['literal', this.selected]],
       });
