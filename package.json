@@ -46,6 +46,7 @@
     "@vue/cli-service": "^4.2.3",
     "@vue/eslint-config-airbnb": "^5.0.2",
     "advanced-sitemap-generator": "^1.6.9",
+    "async": "^3.1.1",
     "autoprefixer": "^9.7.4",
     "babel-eslint": "^10.0.3",
     "bundlesize": "^0.18.0",

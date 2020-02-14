@@ -15,6 +15,7 @@
     "no-underscore-dangle": "off",
     "arrow-parens": "off"
     "no-plusplus": "off",
-    "no-minusminus": "off"
+    "no-minusminus": "off",
+    "no-mixed-operators": "off"
   }
 }
