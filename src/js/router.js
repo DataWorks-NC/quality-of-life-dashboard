@@ -175,6 +175,7 @@ router.beforeEach((to, from, next) => {
   if (store.state.geography.id !== to.params.geographyLevel) {
     toChanged = true;
     newTo.params = { ...newTo.params, geographyLevel: store.state.geography.id };
+    newTo.query = { ...newTo.query, selected: [] };
   }
   if (toChanged) {
     return next(newTo);

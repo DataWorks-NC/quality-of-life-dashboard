@@ -9,7 +9,7 @@ const getJSONFilename = (geographyId, areaId) => (geographyId === 'neighborhood'
 
 export default {
   state: {
-    categoryNames: new Array(...new Set(Object.values(dataConfig).map(m => (m.category)))),
+    categoryNamesBase: new Array(...new Set(Object.values(dataConfig).map(m => (m.category)))),
     metrics: {}, // Config values for each metric which is in the current geography, plus new visibility flag. Keyed by metric ID.
     reportTitle: false, // Custom title for report.
     metricValues: {}, // Values for each metric in the report.

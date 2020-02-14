@@ -14,5 +14,7 @@
     "consistent-return": "off",
     "no-underscore-dangle": "off",
     "arrow-parens": "off"
+    "no-plusplus": "off",
+    "no-minusminus": "off"
   }
 }

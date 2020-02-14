@@ -20,8 +20,14 @@ export default {
   // You would think to just name this component 'Map', but <map> is in the HTML5 spec!
   name: 'DashboardMap',
   props: {
-    mapboxAccessToken: String,
-    mapConfig: Object,
+    mapboxAccessToken: {
+      type: String,
+      required: true,
+    },
+    mapConfig: {
+      type: Object,
+      required: true,
+    },
   },
 
   data() {
@@ -216,7 +222,8 @@ export default {
           if (!_this.metric.config || !_this.metric.data) {
             return;
           }
-          const features = map.queryRenderedFeatures(e.point, { layers: [`${_this.geography.id}-fill`] }).filter(f => _this.metric.data.map[f.properties.id][`y_${_this.year}`] !== null); // Only show popup when metric value is not null
+          const features = map.queryRenderedFeatures(e.point, { layers: [`${_this.geography.id}-fill`] })
+            .filter(f => f.properties.id in _this.metric.data.map && _this.metric.data.map[f.properties.id][`y_${_this.year}`] !== null); // Only show popup when metric value is not null
 
           if (!features.length) {
             _this.hoverPopup.remove();
@@ -387,7 +394,7 @@ export default {
     updateGeography(newGeography, oldGeography) {
       if (!this.geography.id) return;
       const oldMapLayers = [`${oldGeography.id}-selected-halo`, `${oldGeography.id}-selected-outline`, `${oldGeography.id}-fill`, `${oldGeography.id}-selected-fill`, `${oldGeography.id}-fill-extrude`, `${oldGeography.id}-labels`];
-      const newMapLayers = [`${newGeography.id}-selected-halo`, `${newGeography.id}-selected-outline`, `${newGeography.id}-fill`, `${oldGeography.id}-selected-fill`, `${newGeography.id}-labels`];
+      const newMapLayers = [`${newGeography.id}-selected-halo`, `${newGeography.id}-selected-outline`, `${newGeography.id}-fill`, `${newGeography.id}-selected-fill`, `${newGeography.id}-labels`];
       const _this = this;
 
       if (!this.map.getSource(newGeography.id)) {

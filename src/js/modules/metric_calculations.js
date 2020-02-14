@@ -1,9 +1,8 @@
 const isNumeric = require('./isnumeric');
 
 function sum(arr) {
-  let sum = arr.reduce((sum, x) => sum + x, 0);
-  if (arr.length === 0) { sum = '--'; }
-  return sum;
+  if (arr.length === 0) return '--';
+  return arr.reduce((total, x) => total + x, 0);
 }
 
 function mean(arr) {
@@ -32,7 +31,7 @@ function valsToArray(data, years, keys) {
   const arr = [];
   for (let y = 0; y < years.length; y++) {
     for (let i = 0; i < keys.length; i++) {
-      if (isNumeric(data[keys[i]][`y_${years[y]}`])) {
+      if (keys[i] in data && isNumeric(data[keys[i]][`y_${years[y]}`])) {
         arr.push(data[keys[i]][`y_${years[y]}`]);
       }
     }
@@ -44,7 +43,7 @@ function wValsToArray(data, weight, years, keys) {
   const arr = [];
   for (let y = 0; y < years.length; y++) {
     for (let i = 0; i < keys.length; i++) {
-      if (isNumeric(data[keys[i]][`y_${years[y]}`]) && isNumeric(weight[keys[i]][`y_${years[y]}`])) {
+      if (keys[i] in data && keys[i] in weight && isNumeric(data[keys[i]][`y_${years[y]}`]) && isNumeric(weight[keys[i]][`y_${years[y]}`])) {
         arr.push(data[keys[i]][`y_${years[y]}`] * weight[keys[i]][`y_${years[y]}`]);
       }
     }
