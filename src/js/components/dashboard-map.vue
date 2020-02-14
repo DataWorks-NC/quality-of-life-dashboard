@@ -305,6 +305,7 @@ export default {
       }, this.mapConfig.neighborhoodsBefore);
 
       // Labels
+      const BASE_LABEL_SIZE = this.geography.id === 'tract' ? 12 : 8;
       map.addLayer({
         id: `${this.geography.id}-labels`,
         type: 'symbol',
@@ -313,12 +314,12 @@ export default {
           'text-font': ['Open Sans Semibold'],
           'text-field': this.$i18n.locale === 'es' ? '{label_es}' : '{label}',
           'text-transform': 'uppercase',
-          'text-size': ['interpolate', ['linear'], ['zoom'], 0, 8, 10, 12, 16, 24],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 8, BASE_LABEL_SIZE * 0.5, 9.5, BASE_LABEL_SIZE * 0.8, 10, BASE_LABEL_SIZE, 12, BASE_LABEL_SIZE * 2],
           'text-allow-overlap': true,
         },
         paint: {
           'text-halo-color': '#fff',
-          'text-halo-width': ['interpolate', ['linear'], ['zoom'], 0, 1, 10, 1, 16, 2],
+          'text-halo-width': ['interpolate', ['linear'], ['zoom'], 9, 1, 13, 2],
         },
         filter: ['in', ['string', ['get', 'id']], ['literal', this.selected]],
       });
