@@ -1,5 +1,5 @@
 <template>
-  <div v-if="metricValues || countyAverages" :id="`metric-table-${metric.metric}`">
+  <div v-if="metricValues || countyAverages" :id="`metric-${metric.metric}`">
     <h3>{{ metric.name }}</h3>
     <v-simple-table class="metric-table">
       <tbody>

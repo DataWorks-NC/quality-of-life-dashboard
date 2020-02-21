@@ -67,6 +67,14 @@ const router = new Router({
   mode: 'history',
   encodeQuery: true,
   routes,
+  scrollBehavior(to, from, savedPosition) {
+    if (to.hash) {
+      return { selector: to.hash, offset: { x: 0, y: 60 } };
+    } if (savedPosition) {
+      return savedPosition;
+    }
+    return { x: 0, y: 0 };
+  },
 });
 
 // Validate params.

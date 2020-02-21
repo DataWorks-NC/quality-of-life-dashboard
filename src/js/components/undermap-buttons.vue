@@ -10,7 +10,7 @@
       {{ $t('undermapButtons.clear') }}
     </v-btn>
     <v-btn
-      :to="{ name: 'report', params: $route.params, query: { ...$route.query, legendTitle: undefined } }"
+      :to="{ name: 'report', params: $route.params, query: { ...$route.query, legendTitle: undefined }, hash: `#metric-${metricId}` }"
       dark
     >
       {{ $t('undermapButtons.report') }}
@@ -29,7 +29,7 @@ import { mapState } from 'vuex';
 
 export default {
   name: 'UndermapButtons',
-  computed: mapState(['selected']),
+  computed: mapState(['selected', 'metricId']),
 };
 </script>
 

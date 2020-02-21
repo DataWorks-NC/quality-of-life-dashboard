@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueAnalytics from 'vue-analytics';
 
-import vueScrollto from 'vue-scrollto';
+import VueScrollTo from 'vue-scrollto';
 import VueObserveVisibility from 'vue-observe-visibility';
 import store from './js/vuex-store';
 import router from './js/router';
@@ -13,6 +13,8 @@ import App from './js/App.vue';
 import './scss/main.scss';
 
 Vue.config.productionTip = false;
+Vue.use(VueScrollTo);
+Vue.use(VueObserveVisibility);
 
 // Router navigation guard:
 // Handles locale switching and redirecting from root URL to language-specific
@@ -106,9 +108,6 @@ router.beforeEach((to, from, next) => {
     next();
   });
 });
-
-Vue.use(vueScrollto);
-Vue.use(VueObserveVisibility);
 
 /* eslint-disable no-new */
 /* eslint-disable no-unused-vars */
