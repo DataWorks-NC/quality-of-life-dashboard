@@ -54,8 +54,9 @@
  },
  "feedback": {
   "JoinMailingList": "Join our mailing list",
-  "ShareFeedback": "Share feedback or questions",
-  "ShareFeedbacK": ""
+  "Subscribe": "Subscribe",
+  "email": "email address",
+  "ShareFeedback": "Share feedback or questions"
  },
  "footer": {
   "radCredit": "Site maintained by {radLink}"

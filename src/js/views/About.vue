@@ -80,11 +80,11 @@
                           Twitter en @DataWorks_NC
                         </ExternalLink>.
                       </p>
-                      <p v-if="siteConfig.signupEmbed">
+                      <p v-if="mailchimpUrl">
                         Para obtener novedades sobre el Compass y DataWorks, suscríbase a nuestra
                         lista de correo:
                       </p>
-                      <div v-if="siteConfig.signupEmbed" class="signup-embed" v-html="siteConfig.signupEmbed" />
+                      <MailchimpSignup :url="mailchimpUrl" />
                     </section>
                     <section>
                       <h3>Créditos</h3>
@@ -274,10 +274,10 @@
                           @DataWorks_NC
                         </ExternalLink>.
                       </p>
-                      <p v-if="siteConfig.signupEmbed">
+                      <p v-if="mailchimpUrl">
                         For updates about the Compass and DataWorks, sign up for our mailing list:
                       </p>
-                      <div v-if="siteConfig.signupEmbed" class="signup-embed" v-html="siteConfig.signupEmbed" />
+                      <MailchimpSignup :url="mailchimpUrl" />
                     </section>
                     <section>
                       <h3>
@@ -431,10 +431,12 @@ import DashboardFooter from '../components/dashboard-footer.vue';
 import ExternalLink from '../components/external-link.vue';
 import Feedback from '../components/feedback.vue';
 import Social from '../components/social.vue';
+import MailchimpSignup from '../components/mailchimp-signup';
 
 export default {
   name: 'About',
   components: {
+    MailchimpSignup,
     Feedback,
     CompassNav,
     DashboardFooter,
@@ -443,6 +445,7 @@ export default {
   },
   data: () => ({
     siteConfig: config.siteConfig,
+    mailchimpUrl: config.privateConfig.mailchimpUrl,
     youtubeHowToUseUrls: [
       'https://www.youtube.com/embed/_kgXqqjDsFA',
       'https://www.youtube.com/embed/e3nPdpHPpBc'],
