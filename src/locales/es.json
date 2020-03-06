@@ -56,7 +56,7 @@
   "JoinMailingList": "suscríbase a nuestra lista de correo",
   "Subscribe": "Suscríbase",
   "email": "Correo electrónico",
-  "ShareFeedbacK": "Comparta sus opiniones o preguntas"
+  "ShareFeedback": "Comparta sus opiniones o preguntas"
  },
  "footer": {
   "credits": "Vea el código de Neighborhood Compass en {0}. Basado en el código creado por {1}, la {2}, y {3} con mucho ♥ por los proyectos que hacen posible este sitio: {4}, {5}, {6}, {7}, {8}, {9}, y {10}.",

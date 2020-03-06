@@ -206,7 +206,7 @@
                               Uneven
                               Ground
                             </ExternalLink>
-                            Exhibición en línea sobre la historia de la vivienda en Durham.
+                            - Exhibición en línea sobre la historia de la vivienda en Durham.
                           </li>
                           <li>
                             <ExternalLink href="http://www.durhamhoods.com/">
