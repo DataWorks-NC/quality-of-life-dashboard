@@ -36,11 +36,11 @@
         </router-link>
       </v-toolbar-title>
       <div class="flex-grow-1" />
-      <v-btn text :to="{name: 'about' }">
-        {{ $t('about.link') }}
-      </v-btn>
       <v-btn text @click="swapLanguage()">
         {{ $t('strings.ChangeLanguage') }}
+      </v-btn>
+      <v-btn icon :area-label="$t('about.link')" :to="{ name: 'about' }">
+        <v-icon>{{ mdiInformation }}</v-icon>
       </v-btn>
       <v-btn icon :aria-label="$t('strings.DownloadData')" href="/download/download.zip" @click="gaEvent('send', 'event', 'download', 'metric zip file download')">
         <v-icon>{{ mdiDownload }}</v-icon>
@@ -76,7 +76,7 @@
 </template>
 
 <script>
-import { mdiClose, mdiDownload } from '@mdi/js';
+import { mdiClose, mdiDownload, mdiInformation } from '@mdi/js';
 import { mapState } from 'vuex';
 
 import { gaEvent } from '../modules/tracking';
@@ -91,11 +91,12 @@ export default {
     title: config.siteConfig.title,
     mdiClose,
     mdiDownload,
+    mdiInformation,
   }),
   computed: {
     ...mapState(['metric', 'metricId']),
     categories() {
-      return config.categories.map((c) => ({ id: c.replace(/\s+/g, ''), name: this.$t(`strings.metricCategories['${c}']`), originalName: c }))
+      return config.categories.map(c => ({ id: c.replace(/\s+/g, ''), name: this.$t(`strings.metricCategories['${c}']`), originalName: c }))
         .sort((a, b) => this.$i18n.localizedStringCompareFn(a.name, b.name));
     },
 
@@ -110,7 +111,7 @@ export default {
         return categoryId && `tab-${categoryId}`;
       },
       set(val) {
-        this.filterVal = this.categories.find((c) => c.id === val.replace('tab-', ''));
+        this.filterVal = this.categories.find(c => c.id === val.replace('tab-', ''));
       },
     },
   },
@@ -119,7 +120,7 @@ export default {
     categoryMetrics(categoryName) {
       if (categoryName && (categoryName in config.metricsByCategory)) {
         return config.metricsByCategory[categoryName]
-          .map((m) => ({ metric: m.metric, name: (this.$i18n.locale === 'es' ? m.title_es : m.title) }))
+          .map(m => ({ metric: m.metric, name: (this.$i18n.locale === 'es' ? m.title_es : m.title) }))
           .sort((a, b) => this.$i18n.localizedStringCompareFn(a.name, b.name));
       }
       return [];

@@ -8,11 +8,9 @@
             <v-card>
               <div class="flexcontainer landing-page">
                 <div class="flex-item">
-                  <h2>{{ $t('about.title') }}</h2>
-                  <p>{{ $t('strings.about') }}</p>
                   <div v-if="$i18n.locale === 'es'">
                     <section>
-                      <h3>¿Le interesa lo que está cambiando en su comunidad?</h3>
+                      <h2>¿Le interesa lo que está cambiando en su comunidad?</h2>
                       <p>
                         Durham está cambiando tan rápido que a veces es difícil saber cómo y dónde
                         está cambiando. Lo que escuchamos y vemos es, a menudo, parte de otras
@@ -229,7 +227,7 @@
                   </div>
                   <div v-else>
                     <section>
-                      <h3>Are you interested in what’s changing in your community?</h3>
+                      <h2>Are you interested in what’s changing in your community?</h2>
                       <p>Durham is changing so fast and it’s sometimes hard to know how and where. What we hear and see is oftentimes part of larger trends occurring and these actually link neighbors across the City - folks who may not yet know one another but share aspirations and face similar struggles. Even with news and social media, personal networks and church, and the old-fashioned grapevine there is still a lot we can learn about the bigger picture.</p>
                       <p>Welcome to Durham’s Neighborhood Compass, a place for investigating those bigger pictures in our community and sharing what you learn.</p>
                       <p>

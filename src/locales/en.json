@@ -1,6 +1,6 @@
 {
  "strings": {
-  "about": "The Durham Neighborhood Compass is a primary community resource for information that is regularly-updated, serving meaningful data to the community openly. Each year the Compass grows and learns along with its users, adding data sets with strong community resonance and longitudinal importance. A quantitative project with qualitative values.",
+  "about": "The Neighborhood Compass is a primary community resource that allows you to track changes in your community with data; regularly-updated information that often deepens your gut-level understanding that the character of Durham’s neighborhoods is changing.",
   "accuracy": "accuracy",
   "and": "and",
   "back": "back",
@@ -59,6 +59,7 @@
   "ShareFeedback": "Share feedback or questions"
  },
  "footer": {
+  "about": "About this site",
   "radCredit": "Site maintained by {radLink}"
  },
  "geographies": {
