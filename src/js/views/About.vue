@@ -156,28 +156,28 @@
                               Portal de
                               información abierta de la ciudad de Durham
                             </ExternalLink>
-                            - El portal de información de Durham le permite descargar una variedad de
+                            (en inglés) - El portal de información de Durham le permite descargar una variedad de
                             conjuntos de datos sobre la ciudad y el condado.
                           </li>
                           <li>
                             <ExternalLink href="https://www.census.gov/">
                               Censo de los EE.UU.
                             </ExternalLink>
-                            - La fuente de mucha de la información del Neighborhood Compass.
+                            (en inglés) - La fuente de mucha de la información del Neighborhood Compass.
                           </li>
                           <li>
                             <ExternalLink href="https://www.nhgis.org/">
                               Sistema de información
                               geográfica histórica nacional
                             </ExternalLink>
-                            - Este sitio compila información histórica del censo para todo Estados
+                            (en inglés) - Este sitio compila información histórica del censo para todo Estados
                             Unidos, desde 1790 al presente. Atención: se requiere registrarse.
                           </li>
                           <li>
                             <ExternalLink href="https://www.nconemap.gov/">
                               NC OneMap
                             </ExternalLink>
-                            - Centro de referencia de información geográfica de todo el estado.
+                            (en inglés) - Centro de referencia de información geográfica de todo el estado.
                           </li>
                         </ul>
                       </p>
@@ -197,20 +197,20 @@
                               Desalojos en
                               Durham
                             </ExternalLink>
-                            - El sitio de DataWorks con información detallada sobre desalojos.
+                            (en inglés) - El sitio de DataWorks con información detallada sobre desalojos.
                           </li>
                           <li>
                             <ExternalLink href="https://www.bullcity150.org/uneven_ground/">
                               Uneven
                               Ground
                             </ExternalLink>
-                            - Exhibición en línea sobre la historia de la vivienda en Durham.
+                            (en inglés) - Exhibición en línea sobre la historia de la vivienda en Durham.
                           </li>
                           <li>
                             <ExternalLink href="http://www.durhamhoods.com/">
                               Durham Hoods
                             </ExternalLink>
-                            - Este sitio agrupa las listas de correo de los vecindarios y tiene un
+                            (en inglés) - Este sitio agrupa las listas de correo de los vecindarios y tiene un
                             mapa de los mismos. Nótese que los mapas de los vecindarios presentan
                             algunas inexactitudes.
                           </li>
@@ -218,7 +218,7 @@
                             <ExternalLink href="http://www.opendurham.org/">
                               Open Durham
                             </ExternalLink>
-                            - Compendio de la información histórica sobre los vecindarios y los
+                            (en inglés) - Compendio de la información histórica sobre los vecindarios y los
                             edificios de Durham.
                           </li>
                         </ul>
@@ -429,7 +429,7 @@ import DashboardFooter from '../components/dashboard-footer.vue';
 import ExternalLink from '../components/external-link.vue';
 import Feedback from '../components/feedback.vue';
 import Social from '../components/social.vue';
-import MailchimpSignup from '../components/mailchimp-signup';
+import MailchimpSignup from '../components/mailchimp-signup.vue';
 
 export default {
   name: 'About',
