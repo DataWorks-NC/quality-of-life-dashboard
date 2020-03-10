@@ -4,6 +4,7 @@ import Router from 'vue-router';
 import store from './vuex-store';
 import config from './modules/config';
 
+const About = () => import(/* webpackChunkName: "about" */ './views/About');
 const Compass = () => import(/* webpackChunkName: "compass" */ './views/Compass');
 const Report = () => import(/* webpackChunkName: "report" */'./views/Report');
 const Embed = () => import(/* webpackChunkName: "embed" */'./views/Embed');
@@ -36,6 +37,15 @@ const routes = [
     name: 'embed',
     path: '/:locale/embed/:metric/:geographyLevel/',
     component: Embed,
+  },
+  {
+    name: 'about',
+    path: '/:locale/about/',
+    component: About,
+    beforeEnter(to, from, next) {
+      store.commit('clearMetric');
+      next();
+    },
   },
   {
     name: 'homepage',

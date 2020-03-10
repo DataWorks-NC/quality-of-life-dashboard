@@ -14,6 +14,7 @@ const environmentDefaults = {
   VUE_APP_GOOGLE_ANALYTICS_ID: false,
   VUE_APP_I18N_LOCALE: 'en',
   VUE_APP_I18N_FALLBACK_LOCALE: 'en',
+  VUE_APP_MAILCHIMP_SIGNUP_URL: '',
 };
 
 process.env = {

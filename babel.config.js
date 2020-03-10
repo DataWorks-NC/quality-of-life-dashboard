@@ -1,10 +1,10 @@
 module.exports = {
   presets: [
     [
-      '@vue/app',
+      '@vue/cli-plugin-babel/preset',
       {
         useBuiltIns: 'usage',
-        polyfills: ['es7.object.values', 'es6.promise', 'es6.symbol'],
+        polyfills: ['es.object.values', 'es.promise', 'es.symbol'],
       },
     ],
   ],

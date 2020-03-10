@@ -1,6 +1,6 @@
 {
  "strings": {
-  "about":  "El Durham Neighborhood Compass es un recurso de información primario de la comunidad que es actualizado regularmente, que proporciona abiertamente valiosa información a la comunidad. Cada año el Compass crece y aprende junto con sus usuarios, sumando conjuntos de datos que tengan sentido para la comunidad y cuya importancia sea transversal. Un proyecto cuantitativo con valores cualitativos.",
+  "about": "El Neighborhood Compass es un recurso fundamental que le permite seguir los cambios en su comunidad con información que es actualizada regularmente y que, a menudo, profundiza esa sensación visceral que usted tiene de que el carácter de los vecindarios de Durham está cambiando.",
   "accuracy": "exactitud",
   "and": "y",
   "back": "atrás",
@@ -53,30 +53,14 @@
   "DataDistribution": "Distribución de los datos"
  },
  "feedback": {
-  "JoinMailingList": "Únase a nuestra lista de correo",
-  "ShareFeedbacK": "Comparta sus opiniones o preguntas",
+  "JoinMailingList": "suscríbase a nuestra lista de correo",
+  "Subscribe": "Suscríbase",
+  "email": "Correo electrónico",
   "ShareFeedback": "Comparta sus opiniones o preguntas"
  },
  "footer": {
-  "credits": "Vea el código de Neighborhood Compass en {0}. Basado en el código creado por {1}, la {2}, y {3} con mucho ♥ por los proyectos que hacen posible este sitio: {4}, {5}, {6}, {7}, {8}, {9}, y {10}.",
-  "links": [
-   {
-    "href": "http://www.dataworks-nc.org",
-    "text": "Sobre DataWorksNC"
-   },
-   {
-    "href": "http://www.opendurham.org/",
-    "text": "Open Durham - Historias de los vecindarios"
-   },
-   {
-    "href": "http://www.durhamhoods.com/",
-    "text": "Vecindarios de Durham - Mapas de vecindarios y centro de lista de correo"
-   },
-   {
-    "href": "https://opendurham.nc.gov/pages/home/",
-    "text": "Portal de información abierta de la ciudad de Durham"
-   }
-  ]
+  "about": "Sobre este sitio",
+  "radCredit": "Mantenido por {radLink}"
  },
  "geographies": {
   "tract": {
@@ -199,5 +183,8 @@
  },
  "welcome": {
   "title": "¡Bienvenidos al Neighborhood Compass de Durham!"
+ },
+ "about": {
+  "link": "Sobre"
  }
 }

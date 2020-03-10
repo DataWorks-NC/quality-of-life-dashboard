@@ -11,10 +11,14 @@
     <v-btn text @click="swapLanguage()">
       {{ $t('strings.ChangeLanguage') }}
     </v-btn>
+    <v-btn icon :area-label="$t('about.link')" :to="{ name: 'about' }">
+      <v-icon>{{ mdiInformation }}</v-icon>
+    </v-btn>
   </v-app-bar>
 </template>
 
 <script>
+import { mdiInformation } from '@mdi/js';
 import { gaEvent } from '../../modules/tracking';
 import config from '../../modules/config';
 import ReportSelector from './report-selector';
@@ -24,6 +28,7 @@ export default {
   components: { ReportSelector },
   data: () => ({
     title: config.siteConfig.title,
+    mdiInformation,
   }),
   methods: {
     swapLanguage() {
