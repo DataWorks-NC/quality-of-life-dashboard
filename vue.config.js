@@ -2,9 +2,9 @@ const dataConfig = require('./data/config/data.js');
 
 // Create render routes for each metric at each geography level.
 const metricRoutes = ['en', 'es'].flatMap(
-  lang => ([`/${lang}/`, `/${lang}/report/blockgroup/`, `/${lang}/report/tract/`].concat(Object.values(dataConfig).flatMap(
+  lang => ([`/${lang}/`, `/${lang}/report/blockgroup/`, `/${lang}/about/`, `/${lang}/report/tract/`].concat(Object.values(dataConfig).flatMap(
     m => (m.geographies.map(
-      g => (`/${lang}/compass/${m.metric}/${g}/`),
+      g => `/${lang}/compass/${m.metric}/${g}/`,
     )),
   ))),
 );
@@ -31,6 +31,15 @@ module.exports = {
   lintOnSave: false,
 
   pluginOptions: {
+    pwa: {
+      iconPaths: {
+        favicon32: 'img/favicon-32x32.png',
+        favicon16: 'img/favicon-16x16.png',
+        appleTouchIcon: 'img/apple-touch-icon-152x152.png',
+        maskIcon: 'img/safari-pinned-tab.svg',
+        msTileImage: 'img/msapplication-icon-144x144.png',
+      },
+    },
     i18n: {
       locale: 'en',
       fallbackLocale: 'en',

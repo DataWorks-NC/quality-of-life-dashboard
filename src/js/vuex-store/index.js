@@ -46,9 +46,13 @@ export default new Vuex.Store({
       if (state.metric.config) return `${state.language === 'es' ? state.metric.config.title_es : state.metric.config.title}, ${state.year}`;
       return '';
     },
-    metadataImportant: state => (state.metadata ? state.metadata.substring(getSubstringIndex(state.metadata, '</h3>', 1) + 5, getSubstringIndex(state.metadata, '<h3', 2)) : ''),
-    metadataResources: state => (state.metadata ? state.metadata.substring(getSubstringIndex(state.metadata, '</h3>', 3) + 5, state.metadata.length).replace(/<table/g, '<table class="meta-table table"') : ''),
-    metadataAbout: state => (state.metadata ? state.metadata.substring(getSubstringIndex(state.metadata, '</h3>', 2) + 5, getSubstringIndex(state.metadata, '<h3', 3)) : ''),
+    metadataImportant: (state) => (state.metadata ? state.metadata.substring(getSubstringIndex(state.metadata, '</h3>', 1) + 5, getSubstringIndex(state.metadata, '<h3', 2)) : ''),
+    metadataImportantForHeader: (state, getters) => {
+      const doc = new DOMParser().parseFromString(getters.metadataImportant, 'text/html');
+      return doc.body.textContent || '';
+    },
+    metadataResources: (state) => (state.metadata ? state.metadata.substring(getSubstringIndex(state.metadata, '</h3>', 3) + 5, state.metadata.length).replace(/<table/g, '<table class="meta-table table"') : ''),
+    metadataAbout: (state) => (state.metadata ? state.metadata.substring(getSubstringIndex(state.metadata, '</h3>', 2) + 5, getSubstringIndex(state.metadata, '<h3', 3)) : ''),
   },
   mutations: {
     setSelected(state, geographyIds) {
@@ -62,7 +66,7 @@ export default new Vuex.Store({
 
       if (state.geography.id !== newGeographyId) {
         state.geography = config.siteConfig.geographies.find(
-          obj => obj.id === newGeographyId,
+          (obj) => obj.id === newGeographyId,
         );
 
         Object.freeze(state.geography);

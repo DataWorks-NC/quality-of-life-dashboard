@@ -7,9 +7,9 @@
           :src="require('../../../assets/img/report-logo.png')"
           :alt="$t('strings.DurhamNeighborhoodCompass')"
         >
-        <h2 class="subtitle">
+        <h1 class="subtitle">
           {{ reportTitle }}
-        </h2>
+        </h1>
       </v-col>
     </v-row>
     <v-row>

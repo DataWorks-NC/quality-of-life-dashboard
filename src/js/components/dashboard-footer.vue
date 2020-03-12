@@ -2,13 +2,13 @@
   <v-footer color="background" class="d-print-none">
     <p class="logos text-center">
       <ExternalLink href="https://durhamnc.gov">
-        <img src="../../assets/img/cityLogo.png" :alt="$t('strings.CityOfDurhamLogo')" height="125px">
+        <img src="../../assets/img/cityLogo.png" :alt="$t('strings.CityOfDurhamLogo')" height="125">
       </ExternalLink>
       <ExternalLink href="https://www.dataworks-nc.org">
-        <img src="../../assets/img/dwLogo.png" :alt="$t('strings.DataWorksNCLogo')" height="50px">
+        <img src="../../assets/img/dwLogo.png" :alt="$t('strings.DataWorksNCLogo')" height="50">
       </ExternalLink>
       <ExternalLink href="https://dconc.gov">
-        <img src="../../assets/img/countyLogo.png" :alt="$t('strings.DurhamCountyLogo')" height="125px">
+        <img src="../../assets/img/countyLogo.png" :alt="$t('strings.DurhamCountyLogo')" height="125">
       </ExternalLink>
     </p>
     <RouterLink place="aboutLink" :to="{name: 'about' }" class="logos overline text-center">
