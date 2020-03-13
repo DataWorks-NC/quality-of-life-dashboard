@@ -63,14 +63,14 @@ router.beforeEach((to, from, next) => {
 
     const metaTagDefinitions = {
       linkCanonical: {
-        href: `https://compass.durhamnc.gov${newUrl}`,
+        href: `${process.env.VUE_APP_BASE_URL}${newUrl}`,
       },
       linkEn: {
-        href: `https://compass.durhamnc.gov${
+        href: `${process.env.VUE_APP_BASE_URL}${
           router.resolve({ ...to, params: { ...to.params, locale: 'en' } }).href}`,
       },
       linkEs: {
-        href: `https://compass.durhamnc.gov${
+        href: `${process.env.VUE_APP_BASE_URL}${
           router.resolve({ ...to, params: { ...to.params, locale: 'es' } }).href}`,
       },
       description: {
@@ -82,7 +82,7 @@ router.beforeEach((to, from, next) => {
         title,
       },
       ogUrl: {
-        content: `https://compass.durhamnc.gov${newUrl}`,
+        content: `${process.env.VUE_APP_BASE_URL}${newUrl}`,
       },
       ogDescription: {
         content:

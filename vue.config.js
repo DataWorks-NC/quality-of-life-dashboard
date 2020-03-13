@@ -1,7 +1,7 @@
 const dataConfig = require('./data/config/data.js');
 
 // Create render routes for each metric at each geography level.
-const metricRoutes = ['en', 'es'].flatMap(
+const renderRoutes = ['en', 'es'].flatMap(
   lang => ([`/${lang}/`, `/${lang}/report/blockgroup/`, `/${lang}/about/`, `/${lang}/report/tract/`].concat(Object.values(dataConfig).flatMap(
     m => (m.geographies.map(
       g => `/${lang}/compass/${m.metric}/${g}/`,
@@ -27,7 +27,6 @@ if (!('VUE_APP_MAPBOX_ACCESS_TOKEN' in process.env) || process.env.VUE_APP_MAPBO
 }
 
 module.exports = {
-
   lintOnSave: false,
 
   pluginOptions: {
@@ -48,7 +47,7 @@ module.exports = {
     },
     prerenderSpa: {
       registry: undefined,
-      renderRoutes: ['/'].concat(metricRoutes),
+      renderRoutes,
       useRenderEvent: true,
       headless: true,
       onlyProduction: true,
