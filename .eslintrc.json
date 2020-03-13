@@ -12,6 +12,7 @@
     "no-param-reassign": "off",
     "prefer-destructuring": "off",
     "consistent-return": "off",
-    "no-underscore-dangle": "off"
+    "no-underscore-dangle": "off",
+    "arrow-parens": "off"
   }
 }

@@ -1,29 +1,27 @@
 const SitemapGenerator = require('advanced-sitemap-generator');
-const dataConfig = require('../data/config/data.js');
+const vueConfig = require('../vue.config.js');
 
-// Create render routes for each metric at each geography level.
-const metricRoutes = ['en', 'es'].flatMap(
-  lang => ([`/${lang}`, `/${lang}/report/blockgroup`, `/${lang}/report/tract`].concat(Object.values(dataConfig).flatMap(
-    m => (m.geographies.map(
-      g => (`/${lang}/compass/${m.metric}/${g}`),
-    )),
-  ))),
-);
+const renderRoutes = vueConfig.pluginOptions.prerenderSpa.renderRoutes;
+
+// Get domain name from command line if it's passed through.
+const domainName = process.argv[2] ? process.argv[2] : 'compass.durhamnc.gov';
+const protocol = (process.argv[3] && process.argv[3] === 'http') ? 'http://' : 'https://';
 
 // create generator
-const generator = SitemapGenerator('https://compass.durhamnc.gov', {
+const generator = SitemapGenerator(`${protocol}${domainName}`, {
   ignoreHreflang: false,
   changeFreq: 'monthly',
   filepath: './dist/sitemap.xml',
+  respectRobotsTxt: false, // Since there will be a robots.txt on our dev site which we need to crawl.
 });
 
 const referrer = {
-  url: 'https://compass.durhamnc.gov',
-  host: 'compass.durhamnc.gov',
+  url: `${protocol}${domainName}`,
+  host: domainName,
 };
 
-metricRoutes.forEach(
-  route => generator.queueURL(`https://compass.durhamnc.gov${route}`, referrer),
+renderRoutes.forEach(
+  route => generator.queueURL(`${protocol}${domainName}${route}`, referrer),
 );
 
 // Register event listeners

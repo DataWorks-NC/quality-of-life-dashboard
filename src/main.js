@@ -8,7 +8,7 @@ import router from './js/router';
 import i18n from './js/i18n';
 import vuetify from './plugins/vuetify';
 
-import App from './js/App';
+import App from './js/App.vue';
 
 import './scss/main.scss';
 
@@ -31,17 +31,26 @@ router.beforeEach((to, from, next) => {
   store.dispatch('setLanguage', language).then(() => {
     // Set title
     let title = i18n.t('strings.DurhamNeighborhoodCompass');
-    const description = store.getters.metadataImportant !== '' ? store.getters.metadataImportant.replace(/<p>/, '').replace(/<\/p>/, '') : i18n.t('strings.about');
+    let description = i18n.t('strings.about');
 
     if (to.name === 'report') {
       const reportTitle = store.getters.reportTitle;
       if (reportTitle !== '') {
         title = `${title} - ${reportTitle}`;
+        description = i18n.t('strings.metaDescriptionReport', { area: reportTitle });
       }
     } else {
       const legendTitle = store.getters.legendTitle;
       if (legendTitle !== '') {
-        title = `${title} - ${legendTitle}`;
+        const metricTitle = i18n.locale === 'es' ? store.state.metric.config.title_es : store.state.metric.config.title;
+        const geographyName = store.state.geography.id && store.state.geography.id.length > 0 ? i18n.t(`geographies.${store.state.geography.id}.name`) : '';
+
+        description = `${i18n.t('strings.metaDescriptionMetric', { metric: metricTitle.toLocaleLowerCase(i18n.locale), geography: geographyName.toLocaleLowerCase(i18n.locale) })} ${store.getters.metadataImportantForHeader}`;
+        title = `${title} - ${legendTitle}${geographyName !== '' ? ` (${geographyName})` : ''}`;
+        if (store.state.printMode === true) {
+          title = `${title} - ${i18n.t('undermapButtons.printEmbed')}`;
+          description = `${i18n.t('strings.metaDescriptionPrint', { metric: metricTitle.toLocaleLowerCase(i18n.locale), geography: geographyName.toLocaleLowerCase(i18n.locale) })} ${store.getters.metadataImportantForHeader}`;
+        }
       }
     }
 
@@ -54,14 +63,14 @@ router.beforeEach((to, from, next) => {
 
     const metaTagDefinitions = {
       linkCanonical: {
-        href: `https://compass.durhamnc.gov${newUrl}`,
+        href: `${process.env.VUE_APP_BASE_URL}${newUrl}`,
       },
       linkEn: {
-        href: `https://compass.durhamnc.gov${
+        href: `${process.env.VUE_APP_BASE_URL}${
           router.resolve({ ...to, params: { ...to.params, locale: 'en' } }).href}`,
       },
       linkEs: {
-        href: `https://compass.durhamnc.gov${
+        href: `${process.env.VUE_APP_BASE_URL}${
           router.resolve({ ...to, params: { ...to.params, locale: 'es' } }).href}`,
       },
       description: {
@@ -73,8 +82,7 @@ router.beforeEach((to, from, next) => {
         title,
       },
       ogUrl: {
-        content:
-        newUrl,
+        content: `${process.env.VUE_APP_BASE_URL}${newUrl}`,
       },
       ogDescription: {
         content:
