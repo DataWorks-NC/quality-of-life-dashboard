@@ -37,6 +37,10 @@ jobs:
       # run tests!
       - run: npm run build-site
       - run: npx bundlesize
+
+      - # Generate a sitemap based on what's currently on dev site.
+      - run: npm run build-sitemap-dev
+
       - run: mkdir /tmp/workspace
       - persist_to_workspace:
           root: .
@@ -57,8 +61,8 @@ jobs:
       # Add robots file for production.
       - run: cp /tmp/workspace/.circleci/robots-prod.txt /tmp/workspace/dist/robots.txt
 
-      # Generate a sitemap based on what's currently on dev site. Assumes that's what's pushing to master branch.
-      - run: npm run build-sitemap
+      # Tweak sitemap URLs
+      - run: sed -i 's/nbhdcompassdev\.azurewebsites\.us/compass\.durhamnc\.gov/g' /tmp/workspace/dist/sitemap.xml
 
       # Push code to Azure blob storage
       - run:
@@ -73,9 +77,6 @@ jobs:
     steps:
       - attach_workspace:
           at: /tmp/workspace
-
-      # Generate a sitemap based on what's currently on dev site.
-      - run: npm run build-sitemap
 
       - run:
           command: pip install -r .circleci/requirements.txt
