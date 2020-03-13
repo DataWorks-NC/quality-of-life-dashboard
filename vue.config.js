@@ -15,7 +15,19 @@ const environmentDefaults = {
   VUE_APP_I18N_LOCALE: 'en',
   VUE_APP_I18N_FALLBACK_LOCALE: 'en',
   VUE_APP_MAILCHIMP_SIGNUP_URL: '',
+  VUE_APP_BASE_URL: 'http://localhost:8080',
 };
+
+// Properly set base URL in CI environment.
+if (process.env.CIRCLE_BRANCH) {
+  if (process.env.CIRCLE_BRANCH === 'staging') {
+    environmentDefaults.VUE_APP_BASE_URL = 'https://nbhdcompassstage.azurewebsites.us';
+  } else if (process.env.CIRCLE_BRANCH === 'develop') {
+    environmentDefaults.VUE_APP_BASE_URL = 'https://nbhdcompasssdev.azurewebsites.us';
+  } else {
+    environmentDefaults.VUE_APP_BASE_URL = 'https://compass.durhamnc.gov';
+  }
+}
 
 process.env = {
   ...environmentDefaults,
