@@ -38,7 +38,7 @@ jobs:
       - run: npm run build-site
       - run: npx bundlesize
 
-      - # Generate a sitemap based on what's currently on dev site.
+      # Generate a sitemap based on what's currently on dev site.
       - run: npm run build-sitemap-dev
 
       - run: mkdir /tmp/workspace
