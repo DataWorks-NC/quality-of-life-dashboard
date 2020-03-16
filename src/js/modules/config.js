@@ -43,5 +43,6 @@ export default {
   selectGroups,
   privateConfig: {
     mapboxAccessToken: process.env.VUE_APP_MAPBOX_ACCESS_TOKEN,
+    mailchimpUrl: process.env.VUE_APP_MAILCHIMP_SIGNUP_URL,
   },
 };

@@ -5,9 +5,9 @@
       <div class="legendposition">
         <a class="no-underline" :title="$t('legend.MoveTableOfContents')" href="javascript:void(0)" @click="position"><v-icon>{{ mdiCursorMove }}</v-icon></a>
       </div>
-      <p class="title">
+      <h1 class="title">
         {{ $store.getters.legendTitle }}
-      </p>
+      </h1>
       <div class="metricboxes">
         <div v-if="selected.length > 0" class="metricbox">
           <span class="metrictype">{{ $t('strings.selected') | allcaps }}</span>

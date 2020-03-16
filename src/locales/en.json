@@ -1,6 +1,10 @@
 {
  "strings": {
-  "about": "The Durham Neighborhood Compass is a primary community resource for information that is regularly-updated, serving meaningful data to the community openly. Each year the Compass grows and learns along with its users, adding data sets with strong community resonance and longitudinal importance. A quantitative project with qualitative values.",
+  "about": "The Neighborhood Compass is a primary community resource that allows you to track changes in your community with data; regularly-updated information that often deepens your gut-level understanding that the character of Durham’s neighborhoods is changing.",
+  "metaDescriptionAbout": "Learn more about the Durham Neighborhood Compass! The Neighborhood Compass is a primary community resource that allows you to track changes in your community with data; regularly-updated information that often deepens your gut-level understanding that the character of Durham’s neighborhoods is changing.",
+  "metaDescriptionMetric": "Learn more about {metric} in Durham County at the {geography} level on the Durham Neighborhood Compass.",
+  "metaDescriptionPrint": "Print a map of {metric} in Durham County at the {geography} level from the Durham Neighborhood Compass.",
+  "metaDescriptionReport": "Learn more about {area} in Durham County on the Durham Neighborhood Compass. The Neighborhood Compass is a primary community resource that allows you to track changes in your community with data; regularly-updated information that often deepens your gut-level understanding that the character of Durham’s neighborhoods is changing.",
   "accuracy": "accuracy",
   "and": "and",
   "back": "back",
@@ -54,29 +58,13 @@
  },
  "feedback": {
   "JoinMailingList": "Join our mailing list",
-  "ShareFeedback": "Share feedback or questions",
-  "ShareFeedbacK": ""
+  "Subscribe": "Subscribe",
+  "email": "email address",
+  "ShareFeedback": "Share feedback or questions"
  },
  "footer": {
-  "credits": "View the Neighborhood Compass code on {0}. Based on code created by {1}, the {2}, and {3} with much ♥ for the projects that make this site possible: {4}, {5}, {6}, {7}, {8}, {9}, and {10}.",
-  "links": [
-   {
-    "href": "http://www.dataworks-nc.org",
-    "text": "About"
-   },
-   {
-    "href": "http://www.opendurham.org/",
-    "text": "Open Durham - Neighborhood Histories"
-   },
-   {
-    "href": "http://www.durhamhoods.com/",
-    "text": "Durham Hoods - Neighborhood Maps and Mailing List Hub"
-   },
-   {
-    "href": "https://opendurham.nc.gov/pages/home/",
-    "text": "City of Durham Open Data Portal"
-   }
-  ]
+  "about": "About this site",
+  "radCredit": "Site maintained by {radLink}"
  },
  "geographies": {
   "tract": {
@@ -199,5 +187,9 @@
  },
  "welcome": {
   "title": "Welcome to the Durham Neighborhood Compass!"
+ },
+ "about": {
+  "link": "About",
+  "title": "About the Durham Neighborhood Compass"
  }
 }

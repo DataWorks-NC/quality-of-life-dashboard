@@ -2,7 +2,10 @@
   <div>
     <v-app-bar dark extension-height="48px">
       <v-dialog v-model="drawer" fullscreen hide-overlay transition="dialog-bottom-transition">
-        <template v-slot:activator="{ on }">
+        <template v-slot:activator="{ // eslint-disable-next-line vue/no-unused-vars
+          on
+        }"
+        >
           <v-app-bar-nav-icon :aria-label="$t('strings.openMobileNav')" class="d-md-none" @click="drawer = !drawer" />
         </template>
         <v-card dark>
@@ -35,6 +38,9 @@
       <div class="flex-grow-1" />
       <v-btn text @click="swapLanguage()">
         {{ $t('strings.ChangeLanguage') }}
+      </v-btn>
+      <v-btn icon :area-label="$t('about.link')" :to="{ name: 'about' }">
+        <v-icon>{{ mdiInformation }}</v-icon>
       </v-btn>
       <v-btn icon :aria-label="$t('strings.DownloadData')" href="/download/download.zip" @click="gaEvent('send', 'event', 'download', 'metric zip file download')">
         <v-icon>{{ mdiDownload }}</v-icon>
@@ -70,7 +76,7 @@
 </template>
 
 <script>
-import { mdiClose, mdiDownload } from '@mdi/js';
+import { mdiClose, mdiDownload, mdiInformation } from '@mdi/js';
 import { mapState } from 'vuex';
 
 import { gaEvent } from '../modules/tracking';
@@ -85,6 +91,7 @@ export default {
     title: config.siteConfig.title,
     mdiClose,
     mdiDownload,
+    mdiInformation,
   }),
   computed: {
     ...mapState(['metric', 'metricId']),
