@@ -64,10 +64,11 @@ export default {
 
   methods: {
     initMap() {
-      const mapOptions = Object.assign({
+      const mapOptions = {
         container: 'map',
         attributionControl: false,
-      }, this.mapConfig);
+        ...this.mapConfig,
+      };
       this.map = new mapboxgl.Map(mapOptions);
 
       const _this = this;
@@ -305,7 +306,7 @@ export default {
       }, this.mapConfig.neighborhoodsBefore);
 
       // Labels
-      const BASE_LABEL_SIZE = this.geography.id === 'tract' ? 12 : 8;
+      const BASE_LABEL_SIZE = (this.geography.id === 'tract' && this.selected.length < 3) ? 12 : 8;
       map.addLayer({
         id: `${this.geography.id}-labels`,
         type: 'symbol',
@@ -315,7 +316,7 @@ export default {
           'text-field': this.$i18n.locale === 'es' ? '{label_es}' : '{label}',
           'text-transform': 'uppercase',
           'text-size': ['interpolate', ['linear'], ['zoom'], 8, BASE_LABEL_SIZE * 0.5, 9.5, BASE_LABEL_SIZE * 0.8, 10, BASE_LABEL_SIZE, 12, BASE_LABEL_SIZE * 2],
-          'text-allow-overlap': true,
+          'text-allow-overlap': false,
         },
         paint: {
           'text-halo-color': '#fff',

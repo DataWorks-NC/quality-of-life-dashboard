@@ -81,8 +81,8 @@ export default {
               'text-font': ['Open Sans Semibold'],
               'text-field': _this.$i18n.locale === 'es' ? '{label_es}' : '{label}',
               'text-transform': 'uppercase',
-              'text-size': 12,
-              'text-allow-overlap': true,
+              'text-size': _this.selectedGeographies.length > 3 ? 8 : 12,
+              'text-allow-overlap': false,
             },
             paint: {
               'text-halo-color': '#fff',
