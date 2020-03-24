@@ -152,7 +152,7 @@
  },
  "yearSlider": {
   "startStop": "Comenzar o terminar reproducción de datos en series de tiempo por año",
-  "useSlider": "deslice para elegir año de datos para ver"
+  "useSlider": "Deslice para elegir año de datos para ver"
  },
  "metricLabels": {
   "years": "años",

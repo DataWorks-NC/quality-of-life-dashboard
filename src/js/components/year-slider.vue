@@ -31,3 +31,12 @@ export default {
   },
 };
 </script>
+
+<style lang="css">
+.v-messages__wrapper {
+  text-align: center;
+}
+.v-input__slot {
+  margin-bottom: 1.25em;
+}
+</style>

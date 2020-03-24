@@ -184,7 +184,7 @@
  },
  "yearSlider": {
   "startStop": "Start or stop playing through data timeseries by year",
-  "useSlider": "use slider to choose a data year to view"
+  "useSlider": "Use slider to choose a data year to view"
  },
  "welcome": {
   "title": "Welcome to the Durham Neighborhood Compass!"
