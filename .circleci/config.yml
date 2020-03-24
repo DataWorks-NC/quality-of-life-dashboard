@@ -87,6 +87,21 @@ jobs:
           environment:
             AZURE_DESTINATION_BLOB: "dev"
 
+  deploy_stage:
+    docker:
+      - image: microsoft/azure-cli
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          command: pip install -r .circleci/requirements.txt
+          working_directory: /tmp/workspace/
+      - run:
+          command: python .circleci/deploy.py /tmp/workspace/dist
+          working_directory: /tmp/workspace/
+          environment:
+            AZURE_DESTINATION_BLOB: "stage"
+
   performance_test_dev:
     docker:
       - image: circleci/node:jessie-browsers
@@ -112,6 +127,13 @@ workflows:
   build_and_deploy:
     jobs:
       - build
+      - deploy_stage:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                staging
       - deploy_dev:
           requires:
             - build

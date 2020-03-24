@@ -20,8 +20,14 @@ export default {
   // You would think to just name this component 'Map', but <map> is in the HTML5 spec!
   name: 'DashboardMap',
   props: {
-    mapboxAccessToken: String,
-    mapConfig: Object,
+    mapboxAccessToken: {
+      type: String,
+      required: true,
+    },
+    mapConfig: {
+      type: Object,
+      required: true,
+    },
   },
 
   data() {
@@ -42,6 +48,7 @@ export default {
     'year': 'updateYear',
     'geography': 'updateGeography',
     'isPitched3D': 'toggle3D',
+    '$i18n.locale': 'setLabelLanguage',
   },
 
   mounted() {
@@ -57,10 +64,11 @@ export default {
 
   methods: {
     initMap() {
-      const mapOptions = Object.assign({
+      const mapOptions = {
         container: 'map',
         attributionControl: false,
-      }, this.mapConfig);
+        ...this.mapConfig,
+      };
       this.map = new mapboxgl.Map(mapOptions);
 
       const _this = this;
@@ -147,7 +155,7 @@ export default {
       map.touchZoomRotate.disableRotation();
 
       // after map initiated, grab geography and initiate/style neighborhoods
-      map.once('style.load', () => {
+      map.once('load', () => {
         // Add tracts
         map.addSource(_this.geography.id, {
           type: 'geojson',
@@ -215,7 +223,8 @@ export default {
           if (!_this.metric.config || !_this.metric.data) {
             return;
           }
-          const features = map.queryRenderedFeatures(e.point, { layers: [`${_this.geography.id}-fill`] }).filter(f => _this.metric.data.map[f.properties.id][`y_${_this.year}`] !== null); // Only show popup when metric value is not null
+          const features = map.queryRenderedFeatures(e.point, { layers: [`${_this.geography.id}-fill`] })
+            .filter(f => f.properties.id in _this.metric.data.map && _this.metric.data.map[f.properties.id][`y_${_this.year}`] !== null); // Only show popup when metric value is not null
 
           if (!features.length) {
             _this.hoverPopup.remove();
@@ -228,7 +237,7 @@ export default {
           const feature = features[0];
           const { id } = feature.properties;
           const data = _this.metric.data.map[id][`y_${_this.year}`];
-          const geographyLabel = _this.$i18n.locale === 'en' ? _this.geography.label(id) : _this.geography.label_es(id);
+          const geographyLabel = _this.$i18n.locale === 'es' ? feature.properties.label_es : feature.properties.label;
           const val = prettyNumber(data, _this.metric.config.decimals, _this.metric.config.prefix,
             _this.metric.config.suffix, _this.metric.config.commas);
           const label = _this.metric.config.label ? ` ${_this.$t(`metricLabels.${_this.metric.config.label}`)}` : '';
@@ -243,21 +252,80 @@ export default {
     initNeighborhoods() {
       const { map } = this;
 
-      // selected neighborhood
-      map.addLayer({
-        'id': `${this.geography.id}`,
-        'type': 'line',
-        'source': this.geography.id,
-        'layout': {},
-        'paint': {},
-      }, this.mapConfig.neighborhoodsSelectedBefore);
-
+      // Choropleth fill layer for all tracts/blockgroups.
       map.addLayer({
         'id': `${this.geography.id}-fill`,
         'type': 'fill',
         'source': this.geography.id,
+        'paint': {
+          'fill-outline-color': 'rgba(0,0,0,1)',
+        },
       }, this.mapConfig.neighborhoodsBefore);
 
+      // Outlines selected tracts/blockgroups with a wider/brighter halo.
+      map.addLayer({
+        id: `${this.geography.id}-selected-halo`,
+        type: 'line',
+        source: this.geography.id,
+        filter: ['in', ['string', ['get', 'id']], ['literal', this.selected]],
+        layout: {
+          'line-join': 'round',
+        },
+        paint: {
+          'line-blur': 3,
+          'line-offset': -3,
+          'line-width': 8,
+          'line-color': '#D996FF',
+        },
+      }, this.mapConfig.neighborhoodsBefore);
+
+      // Dark purple outline layer selected tracts/blockgroups only.
+      map.addLayer({
+        id: `${this.geography.id}-selected-outline`,
+        filter: ['in', ['string', ['get', 'id']], ['literal', this.selected]],
+        type: 'line',
+        layout: {
+          'line-join': 'round',
+        },
+        paint: {
+          'line-width': 3,
+          'line-color': '#68089e',
+        },
+        source: this.geography.id,
+      }, this.mapConfig.threeDBefore);
+
+      // Choropleth fill layer selected tracts/blockgroups only.
+      map.addLayer({
+        id: `${this.geography.id}-selected-fill`,
+        filter: ['in', ['string', ['get', 'id']], ['literal', this.selected]],
+        type: 'fill',
+        paint: {
+          'fill-outline-color': '#68089e',
+        },
+        source: this.geography.id,
+      }, this.mapConfig.neighborhoodsBefore);
+
+      // Labels
+      const BASE_LABEL_SIZE = (this.geography.id === 'tract' && this.selected.length < 3) ? 12 : 8;
+      map.addLayer({
+        id: `${this.geography.id}-labels`,
+        type: 'symbol',
+        source: this.geography.id,
+        layout: {
+          'text-font': ['Open Sans Semibold'],
+          'text-field': this.$i18n.locale === 'es' ? '{label_es}' : '{label}',
+          'text-transform': 'uppercase',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 8, BASE_LABEL_SIZE * 0.5, 9.5, BASE_LABEL_SIZE * 0.8, 10, BASE_LABEL_SIZE, 12, BASE_LABEL_SIZE * 2],
+          'text-allow-overlap': false,
+        },
+        paint: {
+          'text-halo-color': '#fff',
+          'text-halo-width': ['interpolate', ['linear'], ['zoom'], 9, 1, 13, 2],
+        },
+        filter: ['in', ['string', ['get', 'id']], ['literal', this.selected]],
+      });
+
+      // 3D layer
       map.addLayer({
         'id': `${this.geography.id}-fill-extrude`,
         'type': 'fill-extrusion',
@@ -268,35 +336,38 @@ export default {
         'paint': {
           'fill-extrusion-opacity': 1,
         },
-      }, this.mapConfig.neighborhoodsSelectedBefore);
-
-      // neighborhood boundaries
-      map.addLayer({
-        'id': `${this.geography.id}-outlines`,
-        'type': 'line',
-        'source': this.geography.id,
-        'layout': {},
-        'paint': {
-          'line-color': 'rgba(0,0,0,1)',
-          'line-width': 0.4,
-        },
-      }, this.mapConfig.neighborhoodsBefore);
+      }, this.mapConfig.threeDBefore);
     },
 
     styleNeighborhoods() {
       const { map } = this;
-      if (map.getLayer(`${this.geography.id}`)) {
-        map.setPaintProperty(`${this.geography.id}`, 'line-color', this.getOutlineColor());
-        map.setPaintProperty(`${this.geography.id}`, 'line-width', this.getOutlineWidth());
+      const colors = this.getColors();
+
+      const selectedFilter = ['in', ['string', ['get', 'id']], ['literal', this.selected]];
+      if (map.getLayer(`${this.geography.id}-selected-halo`)) {
+        map.setFilter(`${this.geography.id}-selected-halo`, selectedFilter);
       }
 
-      const colors = this.getColors();
+      if (map.getLayer(`${this.geography.id}-labels`)) {
+        map.setFilter(`${this.geography.id}-labels`, selectedFilter);
+      }
+
+      if (map.getLayer(`${this.geography.id}-selected-outline`)) {
+        map.setFilter(`${this.geography.id}-selected-outline`, selectedFilter);
+      }
+
+      if (map.getLayer(`${this.geography.id}-selected-fill`)) {
+        map.setFilter(`${this.geography.id}-selected-fill`, selectedFilter);
+        map.setPaintProperty(`${this.geography.id}-selected-fill`, 'fill-color', colors);
+      }
+
 
       if (map.getLayer(`${this.geography.id}-fill`)) {
         map.setPaintProperty(`${this.geography.id}-fill`, 'fill-color', colors);
       }
+
       if (map.getLayer(`${this.geography.id}-fill-extrude`)) {
-        map.setPaintProperty(`${this.geography.id}-fill-extrude`, 'fill-extrusion-color', { ...colors, default: 'rgb(242,243,240)' });
+        map.setPaintProperty(`${this.geography.id}-fill-extrude`, 'fill-extrusion-color', colors);
         map.setPaintProperty(`${this.geography.id}-fill-extrude`, 'fill-extrusion-height', this.getHeight());
       }
 
@@ -324,8 +395,8 @@ export default {
 
     updateGeography(newGeography, oldGeography) {
       if (!this.geography.id) return;
-      const oldMapLayers = [`${oldGeography.id}`, `${oldGeography.id}-fill`, `${oldGeography.id}-fill-extrude`, `${oldGeography.id}-outlines`];
-      const newMapLayers = [`${newGeography.id}`, `${newGeography.id}-fill`, `${newGeography.id}-outlines`];
+      const oldMapLayers = [`${oldGeography.id}-selected-halo`, `${oldGeography.id}-selected-outline`, `${oldGeography.id}-fill`, `${oldGeography.id}-selected-fill`, `${oldGeography.id}-fill-extrude`, `${oldGeography.id}-labels`];
+      const newMapLayers = [`${newGeography.id}-selected-halo`, `${newGeography.id}-selected-outline`, `${newGeography.id}-fill`, `${newGeography.id}-selected-fill`, `${newGeography.id}-labels`];
       const _this = this;
 
       if (!this.map.getSource(newGeography.id)) {
@@ -373,85 +444,55 @@ export default {
 
       return bounds;
     },
-    getOutlineColor() {
-      const stops = [];
-      const _this = this;
 
-      _this.selected.forEach((id) => {
-        stops.push([id, '#68089e']);
-      });
-
-      const outline = {
-        property: 'id',
-        default: 'rgba(0,0,0,0)',
-        type: 'categorical',
-        stops,
-      };
-
-      if (stops.length > 0) {
-        return outline;
-      }
-      return outline.default;
-    },
-    getOutlineWidth() {
-      const stops = [];
-      const _this = this;
-
-      _this.selected.forEach((id) => {
-        stops.push([id, 4]);
-      });
-
-      const outlineSize = {
-        property: 'id',
-        default: 0,
-        type: 'categorical',
-        stops,
-      };
-
-      if (stops.length > 0) {
-        return outlineSize;
-      }
-      return outlineSize.default;
-    },
+    // Returns a Mapbox GL Expression assigning tract/blockgroup values to the color which matches their metric value
+    // using this.colors and this.breaks to set colors and break values. Also highlights tracts/blockgroups in yellow
+    // when their IDs are in this.highlight.
     getColors() {
       if (!this.metric.data) return;
 
-      const stops = [];
-      const { breaks } = this;
-      const { colors } = this;
+      // Array of arrays of IDs. Places 0-4 correspond to choropleth colors 1-5 and place 5 corresponds to highlight.
+      const stops = [[], [], [], [], [], []];
 
-      const color = function (val) {
+      const { breaks, colors } = this;
+
+      const getStop = (val) => {
         if (val <= breaks[1]) {
-          return colors[0];
-        }
-        if (val <= breaks[2]) {
-          return colors[1];
+          return 0;
+        } if (val <= breaks[2]) {
+          return 1;
         } if (val <= breaks[3]) {
-          return colors[2];
+          return 2;
         } if (val <= breaks[4]) {
-          return colors[3];
+          return 3;
         } if (val <= breaks[5]) {
-          return colors[4];
+          return 4;
         }
       };
 
       Object.keys(this.metric.data.map).forEach((id) => {
         const value = this.metric.data.map[id][`y_${this.year}`];
-
         if (this.highlight.indexOf(id) !== -1) {
-          stops.push([id, '#F7E55B']);
+          stops[5].push(id);
         } else if (value !== null) {
-          stops.push([id, color(value)]);
+          stops[getStop(value)].push(id);
         }
       });
 
-      return {
-        property: 'id',
-        default: 'rgba(242,243,240,0)',
-        type: 'categorical',
-        stops,
-      };
+      const returnExpression = ['case'];
+      colors.forEach((color, idx) => {
+        returnExpression.push(['in', ['string', ['get', 'id']], ['literal', stops[idx]]]);
+        returnExpression.push(color);
+      });
+
+      returnExpression.push(['in', ['string', ['get', 'id']], ['literal', stops[5]]]);
+      returnExpression.push('#F7E55B');
+      returnExpression.push(['rgb', 242, 243, 240]);
+
+      return returnExpression;
     },
+
+    // TODO: Update this function to use expression syntax instead of deprecated property function.
     getHeight() {
       if (!this.metric.data) return;
 
@@ -491,6 +532,14 @@ export default {
         const query = { ...this.$route.query, selected: this.selected.slice(0, i).concat(this.selected.slice(i + 1)) };
         delete query.reportTitle;
         this.$router.push({ query });
+      }
+    },
+    setLabelLanguage() {
+      if (this.map && this.map.getLayer('tract-labels')) {
+        this.map.setLayoutProperty('tract-labels', 'text-field', this.$i18n.locale === 'es' ? '{label_es}' : '{label}');
+      }
+      if (this.map && this.map.getLayer('blockgroup-labels')) {
+        this.map.setLayoutProperty('blockgroup-labels', 'text-field', this.$i18n.locale === 'es' ? '{label_es}' : '{label}');
       }
     },
   },

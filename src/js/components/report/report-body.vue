@@ -1,11 +1,6 @@
 <template>
   <div>
-    <div v-for="c in categories" :key="c.name">
-      <v-card>
-        <ReportCategory :category="c" :metric-values="metricValues[c.originalName]" :county-averages="countyAverages[c.originalName]" />
-      </v-card>
-      <v-spacer />
-    </div>
+    <ReportCategory v-for="c in categories" :key="c.name" :category="c" :metric-values="metricValues[c.originalName]" :county-averages="countyAverages[c.originalName]" />
   </div>
 </template>
 

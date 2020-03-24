@@ -67,6 +67,14 @@ const router = new Router({
   mode: 'history',
   encodeQuery: true,
   routes,
+  scrollBehavior(to, from, savedPosition) {
+    if (to.hash) {
+      return { selector: to.hash, offset: { x: 0, y: 60 } };
+    } if (savedPosition) {
+      return savedPosition;
+    }
+    return { x: 0, y: 0 };
+  },
 });
 
 // Validate params.
@@ -175,6 +183,7 @@ router.beforeEach((to, from, next) => {
   if (store.state.geography.id !== to.params.geographyLevel) {
     toChanged = true;
     newTo.params = { ...newTo.params, geographyLevel: store.state.geography.id };
+    newTo.query = { ...newTo.query, selected: [] };
   }
   if (toChanged) {
     return next(newTo);

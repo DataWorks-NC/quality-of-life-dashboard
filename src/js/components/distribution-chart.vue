@@ -28,7 +28,15 @@ export default {
     },
   },
   data: () => ({ mounted: false, mdiCircle, mdiDotsHorizontal }),
-  computed: mapState(['breaks', 'metric', 'selected', 'year']),
+  computed: {
+    ...mapState(['breaks', 'metric', 'selected', 'year']),
+    countyAverage() {
+      return this.year in this.countyValues ? this.countyValues[this.year] : false;
+    },
+    countyAverageString() {
+      return this.countyAverage && prettyNumber(this.countyAverage, this.metric.config.decimals, this.metric.config.prefix, this.metric.config.suffix, this.metric.config.commas);
+    },
+  },
   watch: {
     'metric': 'renderChart',
     'selected': 'renderChart',
@@ -36,7 +44,6 @@ export default {
   },
   mounted() {
     // Set these here rather than as data so they are not reactive.
-    this.countyAverageString = null;
     this.chart = null;
     this.chartData = null;
     this.renderChart();
@@ -65,7 +72,7 @@ export default {
           labelInterpolationFnc: () => null,
         },
         axisY: {
-          labelInterpolationFnc: value => legendLabelNumber(value, this.metric.config),
+          labelInterpolationFnc: (value) => legendLabelNumber(value, this.metric.config),
         },
         series: {
           'series-selected': {
@@ -82,7 +89,7 @@ export default {
         plugins: [
           Chartist.plugins.tooltip({
             appendToBody: true,
-            transformTooltipTextFnc: value => prettyNumber(value, this.metric.config.decimals, this.metric.config.prefix,
+            transformTooltipTextFnc: (value) => prettyNumber(value, this.metric.config.decimals, this.metric.config.prefix,
               this.metric.config.suffix),
           }),
         ],
@@ -125,8 +132,6 @@ export default {
 
       // get values
       const data = this.dataToSortedArray(metric.data.map, this.year);
-      const countyAverage = this.year in this.countyValues ? this.countyValues[this.year] : false;
-      _this.countyAverageString = prettyNumber(countyAverage, metric.config.decimals, metric.config.prefix, metric.config.suffix, metric.config.commas);
 
       // populate chart data
       const dataArrayA = [];
@@ -147,7 +152,7 @@ export default {
           dataArraySelected.push(null); // This is needed to have padding values so that the selected points show up in the right place on x-axis.
         }
         // set county average
-        dataArrayCountyAverage.push(countyAverage);
+        dataArrayCountyAverage.push(this.countyAverage);
 
         // set lines based on breaks
         if (data[i].val <= _this.breaks[1]) {
@@ -187,7 +192,7 @@ export default {
       chartData.series.push({ name: 'series-3', data: dataArrayC });
       chartData.series.push({ name: 'series-4', data: dataArrayD });
       chartData.series.push({ name: 'series-5', data: dataArrayE });
-      if (countyAverage) {
+      if (this.countyAverage) {
         chartData.series.push({ name: 'series-average', data: dataArrayCountyAverage });
       }
       chartData.series.push({ name: 'series-selected', data: dataArraySelected });

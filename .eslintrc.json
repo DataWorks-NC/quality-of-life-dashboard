@@ -13,6 +13,9 @@
     "prefer-destructuring": "off",
     "consistent-return": "off",
     "no-underscore-dangle": "off",
-    "arrow-parens": "off"
+    "arrow-parens": "off",
+    "no-plusplus": "off",
+    "no-minusminus": "off",
+    "no-mixed-operators": "off"
   }
 }

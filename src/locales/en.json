@@ -29,6 +29,7 @@
   "FeatureValue": "Feature Value",
   "DataWorksNCLogo": "DataWorks NC logo",
   "DurhamCountyLogo": "Durham County logo",
+  "DurhamCounty": "Durham County",
   "DurhamNeighborhoodCompass": "Durham Neighborhood Compass",
   "MecklenburgCounty": "Mecklenburg County",
   "TrendingDown": "Trending Down",
@@ -183,7 +184,7 @@
  },
  "yearSlider": {
   "startStop": "Start or stop playing through data timeseries by year",
-  "useSlider": "use slider to choose a data year to view"
+  "useSlider": "Use slider to choose a data year to view"
  },
  "welcome": {
   "title": "Welcome to the Durham Neighborhood Compass!"

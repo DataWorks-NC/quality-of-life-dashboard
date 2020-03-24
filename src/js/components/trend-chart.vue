@@ -6,8 +6,8 @@
       {{ $i18n.locale === 'en' ? metricConfig.title : metricConfig.title_es }}
     </p>
     <div class="legend text-center">
-      <span class="caption"><v-icon color="#778b91">{{ mdiTrendingUp }}</v-icon> {{ $t('strings.county') | capitalize }}</span>
-      <span class="caption"><v-icon color="accent">{{ mdiTrendingUp }}</v-icon> {{ $t('strings.selected') | capitalize }}</span>
+      <span v-if="countyValues" class="caption"><v-icon color="#778b91">{{ mdiTrendingUp }}</v-icon> {{ $t('strings.county') | capitalize }}</span>
+      <span v-if="values" class="caption"><v-icon color="accent">{{ mdiTrendingUp }}</v-icon> {{ $t('strings.selected') | capitalize }}</span>
     </div>
     <div class="trendchart">
       <div :id="'ct-trendchart-' + metricConfig.metric" class="ct-trendchart" />

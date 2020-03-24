@@ -60,87 +60,87 @@
   }
 }
 
-  .v-card {
-    padding: 8px;
-  }
+.v-card {
+  padding: 8px;
+}
 
-  .spacer {
-    height: 16px;
-  }
+.spacer {
+  height: 16px;
+}
 
-  .v-application .title {
-    letter-spacing: initial !important;
-    line-height: 1.5rem;
-    margin-bottom: 8px;
-  }
+.v-application .title {
+  letter-spacing: initial !important;
+  line-height: 1.5rem;
+  margin-bottom: 8px;
+}
 
-  /* Chart styling */
-  .ct-label {
-    font-size: 1rem;
-    color: rgba(0, 0, 0, 0.8);
-  }
+/* Chart styling */
+.ct-label {
+  font-size: 1rem;
+  color: rgba(0, 0, 0, 0.8);
+}
 
-  .ct-label.ct-horizontal {
-    margin-left: -1.25rem;
-  }
+.ct-label.ct-horizontal {
+  margin-left: -1.25rem;
+}
 
-  /* Chartist tooltips */
-  .chartist-tooltip {
-    position: absolute;
-    top: 0;
-    display: inline-block;
-    opacity: 0;
-    min-width: 5em;
-    padding: .5em;
-    background: rgba(0, 0, 0, 0.85);
-    color: #ccc;
-    font-family: Oxygen, Helvetica, Arial, sans-serif;
-    font-weight: 700;
-    text-align: center;
-    pointer-events: none;
-    z-index: 1;
-    border-radius: 5px;
-    transition: opacity .2s linear;
-  }
+/* Chartist tooltips */
+.chartist-tooltip {
+  position: absolute;
+  top: 0;
+  display: inline-block;
+  opacity: 0;
+  min-width: 5em;
+  padding: .5em;
+  background: rgba(0, 0, 0, 0.85);
+  color: #ccc;
+  font-family: Oxygen, Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  text-align: center;
+  pointer-events: none;
+  z-index: 1;
+  border-radius: 5px;
+  transition: opacity .2s linear;
+}
 
-  .chartist-tooltip:before {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    margin-left: -15px;
-    border: 15px solid transparent;
-    border-top-color: rgba(0, 0, 0, 0.85);
-  }
+.chartist-tooltip:before {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  margin-left: -15px;
+  border: 15px solid transparent;
+  border-top-color: rgba(0, 0, 0, 0.85);
+}
 
-  .chartist-tooltip.tooltip-show {
-    opacity: 1;
-  }
+.chartist-tooltip.tooltip-show {
+  opacity: 1;
+}
 
-  /* prevent top-of-page spasms */
-  .map-container {
-    min-height: 600px;
-  }
+/* prevent top-of-page spasms */
+.map-container {
+  min-height: 600px;
+}
 
-  /* for side by side elements */
-  .flex-container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
+/* for side by side elements */
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
 
-  .flex-container .flex-item {
-    flex-grow: 1;
-    padding: 10px;
-  }
+.flex-container .flex-item {
+  flex-grow: 1;
+  padding: 10px;
+}
 
-  .undermap-controls .v-btn {
-    margin-bottom: 5px;
-  }
+.undermap-controls .v-btn {
+  margin-bottom: 5px;
+}
 
-  input,
-  textarea {
-    outline: none;
-  }
+input,
+textarea {
+  outline: none;
+}
