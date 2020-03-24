@@ -1,13 +1,13 @@
 <template>
-  <div>
+  <div v-if="metricValues || countyAverages" :id="`metric-${metric.metric}`">
     <h3>{{ metric.name }}</h3>
-    <v-simple-table v-if="metricValues" class="metric-table">
+    <v-simple-table class="metric-table">
       <tbody>
         <tr>
           <th class="metric-table__year">
             {{ $t('strings.year') | capitalize }}
           </th>
-          <th class="metric-table__feature-value">
+          <th v-if="metricValues" class="metric-table__feature-value">
             <span v-if="metric.label">{{ $t(`metricLabels.${metric.label}`) | capitalize }}</span>
             <span v-else>{{ $t('strings.FeatureValue') }}</span>
           </th>
@@ -22,7 +22,7 @@
           <td class="metric-table__year">
             {{ year }}
           </td>
-          <td class="metric-table__feature-value">
+          <td v-if="metricValues" class="metric-table__feature-value">
             {{ prettify(metricValues[year]) }}
           </td>
           <td
@@ -37,7 +37,6 @@
     <v-spacer />
     <div v-if="years.length > 1" class="metric-trendchart">
       <TrendChart
-        v-if="metricValues || countyAverages"
         :metric-config="metric"
         :years="years"
         :values="metricValues"
@@ -84,12 +83,9 @@ export default {
   },
   computed: {
     years() {
-      return Object.keys(this.metricValues);
-    },
-    notNull() {
-      return (
-        Object.values(this.metricValues).filter(v => v !== null).length > 0
-      );
+      const metricYears = this.metricValues ? Object.keys(this.metricValues) : [];
+      const countyYears = this.countyAverages ? Object.keys(this.countyAverages) : [];
+      return Array.from(new Set(metricYears.concat(countyYears)));
     },
   },
   methods: {

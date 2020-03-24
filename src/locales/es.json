@@ -29,6 +29,7 @@
   "FeatureValue": "Valor de la característica",
   "DataWorksNCLogo": "Logo de DataWorks NC",
   "DurhamCountyLogo": "Logo del Condado de Durham",
+  "DurhamCounty": "Condado de Durham",
   "DurhamNeighborhoodCompass": "Durham Neighborhood Compass",
   "MecklenburgCounty": "Condado de Mecklenburg",
   "TrendingDown": "Bajando",
@@ -151,7 +152,7 @@
  },
  "yearSlider": {
   "startStop": "Comenzar o terminar reproducción de datos en series de tiempo por año",
-  "useSlider": "deslice para elegir año de datos para ver"
+  "useSlider": "Deslice para elegir año de datos para ver"
  },
  "metricLabels": {
   "years": "años",

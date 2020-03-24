@@ -107,9 +107,10 @@ export default {
     mdiEyeOff,
   }),
   computed: {
-    ...mapGetters(["reportTitle", "visibleCategories"]),
+    ...mapGetters(["reportTitle", "visibleCategories", "categoryNames"]),
     ...mapState({
-      categoryNames: state => state.report.categoryNames,
+      metricValues: state => state.report.metricValues,
+      countyAverages: state => state.report.countyAverages,
       metrics: state => state.report.metrics,
     }),
 
@@ -120,7 +121,7 @@ export default {
           originalName: categoryName,
           visible: this.visibleCategories.indexOf(categoryName) !== -1,
           metrics: Object.values(this.$store.state.report.metrics)
-            .filter(m => m.category === categoryName)
+            .filter(m => m.category === categoryName && ((this.metricValues[categoryName] && m.metric in this.metricValues[categoryName]) || (this.countyAverages[categoryName] && m.metric in this.countyAverages[categoryName])))
             .map(m => ({
               ...m,
               name: this.$i18n.locale === "es" ? m.title_es : m.title,

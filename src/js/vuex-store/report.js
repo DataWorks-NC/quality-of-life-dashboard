@@ -9,7 +9,7 @@ const getJSONFilename = (geographyId, areaId) => (geographyId === 'neighborhood'
 
 export default {
   state: {
-    categoryNames: new Array(...new Set(Object.values(dataConfig).map(m => (m.category)))),
+    categoryNamesBase: new Array(...new Set(Object.values(dataConfig).map(m => (m.category)))),
     metrics: {}, // Config values for each metric which is in the current geography, plus new visibility flag. Keyed by metric ID.
     reportTitle: false, // Custom title for report.
     metricValues: {}, // Values for each metric in the report.
@@ -17,10 +17,11 @@ export default {
     activeCategory: '',
   },
   getters: {
+    categoryNames: state => state.categoryNamesBase.filter(c => (c in state.metricValues || c in state.countyAverages)),
     areaNames: (state, getters, rootState) => rootState.selected.map(id => (rootState.language === 'es' ? rootState.geography.label_es(id) : rootState.geography.label(id))),
     // Returns true iff all metrics are visible.
     everythingVisible: state => Object.values(state.metrics).every(m => m.visible),
-    visibleCategories: state => state.categoryNames.filter(c => Object.values(state.metrics).some(m => m.category === c && m.visible)),
+    visibleCategories: (state, getters) => getters.categoryNames.filter(c => (c in state.metricValues || c in state.countyAverages) && Object.values(state.metrics).some(m => m.category === c && m.visible)),
 
     // Utility function for setting the query string, returns any categories which are 100% shown.
     totallyVisibleCategories: (state, getters) => getters.visibleCategories.filter(c => Object.values(state.metrics).filter(m => m.category === c).every(m => m.visible)),
@@ -30,19 +31,22 @@ export default {
       return Object.values(state.metrics).filter(m => totallyVisibleCategories.indexOf(m.category) === -1 && m.visible).map(m => m.metric);
     },
 
-    hiddenCategories: state => state.categoryNames.filter(c => Object.values(state.metrics).some(m => m.category === c) && !Object.values(state.metrics).filter(m => m.category === c).some(m => m.visible)),
+    hiddenCategories: (state, getters) => getters.categoryNames.filter(c => Object.values(state.metrics).some(m => m.category === c) && !Object.values(state.metrics).filter(m => m.category === c).some(m => m.visible)),
 
     reportTitle: (state, getters) => (state.reportTitle ? state.reportTitle : getters.areaNames.join(', ')),
 
     // Pull the most recent year for each metric listed in siteConfig.summaryMetrics for which we have valid metric values.
-    summaryMetrics: state => siteConfig.summaryMetrics.map((id) => {
-      if (!(id in dataConfig)) return [];
-      const metric = dataConfig[id];
-      if (metric.category in state.metricValues && metric.metric in state.metricValues[metric.category]) {
-        metric.value = Object.values(state.metricValues[metric.category][metric.metric]).slice(-1)[0];
-      }
-      return metric;
-    }),
+    summaryMetrics: (state) => {
+      const valuesSource = Object.keys(state.metricValues).length ? state.metricValues : state.countyAverages;
+      return siteConfig.summaryMetrics.map((id) => {
+        if (!(id in dataConfig)) return [];
+        const metric = dataConfig[id];
+        if (metric.category in valuesSource && metric.metric in valuesSource[metric.category]) {
+          metric.value = Object.values(valuesSource[metric.category][metric.metric]).slice(-1)[0];
+        }
+        return metric;
+      });
+    },
     activeCategory: state => state.activeCategory,
   },
   mutations: {
