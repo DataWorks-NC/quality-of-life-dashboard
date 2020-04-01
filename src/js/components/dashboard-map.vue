@@ -60,6 +60,7 @@ export default {
     this.addressMarker = null;
     this.hoverPopup = null;
     this.initMap();
+    this.initGeocoder();
   },
 
   methods: {
@@ -105,51 +106,6 @@ export default {
       ), 'top-right');
       map.addControl(new mapboxgl.GeolocateControl(), 'top-right');
 
-      if (!this.printMode) {
-        this.geocoder = new MapboxGlGeocoder({
-          accessToken: _this.mapboxAccessToken,
-          country: 'us',
-          bbox: [-79.01, 35.87, -78.7, 36.15],
-          placeholder: this.$t('map.SearchPlaceholder'),
-          zoom: 14,
-          marker: false,
-          flyTo: true,
-          mapboxgl,
-        }).on('result', (e) => {
-          if (e.result) {
-            // Add marker
-            _this.addressPopup.setText(e.result.place_name.replace('North Carolina ', '').replace(', United States of America', ''));
-            _this.addressMarker.setLngLat(e.result.center).addTo(map).togglePopup();
-
-            // Clear selection and select underlying area. Remove duplicates by casting to Set.
-            const features = Array.from(
-              new Set(
-                map.queryRenderedFeatures(
-                  map.project(e.result.center),
-                  { layers: [`${_this.geography.id}-fill`] },
-                )
-                  .map(g => g.properties.id),
-              ),
-            );
-
-            _this.$router.push({ query: { ..._this.$route.query, selected: features } });
-            _this.zoomToIds(features);
-          }
-        }).on('clear', () => {
-          if (_this.addressMarker) {
-            if (_this.addressPopup.isOpen()) _this.addressMarker.togglePopup();
-            _this.addressMarker.remove();
-          }
-          if (map.getLayer('point')) {
-            map.getSource('point').setData({
-              "type": "FeatureCollection",
-              "features": [],
-            });
-          }
-        });
-        map.addControl(this.geocoder, 'bottom-right');
-      }
-
       // disable map rotation until 3D support added
       // map.dragRotate.disable();
       map.touchZoomRotate.disableRotation();
@@ -171,6 +127,62 @@ export default {
           setTimeout(() => { _this.rescale(); }, 2500);
         }
       });
+    },
+    initGeocoder() {
+      if (this.printMode) return;
+
+      const map = this.map;
+      const _this = this;
+      this.geocoder = new MapboxGlGeocoder({
+        accessToken: this.mapboxAccessToken,
+        country: 'us',
+        bbox: [-79.01, 35.87, -78.7, 36.15],
+        placeholder: this.$t('map.SearchPlaceholder'),
+        zoom: 14,
+        marker: false,
+        flyTo: true,
+        mapboxgl,
+      }).on('result', (e) => {
+        if (e.result) {
+          // Add marker
+          _this.addressPopup.setText(e.result.place_name.replace('North Carolina ', '').replace(', United States of America', ''));
+          _this.addressMarker.setLngLat(e.result.center).addTo(map).togglePopup();
+
+          // We need to first move map to the marker and *then* select the visible features under that marker.
+          // TODO: Tweak these animations to make the UI more seamless.
+          map.flyTo({ center: e.result.center }, { flyToMarker: true, center: e.result.center });
+
+          map.once('moveend', (moveEvent) => {
+            // Once animation has finished, now the features will be visible.
+            if (!moveEvent.flyToMarker) return;
+            // Clear selection and select underlying area. Remove duplicates by casting to Set.
+            const features = Array.from(
+              new Set(
+                map.queryRenderedFeatures(
+                  map.project(moveEvent.center),
+                  { layers: [`${_this.geography.id}-fill`] },
+                )
+                  .map(g => g.properties.id),
+              ),
+            );
+
+            _this.$router.push({ query: { ..._this.$route.query, selected: features } });
+            _this.zoomToIds(features);
+          });
+        }
+      }).on('clear', () => {
+        if (_this.addressMarker) {
+          if (_this.addressPopup.isOpen()) _this.addressMarker.togglePopup();
+          _this.addressMarker.remove();
+        }
+        if (map.getLayer('point')) {
+          map.getSource('point').setData({
+            "type": "FeatureCollection",
+            "features": [],
+          });
+        }
+      });
+      map.addControl(this.geocoder, 'bottom-right');
     },
     toggle3D() {
       const _this = this;
