@@ -6,6 +6,7 @@
 
 <script>
 import { mapState } from 'vuex';
+import { uniqBy } from 'lodash';
 
 import mapboxgl from 'mapbox-gl';
 import MapboxGlGeocoder from '@mapbox/mapbox-gl-geocoder';
@@ -135,6 +136,7 @@ export default {
       const _this = this;
       this.geocoder = new MapboxGlGeocoder({
         accessToken: this.mapboxAccessToken,
+        localGeocoder: this.localGeocoder,
         country: 'us',
         bbox: [-79.01, 35.87, -78.7, 36.15],
         placeholder: this.$t('map.SearchPlaceholder'),
@@ -183,6 +185,16 @@ export default {
         }
       });
       map.addControl(this.geocoder, 'bottom-right');
+    },
+    localGeocoder(searchString) {
+      // Query map layers by name.
+      const matchingFeatures = uniqBy(this.map.querySourceFeatures(this.geography.id, {
+        filter: ['in', ['downcase', searchString], ['downcase', ['get', 'label']]],
+      }), f => f.properties.id).map(f => ({ ...f, place_name: f.properties.label, place_type: ["place"] }));
+
+      // Query select groups.
+
+      return matchingFeatures;
     },
     toggle3D() {
       const _this = this;
@@ -350,7 +362,6 @@ export default {
         },
       }, this.mapConfig.threeDBefore);
     },
-
     styleNeighborhoods() {
       const { map } = this;
       const colors = this.getColors();
@@ -388,13 +399,11 @@ export default {
         this.geocoder.clear();
       }
     },
-
     updateChoropleth() {
       if (this.mapLoaded) {
         this.styleNeighborhoods();
       }
     },
-
     updateBreaks() {
       this.mapMetricId = this.metricId;
       this.updateChoropleth();
@@ -404,7 +413,6 @@ export default {
         this.updateChoropleth();
       }
     },
-
     updateGeography(newGeography, oldGeography) {
       if (!this.geography.id) return;
       const oldMapLayers = [`${oldGeography.id}-selected-halo`, `${oldGeography.id}-selected-outline`, `${oldGeography.id}-fill`, `${oldGeography.id}-selected-fill`, `${oldGeography.id}-fill-extrude`, `${oldGeography.id}-labels`];
@@ -430,7 +438,6 @@ export default {
         }
       });
     },
-
     rescale(oldSelected = null) {
       try {
         if (this.selected.length) {
