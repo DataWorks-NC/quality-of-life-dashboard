@@ -31,6 +31,7 @@ export default {
     return {
       siteConfig: config.siteConfig,
       mapConfig: config.mapConfig,
+      config,
     };
   },
   computed: Object.assign(
