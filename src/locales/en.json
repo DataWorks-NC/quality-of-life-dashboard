@@ -1,6 +1,7 @@
 {
  "strings": {
   "about": "The Neighborhood Compass is a primary community resource that allows you to track changes in your community with data; regularly-updated information that often deepens your gut-level understanding that the character of Durham’s neighborhoods is changing.",
+  "metaDescriptionHome": "Explore your Durham neighborhood with this regularly-updated website. Find current data, create reports and maps, and track changes in your community. The best resource for accurate data about neighborhoods in Durham, North Carolina.",
   "metaDescriptionAbout": "Learn more about the Durham Neighborhood Compass! The Neighborhood Compass is a primary community resource that allows you to track changes in your community with data; regularly-updated information that often deepens your gut-level understanding that the character of Durham’s neighborhoods is changing.",
   "metaDescriptionMetric": "Learn more about {metric} in Durham County at the {geography} level on the Durham Neighborhood Compass.",
   "metaDescriptionPrint": "Print a map of {metric} in Durham County at the {geography} level from the Durham Neighborhood Compass.",
