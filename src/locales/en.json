@@ -124,7 +124,8 @@
   "evictions": "evictions",
   "ratio of sidewalks to roadways": "ratio of sidewalks to roadways",
   "total dollars": "in total",
-  "workers": "workers"
+  "workers": "workers",
+  "square miles": "square miles"
  },
  "printMapHeader": {
   "back": "Back to dashboard",
