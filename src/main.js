@@ -33,7 +33,7 @@ router.beforeEach((to, from, next) => {
   store.dispatch('setLanguage', language).then(() => {
     // Set title
     let title = i18n.t('strings.DurhamNeighborhoodCompass');
-    let description = i18n.t('strings.about');
+    let description = i18n.t('strings.metaDescriptionHome');
 
     if (to.name === 'report') {
       const reportTitle = store.getters.reportTitle;

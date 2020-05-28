@@ -1,6 +1,7 @@
 {
  "strings": {
   "about": "El Neighborhood Compass es un recurso fundamental que le permite seguir los cambios en su comunidad con información que es actualizada regularmente y que, a menudo, profundiza esa sensación visceral que usted tiene de que el carácter de los vecindarios de Durham está cambiando.",
+  "metaDescriptionHome": "El Neighborhood Compass es un recurso fundamental que le permite seguir los cambios en su comunidad con información que es actualizada regularmente y que, a menudo, profundiza esa sensación visceral que usted tiene de que el carácter de los vecindarios de Durham está cambiando.",
   "metaDescriptionAbout": "Conozca más sobre el Neighborhood Compass de Durham! El Neighborhood Compass es un recurso fundamental que le permite seguir los cambios en su comunidad con información que es actualizada regularmente y que, a menudo, profundiza esa sensación visceral que usted tiene de que el carácter de los vecindarios de Durham está cambiando.",
   "metaDescriptionMetric": "Conozca más sobre {metric} en el Condado de Durham a nivel de {geography} en el Neighborhood Compass de Durham.",
   "metaDescriptionPrint": "Imprima un mapa de {metric} en el Condado de Durham a nivel de {geography} con el Neighborhood Compass de Durham.",
@@ -185,7 +186,8 @@
   "evictions": "desalojos",
   "ratio of sidewalks to roadways": "proporción de aceras a carreteras",
   "total dollars": "en total",
-  "workers": "trabajadores"
+  "workers": "trabajadores",
+  "square miles": "millas cuadradas"
  },
  "welcome": {
   "title": "¡Bienvenidos al Neighborhood Compass de Durham!"
