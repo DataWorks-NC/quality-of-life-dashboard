@@ -1,5 +1,5 @@
 <template>
-  <v-content>
+  <v-main>
     <div class="map-container" style="position: relative">
       <dashboard-map :mapbox-access-token="config.privateConfig.mapboxAccessToken" :map-config="mapConfig" />
       <dashboard-legend />
@@ -9,7 +9,7 @@
         </router-link>
       </div>
     </div>
-  </v-content>
+  </v-main>
 </template>
 
 <script>

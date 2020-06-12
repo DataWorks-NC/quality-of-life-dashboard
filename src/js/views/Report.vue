@@ -1,7 +1,7 @@
 <template>
   <div class="report">
     <report-nav />
-    <v-content>
+    <v-main>
       <v-container>
         <report-jump-nav />
         <report-summary
@@ -14,7 +14,7 @@
         <v-spacer />
         <report-body />
       </v-container>
-    </v-content>
+    </v-main>
     <dashboard-footer />
   </div>
 </template>
@@ -24,10 +24,10 @@ import { mapState, mapGetters } from 'vuex';
 import config from '../modules/config';
 
 import DashboardFooter from '../components/dashboard-footer.vue';
-import ReportSummary from '../components/report/report-summary';
-import ReportBody from '../components/report/report-body';
-import ReportNav from '../components/report/report-nav';
-import ReportJumpNav from '../components/report/report-jump-nav';
+import ReportSummary from '../components/report/report-summary.vue';
+import ReportBody from '../components/report/report-body.vue';
+import ReportNav from '../components/report/report-nav.vue';
+import ReportJumpNav from '../components/report/report-jump-nav.vue';
 
 export default {
   name: 'Report',

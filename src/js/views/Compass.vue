@@ -1,7 +1,7 @@
 <template>
   <div>
     <compass-nav v-if="!printMode" />
-    <v-content :class="printMode ? 'print' : ''">
+    <v-main :class="printMode ? 'print' : ''">
       <div v-if="!printMode">
         <v-container fluid grid-list-lg>
           <v-layout wrap>
@@ -166,7 +166,7 @@
       <div v-else>
         <print-mode :config="config" />
       </div>
-    </v-content>
+    </v-main>
     <dashboard-footer />
   </div>
 </template>
@@ -186,7 +186,7 @@ import Metadata from "../components/metadata.vue";
 import PrintMode from "../components/print-mode.vue";
 import Social from "../components/social.vue";
 import UndermapButtons from "../components/undermap-buttons.vue";
-import CompassNav from "../components/CompassNav";
+import CompassNav from "../components/CompassNav.vue";
 
 const DashboardMap = () => import(/* webpackChunkName: "dashboard-map" */ "../components/dashboard-map.vue");
 const DistributionChart = () => import(/* webpackChunkName: "distribution-chart" */ "../components/distribution-chart.vue");

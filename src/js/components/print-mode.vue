@@ -24,7 +24,9 @@
           <dashboard-legend />
         </div>
         <i18n path="printMode.footerText" tag="p" class="print__footer">
-          <a place="compassLink" href="https://compass.durhamnc.gov">{{ $t('strings.theCompass') }}</a>
+          <template v-slot:compassLink>
+            <a href="https://compass.durhamnc.gov">{{ $t('strings.theCompass') }}</a>
+          </template>
         </i18n>
       </v-card>
     </v-content>
@@ -46,9 +48,12 @@ export default {
     DashboardMap,
     PrintMapHeader,
   },
-  props: [
-    'config',
-  ],
+  props: {
+    config: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
   data: () => ({ mdiPrinter, mdiArrowLeft }),
   methods: {
     print() {
