@@ -37,10 +37,26 @@ export default {
       locationPopup: null,
       mapLoaded: false,
       colors: config.colors,
+      selectGroupsData: config.selectGroups,
     };
   },
 
-  computed: mapState(['breaks', 'geography', 'highlight', 'metric', 'metricId', 'printMode', 'selected', 'year']),
+  computed: {
+    ...mapState(
+      ['breaks', 'geography', 'highlight', 'metric', 'metricId', 'printMode', 'selected', 'year'],
+    ),
+    selectGroups() {
+      const categories = Object.keys(this.selectGroupsData);
+      const selectGroups = {};
+      categories.forEach(c => {
+        if (!this.geography.id || !(this.geography.id in this.selectGroupsData[c])) return;
+        Object.keys(this.selectGroupsData[c][this.geography.id]).forEach(selectGroupName => {
+          selectGroups[`${selectGroupName}, ${c}`] = this.selectGroupsData[c][this.geography.id][selectGroupName];
+        });
+      });
+      return selectGroups;
+    },
+  },
 
   watch: {
     'selected': ['styleNeighborhoods', 'rescale'],
@@ -145,32 +161,51 @@ export default {
         flyTo: true,
         mapboxgl,
       }).on('result', (e) => {
+        _this.addressMarker.remove();
+
         if (e.result) {
-          // Add marker
-          _this.addressPopup.setText(e.result.place_name.replace('North Carolina ', '').replace(', United States of America', ''));
-          _this.addressMarker.setLngLat(e.result.center).addTo(map).togglePopup();
+          // Handle results differently depending on the type of result.
+          // Case 1: This is a Mapbox geocoded address
+          if (!('local_match' in e.result)) {
+            // Add popup marker to address.
+            _this.addressPopup.setText(e.result.place_name.replace('North Carolina ', '').replace(', United States of America', ''));
+            _this.addressMarker.setLngLat(e.result.center).addTo(map).togglePopup();
 
-          // We need to first move map to the marker and *then* select the visible features under that marker.
-          // TODO: Tweak these animations to make the UI more seamless.
-          map.flyTo({ center: e.result.center }, { flyToMarker: true, center: e.result.center });
+            // We need to first move map to the marker and *then* select the visible features under that marker.
+            // TODO: Tweak these animations to make the UI more seamless.
+            map.flyTo({ center: e.result.center }, { flyToMarker: true, center: e.result.center });
 
-          map.once('moveend', (moveEvent) => {
-            // Once animation has finished, now the features will be visible.
-            if (!moveEvent.flyToMarker) return;
-            // Clear selection and select underlying area. Remove duplicates by casting to Set.
-            const features = Array.from(
-              new Set(
-                map.queryRenderedFeatures(
-                  map.project(moveEvent.center),
-                  { layers: [`${_this.geography.id}-fill`] },
-                )
-                  .map(g => g.properties.id),
-              ),
-            );
+            map.once('moveend', (moveEvent) => {
+              // Once animation has finished, now the features will be visible.
+              if (!moveEvent.flyToMarker) return;
+              // Clear selection and select underlying area. Remove duplicates by casting to Set.
+              const features = Array.from(
+                new Set(
+                  map.queryRenderedFeatures(
+                    map.project(moveEvent.center),
+                    { layers: [`${_this.geography.id}-fill`] },
+                  ).map(g => g.properties.id),
+                ),
+              );
 
-            _this.$router.push({ query: { ..._this.$route.query, selected: features } });
-            _this.zoomToIds(features);
-          });
+              _this.$router.push({ query: { ..._this.$route.query, selected: features } });
+              _this.zoomToIds(features);
+            });
+            // eslint-disable-next-line brace-style
+          }
+
+          // Case 2: This is an existing feature on the map.
+          else if (e.result.local_match === 'feature') {
+            _this.$router.push({ query: { ...this.$route.query, selected: e.result.id } });
+            _this.zoomToIds(e.result.id);
+            // eslint-disable-next-line brace-style
+          }
+
+          // Case 3: This is a select group.
+          else if (e.result.local_match === 'selectGroup') {
+            _this.$router.push({ query: { ...this.$route.query, selected: e.result.ids } });
+            _this.zoomToIds(e.result.ids);
+          }
         }
       }).on('clear', () => {
         if (_this.addressMarker) {
@@ -187,14 +222,20 @@ export default {
       map.addControl(this.geocoder, 'bottom-right');
     },
     localGeocoder(searchString) {
+      const searchStringDownCase = searchString.toLowerCase();
       // Query map layers by name.
       const matchingFeatures = uniqBy(this.map.querySourceFeatures(this.geography.id, {
-        filter: ['in', ['downcase', searchString], ['downcase', ['get', 'label']]],
-      }), f => f.properties.id).map(f => ({ ...f, place_name: f.properties.label, place_type: ["place"] }));
+        filter: ['in', searchStringDownCase, ['downcase', ['get', 'label']]],
+      }), f => f.properties.id).map(f => ({
+        ...f, place_name: f.properties.label, place_type: ["place"], local_match: 'feature',
+      }));
 
       // Query select groups.
+      const matchingSelectGroups = Object.keys(this.selectGroups).filter(n => n.toLowerCase().includes(searchStringDownCase)).map(match => ({
+        place_name: match, place_type: ["place"], local_match: 'selectGroup', ids: this.selectGroups[match],
+      }));
 
-      return matchingFeatures;
+      return matchingFeatures.concat(matchingSelectGroups);
     },
     toggle3D() {
       const _this = this;
