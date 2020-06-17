@@ -159,6 +159,7 @@ export default {
         zoom: 14,
         marker: false,
         flyTo: true,
+        types: "address,poi", // see https://docs.mapbox.com/api/search/#data-types for full list.
         mapboxgl,
       }).on('result', (e) => {
         _this.addressMarker.remove();
