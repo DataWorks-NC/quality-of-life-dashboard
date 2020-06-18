@@ -1,19 +1,20 @@
 import fs from 'fs';
 import path from 'path';
 import jsonminify from 'jsonminify';
-import siteConfig from '../data/config/site.js';
 import csv from 'csvtojson';
 import _ from 'lodash';
-const dest = './public/data/metric';
 import marked from 'marked';
 import dataConfig from '../data/config/data.js';
+import siteConfig from '../data/config/site.js';
+
+const dest = './public/data/metric';
 
 // /////////////////////////////////////////////////
 // Create destination folders
 // /////////////////////////////////////////////////
 const directoriesToMake = ['', 'data', 'data/meta', 'data/meta/en', 'data/meta/es', 'data/metric'];
 _.each(siteConfig.geographies, (geography) => {
-  directoriesToMake.push('data/metric/' + geography.id);
+  directoriesToMake.push(`data/metric/${geography.id}`);
 });
 directoriesToMake.forEach((name) => {
   try {
@@ -178,7 +179,7 @@ function convertMetricCsvToJson(geography, metric) {
           .on('end_parsed', (jsonObj) => {
             let jsonArrayD = jsonTransform(jsonObj);
             try {
-              let key; let 
+              let key; let
 key2;
               for (key in jsonArrayR) {
                 for (key2 in jsonArrayR[key]) {

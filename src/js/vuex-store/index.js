@@ -46,8 +46,14 @@ export default new Vuex.Store({
       }
       return selected;
     },
-    selectGroupName: ({ route: { query: { selectGroupName = null } } }) => selectGroupName,
-    selectGroupType: ({ route: { query: { selectGroupType = null } } }) => selectGroupType,
+    selectGroupName: ({ route: { query: { selectGroupName = null, selectGroupType = null } }, geography }) => {
+      if (selectGroupType && selectGroupName && geography.id in config.selectGroups[selectGroupType] && selectGroupName in config.selectGroups[selectGroupType][geography.id]) return selectGroupName;
+      return null;
+    },
+    selectGroupType: ({ route: { query: { selectGroupName = null, selectGroupType = null } }, geography }) => {
+      if (selectGroupType && selectGroupName && geography.id in config.selectGroups[selectGroupType] && selectGroupName in config.selectGroups[selectGroupType][geography.id]) return selectGroupType;
+      return null;
+    },
     legendTitle: ({
       customLegendTitle = false, metric, language = 'en', year,
     }) => {

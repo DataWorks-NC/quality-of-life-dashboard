@@ -70,6 +70,7 @@ export default {
 
   watch: {
     'selected': ['styleNeighborhoods', 'rescale'],
+    'selectGroupName': ['showSelectGroup', 'rescale'],
     'highlight': 'styleNeighborhoods',
     'breaks': 'updateBreaks',
     'year': 'updateYear',
@@ -154,6 +155,7 @@ export default {
         _this.mapLoaded = true;
         _this.initNeighborhoods();
         _this.styleNeighborhoods();
+        _this.showSelectGroup(_this.selectGroupName);
         _this.initMapEvents();
         if (_this.selected) {
           // QueryRenderedFeatures doesn't seem to work until even after map has loaded styles :/
@@ -225,7 +227,7 @@ export default {
                 ...this.$route.query, selected: [], selectGroupName: e.result.selectGroupName, selectGroupType: e.result.selectGroupType,
               },
             });
-            _this.zoomToIds(e.result.ids);
+            _this.zoomToSelectGroup(e.result.selectGroupName);
           }
         }
       }).on('clear', () => {
@@ -504,6 +506,9 @@ export default {
     },
     rescale(oldSelected = null) {
       try {
+        if (this.selectGroupName) {
+          return this.zoomToSelectGroup(this.selectGroupName);
+        }
         if (this.selected.length) {
           return this.zoomToIds(this.selected);
         } if (!oldSelected) {
@@ -521,6 +526,14 @@ export default {
     },
     zoomToIds(ids) {
       const zoomToFeatures = this.map.querySourceFeatures(this.geography.id, { filter: ['match', ['get', 'id'], ids, true, false] });
+      if (!zoomToFeatures.length) { return; }
+      const bounds = this.getBoundingBox(zoomToFeatures);
+      this.map.fitBounds(bounds, { padding: 150 });
+
+      return bounds;
+    },
+    zoomToSelectGroup(id) {
+      const zoomToFeatures = this.map.querySourceFeatures('selectGroup', { filter: ['in', ['string', ['get', 'id']], ['literal', id]] });
       if (!zoomToFeatures.length) { return; }
       const bounds = this.getBoundingBox(zoomToFeatures);
       this.map.fitBounds(bounds, { padding: 150 });
@@ -626,6 +639,73 @@ export default {
       if (this.map && this.map.getLayer('blockgroup-labels')) {
         this.map.setLayoutProperty('blockgroup-labels', 'text-field', this.$i18n.locale === 'es' ? '{label_es}' : '{label}');
       }
+    },
+    showSelectGroup(newName, oldName) {
+      const map = this.map;
+      if (this.debug) {
+        console.log(`Show selectGroup ${oldName} => ${newName}`);
+      }
+      if (!newName) {
+        // Remove label and return
+        if (map.getLayer('selectGroupOutline')) map.setLayoutProperty('selectGroupOutline', 'visibility', 'none');
+        if (map.getLayer('selectGroupLabel')) map.setLayoutProperty('selectGroupLabel', 'visibility', 'none');
+        return;
+      }
+
+      const selectGroupFilter = ['==', ['string', ['get', 'id']], ['literal', newName]];
+
+      // TODO: Is this potentially faster if we split up the selectgroups geoJSON file
+      //  into separate files for each selectGroup?
+      if (!map.getSource('selectGroup')) {
+        map.addSource('selectGroup', {
+          type: 'geojson',
+          data: '/data/neighborhood.geojson.json',
+        });
+      }
+      if (!map.getLayer('selectGroupOutline')) {
+        map.addLayer({
+          id: 'selectGroupOutline',
+          type: 'line',
+          layout: {
+            'line-join': 'round',
+          },
+          paint: {
+            'line-blur': 3,
+            'line-offset': -3,
+            'line-width': ['interpolate', ['linear'], ['zoom'], 8, 0.5, 14, 12],
+            'line-color': '#F7E55B',
+            'line-opacity': 0.9,
+          },
+          source: 'selectGroup',
+          filter: selectGroupFilter,
+        });
+      }
+      if (!map.getLayer('selectGroupLabel')) {
+        // Labels
+        const BASE_LABEL_SIZE = 12;
+        map.addLayer({
+          id: 'selectGroupLabel',
+          type: 'symbol',
+          source: 'selectGroup',
+          layout: {
+            'text-font': ['Open Sans Semibold'],
+            'text-field': this.$i18n.locale === 'es' ? '{label_es}' : '{label}',
+            'text-transform': 'uppercase',
+            'text-size': ['interpolate', ['linear'], ['zoom'], 8, BASE_LABEL_SIZE * 0.25, 9.5, BASE_LABEL_SIZE * 0.8, 10, BASE_LABEL_SIZE, 12, BASE_LABEL_SIZE * 2],
+            'text-allow-overlap': false,
+            'text-justify': 'center',
+          },
+          paint: {
+            'text-halo-color': '#F7E55B',
+            'text-halo-width': ['interpolate', ['linear'], ['zoom'], 9, 1, 13, 2],
+          },
+          filter: selectGroupFilter,
+        });
+      }
+      map.setFilter('selectGroupOutline', selectGroupFilter);
+      map.setFilter('selectGroupLabel', selectGroupFilter);
+      map.setLayoutProperty('selectGroupOutline', 'visibility', 'visible');
+      map.setLayoutProperty('selectGroupLabel', 'visibility', 'visible');
     },
   },
 };
