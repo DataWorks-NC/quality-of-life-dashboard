@@ -664,7 +664,7 @@ export default {
       if (!map.getSource('selectGroup')) {
         map.addSource('selectGroup', {
           type: 'geojson',
-          data: '/data/neighborhood.geojson.json',
+          data: '/data/selectgroups.geojson.json',
         });
       }
       if (!map.getLayer('selectGroupOutline')) {

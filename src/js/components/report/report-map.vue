@@ -103,7 +103,7 @@ export default {
         if (_this.selectGroupName) {
           map.addSource('selectGroup', {
             type: 'geojson',
-            data: '/data/neighborhood.geojson.json',
+            data: '/data/selectgroups.geojson.json',
           });
 
           map.addLayer({
@@ -179,7 +179,7 @@ export default {
             visibleFeatures = map.queryRenderedFeatures(
               { layers: ['selectGroupOutline'] },
             );
-            padding = 150;
+            padding = 100;
           } else if (map.getLayer('neighborhoods-fill-extrude')) {
             visibleFeatures = map.queryRenderedFeatures(
               { layers: ['neighborhoods-fill-extrude'] },

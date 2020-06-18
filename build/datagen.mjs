@@ -29,9 +29,13 @@ directoriesToMake.forEach((name) => {
 // ////////////////////////////////////////////////
 // Copy download, geography, style
 // ////////////////////////////////////////////////
+const selectGroupGeography = {
+  id: 'selectgroups',
+  name: 'Select Groups',
+};
 
 // Either loop through the geography IDs, or just copy geography.geojson.json.
-_.each(siteConfig.geographies || ['geography'], (geography) => {
+_.each([...siteConfig.geographies, selectGroupGeography] || ['geography'], (geography) => {
   fs.readFile(`data/${geography.id}.geojson.json`, 'utf8', (err,data) => {
     if (err) return console.log(`Error on ${geography.name}: ${err.message}`);
 
@@ -40,8 +44,8 @@ _.each(siteConfig.geographies || ['geography'], (geography) => {
     data.features = data.features.map((g) => {
       g.properties = {
         ...g.properties,
-        label: geography.label(g.properties.id),
-        label_es: geography.label_es(g.properties.id),
+        label: g.properties.label ? g.properties.label : geography.label(g.properties.id),
+        label_es: g.properties.label_es ? g.properties.label_es : geography.label_es(g.properties.id),
       };
       return g;
     });
