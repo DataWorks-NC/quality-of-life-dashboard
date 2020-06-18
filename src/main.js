@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueAnalytics from 'vue-analytics';
 
+import { sync } from 'vuex-router-sync';
 import VueScrollTo from 'vue-scrollto';
 import VueObserveVisibility from 'vue-observe-visibility';
 import store from './js/vuex-store';
@@ -15,6 +16,9 @@ import './scss/main.scss';
 Vue.config.productionTip = false;
 Vue.use(VueScrollTo);
 Vue.use(VueObserveVisibility);
+
+// Sync store & router with vuex-router-sync.
+sync(store, router);
 
 // Router navigation guard:
 // Handles locale switching and redirecting from root URL to language-specific

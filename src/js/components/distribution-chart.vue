@@ -14,7 +14,7 @@
 <script>
 import { mdiCircle, mdiDotsHorizontal } from "@mdi/js";
 
-import { mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import Chartist from '../modules/chartist';
 import isNumeric from '../modules/isnumeric';
 import { legendLabelNumber, prettyNumber } from '../modules/number_format';
@@ -29,7 +29,8 @@ export default {
   },
   data: () => ({ mounted: false, mdiCircle, mdiDotsHorizontal }),
   computed: {
-    ...mapState(['breaks', 'metric', 'selected', 'year']),
+    ...mapState(['breaks', 'metric', 'year']),
+    ...mapGetters(['selected']),
     countyAverage() {
       return this.year in this.countyValues ? this.countyValues[this.year] : false;
     },

@@ -10,7 +10,7 @@
           </v-btn>
         </template>
         <v-list :key="`selectgroup-${groupIndex}`" :for="`selectgroup-${groupIndex}`">
-          <v-list-item v-for="(item, key) in group[geography.id]" :key="key" @click="select(item, key, groupKey)">
+          <v-list-item v-for="(item, key) in group[geography.id]" :key="key" @click="select(key, groupKey)">
             <v-list-item-title>{{ $te(`selectGroup['${key}']`) ? $t(`selectGroup['${key}']`) : key }}</v-list-item-title>
           </v-list-item>
         </v-list>
@@ -39,9 +39,8 @@ export default {
     },
   }),
   methods: {
-    select(item, key, groupKey) {
-      const selectGroupName = `${this.$te(`selectGroup['${key}']`) ? this.$t(`selectGroup['${key}']`) : key} (${this.$t(`selectGroup['${groupKey}']`)})`;
-      this.$router.push({ query: { ...this.$route.query, selected: item, reportTitle: selectGroupName } });
+    select(key, groupKey) {
+      this.$router.push({ query: { ...this.$route.query, selectGroupName: key, selectGroupType: groupKey } });
     },
   },
 };

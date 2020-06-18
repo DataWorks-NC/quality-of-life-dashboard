@@ -67,7 +67,7 @@
 
 <script>
 import { mdiCursorMove } from '@mdi/js';
-import { mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import config from '../modules/config';
 
 
@@ -85,15 +85,17 @@ export default {
     selectedValueRaw: null,
     colors: config.colors,
   }),
-  computed: mapState({
-    breaks: 'breaks',
-    highlight: 'highlight',
-    metric: 'metric',
-    selected: 'selected',
-    year: 'year',
-    areaValue(state) { return prettyNumber(state.metric.averageValues[state.year].value, state.metric.config.decimals, state.metric.config.prefix, state.metric.config.suffix, state.metric.config.commas); },
-    areaValueRaw(state) { return prettyNumber(state.metric.averageValues[state.year].rawValue, 0, state.metric.config.prefix); },
-  }),
+  computed: {
+    ...mapState({
+      breaks: 'breaks',
+      highlight: 'highlight',
+      metric: 'metric',
+      year: 'year',
+      areaValue(state) { return prettyNumber(state.metric.averageValues[state.year].value, state.metric.config.decimals, state.metric.config.prefix, state.metric.config.suffix, state.metric.config.commas); },
+      areaValueRaw(state) { return prettyNumber(state.metric.averageValues[state.year].rawValue, 0, state.metric.config.prefix); },
+    }),
+    ...mapGetters(['selected']),
+  },
   watch: {
     'metric': 'processSelected',
     'selected': 'processSelected',

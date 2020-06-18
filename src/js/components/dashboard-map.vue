@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import { uniqBy } from 'lodash';
 
 import mapboxgl from 'mapbox-gl';
@@ -43,15 +43,24 @@ export default {
 
   computed: {
     ...mapState(
-      ['breaks', 'geography', 'highlight', 'metric', 'metricId', 'printMode', 'selected', 'year'],
+      ['breaks', 'geography', 'highlight', 'metric', 'metricId', 'printMode', 'year'],
     ),
+    ...mapGetters(['selected', 'selectGroupName', 'selectGroupType']),
+    selectedToLabel() {
+      if (this.selectGroupName && this.selectGroupType) return [];
+      return this.selected;
+    },
     selectGroups() {
       const categories = Object.keys(this.selectGroupsData);
       const selectGroups = {};
       categories.forEach(c => {
         if (!this.geography.id || !(this.geography.id in this.selectGroupsData[c])) return;
         Object.keys(this.selectGroupsData[c][this.geography.id]).forEach(selectGroupName => {
-          selectGroups[`${selectGroupName}, ${c}`] = this.selectGroupsData[c][this.geography.id][selectGroupName];
+          selectGroups[`${selectGroupName}, ${c}`] = {
+            selectGroupName,
+            selectGroupType: c,
+            ids: this.selectGroupsData[c][this.geography.id][selectGroupName],
+          };
         });
       });
       return selectGroups;
@@ -197,14 +206,18 @@ export default {
 
           // Case 2: This is an existing feature on the map.
           else if (e.result.local_match === 'feature') {
-            _this.$router.push({ query: { ...this.$route.query, selected: e.result.id } });
+            _this.$router.push({ query: { ...this.$route.query, selected: [e.result.id] } });
             _this.zoomToIds(e.result.id);
             // eslint-disable-next-line brace-style
           }
 
           // Case 3: This is a select group.
           else if (e.result.local_match === 'selectGroup') {
-            _this.$router.push({ query: { ...this.$route.query, selected: e.result.ids } });
+            _this.$router.push({
+              query: {
+                ...this.$route.query, selected: [], selectGroupName: e.result.selectGroupName, selectGroupType: e.result.selectGroupType,
+              },
+            });
             _this.zoomToIds(e.result.ids);
           }
         }
@@ -233,7 +246,7 @@ export default {
 
       // Query select groups.
       const matchingSelectGroups = Object.keys(this.selectGroups).filter(n => n.toLowerCase().includes(searchStringDownCase)).map(match => ({
-        place_name: match, place_type: ["place"], local_match: 'selectGroup', ids: this.selectGroups[match],
+        place_name: match, place_type: ["place"], local_match: 'selectGroup', ...this.selectGroups[match],
       }));
 
       return matchingFeatures.concat(matchingSelectGroups);
@@ -388,7 +401,7 @@ export default {
           'text-halo-color': '#fff',
           'text-halo-width': ['interpolate', ['linear'], ['zoom'], 9, 1, 13, 2],
         },
-        filter: ['in', ['string', ['get', 'id']], ['literal', this.selected]],
+        filter: ['in', ['string', ['get', 'id']], ['literal', this.selectedToLabel]],
       });
 
       // 3D layer
@@ -409,12 +422,13 @@ export default {
       const colors = this.getColors();
 
       const selectedFilter = ['in', ['string', ['get', 'id']], ['literal', this.selected]];
+      const selectedLabelFilter = ['in', ['string', ['get', 'id']], ['literal', this.selectedToLabel]];
       if (map.getLayer(`${this.geography.id}-selected-halo`)) {
         map.setFilter(`${this.geography.id}-selected-halo`, selectedFilter);
       }
 
       if (map.getLayer(`${this.geography.id}-labels`)) {
-        map.setFilter(`${this.geography.id}-labels`, selectedFilter);
+        map.setFilter(`${this.geography.id}-labels`, selectedLabelFilter);
       }
 
       if (map.getLayer(`${this.geography.id}-selected-outline`)) {
@@ -458,7 +472,8 @@ export default {
     updateGeography(newGeography, oldGeography) {
       if (!this.geography.id) return;
       const oldMapLayers = [`${oldGeography.id}-selected-halo`, `${oldGeography.id}-selected-outline`, `${oldGeography.id}-fill`, `${oldGeography.id}-selected-fill`, `${oldGeography.id}-fill-extrude`, `${oldGeography.id}-labels`];
-      const newMapLayers = [`${newGeography.id}-selected-halo`, `${newGeography.id}-selected-outline`, `${newGeography.id}-fill`, `${newGeography.id}-selected-fill`, `${newGeography.id}-labels`];
+      const newMapLayers = [`${newGeography.id}-selected-halo`, `${newGeography.id}-selected-outline`, `${newGeography.id}-fill`, `${newGeography.id}-selected-fill`, `${newGeography.id}-labels`, `${newGeography.id}-labels`];
+
       const _this = this;
 
       if (!this.map.getSource(newGeography.id)) {
@@ -584,14 +599,16 @@ export default {
     },
     addToSelected(featureId) {
       const query = { ...this.$route.query, selected: this.selected.concat(featureId) };
-      delete query.reportTitle;
+      delete query.selectGroupType;
+      delete query.selectGroupName;
       this.$router.push({ query });
     },
     removeFromSelected(featureId) {
       const i = this.selected.indexOf(featureId);
       if (i !== -1) {
         const query = { ...this.$route.query, selected: this.selected.slice(0, i).concat(this.selected.slice(i + 1)) };
-        delete query.reportTitle;
+        delete query.selectGroupType;
+        delete query.selectGroupName;
         this.$router.push({ query });
       }
     },

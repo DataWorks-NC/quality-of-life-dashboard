@@ -172,7 +172,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapGetters, mapState } from "vuex";
 
 import config from "../modules/config";
 import { calcValue } from "../modules/metric_calculations";
@@ -214,19 +214,20 @@ export default {
   data: () => ({
     config,
   }),
-  computed: Object.assign(
-    mapState({
+  computed: {
+    ...mapGetters(['selected']),
+    ...mapState({
       printMode: "printMode",
       metric: "metric",
       chartValues(state) {
-        if (!state.selected.length || state.metric.years.length <= 1) return {};
+        if (!this.selected.length || state.metric.years.length <= 1) return {};
         const metricValues = {};
         for (let i = 0; i < state.metric.years.length; i += 1) {
           metricValues[state.metric.years[i]] = calcValue(
             state.metric.data,
             state.metric.config.type,
             state.metric.years[i],
-            state.selected,
+            this.selected,
           );
         }
         return metricValues;
@@ -240,7 +241,7 @@ export default {
         return averageValues;
       },
     }),
-  ),
+  },
   watch: {
     printMode() {
       this.setPrintClass();

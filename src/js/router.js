@@ -99,20 +99,6 @@ router.beforeEach((to, from, next) => {
     store.commit('setGeographyId', to.params.geographyLevel);
   }
 
-  let selectedChanged = false;
-  // Check selected tracts/blockgroups against what's in query.
-  if ('selected' in to.query) {
-    const newSelected = [].concat(to.query.selected);
-
-    // Check for set equality between newSelected and existing selected before committing change.
-    if (!newSelected.reduce((prevVal, id) => prevVal && (id in store.state.selected), true) || !store.state.selected.reduce((prevVal, id) => prevVal && (id in store.state.selected), true)) {
-      selectedChanged = true;
-      store.commit('setSelected', newSelected);
-    }
-  } else if (store.state.selected && store.state.selected.length > 0) {
-    store.commit('setSelected', []);
-  }
-
   if ('mode' in to.query && to.query.mode === 'print') {
     store.commit('setPrintMode', true);
   } else if (store.state.printMode) {
@@ -151,7 +137,8 @@ router.beforeEach((to, from, next) => {
       store.commit('showAllMetrics');
     }
 
-    if (!Object.keys(store.state.report.metricValues).length || selectedChanged) {
+    if (!Object.keys(store.state.report.metricValues).length) {
+      // TODO: Call this when selection changes.
       return store.dispatch('loadData').then(() => {
         next();
       });
@@ -167,11 +154,6 @@ router.beforeEach((to, from, next) => {
     store.commit('setLastCompassRoute', from);
   }
 
-  if ('reportTitle' in to.query) {
-    store.commit('setReportTitle', to.query.reportTitle);
-  } else if (store.state.report.reportTitle) {
-    store.commit('setReportTitle', false);
-  }
   if ('legendTitle' in to.query) {
     store.commit('setLegendTitle', to.query.legendTitle);
   } else if (store.state.customLegendTitle !== '') {

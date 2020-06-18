@@ -43,8 +43,8 @@ export default {
     storeWatchers: [],
   }),
   computed: {
-    ...mapState(['geography', 'selected']),
-    ...mapGetters(['summaryMetrics']),
+    ...mapState(['geography']),
+    ...mapGetters(['summaryMetrics', 'selected']),
     reportTitle() { return this.$store.getters.reportTitle || this.$t('strings.DurhamCounty'); },
   },
   mounted() {
