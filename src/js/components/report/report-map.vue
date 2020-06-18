@@ -174,10 +174,12 @@ export default {
             return;
           }
           let visibleFeatures = false;
+          let padding = 50;
           if (map.getLayer('selectGroupOutline')) {
             visibleFeatures = map.queryRenderedFeatures(
               { layers: ['selectGroupOutline'] },
             );
+            padding = 150;
           } else if (map.getLayer('neighborhoods-fill-extrude')) {
             visibleFeatures = map.queryRenderedFeatures(
               { layers: ['neighborhoods-fill-extrude'] },
@@ -185,7 +187,7 @@ export default {
           }
           if (visibleFeatures) {
             const bounds = _this.getBoundingBox(visibleFeatures);
-            map.fitBounds(bounds, { padding: 50 });
+            map.fitBounds(bounds, { padding });
             map.off('render', afterMapRenders);
           }
         }

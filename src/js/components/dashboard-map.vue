@@ -533,8 +533,13 @@ export default {
       return bounds;
     },
     zoomToSelectGroup(id) {
-      const zoomToFeatures = this.map.querySourceFeatures('selectGroup', { filter: ['in', ['string', ['get', 'id']], ['literal', id]] });
-      if (!zoomToFeatures.length) { return; }
+      const zoomToFeatures = this.map.querySourceFeatures('selectGroup', { filter: ['==', ['string', ['get', 'id']], ['literal', id]] });
+      if (!zoomToFeatures.length) {
+        if (this.debug) {
+          console.log(`Source selectgroup feature ${id} not found`);
+        }
+        return;
+      }
       const bounds = this.getBoundingBox(zoomToFeatures);
       this.map.fitBounds(bounds, { padding: 150 });
 
