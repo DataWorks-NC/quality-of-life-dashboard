@@ -38,6 +38,7 @@ export default {
       mapLoaded: false,
       colors: config.colors,
       selectGroupsData: config.selectGroups,
+      debug: process.env.NODE_ENV === 'development',
     };
   },
 
@@ -131,6 +132,12 @@ export default {
         mapOptions.zoom,
       ), 'top-right');
       map.addControl(new mapboxgl.GeolocateControl(), 'top-right');
+
+      if (this.debug) {
+        map.on('zoomend', () => {
+          console.log(`Zoom: ${map.getZoom()}`);
+        });
+      }
 
       // disable map rotation until 3D support added
       // map.dragRotate.disable();

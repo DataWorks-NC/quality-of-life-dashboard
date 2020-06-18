@@ -40,7 +40,11 @@ export default {
   }),
   methods: {
     select(key, groupKey) {
-      this.$router.push({ query: { ...this.$route.query, selectGroupName: key, selectGroupType: groupKey } });
+      this.$router.push({
+        query: {
+          ...this.$route.query, selected: [], selectGroupName: key, selectGroupType: groupKey,
+        },
+      });
     },
   },
 };

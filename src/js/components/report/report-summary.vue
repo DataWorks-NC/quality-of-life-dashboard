@@ -27,6 +27,7 @@
           :map-config="mapConfig"
           :geography-id="geographyId"
           :selected-geographies="selected"
+          :select-group-name="selectGroupName"
         />
       </v-col>
     </v-row>
@@ -56,7 +57,7 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 import { prettyNumber } from "../../modules/number_format";
 
 const ReportMap = () => import(/* webpackChunkName: "report-map" */ "./report-map.vue");
@@ -102,6 +103,7 @@ export default {
     summaryId() {
       return this.$t('strings.metricCategories.Summary').toLowerCase();
     },
+    ...mapGetters(['selectGroupName']),
   },
   methods: {
     ...mapMutations(["setActiveCategory"]),

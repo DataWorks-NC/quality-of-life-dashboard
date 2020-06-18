@@ -22,6 +22,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    selectGroupName: {
+      type: String,
+      default: '',
+    },
   },
   watch: {
     '$i18n.locale': 'setLabelLanguage',
@@ -52,6 +56,7 @@ export default {
       const _this = this;
       // after map initiated, grab geography and initiate/style neighborhoods
       map.once('load', () => {
+        const selectedLabelFilter = ['in', ['string', ['get', 'id']], ['literal', _this.selectGroupName ? [] : _this.selectedGeographies]];
         const selectedFilter = _this.selectedGeographies.length ? ['in', ['string', ['get', 'id']], ['literal', _this.selectedGeographies]] : ['boolean', true];
         map.addSource('neighborhoods', {
           type: 'geojson',
@@ -88,7 +93,7 @@ export default {
               'text-halo-color': '#fff',
               'text-halo-width': 2,
             },
-            filter: selectedFilter,
+            filter: selectedLabelFilter,
           });
         }
 
