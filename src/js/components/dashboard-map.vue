@@ -533,7 +533,7 @@ export default {
       return bounds;
     },
     zoomToSelectGroup(id) {
-      const zoomToFeatures = this.map.querySourceFeatures('selectGroup', { filter: ['==', ['string', ['get', 'id']], ['literal', id]] });
+      const zoomToFeatures = this.map.querySourceFeatures('selectGroup', { filter: ['==', ['string', ['get', 'id']], id] });
       if (!zoomToFeatures.length) {
         if (this.debug) {
           console.log(`Source selectgroup feature ${id} not found`);
@@ -657,7 +657,7 @@ export default {
         return;
       }
 
-      const selectGroupFilter = ['==', ['string', ['get', 'id']], ['literal', newName]];
+      const selectGroupFilter = ['==', ['string', ['get', 'id']], newName];
 
       // TODO: Is this potentially faster if we split up the selectgroups geoJSON file
       //  into separate files for each selectGroup?
