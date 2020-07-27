@@ -41,11 +41,12 @@ export default new Vuex.Store({
   },
   getters: {
     selected: ({ route: { query: { selected = [], selectGroupType = null, selectGroupName = null } }, geography = { id: null } }) => {
-      if (selectGroupType && selectGroupName && geography.id in config.selectGroups[selectGroupType] && selectGroupName in config.selectGroups[selectGroupType][geography.id]) {
-        return config.selectGroups[selectGroupType][geography.id][selectGroupName];
+      if (selected.length) {
+        return selected;
       }
-      return selected;
+      return (selectGroupType && selectGroupName && geography.id in config.selectGroups[selectGroupType] && selectGroupName in config.selectGroups[selectGroupType][geography.id]) ? config.selectGroups[selectGroupType][geography.id][selectGroupName] : [];
     },
+    selectGroupIds: ({ route: { query: { selectGroupType = null, selectGroupName = null } }, geography = { id: null } }) => ((selectGroupType && selectGroupName && geography.id in config.selectGroups[selectGroupType] && selectGroupName in config.selectGroups[selectGroupType][geography.id]) ? config.selectGroups[selectGroupType][geography.id][selectGroupName] : []),
     selectGroupName: ({ route: { query: { selectGroupName = null, selectGroupType = null } }, geography }) => {
       if (selectGroupType && selectGroupName && geography.id in config.selectGroups[selectGroupType] && selectGroupName in config.selectGroups[selectGroupType][geography.id]) return selectGroupName;
       return null;

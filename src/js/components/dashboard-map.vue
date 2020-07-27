@@ -146,6 +146,9 @@ export default {
 
       // after map initiated, grab geography and initiate/style neighborhoods
       map.once('load', () => {
+        if (this.debug) {
+          console.log('Map load');
+        }
         // Add tracts
         map.addSource(_this.geography.id, {
           type: 'geojson',
@@ -427,6 +430,9 @@ export default {
       }, this.mapConfig.threeDBefore);
     },
     styleNeighborhoods() {
+      if (this.debug) {
+        console.log('Style neighborhoods');
+      }
       const { map } = this;
       const colors = this.getColors();
 
@@ -449,7 +455,6 @@ export default {
         map.setPaintProperty(`${this.geography.id}-selected-fill`, 'fill-color', colors);
       }
 
-
       if (map.getLayer(`${this.geography.id}-fill`)) {
         map.setPaintProperty(`${this.geography.id}-fill`, 'fill-color', colors);
       }
@@ -463,6 +468,78 @@ export default {
       if (!this.selected.length && this.geocoder) {
         this.geocoder.clear();
       }
+    },
+    showSelectGroup(newName, oldName) {
+      if ((!newName && !oldName) || (newName === oldName)) return;
+      const map = this.map;
+      if (this.debug) {
+        console.log(`Show selectGroup ${oldName} => ${newName}`);
+      }
+      if (!newName) {
+        // Remove label and return
+        if (map.getLayer('selectGroupOutline')) map.setLayoutProperty('selectGroupOutline', 'visibility', 'none');
+        if (map.getLayer('selectGroupLabel')) map.setLayoutProperty('selectGroupLabel', 'visibility', 'none');
+        return;
+      }
+
+      const selectGroupFilter = ['==', 'id', newName];
+
+      // TODO: Is this potentially faster if we split up the selectgroups geoJSON file
+      //  into separate files for each selectGroup?
+      if (!map.getSource('selectGroup')) {
+        map.addSource('selectGroup', {
+          type: 'geojson',
+          promoteId: 'id',
+          data: '/data/selectgroups.geojson.json',
+        });
+      }
+      if (!map.getLayer('selectGroupOutline')) {
+        map.addLayer({
+          id: 'selectGroupOutline',
+          type: 'fill',
+          source: 'selectGroup',
+          filter: selectGroupFilter,
+        });
+        if (!map.hasImage('crosshatch')) {
+          map.loadImage(
+            '/img/crosshatch_pattern.png',
+            (err, image) => {
+              if (!err) {
+                map.addImage('crosshatch', image);
+                map.setPaintProperty('selectGroupOutline', 'fill-pattern', 'crosshatch');
+              } else { console.error(err); }
+            },
+          );
+        } else {
+          map.setPaintProperty('selectGroupOutline', 'fill-pattern', 'crosshatch');
+        }
+      }
+      if (!map.getLayer('selectGroupLabel')) {
+        // Labels
+        const BASE_LABEL_SIZE = 12;
+        map.addLayer({
+          id: 'selectGroupLabel',
+          type: 'symbol',
+          source: 'selectGroup',
+          layout: {
+            'text-font': ['Open Sans Semibold'],
+            'text-field': this.$i18n.locale === 'es' ? '{label_es}' : '{label}',
+            'text-transform': 'uppercase',
+            'text-size': ['interpolate', ['linear'], ['zoom'], 8, BASE_LABEL_SIZE * 0.25, 9.5, BASE_LABEL_SIZE * 0.8, 10, BASE_LABEL_SIZE, 12, BASE_LABEL_SIZE * 2],
+            'text-allow-overlap': false,
+            'text-justify': 'center',
+          },
+          paint: {
+            'text-halo-color': '#F7E55B',
+            'text-halo-width': ['interpolate', ['linear'], ['zoom'], 9, 1, 13, 2],
+          },
+          filter: selectGroupFilter,
+        });
+      }
+      map.setFilter('selectGroupOutline', selectGroupFilter);
+      map.setFilter('selectGroupLabel', selectGroupFilter);
+      map.setLayoutProperty('selectGroupOutline', 'visibility', 'visible');
+      map.setLayoutProperty('selectGroupLabel', 'visibility', 'visible');
     },
     updateChoropleth() {
       if (this.mapLoaded) {
@@ -480,6 +557,10 @@ export default {
     },
     updateGeography(newGeography, oldGeography) {
       if (!this.geography.id) return;
+
+      if (this.debug) {
+        console.log(`updateGeography ${newGeography} => ${oldGeography}`);
+      }
       const oldMapLayers = [`${oldGeography.id}-selected-halo`, `${oldGeography.id}-selected-outline`, `${oldGeography.id}-fill`, `${oldGeography.id}-selected-fill`, `${oldGeography.id}-fill-extrude`, `${oldGeography.id}-labels`];
       const newMapLayers = [`${newGeography.id}-selected-halo`, `${newGeography.id}-selected-outline`, `${newGeography.id}-fill`, `${newGeography.id}-selected-fill`, `${newGeography.id}-labels`, `${newGeography.id}-labels`];
 
@@ -506,12 +587,13 @@ export default {
     },
     rescale(oldSelected = null) {
       try {
+        if (this.$route.query.selected && this.selected.length) {
+          return this.zoomToIds(this.selected);
+        }
         if (this.selectGroupName) {
           return this.zoomToSelectGroup(this.selectGroupName);
         }
-        if (this.selected.length) {
-          return this.zoomToIds(this.selected);
-        } if (!oldSelected) {
+        if (!oldSelected) {
           // Only zoom to full extent if you did not just deselect.
           return this.zoomToFullExtent();
         }
@@ -524,17 +606,37 @@ export default {
       this.map.fitBounds(durhamCountyBounds, { padding: 50 });
       return durhamCountyBounds;
     },
-    zoomToIds(ids) {
+    zoomToIds(ids, recurse = true) {
       const zoomToFeatures = this.map.querySourceFeatures(this.geography.id, { filter: ['match', ['get', 'id'], ids, true, false] });
-      if (!zoomToFeatures.length) { return; }
+      if (!zoomToFeatures.length) {
+        // Workaround for https://github.com/mapbox/mapbox-gl-js/issues/5686. Fly to full extent so all features are
+        // visible if the features weren't initially found.
+        if (recurse) {
+          this.zoomToFullExtent();
+          this.map.once('moveend', () => {
+            this.zoomToIds(ids, false);
+          });
+          return;
+        }
+      }
       const bounds = this.getBoundingBox(zoomToFeatures);
       this.map.fitBounds(bounds, { padding: 150 });
-
       return bounds;
     },
-    zoomToSelectGroup(id) {
-      const zoomToFeatures = this.map.querySourceFeatures('selectGroup', { filter: ['==', ['string', ['get', 'id']], id] });
+    zoomToSelectGroup(id, recurse = true) {
+      const zoomToFeatures = this.map.querySourceFeatures('selectGroup', { filter: ['==', 'id', id] });
+      if (this.debug) {
+        console.log('Zoom to selectgroup');
+      }
       if (!zoomToFeatures.length) {
+        if (recurse) {
+          // Workaround for https://github.com/mapbox/mapbox-gl-js/issues/5686. Fly to full extent so all features are
+          // visible if the feature wasn't initially found.
+          this.zoomToFullExtent();
+          this.map.once('moveend', () => {
+            this.zoomToSelectGroup(id, false);
+          });
+        }
         if (this.debug) {
           console.log(`Source selectgroup feature ${id} not found`);
         }
@@ -624,16 +726,12 @@ export default {
     },
     addToSelected(featureId) {
       const query = { ...this.$route.query, selected: this.selected.concat(featureId) };
-      delete query.selectGroupType;
-      delete query.selectGroupName;
       this.$router.push({ query });
     },
     removeFromSelected(featureId) {
       const i = this.selected.indexOf(featureId);
       if (i !== -1) {
         const query = { ...this.$route.query, selected: this.selected.slice(0, i).concat(this.selected.slice(i + 1)) };
-        delete query.selectGroupType;
-        delete query.selectGroupName;
         this.$router.push({ query });
       }
     },
@@ -644,73 +742,6 @@ export default {
       if (this.map && this.map.getLayer('blockgroup-labels')) {
         this.map.setLayoutProperty('blockgroup-labels', 'text-field', this.$i18n.locale === 'es' ? '{label_es}' : '{label}');
       }
-    },
-    showSelectGroup(newName, oldName) {
-      const map = this.map;
-      if (this.debug) {
-        console.log(`Show selectGroup ${oldName} => ${newName}`);
-      }
-      if (!newName) {
-        // Remove label and return
-        if (map.getLayer('selectGroupOutline')) map.setLayoutProperty('selectGroupOutline', 'visibility', 'none');
-        if (map.getLayer('selectGroupLabel')) map.setLayoutProperty('selectGroupLabel', 'visibility', 'none');
-        return;
-      }
-
-      const selectGroupFilter = ['==', ['string', ['get', 'id']], newName];
-
-      // TODO: Is this potentially faster if we split up the selectgroups geoJSON file
-      //  into separate files for each selectGroup?
-      if (!map.getSource('selectGroup')) {
-        map.addSource('selectGroup', {
-          type: 'geojson',
-          data: '/data/selectgroups.geojson.json',
-        });
-      }
-      if (!map.getLayer('selectGroupOutline')) {
-        map.addLayer({
-          id: 'selectGroupOutline',
-          type: 'line',
-          layout: {
-            'line-join': 'round',
-          },
-          paint: {
-            'line-blur': 3,
-            'line-offset': -3,
-            'line-width': ['interpolate', ['linear'], ['zoom'], 8, 0.5, 14, 12],
-            'line-color': '#F7E55B',
-            'line-opacity': 0.9,
-          },
-          source: 'selectGroup',
-          filter: selectGroupFilter,
-        });
-      }
-      if (!map.getLayer('selectGroupLabel')) {
-        // Labels
-        const BASE_LABEL_SIZE = 12;
-        map.addLayer({
-          id: 'selectGroupLabel',
-          type: 'symbol',
-          source: 'selectGroup',
-          layout: {
-            'text-font': ['Open Sans Semibold'],
-            'text-field': this.$i18n.locale === 'es' ? '{label_es}' : '{label}',
-            'text-transform': 'uppercase',
-            'text-size': ['interpolate', ['linear'], ['zoom'], 8, BASE_LABEL_SIZE * 0.25, 9.5, BASE_LABEL_SIZE * 0.8, 10, BASE_LABEL_SIZE, 12, BASE_LABEL_SIZE * 2],
-            'text-allow-overlap': false,
-            'text-justify': 'center',
-          },
-          paint: {
-            'text-halo-color': '#F7E55B',
-            'text-halo-width': ['interpolate', ['linear'], ['zoom'], 9, 1, 13, 2],
-          },
-          filter: selectGroupFilter,
-        });
-      }
-      map.setFilter('selectGroupOutline', selectGroupFilter);
-      map.setFilter('selectGroupLabel', selectGroupFilter);
-      map.setLayoutProperty('selectGroupOutline', 'visibility', 'visible');
-      map.setLayoutProperty('selectGroupLabel', 'visibility', 'visible');
     },
   },
 };

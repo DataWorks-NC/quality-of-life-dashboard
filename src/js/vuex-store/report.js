@@ -33,7 +33,7 @@ export default {
     hiddenCategories: (state, getters) => getters.categoryNames.filter(c => Object.values(state.metrics).some(m => m.category === c) && !Object.values(state.metrics).filter(m => m.category === c).some(m => m.visible)),
 
     reportTitle: (state, getters, rootState) => {
-      if (rootState.route && 'selectGroupName' in rootState.route.query) {
+      if (rootState.route && 'selectGroupName' in rootState.route.query && getters.selectGroupIds === getters.selected) {
         return `${rootState.route.query.selectGroupName} (${rootState.route.query.selectGroupType})`; // TODO: translate
       }
       return getters.areaNames.join(', ');
