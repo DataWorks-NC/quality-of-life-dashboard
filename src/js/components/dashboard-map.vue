@@ -516,7 +516,7 @@ export default {
       }
       if (!map.getLayer('selectGroupLabel')) {
         // Labels
-        const BASE_LABEL_SIZE = 12;
+        const BASE_LABEL_SIZE = 10;
         map.addLayer({
           id: 'selectGroupLabel',
           type: 'symbol',
@@ -524,13 +524,13 @@ export default {
           layout: {
             'text-font': ['Open Sans Semibold'],
             'text-field': this.$i18n.locale === 'es' ? '{label_es}' : '{label}',
-            'text-transform': 'uppercase',
             'text-size': ['interpolate', ['linear'], ['zoom'], 8, BASE_LABEL_SIZE * 0.25, 9.5, BASE_LABEL_SIZE * 0.8, 10, BASE_LABEL_SIZE, 12, BASE_LABEL_SIZE * 2],
             'text-allow-overlap': false,
             'text-justify': 'center',
           },
           paint: {
-            'text-halo-color': '#F7E55B',
+            'text-color': '#000',
+            'text-halo-color': '#fff',
             'text-halo-width': ['interpolate', ['linear'], ['zoom'], 9, 1, 13, 2],
           },
           filter: selectGroupFilter,
@@ -587,7 +587,7 @@ export default {
     },
     rescale(oldSelected = null) {
       try {
-        if (this.$route.query.selected && this.selected.length) {
+        if (this.$route.query.selected && this.$route.query.selected.length && this.selected.length) {
           return this.zoomToIds(this.selected);
         }
         if (this.selectGroupName) {
@@ -598,6 +598,9 @@ export default {
           return this.zoomToFullExtent();
         }
       } catch (e) {
+        if (this.debug) {
+          console.error(e);
+        }
         return null;
       }
     },
@@ -607,6 +610,9 @@ export default {
       return durhamCountyBounds;
     },
     zoomToIds(ids, recurse = true) {
+      if (this.debug) {
+        console.log(`Zoom to ids ${ids}`);
+      }
       const zoomToFeatures = this.map.querySourceFeatures(this.geography.id, { filter: ['match', ['get', 'id'], ids, true, false] });
       if (!zoomToFeatures.length) {
         // Workaround for https://github.com/mapbox/mapbox-gl-js/issues/5686. Fly to full extent so all features are
@@ -626,9 +632,12 @@ export default {
     zoomToSelectGroup(id, recurse = true) {
       const zoomToFeatures = this.map.querySourceFeatures('selectGroup', { filter: ['==', 'id', id] });
       if (this.debug) {
-        console.log('Zoom to selectgroup');
+        console.log(`Zoom to selectgroup ${id}`);
       }
       if (!zoomToFeatures.length) {
+        if (this.debug) {
+          console.log(`Source selectgroup feature ${id} not found`);
+        }
         if (recurse) {
           // Workaround for https://github.com/mapbox/mapbox-gl-js/issues/5686. Fly to full extent so all features are
           // visible if the feature wasn't initially found.
@@ -636,9 +645,6 @@ export default {
           this.map.once('moveend', () => {
             this.zoomToSelectGroup(id, false);
           });
-        }
-        if (this.debug) {
-          console.log(`Source selectgroup feature ${id} not found`);
         }
         return;
       }

@@ -144,3 +144,9 @@ input,
 textarea {
   outline: none;
 }
+
+
+// Fix for Vuetify bug where when scrolling menu vertically the background scrolls up and out of view.
+.v-menu__content.menuable__content__active {
+  background-color: white;
+}
