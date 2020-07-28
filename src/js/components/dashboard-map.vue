@@ -478,6 +478,7 @@ export default {
       if (!newName) {
         // Remove label and return
         if (map.getLayer('selectGroupOutline')) map.setLayoutProperty('selectGroupOutline', 'visibility', 'none');
+        if (map.getLayer('selectGroupFill')) map.setLayoutProperty('selectGroupFill', 'visibility', 'none');
         if (map.getLayer('selectGroupLabel')) map.setLayoutProperty('selectGroupLabel', 'visibility', 'none');
         return;
       }
@@ -496,17 +497,34 @@ export default {
       if (!map.getLayer('selectGroupOutline')) {
         map.addLayer({
           id: 'selectGroupOutline',
+          type: 'line',
+          source: 'selectGroup',
+          paint: {
+            'line-color': '#fff',
+            'line-width': 2,
+          },
+          layout: {
+            'line-join': 'round',
+            'line-cap': 'round',
+          },
+          filter: selectGroupFilter,
+        });
+      }
+      if (!map.getLayer('selectGroupFill')) {
+        map.addLayer({
+          id: 'selectGroupFill',
           type: 'fill',
           source: 'selectGroup',
           filter: selectGroupFilter,
-        });
+        }, this.mapConfig.neighborhoodsBefore);
+
         if (!map.hasImage('crosshatch')) {
           map.loadImage(
             '/img/crosshatch_pattern.png',
             (err, image) => {
               if (!err) {
                 map.addImage('crosshatch', image);
-                map.setPaintProperty('selectGroupOutline', 'fill-pattern', 'crosshatch');
+                map.setPaintProperty('selectGroupFill', 'fill-pattern', 'crosshatch');
               } else { console.error(err); }
             },
           );
@@ -516,7 +534,7 @@ export default {
       }
       if (!map.getLayer('selectGroupLabel')) {
         // Labels
-        const BASE_LABEL_SIZE = 10;
+        const BASE_LABEL_SIZE = 12;
         map.addLayer({
           id: 'selectGroupLabel',
           type: 'symbol',
@@ -524,7 +542,7 @@ export default {
           layout: {
             'text-font': ['Open Sans Semibold'],
             'text-field': this.$i18n.locale === 'es' ? '{label_es}' : '{label}',
-            'text-size': ['interpolate', ['linear'], ['zoom'], 8, BASE_LABEL_SIZE * 0.25, 9.5, BASE_LABEL_SIZE * 0.8, 10, BASE_LABEL_SIZE, 12, BASE_LABEL_SIZE * 2],
+            'text-size': ['interpolate', ['linear'], ['zoom'], 8, BASE_LABEL_SIZE * 0.25, 9.5, BASE_LABEL_SIZE * 0.8, 10, BASE_LABEL_SIZE, 12, BASE_LABEL_SIZE * 1.5],
             'text-allow-overlap': false,
             'text-justify': 'center',
           },
@@ -537,8 +555,10 @@ export default {
         });
       }
       map.setFilter('selectGroupOutline', selectGroupFilter);
+      map.setFilter('selectGroupFill', selectGroupFilter);
       map.setFilter('selectGroupLabel', selectGroupFilter);
       map.setLayoutProperty('selectGroupOutline', 'visibility', 'visible');
+      map.setLayoutProperty('selectGroupFill', 'visibility', 'visible');
       map.setLayoutProperty('selectGroupLabel', 'visibility', 'visible');
     },
     updateChoropleth() {
