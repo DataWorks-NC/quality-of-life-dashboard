@@ -3,7 +3,7 @@
     <span>{{ $t('selectGroup.orSelectA') }}</span>
     <template v-for="(group, groupKey, groupIndex) in selectGroups">
       <span v-if="groupIndex === (Object.keys(selectGroups).length - 1)" :key="groupKey">{{ $t('strings.or') }}</span>
-      <v-menu :key="`${groupKey}-menu`" offset-y>
+      <v-menu :key="`${groupKey}-menu`" offset-y :attach="`#selectgroup-attach-${groupIndex}`">
         <template v-slot:activator="{ on }">
           <v-btn :id="`selectgroup-${groupIndex}`" :key="`${groupKey}_button`" text class="selectgroup__button" :disabled="!group.hasOwnProperty(geography.id)" v-on="on">
             {{ $t(`selectGroup['${groupKey}']`) }}
@@ -15,6 +15,7 @@
           </v-list-item>
         </v-list>
       </v-menu>
+      <span :id="`selectgroup-attach-${groupIndex}`" :key="`${groupKey}__attach`" />
     </template>
   </div>
 </template>

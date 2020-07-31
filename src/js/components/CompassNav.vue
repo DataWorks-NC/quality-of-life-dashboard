@@ -23,7 +23,7 @@
                   <v-list-item-content><v-list-item-title>{{ category.name }}</v-list-item-title></v-list-item-content>
                 </template>
                 <template v-for="m in categoryMetrics[category.originalName]">
-                  <v-list-group v-if="m.children.length" :key="m.metric" sub-group>
+                  <v-list-group v-if="m.children.length" :key="m.name" sub-group :value="metric.config && metric.config.subcategory === m.originalName">
                     <template v-slot:activator>
                       <v-list-item-content>
                         <v-list-item-title>{{ m.name }}</v-list-item-title>
@@ -81,18 +81,25 @@
           :value="`tab-${category.id}`"
         >
           <template v-for="m in categoryMetrics[category.originalName]">
-            <v-menu v-if="m.children.length" :key="m.metric">
-              <template v-slot:activator="{ on }">
-                <v-btn rounded depressed v-on="on">
-                  {{ m.name }}
-                </v-btn>
-              </template>
-              <v-list nav dense offset-y max-height="75vh">
-                <v-list-item v-for="m2 in m.children" :key="m2.metric" :to="{ name: 'compass', params: { ...$route.params, metric: m2.metric }, query: $route.query }" exact link>
-                  <v-list-item-title>{{ m2.name }}</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
+            <template v-if="m.children.length">
+              <v-menu :key="m.metric" :attach="'#' + kebabCase(m.originalName)" offset-y>
+                <template v-slot:activator="{ on }">
+                  <!-- TODO: Add attach property for a11y -->
+                  <v-btn v-if="metric.config && metric.config.subcategory === m.originalName" rounded depressed class="v-btn--active" v-on="on">
+                    {{ $i18n.locale === 'es' ? metric.config.title_es : metric.config.title }} <v-icon>$subgroup</v-icon>
+                  </v-btn>
+                  <v-btn v-else rounded depressed v-on="on">
+                    {{ m.name }} <v-icon>$subgroup</v-icon>
+                  </v-btn>
+                </template>
+                <v-list nav dense offset-y max-height="75vh">
+                  <v-list-item v-for="m2 in m.children" :key="m2.metric" :to="{ name: 'compass', params: { ...$route.params, metric: m2.metric }, query: $route.query }" exact link>
+                    <v-list-item-title>{{ m2.name }}</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+              <span :id="kebabCase(m.originalName)" :key="`${m.originalName}-attach`" />
+            </template>
             <v-btn v-else :key="m.metric" exact rounded depressed :to="{ name: 'compass', params: { ...$route.params, metric: m.metric }, query: $route.query }">
               {{ m.name }}
             </v-btn>
@@ -106,7 +113,7 @@
 <script>
 import { mdiClose, mdiDownload, mdiInformation } from '@mdi/js';
 import { mapState } from 'vuex';
-import { fromPairs, uniq } from 'lodash';
+import { fromPairs, kebabCase, uniq } from 'lodash';
 
 import { gaEvent } from '../modules/tracking';
 import config from '../modules/config';
@@ -157,6 +164,7 @@ export default {
         const subcategories = uniq(metrics.map(m => m.subcategory).filter(a => !!a))
           .map(subcategory => ({
             name: this.$i18n.t(`strings.metricSubCategories.${subcategory}`),
+            originalName: subcategory,
             children: metrics.filter(m => m.subcategory === subcategory),
           }));
 
@@ -177,6 +185,7 @@ export default {
       }
       this.$router.push({ params: { ...this.$route.params, locale: newLanguage }, query: this.$route.query });
     },
+    kebabCase,
     gaEvent,
   },
 };

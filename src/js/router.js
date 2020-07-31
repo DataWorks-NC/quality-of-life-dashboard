@@ -80,8 +80,6 @@ const router = new Router({
 // Validate params.
 // TODO: Make these dynamically pull valid values from config.
 router.beforeEach((to, from, next) => {
-  // eslint-disable-next-line no-undef
-  app.loading = true; // will be defined in main.js.
   if (to.params.locale && ['en', 'es'].indexOf(to.params.locale) === -1) {
     next({ ...to, params: { ...to.params, locale: 'en' } });
   } else if (to.params.geographyLevel && ['blockgroup', 'tract'].indexOf(to.params.geographyLevel) === -1) {
