@@ -50,6 +50,13 @@
    "Infrastructure and Amenities": "Infrastructure and Amenities",
    "Safety": "Safety",
    "Summary": "Summary"
+  },
+  "metricSubCategories": {
+   "Chronic Kidney Disease": "Chronic Kidney Disease",
+   "Diabetes": "Diabetes",
+   "Heart Attack": "Heart Attack",
+   "Income": "Income",
+   "Stroke": "Stroke"
   }
  },
  "dashboard": {

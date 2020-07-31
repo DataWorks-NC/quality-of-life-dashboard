@@ -9,7 +9,7 @@
             {{ $t(`selectGroup['${groupKey}']`) }}
           </v-btn>
         </template>
-        <v-list :key="`selectgroup-${groupIndex}`" :for="`selectgroup-${groupIndex}`" nav dense max-height="50vh">
+        <v-list :key="`selectgroup-${groupIndex}`" :for="`selectgroup-${groupIndex}`" nav dense offset-y max-height="50vh">
           <v-list-item v-for="(item, key) in group[geography.id]" :key="key" @click="select(key, groupKey)">
             <v-list-item-title>{{ $te(`selectGroup['${key}']`) ? $t(`selectGroup['${key}']`) : key }}</v-list-item-title>
           </v-list-item>

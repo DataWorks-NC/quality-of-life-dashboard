@@ -50,6 +50,13 @@
    "Infrastructure and Amenities": "Infraestructura y comodidades",
    "Safety": "Seguridad",
    "Summary": "Resumen"
+  },
+  "metricSubCategories": {
+   "Chronic Kidney Disease": "Enfermedad Renal Crónica",
+   "Diabetes": "Diabetes",
+   "Heart Attack": "Ataque Cardíaco",
+   "Income": "Ingreso",
+   "Stroke": "Accidente Cerebrovascular"
   }
  },
  "dashboard": {
