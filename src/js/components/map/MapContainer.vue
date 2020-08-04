@@ -131,11 +131,11 @@ export default {
 
   watch: {
     'selected': ['clearGeocoder', 'rescale'],
-    'colorMap': 'styleNeighborhoods',
+    'colorMap': ['styleNeighborhoods', 'style3DLayer'],
     'selectGroupName': ['showSelectGroup', 'rescale'],
     'highlight': 'styleNeighborhoods',
     'geography.id': 'updateGeography',
-    'isPitched3D': 'toggle3D',
+    'isPitched3D': ['toggle3D', 'style3DLayer'],
   },
 
   mounted() {
@@ -323,12 +323,13 @@ export default {
     toggle3D() {
       const { map, isPitched3D, geography } = this;
 
-      if (isPitched3D) {
-        map.setLayoutProperty(`${geography.id}-fill`, 'visibility', 'none');
-        map.setLayoutProperty(`${geography.id}-fill-extrude`, 'visibility', 'visible');
-      } else {
-        map.setLayoutProperty(`${geography.id}-fill`, 'visibility', 'visible');
-        map.setLayoutProperty(`${geography.id}-fill-extrude`, 'visibility', 'none');
+      map.style3DLayer();
+      if (map.getLayer(`${geography.id}-fill`)) {
+        if (isPitched3D) {
+          map.setLayoutProperty(`${geography.id}-fill`, 'visibility', 'none');
+        } else {
+          map.setLayoutProperty(`${geography.id}-fill`, 'visibility', 'visible');
+        }
       }
     },
     initMapEvents() {
@@ -408,20 +409,34 @@ export default {
           'fill-outline-color': 'rgba(0,0,0,1)',
         },
       }, this.mapConfig.neighborhoodsBefore);
+    },
+    style3DLayer() {
+      const { map } = this;
+      const layerName = `${this.geography.id}-fill-extrude`;
 
-      // 3D layer
-      map.addLayer({
-        'id': `${this.geography.id}-fill-extrude`,
-        'type': 'fill-extrusion',
-        'source': this.geography.id,
-        'layout': {
-          'visibility': 'none',
-        },
-        'paint': {
-          'fill-extrusion-color': this.colorMap,
-          'fill-extrusion-opacity': 1,
-        },
-      }, this.mapConfig.threeDBefore);
+      if (!this.isPitched3D) {
+        if (map.getLayer(layerName)) {
+          map.setLayoutProperty(layerName, 'visibility', 'none');
+        }
+        return;
+      }
+      if (!map.getLayer(layerName)) {
+        // 3D layer
+        map.addLayer({
+          'id': layerName,
+          'type': 'fill-extrusion',
+          'source': this.geography.id,
+          'layout': {
+            'visibility': 'none',
+          },
+          'paint': {
+            'fill-extrusion-color': this.colorMap,
+            'fill-extrusion-opacity': 1,
+          },
+        }, this.mapConfig.threeDBefore);
+      }
+      map.setPaintProperty(layerName, 'fill-extrusion-color', this.colorMap);
+      map.setPaintProperty(layerName, 'fill-extrusion-height', this.getHeight());
     },
     styleNeighborhoods() {
       if (this.debug) {
@@ -431,11 +446,6 @@ export default {
 
       if (map.getLayer(`${this.geography.id}-fill`)) {
         map.setPaintProperty(`${this.geography.id}-fill`, 'fill-color', colorMap);
-      }
-
-      if (map.getLayer(`${this.geography.id}-fill-extrude`)) {
-        map.setPaintProperty(`${this.geography.id}-fill-extrude`, 'fill-extrusion-color', colorMap);
-        map.setPaintProperty(`${this.geography.id}-fill-extrude`, 'fill-extrusion-height', this.getHeight());
       }
     },
     clearGeocoder() {
