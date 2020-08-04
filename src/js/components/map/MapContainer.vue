@@ -44,7 +44,6 @@ export default {
 
   data() {
     return {
-      isPitched3D: false,
       locationPopup: null,
       mapLoaded: false,
       map: null,
@@ -135,7 +134,6 @@ export default {
     'selectGroupName': ['showSelectGroup', 'rescale'],
     'highlight': 'styleNeighborhoods',
     'geography.id': 'updateGeography',
-    'isPitched3D': ['toggle3D', 'style3DLayer'],
   },
 
   mounted() {
@@ -336,10 +334,6 @@ export default {
       const { map } = this;
       const _this = this;
 
-      map.on('rotate', () => {
-        _this.isPitched3D = (map.getPitch() >= 20);
-      });
-
       // on feature click add or remove from selected set
       map.on('click', (e) => {
         const features = map.queryRenderedFeatures(e.point, { layers: [`${_this.geography.id}-fill`] }).filter(f => _this.metric.data.map[f.properties.id][`y_${_this.year}`] !== null); // Only allow select when metric value is not null;
@@ -409,34 +403,6 @@ export default {
           'fill-outline-color': 'rgba(0,0,0,1)',
         },
       }, this.mapConfig.neighborhoodsBefore);
-    },
-    style3DLayer() {
-      const { map } = this;
-      const layerName = `${this.geography.id}-fill-extrude`;
-
-      if (!this.isPitched3D) {
-        if (map.getLayer(layerName)) {
-          map.setLayoutProperty(layerName, 'visibility', 'none');
-        }
-        return;
-      }
-      if (!map.getLayer(layerName)) {
-        // 3D layer
-        map.addLayer({
-          'id': layerName,
-          'type': 'fill-extrusion',
-          'source': this.geography.id,
-          'layout': {
-            'visibility': 'none',
-          },
-          'paint': {
-            'fill-extrusion-color': this.colorMap,
-            'fill-extrusion-opacity': 1,
-          },
-        }, this.mapConfig.threeDBefore);
-      }
-      map.setPaintProperty(layerName, 'fill-extrusion-color', this.colorMap);
-      map.setPaintProperty(layerName, 'fill-extrusion-height', this.getHeight());
     },
     styleNeighborhoods() {
       if (this.debug) {
@@ -558,9 +524,9 @@ export default {
         console.log(`updateGeography ${oldGeography} => ${newGeography}`);
       }
 
-      const oldMapLayers = [`${oldGeography}-fill`, `${oldGeography}-fill-extrude`];
+      const oldMapLayers = [`${oldGeography}-fill`];
 
-      const newMapLayers = this.isPitched3D ? [`${newGeography}-fill-extrude`] : [`${newGeography}-fill`];
+      const newMapLayers = [`${newGeography}-fill`];
 
       if (!this.map.getSource(newGeography)) {
         if (this.debug) {
@@ -654,31 +620,6 @@ export default {
       this.map.fitBounds(bounds, { padding: 150 });
 
       return bounds;
-    },
-
-    // TODO: Update this function to use expression syntax instead of deprecated property function.
-    getHeight() {
-      if (!this.metric.data) return;
-
-      const stops = [];
-      const heightAdjust = x => (
-        (x - this.breaks[0])
-          * 3000 / (this.breaks[this.breaks.length - 1] - this.breaks[0])
-      );
-
-      Object.keys(this.metric.data.map).forEach((id) => {
-        const value = this.metric.data.map[id][`y_${this.year}`];
-        if (value !== null) {
-          stops.push([id, heightAdjust(value)]);
-        }
-      });
-
-      return {
-        property: 'id',
-        default: 0,
-        type: 'categorical',
-        stops,
-      };
     },
     getBoundingBox(features) {
       const longitudes = features.reduce((i, f) => (i.concat(f.geometry.coordinates[0].map(c => c[0]))), []);

@@ -8,10 +8,12 @@
             <v-flex sm12 md8>
               <div v-if="metric.config">
                 <v-card>
-                  <map-container
-                    :mapbox-access-token="config.privateConfig.mapboxAccessToken"
-                    :map-config="config.mapConfig"
-                  />
+                  <div style="min-height: 600px;">
+                    <map-container
+                      :mapbox-access-token="config.privateConfig.mapboxAccessToken"
+                      :map-config="config.mapConfig"
+                    />
+                  </div>
                   <v-spacer />
                   <div class="flex-container">
                     <year-slider v-if="metric.years.length > 1" />
