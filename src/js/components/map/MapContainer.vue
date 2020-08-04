@@ -1,6 +1,9 @@
 <template lang="html">
-  <div class="" style="position: relative; width: 100%; height: 100%">
-    <div id="map" />
+  <div class="map-container">
+    <div class="" style="position: relative; width: 100%; height: 100%">
+      <div id="map" />
+    </div>
+    <dashboard-legend />
   </div>
 </template>
 
@@ -10,16 +13,21 @@ import { uniqBy } from 'lodash';
 
 import mapboxgl from 'mapbox-gl';
 import MapboxGlGeocoder from '@mapbox/mapbox-gl-geocoder';
-import { prettyNumber } from '../modules/number_format';
-import FullExtent from '../modules/map-fullextent';
-import config from '../modules/config';
+import { prettyNumber } from '../../modules/number_format';
+import FullExtent from '../../modules/map-fullextent';
+import config from '../../modules/config';
 
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
+import DashboardLegend from "../dashboard-legend.vue";
+
 export default {
   // You would think to just name this component 'Map', but <map> is in the HTML5 spec!
-  name: 'DashboardMap',
+  name: 'MapContainer',
+  components: {
+    DashboardLegend,
+  },
   props: {
     mapboxAccessToken: {
       type: String,
@@ -774,6 +782,11 @@ export default {
 </script>
 
 <style lang="scss">
+.map-container {
+  min-height: 600px;
+  position: relative;
+}
+
 #map {
     width: 100%;
     height: 600px;

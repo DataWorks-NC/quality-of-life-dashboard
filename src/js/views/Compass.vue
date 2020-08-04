@@ -8,13 +8,10 @@
             <v-flex sm12 md8>
               <div v-if="metric.config">
                 <v-card>
-                  <div class="map-container">
-                    <dashboard-map
-                      :mapbox-access-token="config.privateConfig.mapboxAccessToken"
-                      :map-config="config.mapConfig"
-                    />
-                    <dashboard-legend />
-                  </div>
+                  <map-container
+                    :mapbox-access-token="config.privateConfig.mapboxAccessToken"
+                    :map-config="config.mapConfig"
+                  />
                   <v-spacer />
                   <div class="flex-container">
                     <year-slider v-if="metric.years.length > 1" />
@@ -181,14 +178,13 @@ import DashboardFooter from "../components/dashboard-footer.vue";
 import DataTable from "../components/datatable.vue";
 import Feedback from "../components/feedback.vue";
 import GeographySwitcher from "../components/geography-switcher.vue";
-import DashboardLegend from "../components/dashboard-legend.vue";
 import Metadata from "../components/metadata.vue";
 import PrintMode from "../components/print-mode.vue";
 import Social from "../components/social.vue";
 import UndermapButtons from "../components/undermap-buttons.vue";
 import CompassNav from "../components/CompassNav.vue";
 
-const DashboardMap = () => import(/* webpackChunkName: "dashboard-map" */ "../components/dashboard-map.vue");
+const MapContainer = () => import(/* webpackChunkName: "compass-map" */ "../components/map/MapContainer.vue");
 const DistributionChart = () => import(/* webpackChunkName: "distribution-chart" */ "../components/distribution-chart.vue");
 const TrendChart = () => import(/* webpackChunkName: "trend-chart" */ "../components/trend-chart.vue");
 const YearSlider = () => import(/* webpackChunkName: "year-slider" */ "../components/year-slider.vue");
@@ -202,8 +198,7 @@ export default {
     DistributionChart,
     Feedback,
     GeographySwitcher,
-    DashboardLegend,
-    DashboardMap,
+    MapContainer,
     Metadata,
     PrintMode,
     Social,
@@ -281,11 +276,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.map-container {
-  min-height: 600px;
-  position: relative;
-}
-
 .landing-page {
   padding: 15px 25px;
 
