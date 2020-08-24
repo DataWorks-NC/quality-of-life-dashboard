@@ -2,8 +2,8 @@
   <div class="map-container">
     <div class="" style="position: relative; width: 100%; height: 100%">
       <div id="map" />
-      <selected-layers v-if="mapLoaded && selected.length" :color-map="colorMap" :map="map" :map-config="mapConfig" />
-      <select-group-outline v-if="mapLoaded && selectGroupName" :map="map" :map-config="mapConfig" :select-group-name="selectGroupName" />
+      <selected-layers v-if="mapLoaded && selected.length > 0" :color-map="colorMap" :map="map" :map-config="mapConfig" @layers-loaded="rescale" />
+      <select-group-outline v-if="mapLoaded && selectGroupName" :map="map" :map-config="mapConfig" :select-group-name="selectGroupName" @layers-loaded="rescale" />
     </div>
     <dashboard-legend />
   </div>
@@ -134,9 +134,8 @@ export default {
   },
 
   watch: {
-    'selected': ['clearGeocoder', 'rescale'],
+    'selected': 'clearGeocoder',
     'colorMap': 'updateChoroplethColors',
-    'selectGroupName': 'rescale',
     'highlight': 'updateChoroplethColors',
     'geography.id': 'updateGeography',
   },
@@ -213,12 +212,7 @@ export default {
         _this.mapLoaded = true;
         _this.initChoroplethLayer();
         _this.updateChoroplethColors();
-        // _this.showSelectGroup(_this.selectGroupName);
         _this.initMapEvents();
-        if (_this.selected) {
-          // QueryRenderedFeatures doesn't seem to work until even after map has loaded styles :/
-          setTimeout(() => { _this.rescale(); }, 2500);
-        }
       });
     },
     initChoroplethLayer() {
@@ -288,7 +282,6 @@ export default {
           // Case 2: This is an existing feature on the map.
           else if (e.result.local_match === 'feature') {
             _this.$router.push({ query: { ...this.$route.query, selected: [e.result.id] } });
-            _this.zoomToIds(e.result.id);
             // eslint-disable-next-line brace-style
           }
 
@@ -299,7 +292,6 @@ export default {
                 ...this.$route.query, selected: [], selectGroupName: e.result.selectGroupName, selectGroupType: e.result.selectGroupType,
               },
             });
-            _this.zoomToSelectGroup(e.result.selectGroupName);
           }
         }
       }).on('clear', () => {

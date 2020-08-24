@@ -73,7 +73,7 @@ export default {
               BASE_LABEL_SIZE,
               12,
               BASE_LABEL_SIZE * 1.5],
-            'text-allow-overlap': false,
+            'text-allow-overlap': true,
             'text-justify': 'center',
           },
           paint: {
@@ -153,6 +153,11 @@ export default {
           map.setFilter(name, this.selectGroupFilter);
           map.setLayoutProperty(name, 'visibility', 'visible');
         }
+      });
+
+      map.once('sourcedata', () => {
+        this.log('Selectgroup layers loaded');
+        this.$emit('layers-loaded');
       });
     },
   },
