@@ -5,8 +5,11 @@
 <script>
 import { mapGetters, mapState } from 'vuex';
 
+import debugLogMixin from '../mixins/debugLogMixin';
+
 export default {
   name: "SelectedLayers",
+  mixins: [debugLogMixin],
   props: {
     map: {
       type: Object,
@@ -21,9 +24,12 @@ export default {
       required: true,
     },
   },
+  data: () => ({
+    layersLoaded: {},
+  }),
   computed: {
     ...mapState(
-      ['breaks', 'geography', 'highlight', 'metric', 'metricId', 'printMode', 'year'],
+      ['geography'],
     ),
     ...mapGetters(['selected', 'selectGroupName', 'selectGroupType']),
     selectedToLabel() {
@@ -43,9 +49,6 @@ export default {
       return [`${this.geography.id}-selected-halo`, `${this.geography.id}-selected-outline`, this.labelLayer, `${this.geography.id}-selected-fill`];
     },
   },
-  data: () => ({
-    layersLoaded: {},
-  }),
   watch: {
     'selected': 'redrawLayers',
     '$i18n.locale': 'setLabelLanguage',
@@ -55,13 +58,16 @@ export default {
   mounted() {
     this.initLayers();
   },
+  beforeDestroy() {
+    this.hideLayers();
+  },
   methods: {
     initLayers() {
       const map = this.map;
 
       if (!map || !this.selected || !this.selected.length) return;
 
-      console.log(`SelectedLayers - Init layers ${this.geography.id}`);
+      this.log(`Init layers ${this.geography.id}`);
 
       if (!map.getLayer(`${this.geography.id}-selected-halo`)) {
         // Outlines selected tracts/blockgroups with a wider/brighter halo.
@@ -148,17 +154,22 @@ export default {
 
       this.layersLoaded[this.geography.id] = true;
     },
+    hideLayers() {
+      if (this.layersLoaded[this.geography.id]) {
+        this.layerNames.forEach(layer => {
+          this.map.setLayoutProperty(layer, 'visibility', 'none');
+        });
+      }
+    },
     redrawLayers() {
       const map = this.map;
 
       if (!map) return;
 
+      this.log('Redraw selected layers');
+
       if (!this.selected.length) {
-        if (this.layersLoaded[this.geography.id]) {
-          this.layerNames.forEach(layer => {
-            map.setLayoutProperty(layer, 'visibility', 'none');
-          });
-        }
+        this.hideLayers();
         return;
       }
 

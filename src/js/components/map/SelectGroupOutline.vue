@@ -1,0 +1,164 @@
+<template>
+  <div />
+</template>
+
+<script>
+import debugLogMixin from '../mixins/debugLogMixin';
+
+export default {
+  name: "SelectGroupOutline",
+  mixins: [debugLogMixin],
+  props: {
+    map: {
+      type: Object,
+      default: () => {
+      },
+    },
+    mapConfig: {
+      type: Object,
+      required: true,
+    },
+    selectGroupName: {
+      type: String,
+      default: null,
+    },
+  },
+  data: () => ({
+    layersLoaded: {},
+  }),
+  computed: {
+    selectGroupFilter() {
+      return ['==', 'id', this.selectGroupName];
+    },
+    layers() {
+      const BASE_LABEL_SIZE = 12;
+
+      return {
+        selectGroupOutline: {
+          id: 'selectGroupOutline',
+          type: 'line',
+          source: 'selectGroup',
+          paint: {
+            'line-color': '#fff',
+            'line-width': 2,
+          },
+          layout: {
+            'line-join': 'round',
+            'line-cap': 'round',
+          },
+          filter: this.selectGroupFilter,
+        },
+        selectGroupFill: {
+          id: 'selectGroupFill',
+          type: 'fill',
+          source: 'selectGroup',
+          filter: this.selectGroupFilter,
+        },
+        selectGroupLabel: {
+          id: 'selectGroupLabel',
+          type: 'symbol',
+          source: 'selectGroup',
+          layout: {
+            'text-font': ['Open Sans Semibold'],
+            'text-field': this.$i18n.locale === 'es' ? '{label_es}' : '{label}',
+            'text-size': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              8,
+              BASE_LABEL_SIZE * 0.25,
+              9.5,
+              BASE_LABEL_SIZE * 0.8,
+              10,
+              BASE_LABEL_SIZE,
+              12,
+              BASE_LABEL_SIZE * 1.5],
+            'text-allow-overlap': false,
+            'text-justify': 'center',
+          },
+          paint: {
+            'text-color': '#000',
+            'text-halo-color': '#fff',
+            'text-halo-width': ['interpolate', ['linear'], ['zoom'], 9, 1, 13, 2],
+          },
+          filter: this.selectGroupFilter,
+        },
+      };
+    },
+    layerNames() {
+      return Object.keys(this.layers);
+    },
+  },
+  watch: {
+    'selectGroupName': 'showSelectGroup',
+  },
+  mounted() {
+    this.showSelectGroup(this.selectGroupName, null);
+  },
+  beforeDestroy() {
+    this.hideSelectGroup();
+  },
+  methods: {
+    hideSelectGroup() {
+      this.layerNames.forEach(name => {
+        if (this.map.getLayer(name)) {
+          this.map.setLayoutProperty(name, 'visibility', 'none');
+        }
+      });
+    },
+    showSelectGroup(newName, oldName) {
+      if ((!newName && !oldName) || (newName === oldName)) return;
+
+      const map = this.map;
+      this.log(`Show selectGroup ${oldName} => ${newName}`);
+
+      if (!newName) {
+        this.hideSelectGroup();
+        return;
+      }
+
+      // TODO: Is this potentially faster if we split up the selectgroups geoJSON file
+      //  into separate files for each selectGroup?
+      if (!map.getSource('selectGroup')) {
+        map.addSource('selectGroup', {
+          type: 'geojson',
+          promoteId: 'id',
+          data: '/data/selectgroups.geojson.json',
+        });
+      }
+
+      this.layerNames.forEach(name => {
+        if (!map.getLayer(name)) {
+          map.addLayer(this.layers[name]);
+
+          // Need to handle crosshatch fill separately.
+          if (name === 'selectGroupFill') {
+            if (!map.hasImage('crosshatch')) {
+              map.loadImage(
+                '/img/crosshatch_pattern.png',
+                (err, image) => {
+                  if (!err) {
+                    map.addImage('crosshatch', image);
+                    map.setPaintProperty('selectGroupFill', 'fill-pattern', 'crosshatch');
+                  } else {
+                    console.error(err);
+                  }
+                },
+              );
+            } else {
+              map.setPaintProperty('selectGroupOutline', 'fill-pattern', 'crosshatch');
+            }
+          }
+        } else {
+          map.setFilter(name, this.selectGroupFilter);
+          map.setLayoutProperty(name, 'visibility', 'visible');
+        }
+      });
+    },
+  },
+};
+</script>
+
+<style scoped>
+
+</style>

@@ -2,7 +2,8 @@
   <div class="map-container">
     <div class="" style="position: relative; width: 100%; height: 100%">
       <div id="map" />
-      <selected-layers :color-map="colorMap" :map="map" :map-config="mapConfig" />
+      <selected-layers v-if="mapLoaded && selected.length" :color-map="colorMap" :map="map" :map-config="mapConfig" />
+      <select-group-outline v-if="mapLoaded && selectGroupName" :map="map" :map-config="mapConfig" :select-group-name="selectGroupName" />
     </div>
     <dashboard-legend />
   </div>
@@ -23,6 +24,9 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 import DashboardLegend from "../dashboard-legend.vue";
 import SelectedLayers from './SelectedLayers.vue';
+import SelectGroupOutline from './SelectGroupOutline.vue';
+
+import debugLogMixin from '../mixins/debugLogMixin';
 
 export default {
   // You would think to just name this component 'Map', but <map> is in the HTML5 spec!
@@ -30,7 +34,9 @@ export default {
   components: {
     SelectedLayers,
     DashboardLegend,
+    SelectGroupOutline,
   },
+  mixins: [debugLogMixin],
   props: {
     mapboxAccessToken: {
       type: String,
@@ -49,7 +55,6 @@ export default {
       map: null,
       colors: config.colors,
       selectGroupsData: config.selectGroups,
-      debug: process.env.NODE_ENV === 'development',
     };
   },
 
@@ -130,12 +135,11 @@ export default {
 
   watch: {
     'selected': ['clearGeocoder', 'rescale'],
-    'colorMap': ['styleNeighborhoods', 'style3DLayer'],
-    'selectGroupName': ['showSelectGroup', 'rescale'],
-    'highlight': 'styleNeighborhoods',
+    'colorMap': 'updateChoroplethColors',
+    'selectGroupName': 'rescale',
+    'highlight': 'updateChoroplethColors',
     'geography.id': 'updateGeography',
   },
-
   mounted() {
     // Add these at mount time because they should not be reactive properties (don't want
     // component to update each time they change).
@@ -145,7 +149,6 @@ export default {
     this.initMap();
     this.initGeocoder();
   },
-
   methods: {
     initMap() {
       const mapOptions = {
@@ -191,19 +194,16 @@ export default {
 
       if (this.debug) {
         map.on('zoomend', () => {
-          console.log(`Zoom: ${map.getZoom()}`);
+          this.log(`Zoom: ${map.getZoom()}`);
         });
       }
 
-      // disable map rotation until 3D support added
-      // map.dragRotate.disable();
+      // Disable map rotation.
       map.touchZoomRotate.disableRotation();
 
       // after map initiated, grab geography and initiate/style neighborhoods
       map.once('load', () => {
-        if (this.debug) {
-          console.log('Map load');
-        }
+        this.log('Map load');
         // Add tracts
         map.addSource(_this.geography.id, {
           type: 'geojson',
@@ -211,15 +211,29 @@ export default {
         });
 
         _this.mapLoaded = true;
-        _this.initNeighborhoods();
-        _this.styleNeighborhoods();
-        _this.showSelectGroup(_this.selectGroupName);
+        _this.initChoroplethLayer();
+        _this.updateChoroplethColors();
+        // _this.showSelectGroup(_this.selectGroupName);
         _this.initMapEvents();
         if (_this.selected) {
           // QueryRenderedFeatures doesn't seem to work until even after map has loaded styles :/
           setTimeout(() => { _this.rescale(); }, 2500);
         }
       });
+    },
+    initChoroplethLayer() {
+      const { map } = this;
+
+      // Choropleth fill layer for all tracts/blockgroups.
+      map.addLayer({
+        'id': `${this.geography.id}-fill`,
+        'type': 'fill',
+        'source': this.geography.id,
+        'paint': {
+          'fill-color': this.colorMap,
+          'fill-outline-color': 'rgba(0,0,0,1)',
+        },
+      }, this.mapConfig.neighborhoodsBefore);
     },
     initGeocoder() {
       if (this.printMode) return;
@@ -318,18 +332,6 @@ export default {
 
       return matchingFeatures.concat(matchingSelectGroups);
     },
-    toggle3D() {
-      const { map, isPitched3D, geography } = this;
-
-      map.style3DLayer();
-      if (map.getLayer(`${geography.id}-fill`)) {
-        if (isPitched3D) {
-          map.setLayoutProperty(`${geography.id}-fill`, 'visibility', 'none');
-        } else {
-          map.setLayoutProperty(`${geography.id}-fill`, 'visibility', 'visible');
-        }
-      }
-    },
     initMapEvents() {
       const { map } = this;
       const _this = this;
@@ -390,148 +392,28 @@ export default {
         });
       }
     },
-    initNeighborhoods() {
-      const { map } = this;
-
-      // Choropleth fill layer for all tracts/blockgroups.
-      map.addLayer({
-        'id': `${this.geography.id}-fill`,
-        'type': 'fill',
-        'source': this.geography.id,
-        'paint': {
-          'fill-color': this.colorMap,
-          'fill-outline-color': 'rgba(0,0,0,1)',
-        },
-      }, this.mapConfig.neighborhoodsBefore);
-    },
-    styleNeighborhoods() {
-      if (this.debug) {
-        console.log('Style neighborhoods');
-      }
-      const { colorMap, map } = this;
-
-      if (map.getLayer(`${this.geography.id}-fill`)) {
-        map.setPaintProperty(`${this.geography.id}-fill`, 'fill-color', colorMap);
-      }
-    },
     clearGeocoder() {
       // Clear the pin that gets dropped on address search when user clears selection.
       if (!this.selected.length && this.geocoder) {
         this.geocoder.clear();
       }
     },
-    showSelectGroup(newName, oldName) {
-      if ((!newName && !oldName) || (newName === oldName)) return;
-      const map = this.map;
-      if (this.debug) {
-        console.log(`Show selectGroup ${oldName} => ${newName}`);
-      }
-      if (!newName) {
-        // Remove label and return
-        if (map.getLayer('selectGroupOutline')) map.setLayoutProperty('selectGroupOutline', 'visibility', 'none');
-        if (map.getLayer('selectGroupFill')) map.setLayoutProperty('selectGroupFill', 'visibility', 'none');
-        if (map.getLayer('selectGroupLabel')) map.setLayoutProperty('selectGroupLabel', 'visibility', 'none');
-        return;
-      }
-
-      const selectGroupFilter = ['==', 'id', newName];
-
-      // TODO: Is this potentially faster if we split up the selectgroups geoJSON file
-      //  into separate files for each selectGroup?
-      if (!map.getSource('selectGroup')) {
-        map.addSource('selectGroup', {
-          type: 'geojson',
-          promoteId: 'id',
-          data: '/data/selectgroups.geojson.json',
-        });
-      }
-      if (!map.getLayer('selectGroupOutline')) {
-        map.addLayer({
-          id: 'selectGroupOutline',
-          type: 'line',
-          source: 'selectGroup',
-          paint: {
-            'line-color': '#fff',
-            'line-width': 2,
-          },
-          layout: {
-            'line-join': 'round',
-            'line-cap': 'round',
-          },
-          filter: selectGroupFilter,
-        });
-      }
-      if (!map.getLayer('selectGroupFill')) {
-        map.addLayer({
-          id: 'selectGroupFill',
-          type: 'fill',
-          source: 'selectGroup',
-          filter: selectGroupFilter,
-        }, this.mapConfig.neighborhoodsBefore);
-
-        if (!map.hasImage('crosshatch')) {
-          map.loadImage(
-            '/img/crosshatch_pattern.png',
-            (err, image) => {
-              if (!err) {
-                map.addImage('crosshatch', image);
-                map.setPaintProperty('selectGroupFill', 'fill-pattern', 'crosshatch');
-              } else { console.error(err); }
-            },
-          );
-        } else {
-          map.setPaintProperty('selectGroupOutline', 'fill-pattern', 'crosshatch');
-        }
-      }
-      if (!map.getLayer('selectGroupLabel')) {
-        // Labels
-        const BASE_LABEL_SIZE = 12;
-        map.addLayer({
-          id: 'selectGroupLabel',
-          type: 'symbol',
-          source: 'selectGroup',
-          layout: {
-            'text-font': ['Open Sans Semibold'],
-            'text-field': this.$i18n.locale === 'es' ? '{label_es}' : '{label}',
-            'text-size': ['interpolate', ['linear'], ['zoom'], 8, BASE_LABEL_SIZE * 0.25, 9.5, BASE_LABEL_SIZE * 0.8, 10, BASE_LABEL_SIZE, 12, BASE_LABEL_SIZE * 1.5],
-            'text-allow-overlap': false,
-            'text-justify': 'center',
-          },
-          paint: {
-            'text-color': '#000',
-            'text-halo-color': '#fff',
-            'text-halo-width': ['interpolate', ['linear'], ['zoom'], 9, 1, 13, 2],
-          },
-          filter: selectGroupFilter,
-        });
-      }
-      map.setFilter('selectGroupOutline', selectGroupFilter);
-      map.setFilter('selectGroupFill', selectGroupFilter);
-      map.setFilter('selectGroupLabel', selectGroupFilter);
-      map.setLayoutProperty('selectGroupOutline', 'visibility', 'visible');
-      map.setLayoutProperty('selectGroupFill', 'visibility', 'visible');
-      map.setLayoutProperty('selectGroupLabel', 'visibility', 'visible');
-    },
     updateChoropleth() {
       if (this.mapLoaded) {
-        this.styleNeighborhoods();
+        this.updateChoroplethColors();
       }
     },
     updateGeography(newGeography, oldGeography) {
       if (!this.geography.id) return;
 
-      if (this.debug) {
-        console.log(`updateGeography ${oldGeography} => ${newGeography}`);
-      }
+      this.log(`updateGeography ${oldGeography} => ${newGeography}`);
 
       const oldMapLayers = [`${oldGeography}-fill`];
 
       const newMapLayers = [`${newGeography}-fill`];
 
       if (!this.map.getSource(newGeography)) {
-        if (this.debug) {
-          console.log(`Add source: ${newGeography}`);
-        }
+        this.log(`Add source: ${newGeography}`);
         this.map.addSource(newGeography, {
           type: 'geojson',
           data: `/data/${newGeography}.geojson.json`,
@@ -547,7 +429,7 @@ export default {
       newMapLayers.forEach((layer) => {
         if (!this.map.getLayer(layer)) {
           // TODO: Move this out of the loop.
-          this.initNeighborhoods();
+          this.initChoroplethLayer();
         } else {
           this.map.setLayoutProperty(layer, 'visibility', 'visible');
         }
@@ -578,9 +460,7 @@ export default {
       return durhamCountyBounds;
     },
     zoomToIds(ids, recurse = true) {
-      if (this.debug) {
-        console.log(`Zoom to ids ${ids}`);
-      }
+      this.log(`Zoom to ids ${ids}`);
       const zoomToFeatures = this.map.querySourceFeatures(this.geography.id, { filter: ['match', ['get', 'id'], ids, true, false] });
       if (!zoomToFeatures.length) {
         // Workaround for https://github.com/mapbox/mapbox-gl-js/issues/5686. Fly to full extent so all features are
@@ -597,15 +477,13 @@ export default {
       this.map.fitBounds(bounds, { padding: 150 });
       return bounds;
     },
+    // TODO: Move this to SelectGroupOUtline component and communicate via an event.
     zoomToSelectGroup(id, recurse = true) {
       const zoomToFeatures = this.map.querySourceFeatures('selectGroup', { filter: ['==', 'id', id] });
-      if (this.debug) {
-        console.log(`Zoom to selectgroup ${id}`);
-      }
+      this.log(`Zoom to selectgroup ${id}`);
+
       if (!zoomToFeatures.length) {
-        if (this.debug) {
-          console.log(`Source selectgroup feature ${id} not found`);
-        }
+        this.log(`Source selectgroup feature ${id} not found`);
         if (recurse) {
           // Workaround for https://github.com/mapbox/mapbox-gl-js/issues/5686. Fly to full extent so all features are
           // visible if the feature wasn't initially found.
@@ -635,6 +513,14 @@ export default {
       if (i !== -1) {
         const query = { ...this.$route.query, selected: this.selected.slice(0, i).concat(this.selected.slice(i + 1)) };
         this.$router.push({ query });
+      }
+    },
+    updateChoroplethColors() {
+      this.log('Change geography-fill layer colors');
+      const { colorMap, map } = this;
+
+      if (map.getLayer(`${this.geography.id}-fill`)) {
+        map.setPaintProperty(`${this.geography.id}-fill`, 'fill-color', colorMap);
       }
     },
   },
