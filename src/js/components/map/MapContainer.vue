@@ -4,6 +4,7 @@
       <div id="map" />
       <selected-layers v-if="mapLoaded && selected.length > 0" :color-map="colorMap" :map="map" :map-config="mapConfig" @layers-loaded="rescale" />
       <select-group-outline v-if="mapLoaded && selectGroupName" :map="map" :map-config="mapConfig" :select-group-name="selectGroupName" @layers-loaded="rescale" />
+      <geocoder v-if="mapLoaded && !printMode" :map="map" :mapbox-access-token="mapboxAccessToken" />
     </div>
     <dashboard-legend />
   </div>
@@ -11,20 +12,18 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex';
-import { uniqBy } from 'lodash';
 
 import mapboxgl from 'mapbox-gl';
-import MapboxGlGeocoder from '@mapbox/mapbox-gl-geocoder';
 import { prettyNumber } from '../../modules/number_format';
 import FullExtent from '../../modules/map-fullextent';
 import config from '../../modules/config';
 
 import 'mapbox-gl/dist/mapbox-gl.css';
-import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 import DashboardLegend from "../dashboard-legend.vue";
 import SelectedLayers from './SelectedLayers.vue';
 import SelectGroupOutline from './SelectGroupOutline.vue';
+import Geocoder from './Geocoder.vue';
 
 import debugLogMixin from '../mixins/debugLogMixin';
 
@@ -32,6 +31,7 @@ export default {
   // You would think to just name this component 'Map', but <map> is in the HTML5 spec!
   name: 'MapContainer',
   components: {
+    Geocoder,
     SelectedLayers,
     DashboardLegend,
     SelectGroupOutline,
@@ -54,7 +54,6 @@ export default {
       mapLoaded: false,
       map: null,
       colors: config.colors,
-      selectGroupsData: config.selectGroups,
     };
   },
 
@@ -63,21 +62,6 @@ export default {
       ['breaks', 'geography', 'highlight', 'metric', 'metricId', 'printMode', 'year'],
     ),
     ...mapGetters(['selected', 'selectGroupName', 'selectGroupType']),
-    selectGroups() {
-      const categories = Object.keys(this.selectGroupsData);
-      const selectGroups = {};
-      categories.forEach(c => {
-        if (!this.geography.id || !(this.geography.id in this.selectGroupsData[c])) return;
-        Object.keys(this.selectGroupsData[c][this.geography.id]).forEach(selectGroupName => {
-          selectGroups[`${selectGroupName}, ${c}`] = {
-            selectGroupName,
-            selectGroupType: c,
-            ids: this.selectGroupsData[c][this.geography.id][selectGroupName],
-          };
-        });
-      });
-      return selectGroups;
-    },
     metricData() {
       if (this.metric) {
         return this.metric.data;
@@ -134,7 +118,6 @@ export default {
   },
 
   watch: {
-    'selected': 'clearGeocoder',
     'colorMap': 'updateChoroplethColors',
     'highlight': 'updateChoroplethColors',
     'geography.id': 'updateGeography',
@@ -142,11 +125,8 @@ export default {
   mounted() {
     // Add these at mount time because they should not be reactive properties (don't want
     // component to update each time they change).
-    this.geocoder = null;
-    this.addressMarker = null;
     this.hoverPopup = null;
     this.initMap();
-    this.initGeocoder();
   },
   methods: {
     initMap() {
@@ -160,16 +140,6 @@ export default {
       const _this = this;
       const { map } = _this;
       mapboxgl.accessToken = _this.mapboxAccessToken;
-
-      this.addressPopup = new mapboxgl.Popup({
-        closeButton: false,
-        anchor: 'bottom-left',
-        className: 'address_popup',
-      });
-
-      this.addressMarker = new mapboxgl.Marker({
-        color: '#db3360',
-      }).setPopup(this.addressPopup);
 
       this.hoverPopup = new mapboxgl.Popup({
         closeButton: false,
@@ -211,7 +181,6 @@ export default {
 
         _this.mapLoaded = true;
         _this.initChoroplethLayer();
-        _this.updateChoroplethColors();
         _this.initMapEvents();
       });
     },
@@ -228,101 +197,6 @@ export default {
           'fill-outline-color': 'rgba(0,0,0,1)',
         },
       }, this.mapConfig.neighborhoodsBefore);
-    },
-    initGeocoder() {
-      if (this.printMode) return;
-
-      const map = this.map;
-      const _this = this;
-      this.geocoder = new MapboxGlGeocoder({
-        accessToken: this.mapboxAccessToken,
-        localGeocoder: this.localGeocoder,
-        country: 'us',
-        bbox: [-79.01, 35.87, -78.7, 36.15],
-        placeholder: this.$t('map.SearchPlaceholder'),
-        zoom: 14,
-        marker: false,
-        flyTo: true,
-        types: "address,poi", // see https://docs.mapbox.com/api/search/#data-types for full list.
-        mapboxgl,
-      }).on('result', (e) => {
-        _this.addressMarker.remove();
-
-        if (e.result) {
-          // Handle results differently depending on the type of result.
-          // Case 1: This is a Mapbox geocoded address
-          if (!('local_match' in e.result)) {
-            // Add popup marker to address.
-            _this.addressPopup.setText(e.result.place_name.replace('North Carolina ', '').replace(', United States of America', ''));
-            _this.addressMarker.setLngLat(e.result.center).addTo(map).togglePopup();
-
-            // We need to first move map to the marker and *then* select the visible features under that marker.
-            // TODO: Tweak these animations to make the UI more seamless.
-            map.flyTo({ center: e.result.center }, { flyToMarker: true, center: e.result.center });
-
-            map.once('moveend', (moveEvent) => {
-              // Once animation has finished, now the features will be visible.
-              if (!moveEvent.flyToMarker) return;
-              // Clear selection and select underlying area. Remove duplicates by casting to Set.
-              const features = Array.from(
-                new Set(
-                  map.queryRenderedFeatures(
-                    map.project(moveEvent.center),
-                    { layers: [`${_this.geography.id}-fill`] },
-                  ).map(g => g.properties.id),
-                ),
-              );
-
-              _this.$router.push({ query: { ..._this.$route.query, selected: features } });
-              _this.zoomToIds(features);
-            });
-            // eslint-disable-next-line brace-style
-          }
-
-          // Case 2: This is an existing feature on the map.
-          else if (e.result.local_match === 'feature') {
-            _this.$router.push({ query: { ...this.$route.query, selected: [e.result.id] } });
-            // eslint-disable-next-line brace-style
-          }
-
-          // Case 3: This is a select group.
-          else if (e.result.local_match === 'selectGroup') {
-            _this.$router.push({
-              query: {
-                ...this.$route.query, selected: [], selectGroupName: e.result.selectGroupName, selectGroupType: e.result.selectGroupType,
-              },
-            });
-          }
-        }
-      }).on('clear', () => {
-        if (_this.addressMarker) {
-          if (_this.addressPopup.isOpen()) _this.addressMarker.togglePopup();
-          _this.addressMarker.remove();
-        }
-        if (map.getLayer('point')) {
-          map.getSource('point').setData({
-            "type": "FeatureCollection",
-            "features": [],
-          });
-        }
-      });
-      map.addControl(this.geocoder, 'bottom-right');
-    },
-    localGeocoder(searchString) {
-      const searchStringDownCase = searchString.toLowerCase();
-      // Query map layers by name.
-      const matchingFeatures = uniqBy(this.map.querySourceFeatures(this.geography.id, {
-        filter: ['in', searchStringDownCase, ['downcase', ['get', 'label']]],
-      }), f => f.properties.id).map(f => ({
-        ...f, place_name: f.properties.label, place_type: ["place"], local_match: 'feature',
-      }));
-
-      // Query select groups.
-      const matchingSelectGroups = Object.keys(this.selectGroups).filter(n => n.toLowerCase().includes(searchStringDownCase)).map(match => ({
-        place_name: match, place_type: ["place"], local_match: 'selectGroup', ...this.selectGroups[match],
-      }));
-
-      return matchingFeatures.concat(matchingSelectGroups);
     },
     initMapEvents() {
       const { map } = this;
@@ -382,17 +256,6 @@ export default {
             )
             .addTo(map);
         });
-      }
-    },
-    clearGeocoder() {
-      // Clear the pin that gets dropped on address search when user clears selection.
-      if (!this.selected.length && this.geocoder) {
-        this.geocoder.clear();
-      }
-    },
-    updateChoropleth() {
-      if (this.mapLoaded) {
-        this.updateChoroplethColors();
       }
     },
     updateGeography(newGeography, oldGeography) {
@@ -508,6 +371,7 @@ export default {
       }
     },
     updateChoroplethColors() {
+      if (!this.mapLoaded) return;
       this.log('Change geography-fill layer colors');
       const { colorMap, map } = this;
 
@@ -550,27 +414,7 @@ export default {
     background-color: rgba(158,158,158, 0.40);
 }
 
-.mapboxgl-ctrl-geocoder input[type="text"] {
-    color: rgba(0, 0, 0, 0.8);
-}
-
 .hover_popup {
   z-index: 1000;
 }
-
-.address_popup {
-  color: white;
-  .mapboxgl-popup-tip {
-    border-top-color: #db3360;
-  }
-  .mapboxgl-popup-content {
-    background-color: #db3360;
-    font-weight: bold;
-    padding: 10px;
-    font-size: 12px;
-    line-height: 12px;
-  }
-
-}
-
 </style>
