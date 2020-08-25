@@ -40,7 +40,12 @@ jobs:
 
       # Performance test
       - run: sudo npm install -g @lhci/cli@0.5.x
-      - run: lhci autorun
+      - run: |
+            if [ "$CIRCLECI_BRANCH" = "main" ]; then
+              lhci autorun --uploadUrlMap
+            else
+              lhci autorun
+            fi
 
       # Generate a sitemap based on what's currently on dev site.
       - run: |
