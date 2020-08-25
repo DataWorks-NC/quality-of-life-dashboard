@@ -50,7 +50,9 @@ export default {
     this.showLayers();
   },
   beforeDestroy() {
-    this.hideLayers();
+    if (this.map) {
+      this.hideLayers();
+    }
   },
   methods: {
     labelLayer(geography = this.geography.id) {
@@ -181,7 +183,7 @@ export default {
     hideLayers(geography = this.geography.id) {
       this.log(`Hide layers ${geography}`);
       this.layerNames(geography).forEach(layer => {
-        if (this.map.getLayer(layer)) {
+        if (this.map && this.map.getLayer(layer)) {
           this.map.setLayoutProperty(layer, 'visibility', 'none');
         }
       });

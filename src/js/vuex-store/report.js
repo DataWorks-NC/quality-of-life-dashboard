@@ -1,11 +1,11 @@
 import Vue from 'vue';
-import md5 from 'js-md5';
+import { xor } from 'lodash';
 import { fetchResponseJSON } from '../modules/fetch';
 import config from '../modules/config';
 
 const { siteConfig, dataConfig } = config;
 
-const getJSONFilename = (geographyId, areaId) => (geographyId === 'neighborhood' ? `/data/report/${geographyId}/${md5(areaId)}.json` : `/data/report/${geographyId}/${areaId}.json`);
+const getJSONFilename = (geographyId, areaId) => `/data/report/${geographyId}/${areaId}.json`;
 
 export default {
   state: {
@@ -14,6 +14,7 @@ export default {
     metricValues: {}, // Values for each metric in the report.
     countyAverages: {},
     activeCategory: '',
+    areaDataLoadedFor: {}, // Store the selection for which area data was last loaded.
   },
   getters: {
     categoryNames: state => state.categoryNamesBase.filter(c => (c in state.metricValues || c in state.countyAverages)),
@@ -99,15 +100,29 @@ export default {
     setActiveCategory(state, category) {
       state.activeCategory = category;
     },
+    setAreaDataLoadedFor(state, selected) {
+      state.areaDataLoadedFor = selected;
+    },
   },
   actions: {
     // Load data first (from individual JSONs, one for each area included in the report, then set area IDs.
-    async loadAreaData({ commit, getters, rootState }) {
-      if (!getters.selected.length) { return; }
+    async loadAreaData({
+      commit, getters, rootState, state,
+    }) {
+      if (getters.selected.length === 0) {
+        return;
+      }
+
+      const selected = getters.selected;
+
+      if (xor(selected, state.areaDataLoadedFor).length === 0) {
+        // If areaDataLoaded is exactly equal to selected, return.
+        return;
+      }
 
       // Load array of JSON file data for each metric.
       // eslint-disable-next-line consistent-return
-      return Promise.all(getters.selected.map(id => fetchResponseJSON(getJSONFilename(rootState.geography.id, id)))).then((areaData) => {
+      return Promise.all(selected.map(id => fetchResponseJSON(getJSONFilename(rootState.geography.id, id)))).then((areaData) => {
         // Only examine metrics for which we have proper config. First key in the datafile format is geography_name, so skip that one too.
         const metricsToLoad = Object.keys(areaData[0]).filter(key => key !== 'geography_name' && (`m${key}` in dataConfig));
 
@@ -147,6 +162,8 @@ export default {
           });
           commit('setMetricValues', { metric: key, values: metricValues });
         });
+
+        commit('setAreaDataLoadedFor', selected);
       });
     },
 

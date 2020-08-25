@@ -30,8 +30,14 @@ export default {
   watch: {
     '$i18n.locale': 'setLabelLanguage',
   },
+  beforeCreate() {
+    mapboxgl.prewarm();
+  },
   mounted() {
     this.map = this.initMap();
+  },
+  beforeDestroy() {
+    this.map.remove();
   },
   methods: {
     initMap() {

@@ -122,11 +122,19 @@ export default {
     'highlight': 'updateChoroplethColors',
     'geography.id': 'updateGeography',
   },
+  beforeCreate() {
+    // Preload map resources so that they live on even between switching to Report and back.
+    // @see https://github.com/mapbox/mapbox-gl-js/pull/9391
+    mapboxgl.prewarm();
+  },
   mounted() {
     // Add these at mount time because they should not be reactive properties (don't want
     // component to update each time they change).
     this.hoverPopup = null;
     this.initMap();
+  },
+  destroyed() {
+    this.map.remove();
   },
   methods: {
     initMap() {

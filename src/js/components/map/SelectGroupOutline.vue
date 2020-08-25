@@ -92,7 +92,9 @@ export default {
     this.showSelectGroup(this.selectGroupName, null);
   },
   beforeDestroy() {
-    this.hideSelectGroup();
+    if (this.map) {
+      this.hideSelectGroup();
+    }
   },
   methods: {
     hideSelectGroup() {

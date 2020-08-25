@@ -63,7 +63,9 @@ export default {
     this.initGeocoder();
   },
   beforeDestroy() {
-    this.map.removeControl(this.geocoder);
+    if (this.map) {
+      this.map.removeControl(this.geocoder);
+    }
   },
   methods: {
     initGeocoder() {
