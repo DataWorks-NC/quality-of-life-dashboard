@@ -86,7 +86,7 @@ If you update the sprites file, you may need to check for missing sprites as the
 
 ## Testing
 
-We test with the help of [![Browserstack logo](https://raw.githubusercontent.com/DataWorks-NC/quality-of-life-dashboard/master/app/assets/img/browserstack-logo.png)](https://browserstack.com/)
+We test with the help of [![Browserstack logo](https://raw.githubusercontent.com/DataWorks-NC/quality-of-life-dashboard/main/app/assets/img/browserstack-logo.png)](https://browserstack.com/)
 
 ## Performance Testing
 

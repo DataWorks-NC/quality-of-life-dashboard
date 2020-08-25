@@ -44,7 +44,7 @@ jobs:
 
       # Generate a sitemap based on what's currently on dev site.
       - run: |
-          if [ "$CIRCLECI_BRANCH" = "master" ]; then
+          if [ "$CIRCLECI_BRANCH" = "main" ]; then
             npm run build-sitemap-dev
           fi
 
@@ -135,4 +135,4 @@ workflows:
           filters:
             branches:
               only:
-                master
+                main
