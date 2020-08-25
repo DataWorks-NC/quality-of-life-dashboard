@@ -19,12 +19,11 @@
       <img :alt="$t('strings.DataWorksNCLogo')" :src="require('@/assets/img/report-logo.png')" class="header__logo">
       <v-spacer />
       <v-card class="map d-print-inline">
-        <div class="map-container" style="position: relative">
-          <dashboard-map :mapbox-access-token="config.privateConfig.mapboxAccessToken" :map-config="Object.assign({ trackResize: false }, config.mapConfig)" />
-          <dashboard-legend />
-        </div>
+        <map-container :mapbox-access-token="config.privateConfig.mapboxAccessToken" :map-config="Object.assign({ trackResize: false }, config.mapConfig)" />
         <i18n path="printMode.footerText" tag="p" class="print__footer">
-          <a place="compassLink" href="https://compass.durhamnc.gov">{{ $t('strings.theCompass') }}</a>
+          <template v-slot:compassLink>
+            <a href="https://compass.durhamnc.gov">{{ $t('strings.theCompass') }}</a>
+          </template>
         </i18n>
       </v-card>
     </v-content>
@@ -34,21 +33,22 @@
 <script>
 import { mdiPrinter, mdiArrowLeft } from "@mdi/js";
 
-import DashboardLegend from './dashboard-legend.vue';
 import PrintMapHeader from './print-map-header.vue';
 
-const DashboardMap = () => import(/* webpackChunkName: "dashboard-map" */ './dashboard-map.vue');
+const MapContainer = () => import(/* webpackChunkName: "compass-map" */ './map/MapContainer.vue');
 
 export default {
   name: 'PrintMode',
   components: {
-    DashboardLegend,
-    DashboardMap,
+    MapContainer,
     PrintMapHeader,
   },
-  props: [
-    'config',
-  ],
+  props: {
+    config: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
   data: () => ({ mdiPrinter, mdiArrowLeft }),
   methods: {
     print() {

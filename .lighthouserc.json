@@ -1,0 +1,19 @@
+{
+  "ci": {
+    "collect": {
+      "settings": {
+        "skipAudits": ["is-crawlable"]
+      },
+      "staticDistDir": "dist",
+      "url": [
+        "http://localhost/en.html",
+        "http://localhost/en/about.html",
+        "http://localhost/en/compass/DIABETES_ASIAN/tract/index.html",
+        "http://localhost/en/report/blockgroup/index.html"
+      ]
+    },
+    "upload": {
+      "target": "temporary-public-storage"
+    }
+  }
+}

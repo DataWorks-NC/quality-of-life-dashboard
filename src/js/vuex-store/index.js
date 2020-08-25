@@ -24,7 +24,6 @@ export default new Vuex.Store({
       averageValues: {},
     },
     breaks: [0, 0, 0, 0, 0, 0],
-    selected: [],
     highlight: [],
     year: null,
     metadata: null,
@@ -41,9 +40,32 @@ export default new Vuex.Store({
     lastCompassRoute: null, // Store the last route used in compass so we can navigate back from report.
   },
   getters: {
-    legendTitle: (state) => {
-      if (state.customLegendTitle) return state.customLegendTitle;
-      if (state.metric.config) return `${state.language === 'es' ? state.metric.config.title_es : state.metric.config.title}, ${state.year}`;
+    selected: ({ route: { query: { selected = [], selectGroupType = null, selectGroupName = null } }, geography = { id: null } }) => {
+      if (selected.length) {
+        if (!Array.isArray(selected)) {
+          return [selected];
+        }
+        return selected;
+      }
+      if (selectGroupType && selectGroupName && geography.id in config.selectGroups[selectGroupType] && selectGroupName in config.selectGroups[selectGroupType][geography.id]) {
+        return config.selectGroups[selectGroupType][geography.id][selectGroupName];
+      }
+      return [];
+    },
+    selectGroupIds: ({ route: { query: { selectGroupType = null, selectGroupName = null } }, geography = { id: null } }) => ((selectGroupType && selectGroupName && geography.id in config.selectGroups[selectGroupType] && selectGroupName in config.selectGroups[selectGroupType][geography.id]) ? config.selectGroups[selectGroupType][geography.id][selectGroupName] : []),
+    selectGroupName: ({ route: { query: { selectGroupName = null, selectGroupType = null } }, geography }) => {
+      if (selectGroupType && selectGroupName && geography.id in config.selectGroups[selectGroupType] && selectGroupName in config.selectGroups[selectGroupType][geography.id]) return selectGroupName;
+      return null;
+    },
+    selectGroupType: ({ route: { query: { selectGroupName = null, selectGroupType = null } }, geography }) => {
+      if (selectGroupType && selectGroupName && geography.id in config.selectGroups[selectGroupType] && selectGroupName in config.selectGroups[selectGroupType][geography.id]) return selectGroupType;
+      return null;
+    },
+    legendTitle: ({
+      customLegendTitle = false, metric, language = 'en', year,
+    }) => {
+      if (customLegendTitle) return customLegendTitle;
+      if (metric.config) return `${language === 'es' ? metric.config.title_es : metric.config.title}, ${year}`;
       return '';
     },
     metadataImportant: (state) => (state.metadata ? state.metadata.substring(getSubstringIndex(state.metadata, '</h3>', 1) + 5, getSubstringIndex(state.metadata, '<h3', 2)) : ''),
@@ -55,12 +77,9 @@ export default new Vuex.Store({
     metadataAbout: (state) => (state.metadata ? state.metadata.substring(getSubstringIndex(state.metadata, '</h3>', 2) + 5, getSubstringIndex(state.metadata, '<h3', 3)) : ''),
   },
   mutations: {
-    setSelected(state, geographyIds) {
-      state.selected = [].concat(geographyIds); // Needed to ensure geographyIds is an array.
-    },
     setGeographyId(state, newGeographyId) {
       if (state.geography.id) {
-        state.selected = [];
+        // state.selected = []; TODO: Rewrite this.
         state.highlight = [];
       }
 
@@ -127,10 +146,10 @@ export default new Vuex.Store({
 
       // drop invalid selected values
       // TODO: is this even needed?
-      const selected = state.selected.filter(id => nKeys.indexOf(id) > 0);
-      if (selected.length !== state.selected.length) {
-        commit('setSelected', selected);
-      }
+      // const selected = state.selected.filter(id => nKeys.indexOf(id) > 0);
+      // if (selected.length !== state.selected.length) {
+      //   commit('setSelected', selected);
+      // }
 
       // Calculate average values.
       const metricConfig = config.dataConfig[`m${state.metricId}`];
@@ -214,13 +233,6 @@ export default new Vuex.Store({
       if (geographyChanged) {
         return dispatch('loadMetricData');
       }
-    },
-
-    // Set a random metric.
-    async randomMetric({ dispatch }) {
-      const metricIds = Object.keys(config.dataConfig);
-      const metric = config.dataConfig[metricIds[Math.floor(Math.random() * (metricIds.length + 1))]];
-      return dispatch('changeMetric', { newMetricId: metric.metric });
     },
   },
 });

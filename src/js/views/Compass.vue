@@ -1,19 +1,18 @@
 <template>
   <div>
     <compass-nav v-if="!printMode" />
-    <v-content :class="printMode ? 'print' : ''">
+    <v-main :class="printMode ? 'print' : ''">
       <div v-if="!printMode">
         <v-container fluid grid-list-lg>
           <v-layout wrap>
             <v-flex sm12 md8>
               <div v-if="metric.config">
                 <v-card>
-                  <div class="map-container">
-                    <dashboard-map
+                  <div style="min-height: 600px;">
+                    <map-container
                       :mapbox-access-token="config.privateConfig.mapboxAccessToken"
                       :map-config="config.mapConfig"
                     />
-                    <dashboard-legend />
                   </div>
                   <v-spacer />
                   <div class="flex-container">
@@ -166,13 +165,13 @@
       <div v-else>
         <print-mode :config="config" />
       </div>
-    </v-content>
+    </v-main>
     <dashboard-footer />
   </div>
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapGetters, mapState } from "vuex";
 
 import config from "../modules/config";
 import { calcValue } from "../modules/metric_calculations";
@@ -181,14 +180,13 @@ import DashboardFooter from "../components/dashboard-footer.vue";
 import DataTable from "../components/datatable.vue";
 import Feedback from "../components/feedback.vue";
 import GeographySwitcher from "../components/geography-switcher.vue";
-import DashboardLegend from "../components/dashboard-legend.vue";
 import Metadata from "../components/metadata.vue";
 import PrintMode from "../components/print-mode.vue";
 import Social from "../components/social.vue";
 import UndermapButtons from "../components/undermap-buttons.vue";
-import CompassNav from "../components/CompassNav";
+import CompassNav from "../components/CompassNav.vue";
 
-const DashboardMap = () => import(/* webpackChunkName: "dashboard-map" */ "../components/dashboard-map.vue");
+const MapContainer = () => import(/* webpackChunkName: "compass-map" */ "../components/map/MapContainer.vue");
 const DistributionChart = () => import(/* webpackChunkName: "distribution-chart" */ "../components/distribution-chart.vue");
 const TrendChart = () => import(/* webpackChunkName: "trend-chart" */ "../components/trend-chart.vue");
 const YearSlider = () => import(/* webpackChunkName: "year-slider" */ "../components/year-slider.vue");
@@ -202,8 +200,7 @@ export default {
     DistributionChart,
     Feedback,
     GeographySwitcher,
-    DashboardLegend,
-    DashboardMap,
+    MapContainer,
     Metadata,
     PrintMode,
     Social,
@@ -214,19 +211,20 @@ export default {
   data: () => ({
     config,
   }),
-  computed: Object.assign(
-    mapState({
+  computed: {
+    ...mapGetters(['selected']),
+    ...mapState({
       printMode: "printMode",
       metric: "metric",
       chartValues(state) {
-        if (!state.selected.length || state.metric.years.length <= 1) return {};
+        if (!this.selected.length || state.metric.years.length <= 1) return {};
         const metricValues = {};
         for (let i = 0; i < state.metric.years.length; i += 1) {
           metricValues[state.metric.years[i]] = calcValue(
             state.metric.data,
             state.metric.config.type,
             state.metric.years[i],
-            state.selected,
+            this.selected,
           );
         }
         return metricValues;
@@ -240,7 +238,7 @@ export default {
         return averageValues;
       },
     }),
-  ),
+  },
   watch: {
     printMode() {
       this.setPrintClass();
@@ -280,11 +278,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.map-container {
-  min-height: 600px;
-  position: relative;
-}
-
 .landing-page {
   padding: 15px 25px;
 

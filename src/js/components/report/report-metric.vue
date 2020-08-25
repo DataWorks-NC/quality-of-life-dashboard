@@ -85,7 +85,7 @@ export default {
     years() {
       const metricYears = this.metricValues ? Object.keys(this.metricValues) : [];
       const countyYears = this.countyAverages ? Object.keys(this.countyAverages) : [];
-      return Array.from(new Set(metricYears.concat(countyYears)));
+      return Array.from(new Set(metricYears.concat(countyYears))).sort();
     },
   },
   methods: {

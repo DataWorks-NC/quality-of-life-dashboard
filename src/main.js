@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueAnalytics from 'vue-analytics';
 
+import { sync } from 'vuex-router-sync';
 import VueScrollTo from 'vue-scrollto';
 import VueObserveVisibility from 'vue-observe-visibility';
 import store from './js/vuex-store';
@@ -16,97 +17,18 @@ Vue.config.productionTip = false;
 Vue.use(VueScrollTo);
 Vue.use(VueObserveVisibility);
 
-// Router navigation guard:
-// Handles locale switching and redirecting from root URL to language-specific
-// homepage. Also handles setting title & metadata.
-router.beforeEach((to, from, next) => {
-  // Language handling.
-  let language = to.params.locale;
-
-  if (!language) {
-    language = i18n.locale;
-  } else {
-    i18n.locale = language;
+// Sync store & router with vuex-router-sync.
+sync(store, router);
+store.watch((state, getters) => {
+  if (state.route.name === 'report') {
+    return getters.selected;
   }
-  to.params.locale = language;
-
-  store.dispatch('setLanguage', language).then(() => {
-    // Set title
-    let title = i18n.t('strings.DurhamNeighborhoodCompass');
-    let description = i18n.t('strings.metaDescriptionHome');
-
-    if (to.name === 'report') {
-      const reportTitle = store.getters.reportTitle;
-      if (reportTitle !== '') {
-        title = `${title} - ${reportTitle}`;
-        description = i18n.t('strings.metaDescriptionReport', { area: reportTitle });
-      }
-    } else {
-      const legendTitle = store.getters.legendTitle;
-      if (legendTitle !== '') {
-        const metricTitle = i18n.locale === 'es' ? store.state.metric.config.title_es : store.state.metric.config.title;
-        const geographyName = store.state.geography.id && store.state.geography.id.length > 0 ? i18n.t(`geographies.${store.state.geography.id}.name`) : '';
-
-        description = `${i18n.t('strings.metaDescriptionMetric', { metric: metricTitle.toLocaleLowerCase(i18n.locale), geography: geographyName.toLocaleLowerCase(i18n.locale) })} ${store.getters.metadataImportantForHeader}`;
-        title = `${title} - ${legendTitle}${geographyName !== '' ? ` (${geographyName})` : ''}`;
-        if (store.state.printMode === true) {
-          title = `${title} - ${i18n.t('undermapButtons.printEmbed')}`;
-          description = `${i18n.t('strings.metaDescriptionPrint', { metric: metricTitle.toLocaleLowerCase(i18n.locale), geography: geographyName.toLocaleLowerCase(i18n.locale) })} ${store.getters.metadataImportantForHeader}`;
-        }
-      }
-    }
-
-    document.title = title;
-
-    // Find old metatags.
-    const metaTags = Array.from(document.querySelectorAll('[data-vue-router-controlled]'));
-
-    const newUrl = router.resolve(to).href;
-
-    const metaTagDefinitions = {
-      linkCanonical: {
-        href: `${process.env.VUE_APP_BASE_URL}${newUrl}`,
-      },
-      linkEn: {
-        href: `${process.env.VUE_APP_BASE_URL}${
-          router.resolve({ ...to, params: { ...to.params, locale: 'en' } }).href}`,
-      },
-      linkEs: {
-        href: `${process.env.VUE_APP_BASE_URL}${
-          router.resolve({ ...to, params: { ...to.params, locale: 'es' } }).href}`,
-      },
-      description: {
-        content:
-        description,
-      },
-      ogTitle: {
-        content:
-        title,
-      },
-      ogUrl: {
-        content: `${process.env.VUE_APP_BASE_URL}${newUrl}`,
-      },
-      ogDescription: {
-        content:
-        description,
-      },
-      ogType: {
-        content: to.name === 'report' ? 'article' : 'website',
-      },
-    };
-
-    metaTags.forEach((tag) => {
-      const tagDef = metaTagDefinitions[tag.getAttribute('data-vue-router-controlled')];
-      if (!tagDef) {
-        return;
-      }
-      Object.keys(tagDef).forEach((key) => {
-        tag.setAttribute(key, tagDef[key]);
-      });
-    });
-
-    next();
-  });
+  return null;
+},
+() => {
+  if (store.getters.selected.length > 0) {
+    return store.dispatch('loadData');
+  }
 });
 
 /* eslint-disable no-new */
@@ -119,6 +41,113 @@ const app = new Vue({
   vuetify,
   data: { loading: true },
   render: h => h(App),
+});
+
+// Router navigation guard:
+// Handles locale switching and redirecting from root URL to language-specific
+// homepage. Also handles setting title & metadata.
+router.beforeEach((to, from, next) => {
+  if (to.name !== from.name) {
+    app.loading = true;
+  }
+  // Language handling.
+  let language = to.params.locale;
+
+  if (!language) {
+    language = i18n.locale;
+  } else {
+    i18n.locale = language;
+  }
+  to.params.locale = language;
+
+  store.dispatch('setLanguage', language).then(() => {
+    if (to.path !== from.path) {
+      // Set title
+      let title = i18n.t('strings.DurhamNeighborhoodCompass');
+      let description = i18n.t('strings.metaDescriptionHome');
+
+      if (to.name === 'report') {
+        const reportTitle = store.getters.reportTitle;
+        if (reportTitle !== '') {
+          title = `${title} - ${reportTitle}`;
+          description = i18n.t('strings.metaDescriptionReport', { area: reportTitle });
+        }
+      } else if (to.name === 'compass') {
+        const legendTitle = store.getters.legendTitle;
+        if (legendTitle !== '') {
+          const metricTitle = i18n.locale === 'es'
+            ? store.state.metric.config.title_es
+            : store.state.metric.config.title;
+          const geographyName = store.state.geography.id && store.state.geography.id.length > 0
+            ? i18n.t(`geographies.${store.state.geography.id}.name`)
+            : '';
+
+          description = `${i18n.t('strings.metaDescriptionMetric', {
+            metric: metricTitle.toLocaleLowerCase(i18n.locale),
+            geography: geographyName.toLocaleLowerCase(i18n.locale),
+          })} ${store.getters.metadataImportantForHeader}`;
+          title = `${title} - ${legendTitle}${geographyName !== '' ? ` (${geographyName})` : ''}`;
+          if (store.state.printMode === true) {
+            title = `${title} - ${i18n.t('undermapButtons.printEmbed')}`;
+            description = `${i18n.t('strings.metaDescriptionPrint', {
+              metric: metricTitle.toLocaleLowerCase(i18n.locale),
+              geography: geographyName.toLocaleLowerCase(i18n.locale),
+            })} ${store.getters.metadataImportantForHeader}`;
+          }
+        }
+      }
+
+      document.title = title;
+
+      // Find old metatags.
+      const metaTags = Array.from(document.querySelectorAll('[data-vue-router-controlled]'));
+
+      const newUrl = router.resolve(to).href;
+
+      const metaTagDefinitions = {
+        linkCanonical: {
+          href: `${process.env.VUE_APP_BASE_URL}${newUrl}`,
+        },
+        linkEn: {
+          href: `${process.env.VUE_APP_BASE_URL}${
+            router.resolve({ ...to, params: { ...to.params, locale: 'en' } }).href}`,
+        },
+        linkEs: {
+          href: `${process.env.VUE_APP_BASE_URL}${
+            router.resolve({ ...to, params: { ...to.params, locale: 'es' } }).href}`,
+        },
+        description: {
+          content:
+          description,
+        },
+        ogTitle: {
+          content:
+          title,
+        },
+        ogUrl: {
+          content: `${process.env.VUE_APP_BASE_URL}${newUrl}`,
+        },
+        ogDescription: {
+          content:
+          description,
+        },
+        ogType: {
+          content: to.name === 'report' ? 'article' : 'website',
+        },
+      };
+
+      metaTags.forEach((tag) => {
+        const tagDef = metaTagDefinitions[tag.getAttribute('data-vue-router-controlled')];
+        if (!tagDef) {
+          return;
+        }
+        Object.keys(tagDef).forEach((key) => {
+          tag.setAttribute(key, tagDef[key]);
+        });
+      });
+    }
+    next();
+  });
 });
 
 Vue.filter('allcaps', (value) => {

@@ -39,7 +39,7 @@
 }
 
 .theme--dark {
-  .v-list-item--link:before {
+  .v-list-item--link:not(.v-list-group__header)::before {
     background-color: var(--v-accent-base);
   }
 
@@ -50,7 +50,7 @@
 
   .v-list-group__items {
 
-    .v-list-item--active {
+    .v-list-item--active:not(.v-list-group__header) {
       background-color: var(--v-accent-base);
     }
 
@@ -143,4 +143,10 @@
 input,
 textarea {
   outline: none;
+}
+
+
+// Fix for Vuetify bug where when scrolling menu vertically the background scrolls up and out of view.
+.v-menu__content.menuable__content__active {
+  background-color: white;
 }

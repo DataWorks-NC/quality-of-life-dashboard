@@ -50,6 +50,13 @@
    "Infrastructure and Amenities": "Infraestructura y comodidades",
    "Safety": "Seguridad",
    "Summary": "Resumen"
+  },
+  "metricSubCategories": {
+   "Chronic Kidney Disease": "Enfermedad Renal Crónica",
+   "Diabetes": "Diabetes",
+   "Heart Attack": "Ataque Cardíaco",
+   "Income": "Ingreso",
+   "Stroke": "Accidente Cerebrovascular"
   }
  },
  "dashboard": {
@@ -134,7 +141,8 @@
   "School Assignment Zone": "Zona Escolar Asignada",
   "Ward 1": "Distrito 1",
   "Ward 2": "Distrito 2",
-  "Ward 3": "Distrito 3"
+  "Ward 3": "Distrito 3",
+  "Neighborhood": "Vecindario"
  },
  "sidebar": {
   "download": "Descargue los datos",

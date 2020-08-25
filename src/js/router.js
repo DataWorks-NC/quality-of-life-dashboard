@@ -80,8 +80,6 @@ const router = new Router({
 // Validate params.
 // TODO: Make these dynamically pull valid values from config.
 router.beforeEach((to, from, next) => {
-  // eslint-disable-next-line no-undef
-  app.loading = true; // will be defined in main.js.
   if (to.params.locale && ['en', 'es'].indexOf(to.params.locale) === -1) {
     next({ ...to, params: { ...to.params, locale: 'en' } });
   } else if (to.params.geographyLevel && ['blockgroup', 'tract'].indexOf(to.params.geographyLevel) === -1) {
@@ -97,20 +95,6 @@ router.beforeEach((to, from, next) => {
 router.beforeEach((to, from, next) => {
   if (to.name === 'report' && to.params.geographyLevel !== store.state.geography.id) {
     store.commit('setGeographyId', to.params.geographyLevel);
-  }
-
-  let selectedChanged = false;
-  // Check selected tracts/blockgroups against what's in query.
-  if ('selected' in to.query) {
-    const newSelected = [].concat(to.query.selected);
-
-    // Check for set equality between newSelected and existing selected before committing change.
-    if (!newSelected.reduce((prevVal, id) => prevVal && (id in store.state.selected), true) || !store.state.selected.reduce((prevVal, id) => prevVal && (id in store.state.selected), true)) {
-      selectedChanged = true;
-      store.commit('setSelected', newSelected);
-    }
-  } else if (store.state.selected && store.state.selected.length > 0) {
-    store.commit('setSelected', []);
   }
 
   if ('mode' in to.query && to.query.mode === 'print') {
@@ -151,7 +135,7 @@ router.beforeEach((to, from, next) => {
       store.commit('showAllMetrics');
     }
 
-    if (!Object.keys(store.state.report.metricValues).length || selectedChanged) {
+    if (!Object.keys(store.state.report.metricValues).length) {
       return store.dispatch('loadData').then(() => {
         next();
       });
@@ -167,11 +151,6 @@ router.beforeEach((to, from, next) => {
     store.commit('setLastCompassRoute', from);
   }
 
-  if ('reportTitle' in to.query) {
-    store.commit('setReportTitle', to.query.reportTitle);
-  } else if (store.state.report.reportTitle) {
-    store.commit('setReportTitle', false);
-  }
   if ('legendTitle' in to.query) {
     store.commit('setLegendTitle', to.query.legendTitle);
   } else if (store.state.customLegendTitle !== '') {
