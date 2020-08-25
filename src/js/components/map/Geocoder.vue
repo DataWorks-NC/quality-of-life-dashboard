@@ -192,6 +192,14 @@ export default {
   color: rgba(0, 0, 0, 0.8);
 }
 
+.mapboxgl-popup {
+  max-width: 400px;
+}
+
+.mapboxgl-popup-content {
+  padding: 10px 10px 5px;
+}
+
 .address_popup {
   color: white;
 
@@ -206,5 +214,9 @@ export default {
     font-size: 12px;
     line-height: 12px;
   }
+}
+
+.hover_popup {
+  z-index: 1000;
 }
 </style>

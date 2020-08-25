@@ -2,8 +2,8 @@
   <div class="map-container">
     <div class="" style="position: relative; width: 100%; height: 100%">
       <div id="map" />
-      <selected-layers v-if="mapLoaded && selected.length > 0" :color-map="colorMap" :map="map" :map-config="mapConfig" @layers-loaded="rescale" />
-      <select-group-outline v-if="mapLoaded && selectGroupName" :map="map" :map-config="mapConfig" :select-group-name="selectGroupName" @layers-loaded="rescale" />
+      <selected-layers v-if="mapLoaded && selected.length > 0" :color-map="colorMap" :map="map" @layers-loaded="rescale" />
+      <select-group-outline v-if="mapLoaded && selectGroupName" :map="map" :select-group-name="selectGroupName" @layers-loaded="rescale" />
       <geocoder v-if="mapLoaded && !printMode" :map="map" :mapbox-access-token="mapboxAccessToken" />
     </div>
     <dashboard-legend />
@@ -21,11 +21,11 @@ import config from '../../modules/config';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 import DashboardLegend from "../dashboard-legend.vue";
-import SelectedLayers from './SelectedLayers.vue';
-import SelectGroupOutline from './SelectGroupOutline.vue';
-import Geocoder from './Geocoder.vue';
-
 import debugLogMixin from '../mixins/debugLogMixin';
+
+const Geocoder = () => import(/* webpackChunkName: "geocoder" */ './Geocoder.vue');
+const SelectGroupOutline = () => import(/* webpackChunkName: "select-group-outline" */ './SelectGroupOutline.vue');
+const SelectedLayers = () => import(/* webpackChunkName: "selected-layers" */ './SelectedLayers.vue');
 
 export default {
   // You would think to just name this component 'Map', but <map> is in the HTML5 spec!
@@ -196,7 +196,7 @@ export default {
           'fill-color': this.colorMap,
           'fill-outline-color': 'rgba(0,0,0,1)',
         },
-      }, this.mapConfig.neighborhoodsBefore);
+      }, 'choropleth_placeholder');
     },
     initMapEvents() {
       const { map } = this;
@@ -329,7 +329,9 @@ export default {
         }
       }
       const bounds = this.getBoundingBox(zoomToFeatures);
-      this.map.fitBounds(bounds, { padding: 150 });
+      if (bounds) {
+        this.map.fitBounds(bounds, { padding: 150 });
+      }
       return bounds;
     },
     // TODO: Move this to SelectGroupOUtline component and communicate via an event.
@@ -350,11 +352,17 @@ export default {
         return;
       }
       const bounds = this.getBoundingBox(zoomToFeatures);
-      this.map.fitBounds(bounds, { padding: 150 });
+      if (bounds) {
+        this.map.fitBounds(bounds, { padding: 150 });
+      }
 
       return bounds;
     },
     getBoundingBox(features) {
+      this.log(`Get bounding box`);
+      if (!features || features.length === 0) {
+        return false;
+      }
       const longitudes = features.reduce((i, f) => (i.concat(f.geometry.coordinates[0].map(c => c[0]))), []);
       const latitudes = features.reduce((i, f) => (i.concat(f.geometry.coordinates[0].map(c => c[1]))), []);
       return [[Math.min(...longitudes), Math.min(...latitudes)], [Math.max(...longitudes), Math.max(...latitudes)]];
@@ -394,14 +402,6 @@ export default {
     height: 600px;
 }
 
-.mapboxgl-popup {
-    max-width: 400px;
-}
-
-.mapboxgl-popup-content {
-    padding: 10px 10px 5px;
-}
-
 #btnPitch {
     position: absolute;
     bottom: 4px;
@@ -412,9 +412,5 @@ export default {
     padding: 4px 7px;
     line-height: inherit;
     background-color: rgba(158,158,158, 0.40);
-}
-
-.hover_popup {
-  z-index: 1000;
 }
 </style>

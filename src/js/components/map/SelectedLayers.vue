@@ -20,10 +20,6 @@ export default {
       type: Array,
       default: () => [],
     },
-    mapConfig: {
-      type: Object,
-      required: true,
-    },
   },
   data: () => ({
     layersLoaded: {},
@@ -96,7 +92,7 @@ export default {
               'line-width': 8,
               'line-color': '#D996FF',
             },
-          }, this.mapConfig.neighborhoodsBefore);
+          }, 'selected_outlines_placeholder');
         }
 
         if (!map.getLayer(`${this.geography.id}-selected-outline`)) {
@@ -113,7 +109,7 @@ export default {
               'line-color': '#68089e',
             },
             source: this.geography.id,
-          }, this.mapConfig.threeDBefore);
+          }, 'selected_outlines_placeholder');
         }
 
         if (!map.getLayer(`${this.geography.id}-selected-fill`)) {
@@ -127,7 +123,7 @@ export default {
               'fill-color': this.colorMap,
             },
             source: this.geography.id,
-          }, this.mapConfig.neighborhoodsBefore);
+          }, 'selected_outlines_placeholder');
         }
 
         if (!map.getLayer(this.labelLayer())) {

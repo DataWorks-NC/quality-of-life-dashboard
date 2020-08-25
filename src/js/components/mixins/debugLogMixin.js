@@ -10,8 +10,13 @@ export default {
   methods: {
     log(msg) {
       if (this.debug) {
-        // eslint-disable-next-line no-console
-        console.log(`${this.$options.name} - ${msg}`);
+        if (typeof msg === 'string') {
+          // eslint-disable-next-line no-console
+          console.log(`${this.$options.name} - ${msg}`);
+        } else {
+          // eslint-disable-next-line no-console
+          console.log(msg);
+        }
       }
     },
   },

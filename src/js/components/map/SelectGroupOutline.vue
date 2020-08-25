@@ -14,10 +14,6 @@ export default {
       default: () => {
       },
     },
-    mapConfig: {
-      type: Object,
-      required: true,
-    },
     selectGroupName: {
       type: String,
       default: null,
@@ -34,26 +30,6 @@ export default {
       const BASE_LABEL_SIZE = 12;
 
       return {
-        selectGroupOutline: {
-          id: 'selectGroupOutline',
-          type: 'line',
-          source: 'selectGroup',
-          paint: {
-            'line-color': '#fff',
-            'line-width': 2,
-          },
-          layout: {
-            'line-join': 'round',
-            'line-cap': 'round',
-          },
-          filter: this.selectGroupFilter,
-        },
-        selectGroupFill: {
-          id: 'selectGroupFill',
-          type: 'fill',
-          source: 'selectGroup',
-          filter: this.selectGroupFilter,
-        },
         selectGroupLabel: {
           id: 'selectGroupLabel',
           type: 'symbol',
@@ -81,6 +57,26 @@ export default {
             'text-halo-color': '#fff',
             'text-halo-width': ['interpolate', ['linear'], ['zoom'], 9, 1, 13, 2],
           },
+          filter: this.selectGroupFilter,
+        },
+        selectGroupOutline: {
+          id: 'selectGroupOutline',
+          type: 'line',
+          source: 'selectGroup',
+          paint: {
+            'line-color': '#fff',
+            'line-width': 2,
+          },
+          layout: {
+            'line-join': 'round',
+            'line-cap': 'round',
+          },
+          filter: this.selectGroupFilter,
+        },
+        selectGroupFill: {
+          id: 'selectGroupFill',
+          type: 'fill',
+          source: 'selectGroup',
           filter: this.selectGroupFilter,
         },
       };
@@ -129,7 +125,11 @@ export default {
 
       this.layerNames.forEach(name => {
         if (!map.getLayer(name)) {
-          map.addLayer(this.layers[name]);
+          if (name === 'selectGroupLabel') {
+            map.addLayer(this.layers[name]);
+          } else {
+            map.addLayer(this.layers[name], 'neighborhood_outline_placeholder');
+          }
 
           // Need to handle crosshatch fill separately.
           if (name === 'selectGroupFill') {

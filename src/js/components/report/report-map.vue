@@ -165,7 +165,7 @@ export default {
             'fill-extrusion-color': '#b2f3ed',
           },
           filter: selectedFilter,
-        }, 'waterway_river');
+        }, 'choropleth_placeholder');
 
         // Workaround to async issues with map.addLayer vs. map.queryRenderedFeatures
         // @see https://github.com/mapbox/mapbox-gl-js/issues/4222#issuecomment-279446075
