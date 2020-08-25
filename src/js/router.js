@@ -136,7 +136,6 @@ router.beforeEach((to, from, next) => {
     }
 
     if (!Object.keys(store.state.report.metricValues).length) {
-      // TODO: Call this when selection changes.
       return store.dispatch('loadData').then(() => {
         next();
       });

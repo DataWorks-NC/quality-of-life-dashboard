@@ -19,6 +19,17 @@ Vue.use(VueObserveVisibility);
 
 // Sync store & router with vuex-router-sync.
 sync(store, router);
+store.watch((state, getters) => {
+  if (state.route.name === 'report') {
+    return getters.selected;
+  }
+  return null;
+},
+() => {
+  if (store.getters.selected.length > 0) {
+    return store.dispatch('loadData');
+  }
+});
 
 /* eslint-disable no-new */
 /* eslint-disable no-unused-vars */

@@ -105,11 +105,9 @@ export default {
     async loadAreaData({ commit, getters, rootState }) {
       if (!getters.selected.length) { return; }
 
-      // TODO: Only reload area data when necessary.
-      const selected = getters.selected;
       // Load array of JSON file data for each metric.
       // eslint-disable-next-line consistent-return
-      return Promise.all(selected.map(id => fetchResponseJSON(getJSONFilename(rootState.geography.id, id)))).then((areaData) => {
+      return Promise.all(getters.selected.map(id => fetchResponseJSON(getJSONFilename(rootState.geography.id, id)))).then((areaData) => {
         // Only examine metrics for which we have proper config. First key in the datafile format is geography_name, so skip that one too.
         const metricsToLoad = Object.keys(areaData[0]).filter(key => key !== 'geography_name' && (`m${key}` in dataConfig));
 
