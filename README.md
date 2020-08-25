@@ -1,4 +1,4 @@
-# Durham Neightorhood Compass
+# Durham Neighborhood Compass
 
 A dashboard for community data and health, maintained by [DataWorks NC](https://www.dataworks-nc.org) and [Research Action Design](https://rad.cat). Live at https://compass.durhamnc.gov
 
