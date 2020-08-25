@@ -98,7 +98,7 @@
     },
     {
       "path": "./dist/css/chunk-vendors.*.css",
-      "maxSize": "30 kB"
+      "maxSize": "32 kB"
     },
     {
       "path": "./dist/css/about~compass~report.*.css",
@@ -106,7 +106,7 @@
     },
     {
       "path": "./dist/css/!(app|chunk-vendors|about~compass~report).*.css",
-      "maxSize": "6.5 kB"
+      "maxSize": "4.5 kB"
     },
     {
       "path": "./dist/js/compass-map~report-map.*.js",
