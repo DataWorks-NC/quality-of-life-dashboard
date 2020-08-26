@@ -44,8 +44,10 @@ const app = new Vue({
     // Preload map resources so that they live on even between switching to Report and back.
     // @see https://github.com/mapbox/mapbox-gl-js/pull/9391
     import(/* webpackChunkName: "mapboxgl" */ 'mapbox-gl').then((mapboxgl) => {
-      this.mapboxgl = mapboxgl;
       mapboxgl.prewarm();
+      import(/* webpackChunkName: "mapboxgl" */ 'mapbox-gl/dist/mapbox-gl.css').then(() => {
+        this.mapboxgl = mapboxgl;
+      });
     });
   },
   render: h => h(App),

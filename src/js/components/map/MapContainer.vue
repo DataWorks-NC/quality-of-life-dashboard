@@ -16,7 +16,6 @@ import { mapGetters, mapState } from 'vuex';
 import { prettyNumber } from '../../modules/number_format';
 import FullExtent from '../../modules/map-fullextent';
 import config from '../../modules/config';
-import 'mapbox-gl/dist/mapbox-gl.css';
 
 import DashboardLegend from "../dashboard-legend.vue";
 import debugLogMixin from '../mixins/debugLogMixin';
