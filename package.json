@@ -109,7 +109,7 @@
       "maxSize": "4.5 kB"
     },
     {
-      "path": "./dist/js/compass-map~report-map.*.js",
+      "path": "./dist/js/mapboxgl.*.js",
       "maxSize": "192 kB"
     },
     {
@@ -121,7 +121,7 @@
       "maxSize": "125 kB"
     },
     {
-      "path": "./dist/js/!(compass-map~report-map|chunk-vendors|report-map~select-group-outline).*.js",
+      "path": "./dist/js/!(mapboxgl|chunk-vendors|report-map~select-group-outline).*.js",
       "maxSize": "30 kB"
     }
   ],
