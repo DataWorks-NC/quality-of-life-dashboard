@@ -110,14 +110,18 @@
     },
     {
       "path": "./dist/js/compass-map~report-map.*.js",
-      "maxSize": "190 kB"
+      "maxSize": "192 kB"
+    },
+    {
+      "path": "./dist/js/report-map~select-group-outline.*.js",
+      "maxSize": "215 kB"
     },
     {
       "path": "./dist/js/chunk-vendors.*.js",
       "maxSize": "125 kB"
     },
     {
-      "path": "./dist/js/!(compass-map~report-map|chunk-vendors).*.js",
+      "path": "./dist/js/!(compass-map~report-map|chunk-vendors|report-map~select-group-outline).*.js",
       "maxSize": "30 kB"
     }
   ],

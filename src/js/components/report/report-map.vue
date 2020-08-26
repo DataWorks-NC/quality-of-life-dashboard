@@ -44,13 +44,11 @@ export default {
       const { mapConfig } = this;
       const mapOptions = {
         container: 'map',
+        // eslint-disable-next-line global-require
+        style: require('@/assets/osm-liberty.json'),
+        ...mapConfig,
         interactive: false,
-        style: mapConfig.style,
         attributionControl: false,
-        zoom: mapConfig.zoom,
-        center: mapConfig.center,
-        maxBounds: mapConfig.maxBounds,
-        minZoom: mapConfig.minZoom,
       };
 
       const map = new mapboxgl.Map(mapOptions);
@@ -109,7 +107,8 @@ export default {
         if (_this.selectGroupName) {
           map.addSource('selectGroup', {
             type: 'geojson',
-            data: '/data/selectgroups.geojson.json',
+            // eslint-disable-next-line global-require
+            data: require('@/../data/selectgroups.geojson.json'),
           });
 
           map.addLayer({
