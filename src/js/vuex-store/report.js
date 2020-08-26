@@ -2,6 +2,7 @@ import Vue from 'vue';
 import { xor } from 'lodash';
 import { fetchResponseJSON } from '../modules/fetch';
 import config from '../modules/config';
+import i18n from '../i18n';
 
 const { siteConfig, dataConfig } = config;
 
@@ -18,7 +19,7 @@ export default {
   },
   getters: {
     categoryNames: state => state.categoryNamesBase.filter(c => (c in state.metricValues || c in state.countyAverages)),
-    areaNames: (state, getters, rootState) => getters.selected.map(id => (rootState.language === 'es' ? rootState.geography.label_es(id) : rootState.geography.label(id))),
+    areaNames: (state, getters, rootState) => getters.selected.map(id => (getters.language === 'es' ? rootState.geography.label_es(id) : rootState.geography.label(id))),
     // Returns true iff all metrics are visible.
     everythingVisible: state => Object.values(state.metrics).every(m => m.visible),
     visibleCategories: (state, getters) => getters.categoryNames.filter(c => (c in state.metricValues || c in state.countyAverages) && Object.values(state.metrics).some(m => m.category === c && m.visible)),
@@ -35,7 +36,8 @@ export default {
 
     reportTitle: (state, getters, rootState) => {
       if (rootState.route && 'selectGroupName' in rootState.route.query && getters.selectGroupIds === getters.selected) {
-        return `${rootState.route.query.selectGroupName} (${rootState.route.query.selectGroupType})`; // TODO: translate
+        const selectGroupType = i18n.t(`selectGroup.${rootState.route.query.selectGroupType}`);
+        return `${rootState.route.query.selectGroupName} (${selectGroupType})`;
       }
       return getters.areaNames.join(', ');
     },

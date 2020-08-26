@@ -36,10 +36,10 @@ export default new Vuex.Store({
     },
     printMode: false,
     customLegendTitle: '',
-    language: 'en',
     lastCompassRoute: null, // Store the last route used in compass so we can navigate back from report.
   },
   getters: {
+    language: ({ route: { params: { locale = 'en ' } } }) => locale,
     selected: ({ route: { query: { selected = [], selectGroupType = null, selectGroupName = null } }, geography = { id: null } }) => {
       if (selected.length) {
         if (!Array.isArray(selected)) {
@@ -62,10 +62,10 @@ export default new Vuex.Store({
       return null;
     },
     legendTitle: ({
-      customLegendTitle = false, metric, language = 'en', year,
+      customLegendTitle = false, metric, route: { params: { locale = 'en ' } }, year,
     }) => {
       if (customLegendTitle) return customLegendTitle;
-      if (metric.config) return `${language === 'es' ? metric.config.title_es : metric.config.title}, ${year}`;
+      if (metric.config) return `${locale === 'es' ? metric.config.title_es : metric.config.title}, ${year}`;
       return '';
     },
     metadataImportant: (state) => (state.metadata ? state.metadata.substring(getSubstringIndex(state.metadata, '</h3>', 1) + 5, getSubstringIndex(state.metadata, '<h3', 2)) : ''),
@@ -90,9 +90,6 @@ export default new Vuex.Store({
 
         Object.freeze(state.geography);
       }
-    },
-    setLanguage(state, language) {
-      state.language = language;
     },
     setMetricId(state, newMetricId) {
       state.metricId = newMetricId;
@@ -185,18 +182,10 @@ export default new Vuex.Store({
       commit('setYear', years[years.length - 1]);
       commit('setBreaks', jenksBreaks(metricJSON.map, years, nKeys, 5));
     },
-    async setLanguage({ commit, dispatch, state }, newLanguage) {
-      if (newLanguage === state.language) {
-        return;
-      }
-      // TODO: Check that language code is valid.
-      commit('setLanguage', newLanguage);
-      return dispatch('loadMetricMetadata');
-    },
     async loadMetricMetadata({ commit, state }) {
       if (state.metricId) {
         const metricMetadata = await fetchResponseHTML(
-          `/data/meta/${state.language}/m${state.metricId}.html`,
+          `/data/meta/${state.route.params.locale}/m${state.metricId}.html`,
         );
         commit('setMetricMetadata', metricMetadata);
       }

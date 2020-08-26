@@ -12,6 +12,7 @@ import vuetify from './plugins/vuetify';
 import App from './js/App.vue';
 
 import './scss/main.scss';
+import { debugLog } from './js/modules/tracking';
 
 Vue.config.productionTip = false;
 Vue.use(VueScrollTo);
@@ -30,6 +31,121 @@ store.watch((state, getters) => {
     return store.dispatch('loadData');
   }
 });
+store.watch((state) => state.route && state.route.params.locale,
+  () => store.dispatch('loadMetricMetadata'));
+
+// Router navigation guard:
+// Handles locale switching and redirecting from root URL to language-specific
+// homepage. Also handles setting title & metadata.
+const beforeEachPage = (to, from = { name: '', path: '' }, next = null) => {
+  debugLog('Router guard: set metadata');
+  debugLog(`${from.path} => ${to.path}`);
+
+  // Language handling.
+  if (!to.params.locale) {
+    if (i18n.locale) {
+      to.params.locale = i18n.locale;
+      if (next) {
+        next(to);
+      }
+    }
+  } else {
+    i18n.locale = to.params.locale;
+  }
+
+  if (to.path !== from.path) {
+    // Set title
+    let title = i18n.t('strings.DurhamNeighborhoodCompass');
+    let description = i18n.t('strings.metaDescriptionHome');
+
+    if (to.name === 'report') {
+      const reportTitle = store.getters.reportTitle;
+      if (reportTitle !== '') {
+        title = `${title} - ${reportTitle}`;
+        description = i18n.t('strings.metaDescriptionReport', { area: reportTitle });
+      }
+    } else if (to.name === 'compass') {
+      const legendTitle = store.getters.legendTitle;
+      if (legendTitle !== '') {
+        const metricTitle = i18n.locale === 'es'
+          ? store.state.metric.config.title_es
+          : store.state.metric.config.title;
+        const geographyName = store.state.geography.id && store.state.geography.id.length > 0
+          ? i18n.t(`geographies.${store.state.geography.id}.name`)
+          : '';
+
+        description = `${i18n.t('strings.metaDescriptionMetric', {
+          metric: metricTitle.toLocaleLowerCase(i18n.locale),
+          geography: geographyName.toLocaleLowerCase(i18n.locale),
+        })} ${store.getters.metadataImportantForHeader}`;
+        title = `${title} - ${legendTitle}${geographyName !== '' ? ` (${geographyName})` : ''}`;
+
+        if (store.state.printMode === true) {
+          title = `${title} - ${i18n.t('undermapButtons.printEmbed')}`;
+          description = `${i18n.t('strings.metaDescriptionPrint', {
+            metric: metricTitle.toLocaleLowerCase(i18n.locale),
+            geography: geographyName.toLocaleLowerCase(i18n.locale),
+          })} ${store.getters.metadataImportantForHeader}`;
+        }
+      }
+    }
+
+    document.title = title;
+
+    // Find old metatags.
+    const metaTags = Array.from(document.querySelectorAll('[data-vue-router-controlled]'));
+
+    const newUrl = router.resolve(to).href;
+
+    const metaTagDefinitions = {
+      linkCanonical: {
+        href: `${process.env.VUE_APP_BASE_URL}${newUrl}`,
+      },
+      linkEn: {
+        href: `${process.env.VUE_APP_BASE_URL}${
+          router.resolve({ ...to, params: { ...to.params, locale: 'en' } }).href}`,
+      },
+      linkEs: {
+        href: `${process.env.VUE_APP_BASE_URL}${
+          router.resolve({ ...to, params: { ...to.params, locale: 'es' } }).href}`,
+      },
+      description: {
+        content:
+        description,
+      },
+      ogTitle: {
+        content:
+        title,
+      },
+      ogUrl: {
+        content: `${process.env.VUE_APP_BASE_URL}${newUrl}`,
+      },
+      ogDescription: {
+        content:
+        description,
+      },
+      ogType: {
+        content: to.name === 'report' ? 'article' : 'website',
+      },
+    };
+
+    metaTags.forEach((tag) => {
+      const tagDef = metaTagDefinitions[tag.getAttribute('data-vue-router-controlled')];
+      if (!tagDef) {
+        return;
+      }
+      Object.keys(tagDef).forEach((key) => {
+        tag.setAttribute(key, tagDef[key]);
+      });
+    });
+  }
+
+  if (next) {
+    next();
+  }
+};
+
+router.beforeEach(beforeEachPage);
 
 /* eslint-disable no-new */
 /* eslint-disable no-unused-vars */
@@ -39,7 +155,7 @@ const app = new Vue({
   router,
   el: '#app',
   vuetify,
-  data: { loading: true, mapboxgl: null, test: 'test' },
+  data: { loading: true, mapboxgl: null },
   beforeCreate() {
     // Preload map resources so that they live on even between switching to Report and back.
     // @see https://github.com/mapbox/mapbox-gl-js/pull/9391
@@ -51,113 +167,6 @@ const app = new Vue({
     });
   },
   render: h => h(App),
-});
-
-// Router navigation guard:
-// Handles locale switching and redirecting from root URL to language-specific
-// homepage. Also handles setting title & metadata.
-router.beforeEach((to, from, next) => {
-  if (to.name !== from.name) {
-    app.loading = true;
-  }
-  // Language handling.
-  let language = to.params.locale;
-
-  if (!language) {
-    language = i18n.locale;
-  } else {
-    i18n.locale = language;
-  }
-  to.params.locale = language;
-
-  store.dispatch('setLanguage', language).then(() => {
-    if (to.path !== from.path) {
-      // Set title
-      let title = i18n.t('strings.DurhamNeighborhoodCompass');
-      let description = i18n.t('strings.metaDescriptionHome');
-
-      if (to.name === 'report') {
-        const reportTitle = store.getters.reportTitle;
-        if (reportTitle !== '') {
-          title = `${title} - ${reportTitle}`;
-          description = i18n.t('strings.metaDescriptionReport', { area: reportTitle });
-        }
-      } else if (to.name === 'compass') {
-        const legendTitle = store.getters.legendTitle;
-        if (legendTitle !== '') {
-          const metricTitle = i18n.locale === 'es'
-            ? store.state.metric.config.title_es
-            : store.state.metric.config.title;
-          const geographyName = store.state.geography.id && store.state.geography.id.length > 0
-            ? i18n.t(`geographies.${store.state.geography.id}.name`)
-            : '';
-
-          description = `${i18n.t('strings.metaDescriptionMetric', {
-            metric: metricTitle.toLocaleLowerCase(i18n.locale),
-            geography: geographyName.toLocaleLowerCase(i18n.locale),
-          })} ${store.getters.metadataImportantForHeader}`;
-          title = `${title} - ${legendTitle}${geographyName !== '' ? ` (${geographyName})` : ''}`;
-          if (store.state.printMode === true) {
-            title = `${title} - ${i18n.t('undermapButtons.printEmbed')}`;
-            description = `${i18n.t('strings.metaDescriptionPrint', {
-              metric: metricTitle.toLocaleLowerCase(i18n.locale),
-              geography: geographyName.toLocaleLowerCase(i18n.locale),
-            })} ${store.getters.metadataImportantForHeader}`;
-          }
-        }
-      }
-
-      document.title = title;
-
-      // Find old metatags.
-      const metaTags = Array.from(document.querySelectorAll('[data-vue-router-controlled]'));
-
-      const newUrl = router.resolve(to).href;
-
-      const metaTagDefinitions = {
-        linkCanonical: {
-          href: `${process.env.VUE_APP_BASE_URL}${newUrl}`,
-        },
-        linkEn: {
-          href: `${process.env.VUE_APP_BASE_URL}${
-            router.resolve({ ...to, params: { ...to.params, locale: 'en' } }).href}`,
-        },
-        linkEs: {
-          href: `${process.env.VUE_APP_BASE_URL}${
-            router.resolve({ ...to, params: { ...to.params, locale: 'es' } }).href}`,
-        },
-        description: {
-          content:
-          description,
-        },
-        ogTitle: {
-          content:
-          title,
-        },
-        ogUrl: {
-          content: `${process.env.VUE_APP_BASE_URL}${newUrl}`,
-        },
-        ogDescription: {
-          content:
-          description,
-        },
-        ogType: {
-          content: to.name === 'report' ? 'article' : 'website',
-        },
-      };
-
-      metaTags.forEach((tag) => {
-        const tagDef = metaTagDefinitions[tag.getAttribute('data-vue-router-controlled')];
-        if (!tagDef) {
-          return;
-        }
-        Object.keys(tagDef).forEach((key) => {
-          tag.setAttribute(key, tagDef[key]);
-        });
-      });
-    }
-    next();
-  });
 });
 
 Vue.filter('allcaps', (value) => {

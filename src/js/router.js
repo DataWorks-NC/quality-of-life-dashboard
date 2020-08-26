@@ -3,6 +3,7 @@ import Router from 'vue-router';
 
 import store from './vuex-store';
 import config from './modules/config';
+import { debugLog } from './modules/tracking';
 
 const About = () => import(/* webpackChunkName: "about" */ './views/About');
 const Compass = () => import(/* webpackChunkName: "compass" */ './views/Compass');
@@ -59,7 +60,7 @@ const routes = [
   {
     name: 'wildcard',
     path: '*',
-    redirect: { name: 'homepage', params: { locale: 'en' } }, // TODO: Customize language here possibly.
+    redirect: { name: 'homepage', params: { locale: 'en' } },
   },
 ];
 
@@ -80,6 +81,8 @@ const router = new Router({
 // Validate params.
 // TODO: Make these dynamically pull valid values from config.
 router.beforeEach((to, from, next) => {
+  debugLog('Route guard: Validate params');
+  debugLog(`${from.path} => ${to.path}`);
   if (to.params.locale && ['en', 'es'].indexOf(to.params.locale) === -1) {
     next({ ...to, params: { ...to.params, locale: 'en' } });
   } else if (to.params.geographyLevel && ['blockgroup', 'tract'].indexOf(to.params.geographyLevel) === -1) {
@@ -93,6 +96,9 @@ router.beforeEach((to, from, next) => {
 
 // Load geography & selected on each route.
 router.beforeEach((to, from, next) => {
+  debugLog('Route guard: Load geography');
+  debugLog(`${from.path} => ${to.path}`);
+
   if (to.name === 'report' && to.params.geographyLevel !== store.state.geography.id) {
     store.commit('setGeographyId', to.params.geographyLevel);
   }
@@ -147,6 +153,9 @@ router.beforeEach((to, from, next) => {
 
 // Check that URL params match current state; in case the geography level has changed.
 router.beforeEach((to, from, next) => {
+  debugLog('Route guard: Set legend title & validate geography level');
+  debugLog(`${from.path} => ${to.path}`);
+
   if (from.name === 'compass' && to.name !== 'compass') {
     store.commit('setLastCompassRoute', from);
   }
@@ -157,17 +166,21 @@ router.beforeEach((to, from, next) => {
     store.commit('setLegendTitle', '');
   }
 
-  const newTo = { ...to };
-  let toChanged = false; // Don't fire next() with a new to object unless something has changed!
   if (store.state.geography.id !== to.params.geographyLevel) {
-    toChanged = true;
-    newTo.params = { ...newTo.params, geographyLevel: store.state.geography.id };
-    newTo.query = { ...newTo.query, selected: [] };
+    next({
+      ...to,
+      params: {
+        ...to.params,
+        geographyLevel: store.state.geography.id,
+      },
+      query: {
+        ...to.query,
+        selected: [],
+      },
+    });
+  } else {
+    next();
   }
-  if (toChanged) {
-    return next(newTo);
-  }
-  next();
 });
 
 export default router;
