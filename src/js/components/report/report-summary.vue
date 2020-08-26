@@ -23,11 +23,11 @@
         <i18n path="reportSummary.about[2]" tag="p" />
       </v-col>
       <v-col cols="12" sm="6">
-        <ReportMap
-          :map-config="mapConfig"
-          :geography-id="geographyId"
-          :selected-geographies="selected"
-          :select-group-name="selectGroupName"
+        <ReportMap v-if="mapboxgl"
+                   :map-config="mapConfig"
+                   :geography-id="geographyId"
+                   :selected-geographies="selected"
+                   :select-group-name="selectGroupName"
         />
       </v-col>
     </v-row>
@@ -104,6 +104,9 @@ export default {
       return this.$t('strings.metricCategories.Summary').toLowerCase();
     },
     ...mapGetters(['selectGroupName']),
+    mapboxgl() {
+      return this.$root.mapboxgl;
+    },
   },
   methods: {
     ...mapMutations(["setActiveCategory"]),

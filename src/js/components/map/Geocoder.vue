@@ -6,7 +6,6 @@
 import { uniqBy } from 'lodash';
 
 import MapboxGlGeocoder from '@mapbox/mapbox-gl-geocoder';
-import mapboxgl from 'mapbox-gl';
 import { mapGetters, mapState } from 'vuex';
 
 import debugLogMixin from '../mixins/debugLogMixin';
@@ -23,10 +22,6 @@ export default {
       default: () => {
       },
     },
-    mapboxAccessToken: {
-      type: String,
-      required: true,
-    },
   },
   data() {
     return {
@@ -38,6 +33,9 @@ export default {
       ['geography'],
     ),
     ...mapGetters(['selected']),
+    mapboxgl() {
+      return this.$root.mapboxgl;
+    },
     selectGroups() {
       const categories = Object.keys(this.selectGroupsData);
       const selectGroups = {};
@@ -72,18 +70,18 @@ export default {
       const map = this.map;
       const _this = this;
 
-      this.addressPopup = new mapboxgl.Popup({
+      this.addressPopup = new this.mapboxgl.Popup({
         closeButton: false,
         anchor: 'bottom-left',
         className: 'address_popup',
       });
 
-      this.addressMarker = new mapboxgl.Marker({
+      this.addressMarker = new this.mapboxgl.Marker({
         color: '#db3360',
       }).setPopup(this.addressPopup);
 
       this.geocoder = new MapboxGlGeocoder({
-        accessToken: this.mapboxAccessToken,
+        accessToken: config.privateConfig.mapboxAccessToken,
         localGeocoder: this.localGeocoder,
         country: 'us',
         bbox: [-79.01, 35.87, -78.7, 36.15],
@@ -92,7 +90,7 @@ export default {
         marker: false,
         flyTo: true,
         types: "address,poi", // see https://docs.mapbox.com/api/search/#data-types for full list.
-        mapboxgl,
+        mapboxgl: this.mapboxgl,
       }).on('result', (e) => {
         _this.addressMarker.remove();
 

@@ -3,9 +3,9 @@
 </template>
 
 <script>
-import mapboxgl from 'mapbox-gl';
-
 import 'mapbox-gl/dist/mapbox-gl.css';
+
+import config from '../../modules/config';
 
 export default {
   name: 'ReportMap',
@@ -27,11 +27,13 @@ export default {
       default: '',
     },
   },
+  computed: {
+    mapboxgl() {
+      return this.$root.mapboxgl;
+    },
+  },
   watch: {
     '$i18n.locale': 'setLabelLanguage',
-  },
-  beforeCreate() {
-    mapboxgl.prewarm();
   },
   mounted() {
     this.map = this.initMap();
@@ -49,9 +51,10 @@ export default {
         ...mapConfig,
         interactive: false,
         attributionControl: false,
+        accessToken: config.privateConfig.mapboxAccessToken,
       };
 
-      const map = new mapboxgl.Map(mapOptions);
+      const map = new this.mapboxgl.Map(mapOptions);
 
       // disable map rotation until 3D support added
       // map.dragRotate.disable();

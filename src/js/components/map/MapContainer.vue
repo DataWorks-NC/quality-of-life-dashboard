@@ -4,7 +4,7 @@
       <div id="map" />
       <selected-layers v-if="mapLoaded && selected.length > 0" :color-map="colorMap" :map="map" @layers-loaded="rescale" />
       <select-group-outline v-if="mapLoaded && selectGroupName" :map="map" :select-group-name="selectGroupName" @layers-loaded="rescale" />
-      <geocoder v-if="mapLoaded && !printMode" :map="map" :mapbox-access-token="mapboxAccessToken" />
+      <geocoder v-if="mapLoaded && !printMode" :map="map" />
     </div>
     <dashboard-legend />
   </div>
@@ -13,11 +13,9 @@
 <script>
 import { mapGetters, mapState } from 'vuex';
 
-import mapboxgl from 'mapbox-gl';
 import { prettyNumber } from '../../modules/number_format';
 import FullExtent from '../../modules/map-fullextent';
 import config from '../../modules/config';
-
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 import DashboardLegend from "../dashboard-legend.vue";
@@ -38,10 +36,6 @@ export default {
   },
   mixins: [debugLogMixin],
   props: {
-    mapboxAccessToken: {
-      type: String,
-      required: true,
-    },
     mapConfig: {
       type: Object,
       required: true,
@@ -62,6 +56,9 @@ export default {
       ['breaks', 'geography', 'highlight', 'metric', 'metricId', 'printMode', 'year'],
     ),
     ...mapGetters(['selected', 'selectGroupName', 'selectGroupType']),
+    mapboxgl() {
+      return this.$root.mapboxgl;
+    },
     metricData() {
       if (this.metric) {
         return this.metric.data;
@@ -122,11 +119,6 @@ export default {
     'highlight': 'updateChoroplethColors',
     'geography.id': 'updateGeography',
   },
-  beforeCreate() {
-    // Preload map resources so that they live on even between switching to Report and back.
-    // @see https://github.com/mapbox/mapbox-gl-js/pull/9391
-    mapboxgl.prewarm();
-  },
   mounted() {
     // Add these at mount time because they should not be reactive properties (don't want
     // component to update each time they change).
@@ -144,14 +136,14 @@ export default {
         // eslint-disable-next-line global-require
         style: require('@/assets/osm-liberty.json'),
         ...this.mapConfig,
+        accessToken: config.privateConfig.mapboxAccessToken,
       };
-      this.map = new mapboxgl.Map(mapOptions);
+      this.map = new this.mapboxgl.Map(mapOptions);
 
       const _this = this;
       const { map } = _this;
-      mapboxgl.accessToken = _this.mapboxAccessToken;
 
-      this.hoverPopup = new mapboxgl.Popup({
+      this.hoverPopup = new this.mapboxgl.Popup({
         closeButton: false,
         closeOnClick: false,
         className: 'hover_popup',
@@ -161,7 +153,7 @@ export default {
       this.zoomToFullExtent();
 
       // add nav control
-      const nav = new mapboxgl.NavigationControl();
+      const nav = new this.mapboxgl.NavigationControl();
       map.addControl(nav, 'top-right');
 
       // add full extent button
@@ -169,7 +161,7 @@ export default {
         mapOptions.center,
         mapOptions.zoom,
       ), 'top-right');
-      map.addControl(new mapboxgl.GeolocateControl(), 'top-right');
+      map.addControl(new this.mapboxgl.GeolocateControl(), 'top-right');
 
       if (this.debug) {
         map.on('zoomend', () => {
@@ -179,6 +171,8 @@ export default {
 
       // Disable map rotation.
       map.touchZoomRotate.disableRotation();
+
+      this.log('Heading into map load');
 
       // after map initiated, grab geography and initiate/style neighborhoods
       map.once('load', () => {

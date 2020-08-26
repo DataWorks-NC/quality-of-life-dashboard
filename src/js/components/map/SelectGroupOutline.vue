@@ -49,7 +49,7 @@ export default {
               BASE_LABEL_SIZE,
               12,
               BASE_LABEL_SIZE * 1.5],
-            'text-allow-overlap': true,
+            'text-allow-overlap': false,
             'text-justify': 'center',
           },
           paint: {
