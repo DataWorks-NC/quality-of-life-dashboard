@@ -8,12 +8,12 @@
             <v-flex sm12 md8>
               <div v-if="metric.config">
                 <v-card>
-                  <div style="min-height: 600px;">
+                  <div v-if="mapboxgl" style="min-height: 600px;">
                     <map-container
-                      :mapbox-access-token="config.privateConfig.mapboxAccessToken"
                       :map-config="config.mapConfig"
                     />
                   </div>
+                  <div v-else style="width: 600px; height:600px;" />
                   <v-spacer />
                   <div class="flex-container">
                     <year-slider v-if="metric.years.length > 1" />
@@ -236,6 +236,9 @@ export default {
           averageValues[years[i]] = state.metric.averageValues[years[i]].value;
         }
         return averageValues;
+      },
+      mapboxgl() {
+        return this.$root.mapboxgl;
       },
     }),
   },
