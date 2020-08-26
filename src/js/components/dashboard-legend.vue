@@ -70,7 +70,6 @@ import { mdiCursorMove } from '@mdi/js';
 import { mapGetters, mapState } from 'vuex';
 import config from '../modules/config';
 
-
 import {
   legendLabelNumber, prettyNumber,
 } from '../modules/number_format';
@@ -203,7 +202,7 @@ export default {
   top: 0;
   right: 0;
   font-size: 0.8em;
-  z-index: 1000;
+  z-index: 1;
 }
 
 .legendposition a {

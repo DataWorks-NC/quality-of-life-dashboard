@@ -3,6 +3,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 import config from '../../modules/config';
 
 export default {
@@ -26,6 +28,7 @@ export default {
     },
   },
   computed: {
+    ...mapGetters(['reportTitle']),
     mapboxgl() {
       return this.$root.mapboxgl;
     },
@@ -181,7 +184,7 @@ export default {
           }
           let visibleFeatures = false;
           let padding = 50;
-          if (map.getLayer('selectGroupOutline')) {
+          if (this.reportTitle && this.reportTitle.startsWith(this.selectGroupName) && map.getLayer('selectGroupOutline')) {
             visibleFeatures = map.queryRenderedFeatures(
               { layers: ['selectGroupOutline'] },
             );
