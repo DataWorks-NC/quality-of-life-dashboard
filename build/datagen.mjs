@@ -36,13 +36,12 @@ directoriesToMake.forEach((name) => {
 // ////////////////////////////////////////////////
 // Copy download, geography, style
 // ////////////////////////////////////////////////
-const selectGroupGeography = {
-  id: 'selectgroups',
-  name: 'Select Groups',
-};
+
+// Note: Selectgroups.geojson.json is processed by Webpack file-loader and hot-loaded.
+// TODO: Long-term, would be ideal to do this for other geojson files as well.
 
 // Either loop through the geography IDs, or just copy geography.geojson.json.
-_.each([...siteConfig.geographies, selectGroupGeography] || ['geography'],
+_.each(siteConfig.geographies || ['geography'],
   (geography) => {
     fs.readFile(`data/${geography.id}.geojson.json`, 'utf8', (err, data) => {
       if (err) {
