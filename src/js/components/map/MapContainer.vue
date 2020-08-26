@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="map-container">
+  <div class="map-container" style="min-height:600px;">
     <div class="" style="position: relative; width: 100%; height: 100%">
       <div id="map" />
       <selected-layers v-if="mapLoaded && selected.length > 0" :color-map="colorMap" :map="map" @layers-loaded="rescale" />
@@ -395,25 +395,12 @@ export default {
 </script>
 
 <style lang="scss">
-.map-container {
-  min-height: 600px;
-  position: relative;
-}
-
 #map {
     width: 100%;
     height: 600px;
 }
 
-#btnPitch {
-    position: absolute;
-    bottom: 4px;
-    left: 4px;
-    border-radius: 4px;
-    height: 30px;
-    min-width: 30px;
-    padding: 4px 7px;
-    line-height: inherit;
-    background-color: rgba(158,158,158, 0.40);
+button.mapboxgl-ctrl-fullextent svg {
+  margin: 3px;
 }
 </style>

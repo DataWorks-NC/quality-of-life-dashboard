@@ -23,7 +23,7 @@ if (process.env.CIRCLE_BRANCH) {
   if (process.env.CIRCLE_BRANCH === 'staging') {
     environmentDefaults.VUE_APP_BASE_URL = 'https://nbhdcompassstage.azurewebsites.us';
   } else if (process.env.CIRCLE_BRANCH === 'develop') {
-    environmentDefaults.VUE_APP_BASE_URL = 'https://nbhdcompasssdev.azurewebsites.us';
+    environmentDefaults.VUE_APP_BASE_URL = 'https://nbhdcompassdev.azurewebsites.us';
   } else {
     environmentDefaults.VUE_APP_BASE_URL = 'https://compass.durhamnc.gov';
   }
