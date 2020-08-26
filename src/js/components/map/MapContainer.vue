@@ -141,6 +141,8 @@ export default {
       const mapOptions = {
         container: 'map',
         attributionControl: false,
+        // eslint-disable-next-line global-require
+        style: require('@/assets/osm-liberty.json'),
         ...this.mapConfig,
       };
       this.map = new mapboxgl.Map(mapOptions);

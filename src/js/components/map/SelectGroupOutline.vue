@@ -121,7 +121,8 @@ export default {
         map.addSource('selectGroup', {
           type: 'geojson',
           promoteId: 'id',
-          data: '/data/selectgroups.geojson.json',
+          // eslint-disable-next-line global-require
+          data: require('@/../data/selectgroups.geojson.json'),
         });
       }
 
