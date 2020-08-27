@@ -59,7 +59,7 @@ router.beforeEach((to, from, next) => {
     let title = i18n.t('strings.DurhamNeighborhoodCompass');
     let description = i18n.t('strings.metaDescriptionHome');
 
-    if (to.name === 'report') {
+    if (to.name === 'report' && to.query) {
       const reportTitle = store.getters.reportTitle;
       if (reportTitle !== '') {
         title = `${reportTitle} - ${title}`;
@@ -95,19 +95,27 @@ router.beforeEach((to, from, next) => {
     // Find old metatags.
     const metaTags = Array.from(document.querySelectorAll('[data-vue-router-controlled]'));
 
-    const newUrl = router.resolve(to).href;
+    let enUrl = '';
+    let esUrl = '';
+    if (to.locale === 'en') {
+      enUrl = to.href;
+      esUrl = router.resolve({ ...to, params: { ...to.params, locale: 'es' } }).href;
+    } else {
+      enUrl = router.resolve({ ...to, params: { ...to.params, locale: 'en' } }).href;
+      esUrl = to.href;
+    }
 
     const metaTagDefinitions = {
       linkCanonical: {
-        href: `${process.env.VUE_APP_BASE_URL}${newUrl}`,
+        href: `${process.env.VUE_APP_BASE_URL}${to.href}`,
       },
       linkEn: {
         href: `${process.env.VUE_APP_BASE_URL}${
-          router.resolve({ ...to, params: { ...to.params, locale: 'en' } }).href}`,
+          enUrl}`,
       },
       linkEs: {
         href: `${process.env.VUE_APP_BASE_URL}${
-          router.resolve({ ...to, params: { ...to.params, locale: 'es' } }).href}`,
+          esUrl}`,
       },
       description: {
         content:
@@ -118,7 +126,7 @@ router.beforeEach((to, from, next) => {
         title,
       },
       ogUrl: {
-        content: `${process.env.VUE_APP_BASE_URL}${newUrl}`,
+        content: `${process.env.VUE_APP_BASE_URL}${to.href}`,
       },
       ogDescription: {
         content:

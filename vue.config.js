@@ -2,11 +2,18 @@ const dataConfig = require('./data/config/data.js');
 
 // Create render routes for each metric at each geography level.
 const renderRoutes = ['en', 'es'].flatMap(
-  lang => ([`/${lang}/`, `/${lang}/report/blockgroup/`, `/${lang}/about/`, `/${lang}/report/tract/`].concat(Object.values(dataConfig).flatMap(
-    m => (m.geographies.map(
-      g => `/${lang}/compass/${m.metric}/${g}/`,
-    )),
-  ))),
+  lang => ([
+    `/${lang}/`,
+    `/${lang}/about/`,
+    `/${lang}/report/blockgroup/`,
+    `/${lang}/report/tract/`,
+  ]
+    .concat(Object.values(dataConfig).flatMap(
+      m => (m.geographies.map(
+        g => `/${lang}/compass/${m.metric}/${g}/`,
+      )),
+    ))
+  ),
 );
 
 const environmentDefaults = {
