@@ -56,7 +56,11 @@
    "Diabetes": "Diabetes",
    "Heart Attack": "Heart Attack",
    "Income": "Income",
-   "Stroke": "Stroke"
+   "Stroke": "Stroke",
+   "Age": "Age",
+   "Race/Ethnicity": "Race/Ethnicity",
+   "Building Permits": "Building Permits",
+   "Jobs": "Jobs"
   }
  },
  "dashboard": {

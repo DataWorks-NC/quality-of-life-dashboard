@@ -56,7 +56,11 @@
    "Diabetes": "Diabetes",
    "Heart Attack": "Ataque Cardíaco",
    "Income": "Ingreso",
-   "Stroke": "Accidente Cerebrovascular"
+   "Stroke": "Accidente Cerebrovascular",
+   "Age": "Edad",
+   "Race/Ethnicity": "Race/Ethnicity",
+   "Building Permits": "Permisos de Construcción",
+   "Jobs": "Jobs"
   }
  },
  "dashboard": {
