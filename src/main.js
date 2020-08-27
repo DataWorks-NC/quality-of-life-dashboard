@@ -59,7 +59,7 @@ router.beforeEach((to, from, next) => {
     let title = i18n.t('strings.DurhamNeighborhoodCompass');
     let description = i18n.t('strings.metaDescriptionHome');
 
-    if (to.name === 'report' && to.query) {
+    if (to.name === 'report' && Object.keys(to.query).length) {
       const reportTitle = store.getters.reportTitle;
       if (reportTitle !== '') {
         title = `${reportTitle} - ${title}`;
