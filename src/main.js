@@ -37,18 +37,19 @@ store.watch((state) => state.route && state.route.params.locale,
 // Router navigation guard:
 // Handles locale switching and redirecting from root URL to language-specific
 // homepage. Also handles setting title & metadata.
-const beforeEachPage = (to, from = { name: '', path: '' }, next = null) => {
+router.beforeEach((to, from, next) => {
   debugLog('Router guard: set metadata');
   debugLog(`${from.path} => ${to.path}`);
 
   // Language handling.
   if (!to.params.locale) {
-    if (i18n.locale) {
-      to.params.locale = i18n.locale;
-      if (next) {
-        next(to);
-      }
-    }
+    next({
+      ...to,
+      params: {
+        ...to.params,
+        locale: i18n.locale,
+      },
+    });
   } else {
     i18n.locale = to.params.locale;
   }
@@ -61,32 +62,31 @@ const beforeEachPage = (to, from = { name: '', path: '' }, next = null) => {
     if (to.name === 'report') {
       const reportTitle = store.getters.reportTitle;
       if (reportTitle !== '') {
-        title = `${title} - ${reportTitle}`;
+        title = `${reportTitle} - ${title}`;
         description = i18n.t('strings.metaDescriptionReport', { area: reportTitle });
       }
     } else if (to.name === 'compass') {
-      const legendTitle = store.getters.legendTitle;
-      if (legendTitle !== '') {
-        const metricTitle = i18n.locale === 'es'
-          ? store.state.metric.config.title_es
-          : store.state.metric.config.title;
-        const geographyName = store.state.geography.id && store.state.geography.id.length > 0
-          ? i18n.t(`geographies.${store.state.geography.id}.name`)
-          : '';
+      const metricTitle = i18n.locale === 'es'
+        ? store.state.metric.config.title_es
+        : store.state.metric.config.title;
+      const geographyName = store.state.geography.id && store.state.geography.id.length > 0
+        ? ` (${i18n.t(`geographies.${store.state.geography.id}.name`)})`
+        : '';
 
-        description = `${i18n.t('strings.metaDescriptionMetric', {
+      // TODO: Add "Why is this important to metadata in a way that doesn't break the build process.
+      // Using getters.metadataImportant seems to fail.
+      description = `${i18n.t('strings.metaDescriptionMetric', {
+        metric: metricTitle.toLocaleLowerCase(i18n.locale),
+        geography: geographyName.toLocaleLowerCase(i18n.locale),
+      })}`;
+      title = `${metricTitle}${geographyName} - ${title}`;
+
+      if (store.state.printMode === true) {
+        title = `${title} - ${i18n.t('undermapButtons.printEmbed')}`;
+        description = `${i18n.t('strings.metaDescriptionPrint', {
           metric: metricTitle.toLocaleLowerCase(i18n.locale),
           geography: geographyName.toLocaleLowerCase(i18n.locale),
-        })} ${store.getters.metadataImportantForHeader}`;
-        title = `${title} - ${legendTitle}${geographyName !== '' ? ` (${geographyName})` : ''}`;
-
-        if (store.state.printMode === true) {
-          title = `${title} - ${i18n.t('undermapButtons.printEmbed')}`;
-          description = `${i18n.t('strings.metaDescriptionPrint', {
-            metric: metricTitle.toLocaleLowerCase(i18n.locale),
-            geography: geographyName.toLocaleLowerCase(i18n.locale),
-          })} ${store.getters.metadataImportantForHeader}`;
-        }
+        })}`;
       }
     }
 
@@ -140,12 +140,8 @@ const beforeEachPage = (to, from = { name: '', path: '' }, next = null) => {
     });
   }
 
-  if (next) {
-    next();
-  }
-};
-
-router.beforeEach(beforeEachPage);
+  next();
+});
 
 /* eslint-disable no-new */
 /* eslint-disable no-unused-vars */
@@ -155,17 +151,7 @@ const app = new Vue({
   router,
   el: '#app',
   vuetify,
-  data: { loading: true, mapboxgl: null },
-  beforeCreate() {
-    // Preload map resources so that they live on even between switching to Report and back.
-    // @see https://github.com/mapbox/mapbox-gl-js/pull/9391
-    import(/* webpackChunkName: "mapboxgl" */ 'mapbox-gl').then((mapboxgl) => {
-      mapboxgl.prewarm();
-      import(/* webpackChunkName: "mapboxgl" */ 'mapbox-gl/dist/mapbox-gl.css').then(() => {
-        this.mapboxgl = mapboxgl;
-      });
-    });
-  },
+  data: { mapboxgl: null },
   render: h => h(App),
 });
 
@@ -194,7 +180,3 @@ if (process.env.VUE_APP_GOOGLE_ANALYTICS_ID) {
     },
   });
 }
-
-router.afterEach((to, from, next) => {
-  app.loading = false;
-});

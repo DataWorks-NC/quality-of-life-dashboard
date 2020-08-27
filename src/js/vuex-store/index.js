@@ -70,8 +70,11 @@ export default new Vuex.Store({
     },
     metadataImportant: (state) => (state.metadata ? state.metadata.substring(getSubstringIndex(state.metadata, '</h3>', 1) + 5, getSubstringIndex(state.metadata, '<h3', 2)) : ''),
     metadataImportantForHeader: (state, getters) => {
-      const doc = new DOMParser().parseFromString(getters.metadataImportant, 'text/html');
-      return doc.body.textContent || '';
+      if (getters.metadataImportant) {
+        const doc = new DOMParser().parseFromString(getters.metadataImportant, 'text/html');
+        return doc.body.textContent || '';
+      }
+      return '';
     },
     metadataResources: (state) => (state.metadata ? state.metadata.substring(getSubstringIndex(state.metadata, '</h3>', 3) + 5, state.metadata.length).replace(/<table/g, '<table class="meta-table table"') : ''),
     metadataAbout: (state) => (state.metadata ? state.metadata.substring(getSubstringIndex(state.metadata, '</h3>', 2) + 5, getSubstringIndex(state.metadata, '<h3', 3)) : ''),
