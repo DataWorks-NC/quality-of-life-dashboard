@@ -6,6 +6,7 @@ const path = require('path');
 const _ = require('lodash');
 const stringify = require('csv-stringify');
 
+// TODO: Handle data translation file path also.
 const translationFilePath = path.join(__dirname, '../src/locales/');
 const languages = ['en', 'es'];
 
@@ -27,6 +28,7 @@ function iterateKeys(key, val, prefix) {
 
 for (const language of languages) {
   const input = JSON.parse(fs.readFileSync(translationFilePath + language + '.json'));
+
   _.forEach(iterateKeys(null, input, null), function(v) {
     if (!_.has(output, v.key)) {
       output[v.key] = {};

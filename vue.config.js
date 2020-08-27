@@ -59,12 +59,6 @@ module.exports = {
         msTileImage: 'img/msapplication-icon-144x144.png',
       },
     },
-    i18n: {
-      locale: 'en',
-      fallbackLocale: 'en',
-      localeDir: 'locales',
-      enableInSFC: false,
-    },
     prerenderSpa: {
       registry: undefined,
       renderRoutes,
