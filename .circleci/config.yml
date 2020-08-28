@@ -57,7 +57,7 @@ jobs:
 
       # Generate a sitemap based on what's currently on dev site.
       - run: |
-          if [ "$CIRCLECI_BRANCH" = "main" ]; then
+          if [ "$CIRCLE_BRANCH" = "main" ]; then
             npm run build-sitemap-dev
           fi
 
