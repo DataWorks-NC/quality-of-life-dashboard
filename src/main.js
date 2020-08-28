@@ -107,6 +107,9 @@ router.beforeEach((to, from, next) => {
     }
 
     const metaTagDefinitions = {
+      lang: {
+        lang: to.params.locale,
+      },
       linkCanonical: {
         href: `${process.env.VUE_APP_BASE_URL}${to.fullPath}`,
       },
