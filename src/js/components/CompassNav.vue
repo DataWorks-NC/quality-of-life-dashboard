@@ -64,6 +64,7 @@
           <v-tab
             v-for="category in categories"
             :key="category.id"
+            :href="`#tab-${category.id}`"
           >
             {{ category.name }}
           </v-tab>
