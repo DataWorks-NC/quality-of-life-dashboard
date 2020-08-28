@@ -52,12 +52,18 @@ module.exports = {
   pluginOptions: {
     pwa: {
       iconPaths: {
-        favicon32: 'img/favicon-32x32.png',
-        favicon16: 'img/favicon-16x16.png',
-        appleTouchIcon: 'img/apple-touch-icon-152x152.png',
-        maskIcon: 'img/safari-pinned-tab.svg',
-        msTileImage: 'img/msapplication-icon-144x144.png',
+        favicon32: 'img/icons/favicon-32x32.png',
+        favicon16: 'img/icons/favicon-16x16.png',
+        appleTouchIcon: 'img/icons/apple-touch-icon-152x152.png',
+        maskIcon: 'img/icons/safari-pinned-tab.svg',
+        msTileImage: 'img/icons/msapplication-icon-144x144.png',
       },
+    },
+    i18n: {
+      locale: 'en',
+      fallbackLocale: 'en',
+      localeDir: 'locales',
+      enableInSFC: false,
     },
     prerenderSpa: {
       registry: undefined,

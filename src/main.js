@@ -52,6 +52,7 @@ router.beforeEach((to, from, next) => {
     });
   } else {
     i18n.locale = to.params.locale;
+    document.lang = to.params.locale;
   }
 
   if (to.path !== from.path) {
@@ -97,17 +98,17 @@ router.beforeEach((to, from, next) => {
 
     let enUrl = '';
     let esUrl = '';
-    if (to.locale === 'en') {
-      enUrl = to.href;
+    if (to.params.locale === 'en') {
+      enUrl = to.fullPath;
       esUrl = router.resolve({ ...to, params: { ...to.params, locale: 'es' } }).href;
     } else {
       enUrl = router.resolve({ ...to, params: { ...to.params, locale: 'en' } }).href;
-      esUrl = to.href;
+      esUrl = to.fullPath;
     }
 
     const metaTagDefinitions = {
       linkCanonical: {
-        href: `${process.env.VUE_APP_BASE_URL}${to.href}`,
+        href: `${process.env.VUE_APP_BASE_URL}${to.fullPath}`,
       },
       linkEn: {
         href: `${process.env.VUE_APP_BASE_URL}${
@@ -126,7 +127,7 @@ router.beforeEach((to, from, next) => {
         title,
       },
       ogUrl: {
-        content: `${process.env.VUE_APP_BASE_URL}${to.href}`,
+        content: `${process.env.VUE_APP_BASE_URL}${to.fullPath}`,
       },
       ogDescription: {
         content:
@@ -160,6 +161,16 @@ const app = new Vue({
   el: '#app',
   vuetify,
   data: { mapboxgl: null },
+  beforeCreate() {
+    // Preload map resources so that they live on even between switching to Report and back.
+    // @see https://github.com/mapbox/mapbox-gl-js/pull/9391
+    import(/* webpackChunkName: "mapboxgl" */ 'mapbox-gl').then((mapboxgl) => {
+      mapboxgl.prewarm();
+      import(/* webpackChunkName: "mapboxgl" */ 'mapbox-gl/dist/mapbox-gl.css').then(() => {
+        this.$root.mapboxgl = mapboxgl;
+      });
+    });
+  },
   render: h => h(App),
 });
 

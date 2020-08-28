@@ -1,6 +1,10 @@
 <template>
   <v-app :style="{ backgroundColor: $vuetify.theme.themes['light'].background }">
-    <router-view />
+    <div v-if="loading">
+      <div style="width: 100%; height: 64px; background-color: rgb(66,66,66);" />
+      <div style="width: 100%; height: 600px;" />
+    </div>
+    <router-view v-else />
   </v-app>
 </template>
 
@@ -8,15 +12,11 @@
 
 export default {
   name: 'App',
-  beforeCreate() {
-    // Preload map resources so that they live on even between switching to Report and back.
-    // @see https://github.com/mapbox/mapbox-gl-js/pull/9391
-    import(/* webpackChunkName: "mapboxgl" */ 'mapbox-gl').then((mapboxgl) => {
-      mapboxgl.prewarm();
-      import(/* webpackChunkName: "mapboxgl" */ 'mapbox-gl/dist/mapbox-gl.css').then(() => {
-        this.$root.mapboxgl = mapboxgl;
-      });
-    });
+  data: () => ({
+    loading: true,
+  }),
+  mounted() {
+    this.loading = false;
   },
 };
 </script>
