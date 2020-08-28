@@ -2,11 +2,18 @@ const dataConfig = require('./data/config/data.js');
 
 // Create render routes for each metric at each geography level.
 const renderRoutes = ['en', 'es'].flatMap(
-  lang => ([`/${lang}/`, `/${lang}/report/blockgroup/`, `/${lang}/about/`, `/${lang}/report/tract/`].concat(Object.values(dataConfig).flatMap(
-    m => (m.geographies.map(
-      g => `/${lang}/compass/${m.metric}/${g}/`,
-    )),
-  ))),
+  lang => ([
+    `/${lang}/`,
+    `/${lang}/about/`,
+    `/${lang}/report/blockgroup/`,
+    `/${lang}/report/tract/`,
+  ]
+    .concat(Object.values(dataConfig).flatMap(
+      m => (m.geographies.map(
+        g => `/${lang}/compass/${m.metric}/${g}/`,
+      )),
+    ))
+  ),
 );
 
 const environmentDefaults = {
@@ -23,7 +30,7 @@ if (process.env.CIRCLE_BRANCH) {
   if (process.env.CIRCLE_BRANCH === 'staging') {
     environmentDefaults.VUE_APP_BASE_URL = 'https://nbhdcompassstage.azurewebsites.us';
   } else if (process.env.CIRCLE_BRANCH === 'develop') {
-    environmentDefaults.VUE_APP_BASE_URL = 'https://nbhdcompasssdev.azurewebsites.us';
+    environmentDefaults.VUE_APP_BASE_URL = 'https://nbhdcompassdev.azurewebsites.us';
   } else {
     environmentDefaults.VUE_APP_BASE_URL = 'https://compass.durhamnc.gov';
   }
@@ -35,6 +42,7 @@ process.env = {
 };
 
 if (!('VUE_APP_MAPBOX_ACCESS_TOKEN' in process.env) || process.env.VUE_APP_MAPBOX_ACCESS_TOKEN === '<FILL THIS IN>') {
+  // eslint-disable-next-line no-console
   console.error('VUE_APP_MAPBOX_ACCESS_TOKEN environment variable must be set! Try adding it to a .env file in the repo root.');
 }
 
@@ -44,11 +52,11 @@ module.exports = {
   pluginOptions: {
     pwa: {
       iconPaths: {
-        favicon32: 'img/favicon-32x32.png',
-        favicon16: 'img/favicon-16x16.png',
-        appleTouchIcon: 'img/apple-touch-icon-152x152.png',
-        maskIcon: 'img/safari-pinned-tab.svg',
-        msTileImage: 'img/msapplication-icon-144x144.png',
+        favicon32: 'img/icons/favicon-32x32.png',
+        favicon16: 'img/icons/favicon-16x16.png',
+        appleTouchIcon: 'img/icons/apple-touch-icon-152x152.png',
+        maskIcon: 'img/icons/safari-pinned-tab.svg',
+        msTileImage: 'img/icons/msapplication-icon-144x144.png',
       },
     },
     i18n: {

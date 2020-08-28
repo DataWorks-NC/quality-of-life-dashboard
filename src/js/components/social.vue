@@ -7,12 +7,12 @@
       <div class="flex-grow-1" />
       <ExternalLink :href="twitter" :show-icon="false" class="social__link">
         <v-icon size="36px" color="#1DA1F2" :aria-label="$t('social.twitter')">
-          {{ mdiTwitterCircle }}
+          {{ mdiTwitter }}
         </v-icon>
       </ExternalLink>
       <ExternalLink :href="facebook" :show-icon="false" class="social__link">
         <v-icon size="36px" color="#4E71A8" :aria-label="$t('social.facebook')">
-          {{ mdiFacebookBox }}
+          {{ mdiFacebook }}
         </v-icon>
       </ExternalLink>
       <ExternalLink :href="whatsapp" :show-icon="false" class="social__link">
@@ -32,19 +32,19 @@
 
 <script>
 import {
-  mdiTwitterCircle, mdiFacebookBox, mdiPrinter, mdiWhatsapp,
+  mdiTwitter, mdiFacebook, mdiPrinter, mdiWhatsapp,
 } from '@mdi/js';
 import { mapState } from 'vuex';
 
-import ExternalLink from './external-link';
+import ExternalLink from './external-link.vue';
 
 export default {
   name: 'Social',
   components: { ExternalLink },
   data: () => ({
     baseUrl: process.env.VUE_APP_BASE_URL || 'https://compass.durhamnc.gov',
-    mdiTwitterCircle,
-    mdiFacebookBox,
+    mdiTwitter,
+    mdiFacebook,
     mdiPrinter,
     mdiWhatsapp,
   }),

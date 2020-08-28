@@ -1,120 +1,152 @@
-﻿key,en,es
-strings.accuracy,accuracy,exactitud
-strings.and,and,y
-strings.back,back,atrás
-strings.close,close,cerrar
-strings.county,county,condado
-strings.download,download,descargar
-strings.median,median,mediana
-strings.numberOf,number of,número de
-strings.or,or,o
-strings.selected,selected,seleccionado/s
-strings.theCompass,the compass,el compass
-strings.title,title,título
-strings.trend,trend,tendencia
-strings.value,value,valor
-strings.CityOfCharlotte,City of Charlotte,Ciudad de Charlotte
-strings.CityOfDurhamLogo,City of Durham logo,Logo de la Ciudad de Durham
-strings.CountyAverage,County Average,Promedio del condado
-strings.FeatureValue,Feature Value,Valor de la característica
-strings.DataWorksNCLogo,DataWorks NC logo,Logo de DataWorks NC
-strings.DurhamCountyLogo,Durham County logo,Logo del Condado de Durham
-strings.DurhamNeighborhoodCompass,Durham Neighborhood Compass,Durham Neighborhood Compass
-strings.MecklenburgCounty,Mecklenburg County,Condado de Mecklenburg
-strings.TrendingDown,Trending Down,Bajando
-strings.TrendingFlat,Trending Flat,Sin cambios
-strings.TrendingUp,Trending Up,Aumentando
-strings.ChangeLanguage,Ver en español,View in English
-strings.DownloadData,Download Data,Descargar datos
-strings.metricCategories.Civic Engagement,Civic Engagement,Participación cívica
-strings.metricCategories.Demographics,Demographics,Datos demográficos
-strings.metricCategories.Economy,Economy,Economía
-strings.metricCategories.Education,Education,Educación
-strings.metricCategories.Environment,Environment,Medio ambiente
-strings.metricCategories.Health,Health,Salud
-strings.metricCategories.Housing,Housing,Vivienda
-strings.metricCategories.Infrastructure and Amenities,Infrastructure and Amenities,Infraestructura y comodidades
-strings.metricCategories.Safety,Safety,Seguridad
-dashboard.moveToC,Move Table of Contents,Mover Tabla de Contenido
-distributionChart.DataDistribution,Data Distribution,Distribución de los datos
-feedback.JoinMailingList,Join our mailing list,Únase a nuestra lista de correo
-feedback.ShareFeedback,Share feedback or questions,Comparta sus opiniones o preguntas
-footer.credits,"View the Neighborhood Compass code on {0}. Based on code created by {1}, the {2}, and {3} with much ♥ for the projects that make this site possible: {4}, {5}, {6}, {7}, {8}, {9}, and {10}.","Vea el código de Neighborhood Compass en {0}. Basado en el código creado por {1}, la {2}, y {3} con mucho ♥ por los proyectos que hacen posible este sitio: {4}, {5}, {6}, {7}, {8}, {9}, y {10}."
-footer.links[0].href,http://www.dataworks-nc.org,http://www.dataworks-nc.org
-footer.links[0].text,About,Sobre
-footer.links[1].href,http://www.opendurham.org/,http://www.opendurham.org/
-footer.links[1].text,Open Durham - Neighborhood Histories,Open Durham - Historias de los vecindarios
-footer.links[2].href,http://www.durhamhoods.com/,http://www.durhamhoods.com/
-footer.links[2].text,Durham Hoods - Neighborhood Maps and Mailing List Hub,Vecindarios de Durham - Mapas de vecindarios y centro de lista de correo
-footer.links[3].href,https://opendurham.nc.gov/pages/home/,https://opendurham.nc.gov/pages/home/
-footer.links[3].text,City of Durham Open Data Portal,Portal de información abierta de la ciudad de Durham
-geographySwitcher.instructions,"Select a base geography (depending on the dataset, different geographies may be available).","Seleccione una lugar geográfico de base (dependiendo del conjunto de datos, pueden haber distintos lugares disponibles)."
-legend.MoveTableOfContents,Move Table of Contents,Mover Tabla de Contenido
-legend.ChoroplethLegend,Choropleth legend,Referencias cloropléticas
-map.SearchPlaceholder,"Search for an address, neighborhood or landmark","Busque una dirección, vecindario o punto de referencia"
-metadata.about,About the Data,Sobre los datos
-metadata.resources,Additional Resources,Recursos Adicionales
-metadata.whyImportant,Why This is Important,Qué lo hace importante
-metricLabels.years,years,años
-metricLabels.adults,adults,adultos
-metricLabels.people,people,personas
-metricLabels.centers,centers,centros
-metricLabels.centers per sq mi,centers per sq mi,centros por milla cuadrada
-metricLabels.of households,of households,de los hogares
-metricLabels.homes near clinics,homes near clinics,viviendas cerca de clínicas
-metricLabels.certificates per sq mi,certificates per sq mi,certificados por milla cuadrada
-metricLabels.certificates,certificates,certificados
-metricLabels.permits,permits,permisos
-metricLabels.permits per sq mi,permits per sq mi,permisos por milla cuadrada
-metricLabels.commuters,commuters,personas que viajan
-metricLabels.incidents,incidents,incidentes
-metricLabels.incidents per sq mi,incidents per sq mi,incidentes por milla cuadrada
-metricLabels.renter households,renter households,hogares que arriendan
-metricLabels.people receiving SSI,people receiving SSI,personas recibiendo SSI
-metricLabels.people per sq mi,people per sq mi,personas por milla cuadrada
-metricLabels.households,households,hogares
-metricLabels.dwelling units in poor or unsound state of repair,dwelling units in poor or unsound state of repair,unidades de vivienda en estado de reparación escaso y defectuoso
-metricLabels.voters,voters,votantes
-metricLabels.young people,young people,jóvenes
-metricLabels.crimes,crimes,delitos
-metricLabels.crimes per sq mi,crimes per sq mi,delitos por milla cuadrada
-metricLabels.violations,violations,violaciones
-metricLabels.violations per sq mi,violations per sq mi,violaciones por milla cuadrada
-metricLabels.per sq mi,per sq mi,por milla cuadrada
-metricLabels.evictions per sq mi,evictions per sq mi,desalojos por milla cuadrada
-metricLabels.ratio of sidewalks to roadways,ratio of sidewalks to roadways,proporción de aceras a carreteras
-printMapHeader.back,Back to dashboard,Volver al Dashboard
-printMapHeader.copied,Text copied to clipboard!,Texto copiado en portapapeles!
-printMapHeader.copy,Copy the following code to embed this map in another website,Copiar el siguiente código para incrustar este mapa en otro sitio web
-printMapHeader.print,Print this map,Imprimir este mapa
-printMapHeader.printNote,Please note: the print function works best on Chrome or Firefox browsers.,Atención: esta función de impresión funciona mejor en los buscadores Chrome o Firefox.
-printMapHeader.setTitle,Set a custom map title,Personalizar el título del mapa
-printMode.footerText,"Map from the Durham Neighborhood Compass, a project of DataWorks NC. Visit {compassLink} to build your own map!","Mapa extraído de Durham Neighborhood Compass, un proyecto de DataWorks NC. Visite {compassLink} para generar su propio mapa!"
-reportMoreInfo.hide,Hide more info,Mostrar menos información
-reportMoreInfo.show,Show more info,Mostrar más información
-reportSelector.categoryTip,Click to show this category,Haga clic para mostrar esta categoría
-reportSelector.customize,Customize this report,Personalizar este informe
-reportSelector.goBack,go back to the dashboard and make a new selection,volver al dashboard y hacer nueva selección
-reportSelector.instructionsIntro,You can customize this report to show only the metrics or categories that are relevant to your interests. Here's how:,Ud. puede personalizar este informe para mostrar solo los indicadores o categorías que son relevantes para sus intereses. Cómo hacerlo:
-reportSelector.instructions[0],Click on the title of a category to hide or show all of the metrics in that category.,Haga clic en el título de una categoría para ocultar o mostrar todos los indicadores de esa categoría.
-reportSelector.instructions[1],Click on the title of an individual metric to hide or show just that metric.,Haga clic en el título de un indicador determinado para ocultarlo o mostrarlo.
-reportSelector.instructions[2],"If you want to choose a different part of the city to view for this report, you'll need to {goBack}","Si quiere elegir una parte distinta de la ciudad para ver este informe, necesitará {goBack}"
-reportSelector.instructions[3],Share your customized report using the following URL:,Comparta su informe personalizado usando el siguiente URL:
-reportSelector.metricsShown,Metrics shown in your report,Indicadores presentados en su informe
-reportSummary.about[0],"The {compassLink} is a primary community resource for information that is regularly-updated, serving meaningful data to the community openly.","El {compassLink} es un recurso de información primario de la comunidad que es actualizado regularmente, que proporciona abiertamente valiosa información a la comunidad."
-reportSummary.about[1],"Each year the Compass grows and learns along with its users, adding data sets with strong community resonance and longitudinal importance.","Cada año el Compass crece y aprende junto con sus usuarios, sumando conjuntos de datos que tengan sentido para la comunidad y cuya importancia sea transversal."
-reportSummary.about[2],A quantitative project with qualitative values.,Un proyecto cuantitativo con valores cualitativos.
-selectGroup.orSelectA,"Or, select a","O, seleccione un/a"
-sidebar.download,Download the Data,Descargue los datos
-sidebar.explore,Explore the Data,Explore los datos
-social.facebook,Share on Facebook,Comparta en Facebook
-social.linkedIn,Share on LinkedIn,Comparta en LinkedIn
-social.twitter,Share on Twitter,Comparta en Twitter
-social.viewGitHub,View the project on GitHub,Vea el proyecto en GitHub
-undermapButtons.clear,Clear Selected,Borre selección
-undermapButtons.printEmbed,Print or Embed Map,Imprima o incruste el mapa
-undermapButtons.report,Report,Informe
-yearSlider.startStop,Start or stop playing through data timeseries by year,Comenzar o terminar reproducción de datos en series de tiempo por año
-yearSlider.useSlider,use slider to choose a data year to view,deslice para elegir año de datos para ver
-undefined,use slider to choose a data year to view,deslice para elegir año de datos para ver
-feedback.ShareFeedbacK,,Comparta sus opiniones o preguntas
+﻿"key","en","es"
+"strings.metricCategories.Civic Engagement","Civic Engagement","Participación cívica"
+"strings.metricCategories.Demographics","Demographics","Datos demográficos"
+"strings.metricCategories.Economy","Economy","Economía"
+"strings.metricCategories.Education","Education","Educación"
+"strings.metricCategories.Environment","Environment","Medio ambiente"
+"strings.metricCategories.Health","Health","Salud"
+"strings.metricCategories.Housing","Housing","Vivienda"
+"strings.metricCategories.Infrastructure and Amenities","Infrastructure and Amenities","Infraestructura y comodidades"
+"strings.metricCategories.Safety","Safety","Seguridad"
+"strings.metricCategories.Summary","Summary","Resumen"
+"strings.metricSubCategories.Chronic Kidney Disease","Chronic Kidney Disease","Enfermedad Renal Crónica"
+"strings.metricSubCategories.Diabetes","Diabetes","Diabetes"
+"strings.metricSubCategories.Heart Attack","Heart Attack","Ataque Cardíaco"
+"strings.metricSubCategories.Income","Income","Ingreso"
+"strings.metricSubCategories.Stroke","Stroke","Accidente Cerebrovascular"
+"strings.metricSubCategories.Age","Age","Edad"
+"strings.metricSubCategories.Race/Ethnicity","Race/Ethnicity","Race/Ethnicity"
+"strings.metricSubCategories.Building Permits","Building Permits","Permisos de Construcción"
+"strings.metricSubCategories.Jobs","Jobs","Jobs"
+"dashboard.moveToC","Click to move Table of Contents","Haga clic para mover Tabla de Contenido"
+"distributionChart.DataDistribution","Data Distribution","Distribución de los datos"
+"feedback.JoinMailingList","Join our mailing list","suscríbase a nuestra lista de correo"
+"feedback.Subscribe","Subscribe","Suscríbase"
+"feedback.email","email address","Correo electrónico"
+"feedback.ShareFeedback","Share feedback or questions","Comparta sus opiniones o preguntas"
+"footer.about","About this site","Sobre este sitio"
+"footer.radCredit","Site maintained by {radLink}","Mantenido por {radLink}"
+"geographies.tract.name","Census Tracts","Zonas Censales"
+"geographies.tract.description","Area containing containing between 1,200 and 8,000 people. Census tract boundaries usually follow features like major roads, rivers, or municipal boundaries. Most tracts contain one or two neighborhoods.","Area containing containing between 1,200 and 8,000 people. Census tract boundaries usually follow features like major roads, rivers, or municipal boundaries. Most tracts contain one or two neighborhoods."
+"geographies.blockgroup.name","Census Blockgroups","Grupos de Bloque"
+"geographies.blockgroup.description","A census blockgroup is made up of several city blocks and usually contains between 600 and 3,000 people. Sometimes a blockgroup is the size of a neighborhood, but most neighborhoods are larger than a single blockgroup.","A census blockgroup is made up of several city blocks and usually contains between 600 and 3,000 people. Sometimes a blockgroup is the size of a neighborhood, but most neighborhoods are larger than a single blockgroup."
+"geographySwitcher.instructions","Select a base geography (depending on the dataset, different geographies may be available).","Seleccione una lugar geográfico de base (dependiendo del conjunto de datos, pueden haber distintos lugares disponibles)."
+"legend.MoveTableOfContents","Move Table of Contents","Mover Tabla de Contenido"
+"legend.ChoroplethLegend","Choropleth legend","Referencias cloropléticas"
+"map.SearchPlaceholder","Search for an address, neighborhood or landmark","Busque una dirección, vecindario o punto de referencia"
+"metadata.about","About the Data","Sobre los datos"
+"metadata.resources","Additional Resources","Recursos Adicionales"
+"metadata.whyImportant","Why This is Important","Qué lo hace importante"
+"printMapHeader.back","Back to dashboard","Volver al Dashboard"
+"printMapHeader.copied","Text copied to clipboard!","Texto copiado en portapapeles!"
+"printMapHeader.copy","Copy the following code to embed this map in another website","Copiar el siguiente código para incrustar este mapa en otro sitio web"
+"printMapHeader.print","Print this map","Imprimir este mapa"
+"printMapHeader.printNote","Please note: the print function works best on Chrome or Firefox browsers.","Atención: esta función de impresión funciona mejor en los buscadores Chrome o Firefox."
+"printMapHeader.setTitle","Set a custom map title","Personalizar el título del mapa"
+"printMode.footerText","Map from the Durham Neighborhood Compass, a project of DataWorks NC. Visit {compassLink} to build your own map!","Mapa extraído de Durham Neighborhood Compass, un proyecto de DataWorks NC. Visite {compassLink} para generar su propio mapa!"
+"reportMoreInfo.hide","Hide","Mostrar menos información"
+"reportMoreInfo.show","About the Data","Mostrar más información"
+"reportSelector.categoryTip","Click to show this category","Haga clic para mostrar esta categoría"
+"reportSelector.customize","Customize this report","Personalizar este informe"
+"reportSelector.goBack","go back to the dashboard and make a new selection","volver al dashboard y hacer nueva selección"
+"reportSelector.instructionsIntro","You can customize this report to show only the metrics or categories that are relevant to your interests. Here's how:","Ud. puede personalizar este informe para mostrar solo los indicadores o categorías que son relevantes para sus intereses. Cómo hacerlo:"
+"reportSelector.instructions[0]","Click on the title of a category to hide or show all of the metrics in that category.","Haga clic en el título de una categoría para ocultar o mostrar todos los indicadores de esa categoría."
+"reportSelector.instructions[1]","Click on the title of an individual metric to hide or show just that metric.","Haga clic en el título de un indicador determinado para ocultarlo o mostrarlo."
+"reportSelector.instructions[2]","If you want to choose a different part of the city to view for this report, you'll need to {goBack}","Si quiere elegir una parte distinta de la ciudad para ver este informe, necesitará {goBack}"
+"reportSelector.instructions[3]","Share your customized report using the following URL:","Comparta su informe personalizado usando el siguiente URL:"
+"reportSelector.metricsShown","Metrics shown in your report","Indicadores presentados en su informe"
+"reportSummary.about[0]","The {compassLink} is a primary community resource for information that is regularly-updated, serving meaningful data to the community openly.","El {compassLink} es un recurso de información primario de la comunidad que es actualizado regularmente, que proporciona abiertamente valiosa información a la comunidad."
+"reportSummary.about[1]","Each year the Compass grows and learns along with its users, adding data sets with strong community resonance and longitudinal importance.","Cada año el Compass crece y aprende junto con sus usuarios, sumando conjuntos de datos que tengan sentido para la comunidad y cuya importancia sea transversal."
+"reportSummary.about[2]","A quantitative project with qualitative values.","Un proyecto cuantitativo con valores cualitativos."
+"selectGroup.City Council Ward","City Council Ward","Distrito"
+"selectGroup.School Assignment Zone","School Assignment Zone","Zona Escolar Asignada"
+"selectGroup.Ward 1","Ward 1","Distrito 1"
+"selectGroup.Ward 2","Ward 2","Distrito 2"
+"selectGroup.Ward 3","Ward 3","Distrito 3"
+"selectGroup.Neighborhood","Neighborhood","Vecindario"
+"sidebar.download","Download the Data","Descargue los datos"
+"sidebar.choose","Select a category","Elija una categoría"
+"social.facebook","Share on Facebook","Comparta en Facebook"
+"social.linkedIn","Share on LinkedIn","Comparta en LinkedIn"
+"social.twitter","Share on Twitter","Comparta en Twitter"
+"social.viewGitHub","View the project on GitHub","Vea el proyecto en GitHub"
+"undermapButtons.clear","Clear Selected","Borre selección"
+"undermapButtons.printEmbed","Print or Embed Map","Imprima o incruste el mapa"
+"undermapButtons.report","Report","Informe"
+"yearSlider.startStop","Start or stop playing through data timeseries by year","Comenzar o terminar reproducción de datos en series de tiempo por año"
+"yearSlider.useSlider","Use slider to choose a data year to view","Deslice para elegir año de datos para ver"
+"welcome.title","Welcome to the Durham Neighborhood Compass!","¡Bienvenidos al Neighborhood Compass de Durham!"
+"about.link","About","Sobre"
+"about.title","About the Durham Neighborhood Compass",
+"metricLabels.years","years","años"
+"metricLabels.adults","adults","adultos"
+"metricLabels.people","people","personas"
+"metricLabels.centers","centers","centros"
+"metricLabels.centers per sq mi","centers per sq mi","centros por milla cuadrada"
+"metricLabels.of households","of households","de los hogares"
+"metricLabels.homes near clinics","homes near clinics","viviendas cerca de clínicas"
+"metricLabels.certificates per sq mi","certificates per sq mi","certificados por milla cuadrada"
+"metricLabels.certificates","certificates","certificados"
+"metricLabels.permits","permits","permisos"
+"metricLabels.permits per sq mi","permits per sq mi","permisos por milla cuadrada"
+"metricLabels.commuters","commuters","personas que viajan"
+"metricLabels.incidents","incidents","incidentes"
+"metricLabels.incidents per sq mi","incidents per sq mi","incidentes por milla cuadrada"
+"metricLabels.renter households","renter households","hogares que arriendan"
+"metricLabels.people receiving ssi","people receiving SSI","personas recibiendo SSI"
+"metricLabels.people per sq mi","people per sq mi","personas por milla cuadrada"
+"metricLabels.households","households","hogares"
+"metricLabels.dwelling units in poor or unsound state of repair","dwelling units in poor or unsound state of repair","unidades de vivienda en estado de reparación escaso y defectuoso"
+"metricLabels.voters","voters","votantes"
+"metricLabels.young people","young people","jóvenes"
+"metricLabels.crimes","crimes","delitos"
+"metricLabels.crimes per sq mi","crimes per sq mi","delitos por milla cuadrada"
+"metricLabels.violations","violations","violaciones"
+"metricLabels.violations per sq mi","violations per sq mi","violaciones por milla cuadrada"
+"metricLabels.per sq mi","per sq mi","por milla cuadrada"
+"metricLabels.evictions per sq mi","evictions per sq mi","desalojos por milla cuadrada"
+"metricLabels.evictions","evictions","desalojos"
+"metricLabels.ratio of sidewalks to roadways","ratio of sidewalks to roadways","proporción de aceras a carreteras"
+"metricLabels.total dollars","in total","en total"
+"metricLabels.workers","workers","trabajadores"
+"metricLabels.square miles","square miles","millas cuadradas"
+"strings.about",,"El Neighborhood Compass es un recurso fundamental que le permite seguir los cambios en su comunidad con información que es actualizada regularmente y que, a menudo, profundiza esa sensación visceral que usted tiene de que el carácter de los vecindarios de Durham está cambiando."
+"strings.metaDescriptionHome",,"Explore su vecindario en Durham en este sitio web, que es actualizado regularmente. Encuentre información actualizada, genere reportes y mapas, y siga los cambios que ocurren en su comunidad. El mejor recurso para obtener información precisa sobre los vecindarios de Durham, Carolina del Norte."
+"strings.metaDescriptionAbout",,"Conozca más sobre el Neighborhood Compass de Durham! El Neighborhood Compass es un recurso fundamental que le permite seguir los cambios en su comunidad con información que es actualizada regularmente y que, a menudo, profundiza esa sensación visceral que usted tiene de que el carácter de los vecindarios de Durham está cambiando."
+"strings.metaDescriptionMetric",,"Conozca más sobre {metric} en el Condado de Durham a nivel de {geography} en el Neighborhood Compass de Durham."
+"strings.metaDescriptionPrint",,"Imprima un mapa de {metric} en el Condado de Durham a nivel de {geography} con el Neighborhood Compass de Durham."
+"strings.metaDescriptionReport",,"Conozca más sobre la {area} en el Condado de Durham en el Neighborhood Compass de Durham. El Neighborhood Compass es un recurso fundamental que le permite seguir los cambios en su comunidad con información que es actualizada regularmente y que, a menudo, profundiza esa sensación visceral que usted tiene de que el carácter de los vecindarios de Durham está cambiando."
+"strings.accuracy",,"exactitud"
+"strings.and",,"y"
+"strings.back",,"atrás"
+"strings.close",,"cerrar"
+"strings.county",,"condado"
+"strings.download",,"descargar"
+"strings.median",,"mediana"
+"strings.numberOf",,"número de"
+"strings.or",,"o"
+"strings.selected",,"seleccionado/s"
+"strings.theCompass",,"el compass"
+"strings.opensInNewWindow",,"(abriré en nueva ventana)"
+"strings.title",,"título"
+"strings.trend",,"tendencia"
+"strings.chooseATopic",,"Elija un tema"
+"strings.value",,"valor"
+"strings.year",,"año"
+"strings.share",,"Comparta"
+"strings.CityOfCharlotte",,"Ciudad de Charlotte"
+"strings.CityOfDurhamLogo",,"Logo de la Ciudad de Durham"
+"strings.CountyAverage",,"Promedio del condado"
+"strings.FeatureValue",,"Valor de la característica"
+"strings.DataWorksNCLogo",,"Logo de DataWorks NC"
+"strings.DurhamCountyLogo",,"Logo del Condado de Durham"
+"strings.DurhamCounty",,"Condado de Durham"
+"strings.DurhamNeighborhoodCompass",,"Durham Neighborhood Compass"
+"strings.MecklenburgCounty",,"Condado de Mecklenburg"
+"strings.TrendingDown",,"Bajando"
+"strings.TrendingFlat",,"Sin cambios"
+"strings.TrendingUp",,"Aumentando"
+"strings.ChangeLanguage",,"View in English"
+"strings.openMobileNav",,"Abrir el menú"
+"strings.DownloadData",,"Descargar datos"
+"selectGroup.orSelectA",,"O, seleccione un"

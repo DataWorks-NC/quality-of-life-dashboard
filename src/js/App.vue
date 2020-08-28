@@ -9,10 +9,14 @@
 </template>
 
 <script>
+
 export default {
   name: 'App',
-  computed: {
-    loading() { return this.$root.loading; },
+  data: () => ({
+    loading: true,
+  }),
+  mounted() {
+    this.loading = false;
   },
 };
 </script>

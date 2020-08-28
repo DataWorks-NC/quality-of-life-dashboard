@@ -1,5 +1,7 @@
 // Convert translation files in javascript and english from a CSV file into js files.
 
+// TODO: Split data/interface translations
+
 const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');

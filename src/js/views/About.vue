@@ -1,7 +1,7 @@
 <template>
   <div>
     <compass-nav />
-    <v-content>
+    <v-main>
       <v-container fluid grid-list-lg>
         <v-layout wrap>
           <v-flex sm12 md8>
@@ -416,7 +416,7 @@
           </v-flex>
         </v-layout>
       </v-container>
-    </v-content>
+    </v-main>
     <dashboard-footer />
   </div>
 </template>

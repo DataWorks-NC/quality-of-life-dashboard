@@ -1,7 +1,7 @@
 {
  "strings": {
   "about": "El Neighborhood Compass es un recurso fundamental que le permite seguir los cambios en su comunidad con información que es actualizada regularmente y que, a menudo, profundiza esa sensación visceral que usted tiene de que el carácter de los vecindarios de Durham está cambiando.",
-  "metaDescriptionHome": "El Neighborhood Compass es un recurso fundamental que le permite seguir los cambios en su comunidad con información que es actualizada regularmente y que, a menudo, profundiza esa sensación visceral que usted tiene de que el carácter de los vecindarios de Durham está cambiando.",
+  "metaDescriptionHome": "Explore su vecindario en Durham en este sitio web, que es actualizado regularmente. Encuentre información actualizada, genere reportes y mapas, y siga los cambios que ocurren en su comunidad. El mejor recurso para obtener información precisa sobre los vecindarios de Durham, Carolina del Norte.",
   "metaDescriptionAbout": "Conozca más sobre el Neighborhood Compass de Durham! El Neighborhood Compass es un recurso fundamental que le permite seguir los cambios en su comunidad con información que es actualizada regularmente y que, a menudo, profundiza esa sensación visceral que usted tiene de que el carácter de los vecindarios de Durham está cambiando.",
   "metaDescriptionMetric": "Conozca más sobre {metric} en el Condado de Durham a nivel de {geography} en el Neighborhood Compass de Durham.",
   "metaDescriptionPrint": "Imprima un mapa de {metric} en el Condado de Durham a nivel de {geography} con el Neighborhood Compass de Durham.",
@@ -38,19 +38,7 @@
   "TrendingUp": "Aumentando",
   "ChangeLanguage": "View in English",
   "openMobileNav": "Abrir el menú",
-  "DownloadData": "Descargar datos",
-  "metricCategories": {
-   "Civic Engagement": "Participación cívica",
-   "Demographics": "Datos demográficos",
-   "Economy": "Economía",
-   "Education": "Educación",
-   "Environment": "Medio ambiente",
-   "Health": "Salud",
-   "Housing": "Vivienda",
-   "Infrastructure and Amenities": "Infraestructura y comodidades",
-   "Safety": "Seguridad",
-   "Summary": "Resumen"
-  }
+  "DownloadData": "Descargar datos"
  },
  "dashboard": {
   "moveToC": "Haga clic para mover Tabla de Contenido"
@@ -129,12 +117,7 @@
   ]
  },
  "selectGroup": {
-  "orSelectA": "O, seleccione un",
-  "City Council Ward": "Distrito",
-  "School Assignment Zone": "Zona Escolar Asignada",
-  "Ward 1": "Distrito 1",
-  "Ward 2": "Distrito 2",
-  "Ward 3": "Distrito 3"
+  "orSelectA": "O, seleccione un"
  },
  "sidebar": {
   "download": "Descargue los datos",
@@ -154,40 +137,6 @@
  "yearSlider": {
   "startStop": "Comenzar o terminar reproducción de datos en series de tiempo por año",
   "useSlider": "Deslice para elegir año de datos para ver"
- },
- "metricLabels": {
-  "years": "años",
-  "adults": "adultos",
-  "people": "personas",
-  "centers": "centros",
-  "centers per sq mi": "centros por milla cuadrada",
-  "of households": "de los hogares",
-  "homes near clinics": "viviendas cerca de clínicas",
-  "certificates per sq mi": "certificados por milla cuadrada",
-  "certificates": "certificados",
-  "permits": "permisos",
-  "permits per sq mi": "permisos por milla cuadrada",
-  "commuters": "personas que viajan",
-  "incidents": "incidentes",
-  "incidents per sq mi": "incidentes por milla cuadrada",
-  "renter households": "hogares que arriendan",
-  "people receiving ssi": "personas recibiendo SSI",
-  "people per sq mi": "personas por milla cuadrada",
-  "households": "hogares",
-  "dwelling units in poor or unsound state of repair": "unidades de vivienda en estado de reparación escaso y defectuoso",
-  "voters": "votantes",
-  "young people": "jóvenes",
-  "crimes": "delitos",
-  "crimes per sq mi": "delitos por milla cuadrada",
-  "violations": "violaciones",
-  "violations per sq mi": "violaciones por milla cuadrada",
-  "per sq mi": "por milla cuadrada",
-  "evictions per sq mi": "desalojos por milla cuadrada",
-  "evictions": "desalojos",
-  "ratio of sidewalks to roadways": "proporción de aceras a carreteras",
-  "total dollars": "en total",
-  "workers": "trabajadores",
-  "square miles": "millas cuadradas"
  },
  "welcome": {
   "title": "¡Bienvenidos al Neighborhood Compass de Durham!"

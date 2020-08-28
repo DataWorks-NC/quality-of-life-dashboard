@@ -1,24 +1,25 @@
 import Vue from 'vue';
-import md5 from 'js-md5';
+import { xor } from 'lodash';
 import { fetchResponseJSON } from '../modules/fetch';
 import config from '../modules/config';
+import i18n from '../i18n';
 
 const { siteConfig, dataConfig } = config;
 
-const getJSONFilename = (geographyId, areaId) => (geographyId === 'neighborhood' ? `/data/report/${geographyId}/${md5(areaId)}.json` : `/data/report/${geographyId}/${areaId}.json`);
+const getJSONFilename = (geographyId, areaId) => `/data/report/${geographyId}/${areaId}.json`;
 
 export default {
   state: {
     categoryNamesBase: new Array(...new Set(Object.values(dataConfig).map(m => (m.category)))),
     metrics: {}, // Config values for each metric which is in the current geography, plus new visibility flag. Keyed by metric ID.
-    reportTitle: false, // Custom title for report.
     metricValues: {}, // Values for each metric in the report.
     countyAverages: {},
     activeCategory: '',
+    areaDataLoadedFor: {}, // Store the selection for which area data was last loaded.
   },
   getters: {
     categoryNames: state => state.categoryNamesBase.filter(c => (c in state.metricValues || c in state.countyAverages)),
-    areaNames: (state, getters, rootState) => rootState.selected.map(id => (rootState.language === 'es' ? rootState.geography.label_es(id) : rootState.geography.label(id))),
+    areaNames: (state, getters, rootState) => getters.selected.map(id => (getters.language === 'es' ? rootState.geography.label_es(id) : rootState.geography.label(id))),
     // Returns true iff all metrics are visible.
     everythingVisible: state => Object.values(state.metrics).every(m => m.visible),
     visibleCategories: (state, getters) => getters.categoryNames.filter(c => (c in state.metricValues || c in state.countyAverages) && Object.values(state.metrics).some(m => m.category === c && m.visible)),
@@ -33,7 +34,13 @@ export default {
 
     hiddenCategories: (state, getters) => getters.categoryNames.filter(c => Object.values(state.metrics).some(m => m.category === c) && !Object.values(state.metrics).filter(m => m.category === c).some(m => m.visible)),
 
-    reportTitle: (state, getters) => (state.reportTitle ? state.reportTitle : getters.areaNames.join(', ')),
+    reportTitle: (state, getters, rootState) => {
+      if (rootState.route && 'selectGroupName' in rootState.route.query && getters.selectGroupIds === getters.selected) {
+        const selectGroupType = i18n.t(`selectGroup.${rootState.route.query.selectGroupType}`);
+        return `${rootState.route.query.selectGroupName} (${selectGroupType})`;
+      }
+      return getters.areaNames.join(', ');
+    },
 
     // Pull the most recent year for each metric listed in siteConfig.summaryMetrics for which we have valid metric values.
     summaryMetrics: (state) => {
@@ -53,11 +60,7 @@ export default {
     // Populate metrics array on report data, which tracks visibility as well.
     populateMetrics(state, { geography }) {
       const geographyMetrics = Object.keys(dataConfig).filter(m => dataConfig[m].geographies.indexOf(geography.id) > -1);
-      geographyMetrics.forEach(m => Vue.set(state.metrics, m, Object.assign({ visible: true }, dataConfig[m])));
-    },
-
-    setReportTitle(state, title) {
-      state.reportTitle = title;
+      geographyMetrics.forEach(m => Vue.set(state.metrics, m, { visible: true, ...dataConfig[m] }));
     },
 
     // Hide all metrics, so that we can individually toggle on specific metrics/categories.
@@ -99,14 +102,26 @@ export default {
     setActiveCategory(state, category) {
       state.activeCategory = category;
     },
+    setAreaDataLoadedFor(state, selected) {
+      state.areaDataLoadedFor = selected;
+    },
   },
   actions: {
     // Load data first (from individual JSONs, one for each area included in the report, then set area IDs.
-    async loadAreaData({ commit, rootState }) {
-      if (!rootState.selected.length) { return; }
+    async loadAreaData({
+      commit, getters, rootState, state,
+    }) {
+      if (getters.selected.length === 0) {
+        return;
+      }
 
-      // TODO: Only reload area data when necessary.
-      const { selected } = rootState;
+      const selected = getters.selected;
+
+      if (xor(selected, state.areaDataLoadedFor).length === 0) {
+        // If areaDataLoaded is exactly equal to selected, return.
+        return;
+      }
+
       // Load array of JSON file data for each metric.
       // eslint-disable-next-line consistent-return
       return Promise.all(selected.map(id => fetchResponseJSON(getJSONFilename(rootState.geography.id, id)))).then((areaData) => {
@@ -149,6 +164,8 @@ export default {
           });
           commit('setMetricValues', { metric: key, values: metricValues });
         });
+
+        commit('setAreaDataLoadedFor', selected);
       });
     },
 

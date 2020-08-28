@@ -11,13 +11,15 @@
         <img src="../../assets/img/countyLogo.png" :alt="$t('strings.DurhamCountyLogo')" height="125">
       </ExternalLink>
     </p>
-    <RouterLink place="aboutLink" :to="{name: 'about' }" class="logos overline text-center">
+    <RouterLink :to="{name: 'about' }" class="logos overline text-center">
       {{ $t('footer.about') }}
     </RouterLink>
     <i18n path="footer.radCredit" tag="p" class="logos overline text-center">
-      <ExternalLink place="radLink" href="https://rad.cat">
-        Research Action Design
-      </ExternalLink>
+      <template v-slot:radLink>
+        <ExternalLink href="https://rad.cat">
+          Research Action Design
+        </ExternalLink>
+      </template>
     </i18n>
   </v-footer>
 </template>

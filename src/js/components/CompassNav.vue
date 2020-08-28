@@ -1,6 +1,7 @@
 <template lang="html">
   <div>
     <v-app-bar dark extension-height="48px">
+      <!-- Mobile nav -->
       <v-dialog v-model="drawer" fullscreen hide-overlay transition="dialog-bottom-transition">
         <template v-slot:activator="{ // eslint-disable-next-line vue/no-unused-vars
           on
@@ -21,9 +22,21 @@
                 <template v-slot:activator>
                   <v-list-item-content><v-list-item-title>{{ category.name }}</v-list-item-title></v-list-item-content>
                 </template>
-                <v-list-item v-for="m in categoryMetrics(category.originalName)" :key="m.metric" :to="{ name: 'compass', params: { ...$route.params, metric: m.metric }, query: $route.query }" exact link @click="drawer = !drawer">
-                  <v-list-item-title>{{ m.name }}</v-list-item-title>
-                </v-list-item>
+                <template v-for="m in categoryMetrics[category.originalName]">
+                  <v-list-group v-if="m.children.length" :key="m.name" sub-group :value="metric.config && metric.config.subcategory === m.originalName">
+                    <template v-slot:activator>
+                      <v-list-item-content>
+                        <v-list-item-title>{{ m.name }}</v-list-item-title>
+                      </v-list-item-content>
+                    </template>
+                    <v-list-item v-for="m2 in m.children" :key="m2.metric" :to="{ name: 'compass', params: { ...$route.params, metric: m2.metric }, query: $route.query }" exact link @click="drawer = !drawer">
+                      <v-list-item-title>{{ m2.name }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list-group>
+                  <v-list-item v-else :key="m.metric" :to="{ name: 'compass', params: { ...$route.params, metric: m.metric }, query: $route.query }" exact link @click="drawer = !drawer">
+                    <v-list-item-title>{{ m.name }}</v-list-item-title>
+                  </v-list-item>
+                </template>
               </v-list-group>
             </v-list>
           </v-container>
@@ -39,7 +52,7 @@
       <v-btn text @click="swapLanguage()">
         {{ $t('strings.ChangeLanguage') }}
       </v-btn>
-      <v-btn icon :area-label="$t('about.link')" :to="{ name: 'about' }">
+      <v-btn icon :aria-label="$t('about.link')" :to="{ name: 'about' }">
         <v-icon>{{ mdiInformation }}</v-icon>
       </v-btn>
       <v-btn icon :aria-label="$t('strings.DownloadData')" href="/download/download.zip" @click="gaEvent('send', 'event', 'download', 'metric zip file download')">
@@ -59,6 +72,7 @@
       </template>
     </v-app-bar>
 
+    <!-- Desktop nav -->
     <v-card v-if="categoryTab" class="d-none d-md-flex">
       <v-tabs-items v-model="categoryTab" class="metric__buttons">
         <v-tab-item
@@ -66,9 +80,30 @@
           :key="category.id"
           :value="`tab-${category.id}`"
         >
-          <v-btn v-for="m in categoryMetrics(category.originalName)" :key="m.metric" exact rounded depressed :to="{ name: 'compass', params: { ...$route.params, metric: m.metric }, query: $route.query }">
-            {{ m.name }}
-          </v-btn>
+          <template v-for="m in categoryMetrics[category.originalName]">
+            <template v-if="m.children.length">
+              <v-menu :key="m.metric" :attach="'#' + kebabCase(m.originalName)" offset-y>
+                <template v-slot:activator="{ on }">
+                  <!-- TODO: Add attach property for a11y -->
+                  <v-btn v-if="metric.config && metric.config.subcategory === m.originalName" rounded depressed class="v-btn--active" v-on="on">
+                    {{ $i18n.locale === 'es' ? metric.config.title_es : metric.config.title }} <v-icon>$subgroup</v-icon>
+                  </v-btn>
+                  <v-btn v-else rounded depressed v-on="on">
+                    {{ m.name }} <v-icon>$subgroup</v-icon>
+                  </v-btn>
+                </template>
+                <v-list nav dense offset-y max-height="75vh">
+                  <v-list-item v-for="m2 in m.children" :key="m2.metric" :to="{ name: 'compass', params: { ...$route.params, metric: m2.metric }, query: $route.query }" exact link>
+                    <v-list-item-title>{{ m2.name }}</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+              <span :id="kebabCase(m.originalName)" :key="`${m.originalName}-attach`" />
+            </template>
+            <v-btn v-else :key="m.metric" exact rounded depressed :to="{ name: 'compass', params: { ...$route.params, metric: m.metric }, query: $route.query }">
+              {{ m.name }}
+            </v-btn>
+          </template>
         </v-tab-item>
       </v-tabs-items>
     </v-card>
@@ -78,6 +113,7 @@
 <script>
 import { mdiClose, mdiDownload, mdiInformation } from '@mdi/js';
 import { mapState } from 'vuex';
+import { fromPairs, kebabCase, uniq } from 'lodash';
 
 import { gaEvent } from '../modules/tracking';
 import config from '../modules/config';
@@ -114,17 +150,34 @@ export default {
         this.filterVal = this.categories.find(c => c.id === val.replace('tab-', ''));
       },
     },
+    // Return sorted array of metrics by category, with the names translated as needed.
+    categoryMetrics() {
+      return fromPairs(config.categories.map(c => {
+        if (!(c in this.metricsByCategory)) return [c, []];
+
+        const metrics = this.metricsByCategory[c]
+          .map(m => ({
+            metric: m.metric, subcategory: m.subcategory, name: (this.$i18n.locale === 'es' ? m.title_es : m.title), children: [],
+          }))
+          .sort((a, b) => this.$i18n.localizedStringCompareFn(a.name, b.name));
+
+        const subcategories = uniq(metrics.map(m => m.subcategory).filter(a => !!a))
+          .map(subcategory => ({
+            name: this.$i18n.t(`strings.metricSubCategories.${subcategory}`),
+            originalName: subcategory,
+            children: metrics.filter(m => m.subcategory === subcategory),
+          }));
+
+        return [c, metrics
+          .filter(m => !m.subcategory) // Only include metrics which have no subcategory, at this level
+          // Nest child metrics under subcategories.
+          .concat(subcategories)
+          .sort((a, b) => this.$i18n.localizedStringCompareFn(a.name, b.name)),
+        ];
+      }));
+    },
   },
   methods: {
-    // Return sorted array of metrics by category, with the names translated as needed.
-    categoryMetrics(categoryName) {
-      if (categoryName && (categoryName in config.metricsByCategory)) {
-        return config.metricsByCategory[categoryName]
-          .map(m => ({ metric: m.metric, name: (this.$i18n.locale === 'es' ? m.title_es : m.title) }))
-          .sort((a, b) => this.$i18n.localizedStringCompareFn(a.name, b.name));
-      }
-      return [];
-    },
     swapLanguage() {
       let newLanguage = 'es';
       if (this.$i18n.locale === 'es') {
@@ -132,6 +185,7 @@ export default {
       }
       this.$router.push({ params: { ...this.$route.params, locale: newLanguage }, query: this.$route.query });
     },
+    kebabCase,
     gaEvent,
   },
 };

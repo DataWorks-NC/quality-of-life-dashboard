@@ -3,7 +3,7 @@
     <v-btn
       :disabled="!selected.length"
       :to="{ query: {
-        ...$route.query, selected: [], reportTitle: undefined, legendTitle: undefined
+        ...$route.query, selected: [], selectGroupType: undefined, selectGroupName: undefined, legendTitle: undefined
       } }"
       dark
     >
@@ -25,11 +25,14 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 export default {
   name: 'UndermapButtons',
-  computed: mapState(['selected', 'metricId']),
+  computed: {
+    ...mapState(['metricId']),
+    ...mapGetters(['selected']),
+  },
 };
 </script>
 

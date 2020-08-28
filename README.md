@@ -1,4 +1,4 @@
-# Durham Neightorhood Compass
+# Durham Neighborhood Compass
 
 A dashboard for community data and health, maintained by [DataWorks NC](https://www.dataworks-nc.org) and [Research Action Design](https://rad.cat). Live at https://compass.durhamnc.gov
 
@@ -86,11 +86,11 @@ If you update the sprites file, you may need to check for missing sprites as the
 
 ## Testing
 
-We test with the help of [![Browserstack logo](https://raw.githubusercontent.com/DataWorks-NC/quality-of-life-dashboard/master/app/assets/img/browserstack-logo.png)](https://browserstack.com/)
+We test with the help of [![Browserstack logo](https://raw.githubusercontent.com/DataWorks-NC/quality-of-life-dashboard/main/app/assets/img/browserstack-logo.png)](https://browserstack.com/)
 
 ## Performance Testing
 
-We use pwmetrics to track how the deployed app code performs against Google Lighthouse metrics over time. For the most part, if you're running the site locally you won't want to use or mess with pwmetrics, but you can refer to `.circleci/pwmetrics-config.js` and the `.circleci/config.yml` file to better understand how pwmetrics is configured and used.
+We use [lighthouse-ci](https://github.com/GoogleChrome/lighthouse-ci) to track how the deployed app code performs against Google Lighthouse metrics over time. For the most part, if you're running the site locally you won't want to use or mess with lighthouse-ci, but if you want to run performane tests locally, you can globally install `@lhci/cli` and the `.lighthouserc.json` configuration will work locally as well.
 
 We also try to track the generated bundle size of the app using bundlesize, which runs on each pull request in CircleCI to check generated files against limits which are set in `package.json`. Occasionally a file will go over that limit by a few kb here or there, and our current practice is just to adjust the bundlesize limits as needed until the build passes, but it's good to have the extra info.
 
