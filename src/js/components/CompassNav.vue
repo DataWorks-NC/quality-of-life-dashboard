@@ -52,7 +52,7 @@
       <v-btn text @click="swapLanguage()">
         {{ $t('strings.ChangeLanguage') }}
       </v-btn>
-      <v-btn icon :area-label="$t('about.link')" :to="{ name: 'about' }">
+      <v-btn icon :aria-label="$t('about.link')" :to="{ name: 'about' }">
         <v-icon>{{ mdiInformation }}</v-icon>
       </v-btn>
       <v-btn icon :aria-label="$t('strings.DownloadData')" href="/download/download.zip" @click="gaEvent('send', 'event', 'download', 'metric zip file download')">
@@ -64,7 +64,6 @@
           <v-tab
             v-for="category in categories"
             :key="category.id"
-            :href="`#tab-${category.id}`"
           >
             {{ category.name }}
           </v-tab>
