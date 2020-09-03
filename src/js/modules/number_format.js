@@ -32,13 +32,13 @@ function round(number, decPlaces = 0) {
   return Number(number.toFixed(decPlaces));
 }
 
-function legendLabelNumber(value, config) {
+function legendLabelNumber(value, config, useSuffix = true) {
   let prefix = ''; let
     suffix = '';
   if ('prefix' in config) {
     prefix = config.prefix;
   }
-  if ('suffix' in config) {
+  if ('suffix' in config && useSuffix) {
     suffix = config.suffix;
   }
   const num = config.commas || prefix === '$' ? abbrNum(value, config.decimals) : round(value, config.decimals);
@@ -65,7 +65,6 @@ function prettyNumber(number, decimals = 0, prefix = '', suffix = '', commas = t
   }
   return '--';
 }
-
 
 export {
   legendLabelNumber, abbrNum, round, numberfixes, commafy, prettyNumber,
