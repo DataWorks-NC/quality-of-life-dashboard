@@ -1,7 +1,7 @@
 <template lang="html">
   <div v-if="metric.config" id="legend" class="top left">
     <div>
-      <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=" class="background-print-img" aria-hidden="true">
+      <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=" class="background-print-img" aria-hidden="true" alt="">
       <div class="legendposition">
         <a class="no-underline" :title="$t('legend.MoveTableOfContents')" href="javascript:void(0)" @click="position"><v-icon>{{ mdiCursorMove }}</v-icon></a>
       </div>
@@ -35,29 +35,12 @@
           <title id="svgTitle">{{ $t('legend.ChoroplethLegend') }}</title>
           <g transform="translate(20.714293 -851.75475)">
             <!--     @TODO add aria labels for these mouseover actions       -->
-            <rect :style="{fill: colors[0]}" y="865.9" x="-20.7" height="25" width="50" @click="selectBreak(0)" @mouseover="changeHighlight(0)" @mouseout="changeHighlight(-1)" />
-            <rect :style="{fill: colors[1]}" width="50" height="25" x="28.9" y="865.9" @click="selectBreak(1)" @mouseover="changeHighlight(1)" @mouseout="changeHighlight(-1)" />
-            <rect :style="{fill: colors[2]}" width="50" height="25" x="78.5" y="865.9" @click="selectBreak(2)" @mouseover="changeHighlight(2)" @mouseout="changeHighlight(-1)" />
-            <rect :style="{fill: colors[3]}" y="865.9" x="128.1" height="25" width="50" @click="selectBreak(3)" @mouseover="changeHighlight(3)" @mouseout="changeHighlight(-1)" />
-            <rect :style="{fill: colors[4]}" width="50" height="25" x="177.6" y="865.9" @click="selectBreak(4)" @mouseover="changeHighlight(4)" @mouseout="changeHighlight(-1)" />
-            <text x="-19.5" y="864.3" class="legendText">
-              <tspan x="-19.5" y="864.3">{{ abbrNumber(breaks[0]) }}</tspan>
-            </text>
-            <text y="864.4" x="28.6" class="legendText">
-              <tspan y="864.4" x="28.6">{{ abbrNumber(breaks[1]) }}</tspan>
-            </text>
-            <text x="78.4" y="864.4" class="legendText">
-              <tspan x="78.4" y="864.4">{{ abbrNumber(breaks[2]) }}</tspan>
-            </text>
-            <text y="864.4" x="128" class="legendText">
-              <tspan y="864.4" x="128">{{ abbrNumber(breaks[3]) }}</tspan>
-            </text>
-            <text x="177.8" y="864.4" class="legendText">
-              <tspan x="177.8" y="864.4">{{ abbrNumber(breaks[4]) }}</tspan>
-            </text>
-            <text y="864.3" x="225.8" class="legendText">
-              <tspan y="864.3" x="225.8">{{ abbrNumber(breaks[5]) }}</tspan>
-            </text>
+            <g v-for="(breakval, i) in breaks" :key="`legend-patch-${i}`" :class="[i === 0 && 'first', i === breaks.length - 1 && 'last']">
+              <rect :style="{fill: colors[i]}" y="865.9" :x="-20.7 + 50*i" height="25" width="50" @click="selectBreak(i)" @mouseover="changeHighlight(i)" @mouseout="changeHighlight(-1)" />
+              <text :x="-20.7 + 50*i - (i === breaks.length - 1 ? 2.5 : 0)" y="864.3" class="legendText">
+                {{ abbrNumber(breakval) }}
+              </text>
+            </g>
           </g>
         </svg>
       </div>
@@ -91,7 +74,7 @@ export default {
       metric: 'metric',
       year: 'year',
       areaValue(state) { return prettyNumber(state.metric.averageValues[state.year].value, state.metric.config.decimals, state.metric.config.prefix, state.metric.config.suffix, state.metric.config.commas); },
-      areaValueRaw(state) { return prettyNumber(state.metric.averageValues[state.year].rawValue, 0, state.metric.config.prefix); },
+      areaValueRaw(state) { return prettyNumber(state.metric.averageValues[state.year].rawValue, state.metric.config.decimals, state.metric.config.prefix); },
     }),
     ...mapGetters(['selected']),
   },
@@ -131,7 +114,7 @@ export default {
     },
 
     abbrNumber(value) {
-      return legendLabelNumber(value, this.metric.config);
+      return legendLabelNumber(value, this.metric.config, false);
     },
     processSelected() {
       if (!this.metric.data || !this.metric.config) return;
@@ -147,7 +130,7 @@ export default {
         if (metricConfig.suffix === '%') {
           rawValue /= 100;
         }
-        this.selectedValueRaw = prettyNumber(rawValue, 0, metricConfig.prefix);
+        this.selectedValueRaw = prettyNumber(rawValue, metricConfig.decimals, metricConfig.prefix);
       }
     },
     /**
@@ -299,18 +282,15 @@ svg {
   letter-spacing: 0px;
   line-height: 100%;
   stroke-width: 1px;
-  text-align: center;
   text-anchor: middle;
   word-spacing: 0px;
 }
 
-.legendText:first-of-type {
-  text-align: start;
+.first .legendText {
   text-anchor: start;
 }
 
-.legendText:last-of-type {
-  text-align: end;
+.last .legendText {
   text-anchor: end;
 }
 
