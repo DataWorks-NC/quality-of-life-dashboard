@@ -35,7 +35,7 @@ export default {
           type: 'symbol',
           source: 'selectGroup',
           layout: {
-            'text-font': ['Open Sans Semibold'],
+            'text-font': ['Open Sans Semi Bold'],
             'text-field': this.$i18n.locale === 'es' ? '{label_es}' : '{label}',
             'text-size': [
               'interpolate',

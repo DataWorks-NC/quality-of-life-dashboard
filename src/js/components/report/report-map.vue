@@ -93,7 +93,7 @@ export default {
               type: 'symbol',
               source: 'neighborhoods',
               layout: {
-                'text-font': ['Open Sans Semibold'],
+                'text-font': ['Open Sans Semi Bold'],
                 'text-field': _this.$i18n.locale === 'es' ? '{label_es}' : '{label}',
                 'text-transform': 'uppercase',
                 'text-size': _this.selectedGeographies.length > 3 ? 8 : 12,
@@ -139,7 +139,7 @@ export default {
             type: 'symbol',
             source: 'selectGroup',
             layout: {
-              'text-font': ['Open Sans Semibold'],
+              'text-font': ['Open Sans Semi Bold'],
               'text-field': this.$i18n.locale === 'es' ? '{label_es}' : '{label}',
               'text-transform': 'uppercase',
               'text-size': [
