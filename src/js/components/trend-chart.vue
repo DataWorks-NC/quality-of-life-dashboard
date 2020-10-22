@@ -10,7 +10,7 @@
       <span v-if="values" class="caption"><v-icon color="accent">{{ mdiTrendingUp }}</v-icon> {{ $t('strings.selected') | capitalize }}</span>
     </div>
     <div class="trendchart">
-      <div :id="'ct-trendchart-' + metricConfig.metric" class="ct-trendchart" />
+      <div :id="'ct-trendchart-' + metricConfig.metric" class="ct-trendchart chartist" />
     </div>
   </div>
 </template>
