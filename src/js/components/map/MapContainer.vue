@@ -250,8 +250,7 @@ export default {
           const { id } = feature.properties;
           const data = _this.metric.data.map[id][`y_${_this.year}`];
           const geographyLabel = _this.$i18n.locale === 'es' ? feature.properties.label_es : feature.properties.label;
-          const val = prettyNumber(data, _this.metric.config.decimals, _this.metric.config.prefix,
-            _this.metric.config.suffix, _this.metric.config.commas);
+          const val = prettyNumber(data, _this.metric.config);
           const label = _this.metric.config.label ? ` ${_this.$t(`metricLabels.${_this.metric.config.label}`)}` : '';
           _this.hoverPopup.setLngLat(map.unproject(e.point))
             .setHTML(

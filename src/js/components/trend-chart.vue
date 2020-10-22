@@ -111,9 +111,7 @@ export default {
             appendToBody: true,
             transformTooltipTextFnc: value => prettyNumber(
               value.split(",")[1],
-              metricConfig.decimals,
-              metricConfig.prefix,
-              metricConfig.suffix,
+              metricConfig,
             ),
           }),
         ],

@@ -92,9 +92,7 @@ export default {
     prettify(value) {
       return prettyNumber(
         value,
-        this.metric.decimals,
-        this.metric.prefix,
-        this.metric.suffix,
+        this.metric,
       );
     },
   },
