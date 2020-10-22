@@ -53,7 +53,10 @@ function numberfixes(number, prefix = '', suffix = '') {
   return prefix + number + suffix;
 }
 
-function prettyNumber(number, decimals = 0, prefix = '', suffix = '', commas = true) {
+function prettyNumber(number,
+  {
+    decimals = 0, prefix = '', suffix = '', commas = true,
+  }) {
   if (isNumeric(number)) {
     if (commas) {
       return numberfixes(commafy(round(Number(number), decimals)), prefix,

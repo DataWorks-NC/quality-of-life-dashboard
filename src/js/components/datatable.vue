@@ -98,8 +98,7 @@ export default {
             return {
               icon: this.trendIcon(trendVal),
               label: prettyNumber(trendVal,
-                state.metric.config.decimals, state.metric.config.prefix,
-                state.metric.config.suffix, state.metric.config.commas),
+                state.metric.config),
             };
           }
           return {
@@ -118,7 +117,7 @@ export default {
             const trendVal = (begin - end) * (state.metric.config.suffix === '%' ? 0.01 : 1);
             return {
               icon: this.trendIcon(trendVal),
-              label: prettyNumber(trendVal, 0),
+              label: prettyNumber(trendVal, {}),
             };
           }
           return {
@@ -130,7 +129,7 @@ export default {
         const rawValue = geogIndex => state.metric.data.w[geogIndex] && prettyNumber(
           state.metric.data.w[geogIndex][`y_${state.year}`]
           * state.metric.data.map[geogIndex][`y_${state.year}`]
-          * (state.metric.config.suffix === '%' ? 0.01 : 1), 0, state.metric.config.prefix,
+          * (state.metric.config.suffix === '%' ? 0.01 : 1), { prefix: state.metric.config.prefix },
         );
 
         return this.selected.filter(geogIndex => geogIndex in state.metric.data.map)
@@ -138,12 +137,10 @@ export default {
           .map(geogIndex => ({
             geogIndex,
             value: prettyNumber(state.metric.data.map[geogIndex][`y_${state.year}`],
-              state.metric.config.decimals, state.metric.config.prefix, state.metric.config.suffix,
-              state.metric.config.commas),
+              state.metric.config),
             accuracy: state.metric.config.accuracy
               && prettyNumber(state.metric.data.a[geogIndex][`y_${state.year}`],
-                state.metric.config.decimals, state.metric.config.prefix,
-                state.metric.config.suffix, state.metric.config.commas),
+                state.metric.config),
             trend: trend(geogIndex),
             rawValue: state.metric.config.raw_label && rawValue(geogIndex),
             rawTrend: state.metric.config.raw_label && state.metric.data.w[geogIndex]

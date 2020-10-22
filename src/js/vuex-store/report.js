@@ -46,13 +46,13 @@ export default {
     summaryMetrics: (state) => {
       const valuesSource = Object.keys(state.metricValues).length ? state.metricValues : state.countyAverages;
       return siteConfig.summaryMetrics.map((id) => {
-        if (!(id in dataConfig)) return [];
+        if (!(id in dataConfig)) return false;
         const metric = dataConfig[id];
         if (metric.category in valuesSource && metric.metric in valuesSource[metric.category]) {
           metric.value = Object.values(valuesSource[metric.category][metric.metric]).slice(-1)[0];
         }
         return metric;
-      });
+      }).filter(i => i);
     },
     activeCategory: state => state.activeCategory,
   },

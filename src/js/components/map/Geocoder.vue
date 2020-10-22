@@ -95,6 +95,8 @@ export default {
         _this.addressMarker.remove();
 
         if (e.result) {
+          _this.log(e.result);
+
           // Handle results differently depending on the type of result.
           // Case 1: This is a Mapbox geocoded address
           if (!('local_match' in e.result)) {
@@ -128,7 +130,7 @@ export default {
 
           // Case 2: This is an existing feature on the map.
           else if (e.result.local_match === 'feature') {
-            _this.$router.push({ query: { ...this.$route.query, selected: [e.result.id] } });
+            _this.$router.push({ query: { ..._this.$route.query, selected: [e.result.properties.id] } });
             // eslint-disable-next-line brace-style
           }
 

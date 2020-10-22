@@ -73,8 +73,8 @@ export default {
       highlight: 'highlight',
       metric: 'metric',
       year: 'year',
-      areaValue(state) { return prettyNumber(state.metric.averageValues[state.year].value, state.metric.config.decimals, state.metric.config.prefix, state.metric.config.suffix, state.metric.config.commas); },
-      areaValueRaw(state) { return prettyNumber(state.metric.averageValues[state.year].rawValue, state.metric.config.decimals, state.metric.config.prefix); },
+      areaValue(state) { return prettyNumber(state.metric.averageValues[state.year].value, state.metric.config); },
+      areaValueRaw(state) { return prettyNumber(state.metric.averageValues[state.year].rawValue, { prefix: state.metric.config.prefix }); },
     }),
     ...mapGetters(['selected']),
   },
@@ -123,14 +123,14 @@ export default {
       const metricData = this.metric.data;
 
       const selectedValue = calcValue(metricData, metricConfig.type, this.year, this.selected);
-      this.selectedValue = prettyNumber(selectedValue, metricConfig.decimals, metricConfig.prefix, metricConfig.suffix, metricConfig.commas);
+      this.selectedValue = prettyNumber(selectedValue, metricConfig);
       if (metricConfig.raw_label) {
         const rawArray = wValsToArray(metricData.map, metricData.w, [this.year], this.selected);
         let rawValue = sum(rawArray);
         if (metricConfig.suffix === '%') {
           rawValue /= 100;
         }
-        this.selectedValueRaw = prettyNumber(rawValue, metricConfig.decimals, metricConfig.prefix);
+        this.selectedValueRaw = prettyNumber(rawValue, { prefix: metricConfig.prefix });
       }
     },
     /**

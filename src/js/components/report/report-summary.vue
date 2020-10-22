@@ -113,9 +113,7 @@ export default {
     prettyValue(metric) {
       return prettyNumber(
         metric.value,
-        metric.decimals,
-        metric.prefix,
-        metric.suffix,
+        metric,
       );
     },
     categoryVisible(isVisible, entry) {
