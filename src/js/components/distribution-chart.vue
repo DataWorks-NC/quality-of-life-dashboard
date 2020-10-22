@@ -7,7 +7,7 @@
       <span v-show="selected.length > 0" class="caption"><v-icon color="accent" size="14px">{{ mdiCircle }}</v-icon> {{ $t('strings.selected') | capitalize }}</span>
       <span v-if="mounted" class="caption"><v-icon size="14px" color="#666">{{ mdiDotsHorizontal }}</v-icon> {{ $t('strings.CountyAverage') }}: {{ countyAverageString }}</span>
     </div>
-    <div class="ct-distributionchart" />
+    <div class="ct-distributionchart chartist" />
   </v-card>
 </template>
 
@@ -35,7 +35,7 @@ export default {
       return this.year in this.countyValues ? this.countyValues[this.year] : false;
     },
     countyAverageString() {
-      return this.countyAverage && prettyNumber(this.countyAverage, this.metric.config.decimals, this.metric.config.prefix, this.metric.config.suffix, this.metric.config.commas);
+      return this.countyAverage && prettyNumber(this.countyAverage, this.metric.config);
     },
   },
   watch: {
@@ -90,8 +90,7 @@ export default {
         plugins: [
           Chartist.plugins.tooltip({
             appendToBody: true,
-            transformTooltipTextFnc: (value) => prettyNumber(value, this.metric.config.decimals, this.metric.config.prefix,
-              this.metric.config.suffix),
+            transformTooltipTextFnc: (value) => prettyNumber(value, this.metric.config),
           }),
         ],
       };

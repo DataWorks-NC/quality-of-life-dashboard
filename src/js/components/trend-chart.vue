@@ -10,7 +10,7 @@
       <span v-if="values" class="caption"><v-icon color="accent">{{ mdiTrendingUp }}</v-icon> {{ $t('strings.selected') | capitalize }}</span>
     </div>
     <div class="trendchart">
-      <div :id="'ct-trendchart-' + metricConfig.metric" class="ct-trendchart" />
+      <div :id="'ct-trendchart-' + metricConfig.metric" class="ct-trendchart chartist" />
     </div>
   </div>
 </template>
@@ -111,9 +111,7 @@ export default {
             appendToBody: true,
             transformTooltipTextFnc: value => prettyNumber(
               value.split(",")[1],
-              metricConfig.decimals,
-              metricConfig.prefix,
-              metricConfig.suffix,
+              metricConfig,
             ),
           }),
         ],
