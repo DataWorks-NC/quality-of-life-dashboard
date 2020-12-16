@@ -156,6 +156,7 @@ export default {
         if (!(c in this.metricsByCategory)) return [c, []];
 
         const metrics = this.metricsByCategory[c]
+          .filter(m => !m.exclude_from_map)
           .map(m => ({
             metric: m.metric, subcategory: m.subcategory, name: (this.$i18n.locale === 'es' ? m.title_es : m.title), children: [],
           }))
