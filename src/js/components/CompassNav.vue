@@ -196,6 +196,9 @@ export default {
 .metric__buttons {
   padding: 10px;
 
+  // Fix for vuetify clipping the dropdown menus.
+  overflow: visible !important;
+
   .v-btn {
     text-transform: none;
     font-weight: normal;
