@@ -206,9 +206,9 @@ a {
   }
 }
 .metric-selector .metric-selector__category.partially-active {
-  background-color: var(--v-primary-lighten2);
+  background-color: #02a7da; // Lighter version of primary color
 }
 .metric-selector .metric-selector__category.v-list-item--active {
-  background-color: var(--v-primary-darken2);
+  background-color: #01495f; // Darker version of primary color
 }
 </style>
