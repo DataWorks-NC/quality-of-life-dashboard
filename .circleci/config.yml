@@ -70,7 +70,7 @@ jobs:
 
   deploy_prod: &DEPLOY_PROD
     docker:
-      - image: microsoft/azure-cli
+      - image: mcr.microsoft.com/azure-cli
     steps:
       - attach_workspace:
           at: /tmp/workspace
@@ -93,7 +93,7 @@ jobs:
 
   deploy_dev:
     docker:
-      - image: microsoft/azure-cli
+      - image: mcr.microsoft.com/azure-cli
     steps:
       - attach_workspace:
           at: /tmp/workspace
@@ -109,7 +109,7 @@ jobs:
 
   deploy_stage:
     docker:
-      - image: microsoft/azure-cli
+      - image: mcr.microsoft.com/azure-cli
     steps:
       - attach_workspace:
           at: /tmp/workspace
