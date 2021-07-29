@@ -6,7 +6,7 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: circleci/node:12-browsers
+      - image: circleci/node:14-browsers
 
     working_directory: ~/repo
 
@@ -16,9 +16,9 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v2-dependencies-{{ checksum "package.json" }}
+          - v3-dependencies-{{ checksum "package.json" }}
           # fallback to using the latest cache if no exact match is found
-          - v2-dependencies-
+          - v3-dependencies-
 
       # Install puppeteer dependencies. TODO: Consider using https://circleci.com/orbs/registry/orb/threetreeslight/puppeteer.
       - run:
@@ -40,7 +40,7 @@ jobs:
       - save_cache:
           paths:
             - node_modules
-          key: v2-dependencies-{{ checksum "package.json" }}
+          key: v3-dependencies-{{ checksum "package.json" }}
 
       # run tests!
       - run: npm run build-site
