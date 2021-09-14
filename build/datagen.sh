@@ -2,8 +2,8 @@
 
 # Automate the data generation process
 
-node ./build/datagen.mjs
-node ./build/report-datagen.mjs
+node ./build/datagen
+node ./build/report-datagen
 
 if [ ! -f ./public/download/download.zip ]
 then
