@@ -151,7 +151,7 @@ async function main() {
         const outJSON = {};
         const oldFormatCSVFilename = path.join(basePath, `${prefix}${metric.metric}.csv`);
         const newFormatCSVFilename = path.join(basePath,
-          `${metric.metric}__${prefix === 'r' ? 'numerator' : 'value'}.csv`);
+          `${metric.metric}_${prefix === 'r' ? 'numerator' : 'value'}.csv`);
 
         if (fs.existsSync(oldFormatCSVFilename)) {
           const jsonObj = await csv().fromFile(oldFormatCSVFilename);
@@ -191,8 +191,8 @@ async function main() {
         path.join(basePath, `r${metric.metric}.csv`),
         path.join(basePath, `d${metric.metric}.csv`)];
       const newFormatCSVFilenames = [
-        path.join(basePath, `${metric.metric}__numerator.csv`),
-        path.join(basePath, `${metric.metric}__denominator.csv`)];
+        path.join(basePath, `${metric.metric}_numerator.csv`),
+        path.join(basePath, `${metric.metric}_denominator.csv`)];
 
       let filenames = oldFormatCSVFilenames;
       if (fs.existsSync(newFormatCSVFilenames[0]) && fs.existsSync(newFormatCSVFilenames[1])) {

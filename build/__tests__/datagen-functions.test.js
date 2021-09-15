@@ -1,4 +1,4 @@
-import { isNumeric, csvToJsonTransform, newFormatCsvToJsonTransform } from '../datagen-functions';
+const { isNumeric, csvToJsonTransform, newFormatCsvToJsonTransform } = require('../datagen-functions');
 
 test('isNumeric returns true if value is convertible to number, false otherwise', () => {
   expect(isNumeric('a')).toBe(false);

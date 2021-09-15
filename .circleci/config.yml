@@ -25,7 +25,7 @@ jobs:
 
       - run:
           name: Run jest tests
-          command: npm run jest
+          command: npm run test
 
       # Install puppeteer dependencies. TODO: Consider using https://circleci.com/orbs/registry/orb/threetreeslight/puppeteer.
       - run:
