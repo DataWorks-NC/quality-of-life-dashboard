@@ -1,5 +1,5 @@
 {
-  "extends": ["airbnb-base", "plugin:vue/recommended"],
+  "extends": ["plugin:vue/recommended", "@vue/airbnb"],
   "parserOptions": {
     "parser": "babel-eslint"
   },
@@ -16,6 +16,10 @@
     "arrow-parens": "off",
     "no-plusplus": "off",
     "no-minusminus": "off",
-    "no-mixed-operators": "off"
+    "no-mixed-operators": "off",
+    "brace-style": "off"
+  },
+  "env": {
+    "jest": true
   }
 }
