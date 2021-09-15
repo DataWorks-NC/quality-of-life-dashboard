@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import { isFinite } from 'lodash';
 import { mapGetters, mapState } from 'vuex';
 
 import { prettyNumber } from '../../modules/number_format';
@@ -88,14 +89,20 @@ export default {
         } if (val <= breaks[5]) {
           return 4;
         }
+        return null;
       };
 
       Object.keys(this.metricData.map).forEach((id) => {
         const value = this.metricData.map[id][`y_${this.year}`];
         if (this.highlight.indexOf(id) !== -1) {
           stops[5].push(id);
-        } else if (value !== null) {
-          stops[getStop(value)].push(id);
+        } else if (isFinite(value) && (getStop(value) !== null)) {
+          try {
+            stops[getStop(value)].push(id);
+          }
+          catch (e) {
+            console.log(e);
+          }
         }
       });
 
