@@ -105,3 +105,9 @@ All text in the app is dynamically loaded using vue-i18n from the `en.json` and 
 ### To add new text to the app
 
 Create the string keys and string items in either English or Spanish in the `en.json` or `es.json` files. If you then run the export_translations script immediately followed by the import_translations script, both languages `json` files will be populated with blank placeholders for any missing text.
+
+# Pinned dependencies
+* autoprefixer@9.x for the time being, b/c upgrading would require upgrading PostCSS
+* sass-loader@10.x because of webpack dependencies
+* eslint@6.x as required by vue eslint airbnb plugin
+* MapboxGL@1.x because we're not upgrading to the new ToS yet
