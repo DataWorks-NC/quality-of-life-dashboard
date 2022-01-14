@@ -14,7 +14,12 @@ import { fetchResponseHTML } from "../../modules/fetch";
 
 export default {
   name: "ReportMoreInfo",
-  props: ["href"],
+  props: {
+    href: {
+      type: String,
+      default: "",
+    },
+  },
   data() {
     return {
       collapsed: true,

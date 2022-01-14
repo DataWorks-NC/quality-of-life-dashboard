@@ -11,7 +11,7 @@
       :thumb-label="$vuetify.breakpoint.name === 'xs' ? 'always' : true"
       persistent-hint
     >
-      <template v-slot:thumb-label="{ value }">
+      <template #thumb-label="{ value }">
         {{ metric.years[value] }}
       </template>
     </v-slider>

@@ -20,7 +20,7 @@
           {{ mdiWhatsapp }}
         </v-icon>
       </ExternalLink>
-      <router-link v-if="$route.name === 'compass'" :to="{ query: { ...this.$route.query, mode: 'print' } }" class="social__link">
+      <router-link v-if="$route.name === 'compass'" :to="{ query: { ...$route.query, mode: 'print' } }" class="social__link">
         <v-icon size="36px" color="#1686B0" :aria-label="$t('social.viewGitHub')">
           {{ mdiPrinter }}
         </v-icon>

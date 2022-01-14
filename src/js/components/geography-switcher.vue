@@ -20,7 +20,7 @@
 <script>
 import { mapState } from 'vuex';
 
-import SelectGroup from './select-group';
+import SelectGroup from './select-group.vue';
 
 import config from '../modules/config';
 

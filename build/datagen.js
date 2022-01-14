@@ -3,7 +3,7 @@ const path = require('path');
 const jsonminify = require('jsonminify');
 const csv = require('csvtojson');
 const _ = require('lodash');
-const marked = require('marked');
+const { marked } = require('marked');
 
 const fs = require('fs');
 const dataConfig = require('../data/config/data');

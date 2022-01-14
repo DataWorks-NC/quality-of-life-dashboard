@@ -26,7 +26,6 @@ function median(arr) {
   return (arr[half - 1] + arr[half]) / 2.0;
 }
 
-
 function valsToArray(data, years, keys) {
   const arr = [];
   for (let y = 0; y < years.length; y++) {
@@ -67,7 +66,6 @@ function calcValue(data, calcType = sum, year, keys) {
   }
   return false;
 }
-
 
 module.exports = {
   sum, mean, weighted, median, valsToArray, wValsToArray, calcValue,
