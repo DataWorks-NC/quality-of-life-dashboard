@@ -101,7 +101,9 @@ export default {
             stops[getStop(value)].push(id);
           }
           catch (e) {
-            console.log(e);
+            if (this.debug) {
+              this.log(e);
+            }
           }
         }
       });
@@ -313,7 +315,7 @@ export default {
         }
       } catch (e) {
         if (this.debug) {
-          console.error(e);
+          this.log(e);
         }
         return null;
       }

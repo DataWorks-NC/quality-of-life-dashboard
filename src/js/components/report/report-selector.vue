@@ -7,7 +7,7 @@
       transition="dialog-bottom-transition"
       class="metric-selector"
     >
-      <template v-slot:activator="{ on }">
+      <template #activator="{ on }">
         <v-btn text v-on="on">
           {{ $t('reportSelector.customize') }}
         </v-btn>

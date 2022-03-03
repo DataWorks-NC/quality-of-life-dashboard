@@ -51,18 +51,19 @@ for extension in extensions:
         print('MIME Type not found: %s' % extension)
         continue
     command = [
-        "az", 
-        "storage", 
-        "blob", 
-        "upload-batch", 
+        "az",
+        "storage",
+        "blob",
+        "upload-batch",
+        "--overwrite",
         "--connection-string",
-        os.getenv('AZURE_STORAGE_CONNECTION_STRING'),"-s", 
+        os.getenv('AZURE_STORAGE_CONNECTION_STRING'),"-s",
         dir_path,
-        "-d", 
-        os.getenv('AZURE_DESTINATION_BLOB'), 
-        "--pattern", 
-        "*"+extension, 
-        "--content-type", 
+        "-d",
+        os.getenv('AZURE_DESTINATION_BLOB'),
+        "--pattern",
+        "*"+extension,
+        "--content-type",
         mime
     ]
     commands.append(command)

@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import colors from './breaks';
 
-const mapConfig = require('../../../data/config/map.js');
-const siteConfig = require('../../../data/config/site.js');
+const mapConfig = require('../../../data/config/map');
+const siteConfig = require('../../../data/config/site');
 const dataConfigUnsorted = require('../../../data/config/data');
 const selectGroups = require('../../../data/config/selectgroups');
 

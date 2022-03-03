@@ -7,7 +7,7 @@
 <script>
 import { mapState } from 'vuex';
 
-import ReportCategory from './report-category';
+import ReportCategory from './report-category.vue';
 
 export default {
   name: 'ReportBody',

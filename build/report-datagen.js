@@ -6,7 +6,7 @@ const fs = require('fs');
 const jsonminify = require('jsonminify');
 const md5 = require('js-md5');
 const path = require('path');
-const stringify = require('csv-stringify');
+const { stringify } = require('csv-stringify');
 
 const siteConfig = require('../data/config/site');
 const dataConfig = require('../data/config/data');

@@ -3,7 +3,7 @@
     <v-app-bar dark extension-height="48px">
       <!-- Mobile nav -->
       <v-dialog v-model="drawer" fullscreen hide-overlay transition="dialog-bottom-transition">
-        <template v-slot:activator="{ // eslint-disable-next-line vue/no-unused-vars
+        <template #activator="{ // eslint-disable-next-line vue/no-unused-vars
           on
         }"
         >
@@ -19,12 +19,12 @@
           <v-container>
             <v-list nav dark>
               <v-list-group v-for="category in categories" :key="category.id" :value="categoryTab === `tab-${category.id}`">
-                <template v-slot:activator>
+                <template #activator>
                   <v-list-item-content><v-list-item-title>{{ category.name }}</v-list-item-title></v-list-item-content>
                 </template>
                 <template v-for="m in categoryMetrics[category.originalName]">
                   <v-list-group v-if="m.children.length" :key="m.name" sub-group :value="metric.config && metric.config.subcategory === m.originalName">
-                    <template v-slot:activator>
+                    <template #activator>
                       <v-list-item-content>
                         <v-list-item-title>{{ m.name }}</v-list-item-title>
                       </v-list-item-content>
@@ -59,7 +59,7 @@
         <v-icon>{{ mdiDownload }}</v-icon>
       </v-btn>
 
-      <template v-slot:extension>
+      <template #extension>
         <v-tabs v-model="categoryTab" show-arrows center-active optional class="d-none d-md-flex">
           <v-tab
             v-for="category in categories"
@@ -83,7 +83,7 @@
           <template v-for="m in categoryMetrics[category.originalName]">
             <template v-if="m.children.length">
               <v-menu :key="m.metric" :attach="'#' + kebabCase(m.originalName)" offset-y>
-                <template v-slot:activator="{ on }">
+                <template #activator="{ on }">
                   <!-- TODO: Add attach property for a11y -->
                   <v-btn v-if="metric.config && metric.config.subcategory === m.originalName" rounded depressed class="v-btn--active" v-on="on">
                     {{ $i18n.locale === 'es' ? metric.config.title_es : metric.config.title }} <v-icon>$subgroup</v-icon>

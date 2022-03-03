@@ -16,9 +16,6 @@
 <script>
 export default {
   name: 'PrintMapHeader',
-  props: [
-    'config',
-  ],
   data() {
     return {
       baseURL: process.env.VUE_APP_BASE_URL || 'https://compass.durhamnc.gov',

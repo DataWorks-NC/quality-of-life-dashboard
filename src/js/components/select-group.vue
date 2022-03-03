@@ -5,7 +5,7 @@
       <span v-if="groupIndex > 0 && (groupIndex < Object.keys(selectGroups).length - 1)" :key="groupKey" style="margin-left:-0.15em;">, </span>
       <span v-if="groupIndex === (Object.keys(selectGroups).length - 1)" :key="groupKey">{{ $t('strings.or') }}</span>
       <v-menu :key="`${groupKey}-menu`" offset-y :attach="`#selectgroup-attach-${groupIndex}`">
-        <template v-slot:activator="{ on }">
+        <template #activator="{ on }">
           <v-btn :id="`selectgroup-${groupIndex}`" :key="`${groupKey}_button`" text class="selectgroup__button" :disabled="!group.hasOwnProperty(geography.id)" v-on="on">
             {{ $t(`selectGroup['${groupKey}']`) }}
           </v-btn>

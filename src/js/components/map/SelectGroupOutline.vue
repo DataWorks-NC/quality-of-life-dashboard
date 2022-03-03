@@ -143,8 +143,8 @@ export default {
                   if (!err) {
                     map.addImage('crosshatch', image);
                     map.setPaintProperty('selectGroupFill', 'fill-pattern', 'crosshatch');
-                  } else {
-                    console.error(err);
+                  } else if (this.debug) {
+                    this.log(err);
                   }
                 },
               );
