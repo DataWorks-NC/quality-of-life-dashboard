@@ -55,6 +55,7 @@ for extension in extensions:
         "storage",
         "blob",
         "upload-batch",
+        "--overwrite",
         "--connection-string",
         os.getenv('AZURE_STORAGE_CONNECTION_STRING'),"-s",
         dir_path,
