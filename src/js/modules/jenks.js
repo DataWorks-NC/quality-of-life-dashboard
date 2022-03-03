@@ -1,8 +1,12 @@
 // # [Jenks natural breaks optimization](http://en.wikipedia.org/wiki/Jenks_natural_breaks_optimization)
 //
+// Source: https://macwright.com/2013/02/18/literate-jenks.html
+// TODO: Consider replacing with Ckmeans or equal interval breaks.
+//
 // Implementations: [1](http://danieljlewis.org/files/2010/06/Jenks.pdf) (python),
 // [2](https://github.com/vvoovv/djeo-jenks/blob/master/main.js) (buggy),
 // [3](https://github.com/simogeo/geostats/blob/master/lib/geostats.js#L407) (works)
+/* eslint-disable */
 export default function jenks(data, n_classes) {
   // Compute the matrices required for Jenks breaks. These matrices
   // can be used for any classing of data with `classes <= n_classes`
@@ -13,16 +17,10 @@ export default function jenks(data, n_classes) {
     // * lower_class_limits (LC): optimal lower class limits
     // * variance_combinations (OP): optimal variance combinations for all classes
     const lower_class_limits = [];
-
-
     const variance_combinations = [];
-
     // loop counters
-
     let i; let j;
-
     // the variance, as computed at each step in the calculation
-
     let variance = 0;
 
     // Initialize and fill each matrix with zeroes
@@ -51,18 +49,12 @@ export default function jenks(data, n_classes) {
       // `SZ` originally. this is the sum of the values seen thus
       // far when calculating variance.
       let sum = 0;
-
       // `ZSQ` originally. the sum of squares of values seen
       // thus far
-
       let sum_squares = 0;
-
       // `WT` originally. This is the number of
-
       let w = 0;
-
       // `IV` originally
-
       let i4 = 0;
 
       // in several instances, you could say `Math.pow(x, 2)`
@@ -71,8 +63,6 @@ export default function jenks(data, n_classes) {
       for (let m = 1; m < l + 1; m++) {
         // `III` originally
         const lower_class_limit = l - m + 1;
-
-
         const val = data[lower_class_limit - 1];
 
         // here we're estimating variance for each potential classing
@@ -98,10 +88,10 @@ export default function jenks(data, n_classes) {
             // the class at this point, setting the lower_class_limit
             // at this point.
             if (variance_combinations[l][j]
-                            >= (variance + variance_combinations[i4][j - 1])) {
+              >= (variance + variance_combinations[i4][j - 1])) {
               lower_class_limits[l][j] = lower_class_limit;
               variance_combinations[l][j] = variance
-                                + variance_combinations[i4][j - 1];
+                + variance_combinations[i4][j - 1];
             }
           }
         }
@@ -120,16 +110,11 @@ export default function jenks(data, n_classes) {
     };
   }
 
-
   // the second part of the jenks recipe: take the calculated matrices
   // and derive an array of n breaks.
   function breaks(data, lower_class_limits, n_classes) {
     let k = data.length - 1;
-
-
     const kclass = [];
-
-
     let countNum = n_classes;
 
     // the calculation of classes will never include the upper and
@@ -156,9 +141,7 @@ export default function jenks(data, n_classes) {
 
   // get our basic matrices
   const matrices = getMatrices(data, n_classes);
-
   // we only need lower class limits here
-
   const lower_class_limits = matrices.lower_class_limits;
 
   // extract n_classes out of the computed matrices

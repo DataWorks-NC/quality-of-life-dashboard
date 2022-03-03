@@ -1,6 +1,5 @@
 import jenks from './jenks';
-import {valsToArray} from './metric_calculations';
-
+import { valsToArray } from './metric_calculations';
 
 // With more than a few years worth of data, jenks calculations can take a long time.
 // So I'm cheating here a bit. I do a jenks calculation with just the last two years if
@@ -8,18 +7,18 @@ import {valsToArray} from './metric_calculations';
 // full set so nothing falls between the cracks.
 
 export default function jenksBreaks(data, years, keys, breaks = 5) {
-    let jenksYears = [years[years.length - 1]];
-    if (years.length > 1) {
-        jenksYears.push(years[years.length - 2]);
-    }
+  const jenksYears = [years[years.length - 1]];
+  if (years.length > 1) {
+    jenksYears.push(years[years.length - 2]);
+  }
 
-    let allVals = valsToArray(data, years, keys);
-    let jenksVals = valsToArray(data, [years[years.length - 1]], keys);
+  const allVals = valsToArray(data, years, keys);
+  const jenksVals = valsToArray(data, [years[years.length - 1]], keys);
 
-    let jenksArray = jenks(jenksVals, breaks);
+  const jenksArray = jenks(jenksVals, breaks);
 
-    jenksArray[0] = Math.min.apply(Math, allVals);
-    jenksArray[jenksArray.length - 1] = Math.max.apply(Math, allVals);
+  jenksArray[0] = Math.min(...allVals);
+  jenksArray[jenksArray.length - 1] = Math.max(...allVals);
 
-    return jenksArray;
+  return jenksArray;
 }

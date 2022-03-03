@@ -31,7 +31,7 @@
 
 <script>
 import { mapMutations } from "vuex";
-import ReportMetric from "./report-metric";
+import ReportMetric from "./report-metric.vue";
 
 export default {
   name: "ReportCategory",

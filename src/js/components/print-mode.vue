@@ -10,18 +10,18 @@
       <v-btn @click="print()">
         <v-icon>{{ mdiPrinter }}</v-icon> {{ $t('printMapHeader.print') | allcaps }}
       </v-btn>
-      <v-btn :to="{ query: { ...this.$route.query, mode: undefined, legendTitle: undefined } }">
+      <v-btn :to="{ query: { ...$route.query, mode: undefined, legendTitle: undefined } }">
         <v-icon>{{ mdiArrowLeft }}</v-icon> {{ $t('printMapHeader.back') | allcaps }}
       </v-btn>
     </v-app-bar>
     <v-content>
-      <print-map-header :config="config" class="d-print-none" />
+      <print-map-header class="d-print-none" />
       <img :alt="$t('strings.DataWorksNCLogo')" :src="require('@/assets/img/report-logo.png')" class="header__logo">
       <v-spacer />
       <v-card class="map d-print-inline">
         <map-container :mapbox-access-token="config.privateConfig.mapboxAccessToken" :map-config="Object.assign({ trackResize: false }, config.mapConfig)" />
         <i18n path="printMode.footerText" tag="p" class="print__footer">
-          <template v-slot:compassLink>
+          <template #compassLink>
             <a href="https://compass.durhamnc.gov">{{ $t('strings.theCompass') }}</a>
           </template>
         </i18n>

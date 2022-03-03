@@ -15,7 +15,7 @@
       {{ $t('footer.about') }}
     </RouterLink>
     <i18n path="footer.radCredit" tag="p" class="logos overline text-center">
-      <template v-slot:radLink>
+      <template #radLink>
         <ExternalLink href="https://rad.cat">
           Research Action Design
         </ExternalLink>

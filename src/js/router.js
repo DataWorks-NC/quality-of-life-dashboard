@@ -5,10 +5,10 @@ import store from './vuex-store';
 import config from './modules/config';
 import { debugLog } from './modules/tracking';
 
-const About = () => import(/* webpackChunkName: "about" */ './views/About');
-const Compass = () => import(/* webpackChunkName: "compass" */ './views/Compass');
-const Report = () => import(/* webpackChunkName: "report" */'./views/Report');
-const Embed = () => import(/* webpackChunkName: "embed" */'./views/Embed');
+const About = () => import(/* webpackChunkName: "about" */ './views/About.vue');
+const Compass = () => import(/* webpackChunkName: "compass" */ './views/Compass.vue');
+const Report = () => import(/* webpackChunkName: "report" */'./views/Report.vue');
+const Embed = () => import(/* webpackChunkName: "embed" */'./views/Embed.vue');
 
 Vue.use(Router);
 

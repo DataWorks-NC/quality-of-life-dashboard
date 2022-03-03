@@ -15,7 +15,7 @@
 <script>
 import { mdiOpenInNew } from "@mdi/js";
 import config from '../modules/config';
-import MailchimpSignup from './mailchimp-signup';
+import MailchimpSignup from './mailchimp-signup.vue';
 
 export default {
   name: 'Feedback',

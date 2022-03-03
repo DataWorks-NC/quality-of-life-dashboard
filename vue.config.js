@@ -1,4 +1,4 @@
-const dataConfig = require('./data/config/data.js');
+const dataConfig = require('./data/config/data');
 
 // Create render routes for each metric at each geography level.
 const renderRoutes = ['en', 'es'].flatMap(
