@@ -4,6 +4,7 @@ const jsonminify = require('jsonminify');
 const csv = require('csvtojson');
 const _ = require('lodash');
 const { marked } = require('marked');
+const stringify = require('json-stable-stringify');
 
 const fs = require('fs');
 const dataConfig = require('../data/config/data');
@@ -76,7 +77,7 @@ async function main() {
           return g;
         });
 
-        data = JSON.stringify(data);
+        data = stringify(data);
         try {
           await fsPromises.writeFile(`public/data/${geography.id}.geojson.json`,
             jsonminify(data));

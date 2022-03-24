@@ -7,6 +7,7 @@ const jsonminify = require('jsonminify');
 const md5 = require('js-md5');
 const path = require('path');
 const { stringify } = require('csv-stringify');
+const JSONstringify = require('json-stable-stringify');
 
 const siteConfig = require('../data/config/site');
 const dataConfig = require('../data/config/data');
@@ -123,7 +124,7 @@ async function main() {
     } else {
       // Write County Averages.
       fs.writeFile(path.join(dest, 'report/county_averages.json'),
-        jsonminify(JSON.stringify(countyAverages)), (err2) => {
+        jsonminify(JSONstringify(countyAverages)), (err2) => {
           if (err2) {
             return console.error(
               `Error writing county_averages.json: ${err2.message}`,
@@ -143,7 +144,7 @@ async function main() {
           }
           fs.writeFile(path.join(dest, `report/${geography.id}/${filename}.json`),
             jsonminify(
-              JSON.stringify({ 'geography_name': key, ...value }),
+              JSONstringify({ 'geography_name': key, ...value }),
             ),
             (err2) => {
               if (err2) {
