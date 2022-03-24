@@ -3,6 +3,7 @@
 const path = require('path');
 const jsonminify = require('jsonminify');
 const fs = require('fs');
+const stringify = require('json-stable-stringify');
 
 // return true if convertable to number
 function isNumeric(n) {
@@ -61,7 +62,7 @@ async function writeMetricFile(destPath, metric, json) {
 
   const outFile = path.join(destPath, `m${metric.metric}.json`);
   return fsPromises.writeFile(
-    outFile, jsonminify(JSON.stringify(json, null, '  ')),
+    outFile, jsonminify(stringify(json, null, '  ')),
   )
     .catch((err) => console.error(`Error on writing ${outFile}: ${err.message}`))
     .then(() => console.log(`Wrote ${outFile}`));
