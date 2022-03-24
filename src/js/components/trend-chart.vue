@@ -109,8 +109,8 @@ export default {
         plugins: [
           Chartist.plugins.tooltip({
             appendToBody: true,
-            transformTooltipTextFnc: value => prettyNumber(
-              value.split(",")[1],
+            transformTooltipTextFnc: (value) => prettyNumber(
+              Number(value.split(",")[1]),
               metricConfig,
             ),
           }),

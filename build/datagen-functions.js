@@ -67,9 +67,72 @@ async function writeMetricFile(destPath, metric, json) {
     .then(() => console.log(`Wrote ${outFile}`));
 }
 
+/**
+ * Check for a valid metric filename in old or new format and return the first
+ * matching filename.
+ *
+ * @param geography
+ * @param metric
+ * @param type
+ */
+function checkMetricFileName(geography, metric, type) {
+  const basePath = path.join('data/metric', geography);
+
+  let suffix = '';
+  if (type === 'r') {
+    suffix = 'numerator';
+  } else if (type === 'd') {
+    suffix = 'denominator';
+  } else if (type === 'n') {
+    suffix = 'value';
+  }
+
+  let fileNamePossibilities = [];
+  if (type === 'accuracy') {
+    fileNamePossibilities = [
+      {
+        name: path.join(basePath, `m${metric.metric.toUpperCase()}-accuracy.csv`),
+        format: 'old',
+      },
+      {
+        name: path.join(basePath, `m${metric.metric.toLowerCase()}-accuracy.csv`),
+        format: 'old',
+      },
+    ];
+  }
+  else {
+    fileNamePossibilities = [
+      {
+        name: path.join(basePath, `${metric.metric.toUpperCase()}_${suffix}.csv`),
+        format: 'new',
+      },
+      {
+        name: path.join(basePath, `${metric.metric.toLowerCase()}_${suffix}.csv`),
+        format: 'new',
+      },
+      {
+        name: path.join(basePath, `${type}${metric.metric.toUpperCase()}.csv`),
+        format: 'old',
+      },
+      {
+        name: path.join(basePath, `${type}${metric.metric.toLowerCase()}.csv`),
+        format: 'old',
+      },
+    ];
+  }
+  fileNamePossibilities = fileNamePossibilities.filter(f => fs.existsSync(f.name));
+
+  if (fileNamePossibilities.length > 0) {
+    return fileNamePossibilities[0];
+  }
+
+  return false;
+}
+
 module.exports = {
   isNumeric,
   csvToJsonTransform,
   newFormatCsvToJsonTransform,
   writeMetricFile,
+  checkMetricFileName,
 };
