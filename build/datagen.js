@@ -10,7 +10,11 @@ const dataConfig = require('../data/config/data');
 const siteConfig = require('../data/config/site');
 
 const {
-  isNumeric, csvToJsonTransform, newFormatCsvToJsonTransform, writeMetricFile,
+  isNumeric,
+  csvToJsonTransform,
+  newFormatCsvToJsonTransform,
+  writeMetricFile,
+  checkMetricFileName,
 } = require('./datagen-functions');
 
 const fsPromises = fs.promises;
@@ -142,66 +146,56 @@ async function main() {
   // /////////////////////////////////////////////
 
   async function convertMetricCsvToJson(geography, metric) {
-    const basePath = path.join('data/metric', geography);
     const destPath = path.join(dest, geography);
 
     if (metric.type === 'sum' || metric.type === 'mean') {
-      const prefix = (metric.type === 'sum' ? 'r' : 'n');
+      let matchingFile = checkMetricFileName(geography, metric, (metric.type === 'sum' ? 'r' : 'n'));
+
       try {
         const outJSON = {};
-        const oldFormatCSVFilename = path.join(basePath, `${prefix}${metric.metric}.csv`);
-        const newFormatCSVFilename = path.join(basePath,
-          `${metric.metric}_${prefix === 'r' ? 'numerator' : 'value'}.csv`);
-
-        if (fs.existsSync(oldFormatCSVFilename)) {
-          const jsonObj = await csv().fromFile(oldFormatCSVFilename);
-          outJSON.map = csvToJsonTransform(jsonObj);
-        } else if (fs.existsSync(newFormatCSVFilename)) {
-          const jsonObj = await csv().fromFile(newFormatCSVFilename);
-          outJSON.map = newFormatCsvToJsonTransform(jsonObj);
-        } else {
+        if (!matchingFile) {
           console.error(
-            `Can't find metric CSV files for ${metric.metric} (searched for ${oldFormatCSVFilename} and ${newFormatCSVFilename}`,
+            `Can't find metric CSV files for ${metric.metric}`,
           );
           return;
         }
 
+        const jsonObj = await csv().fromFile(matchingFile.name);
+        outJSON.map = matchingFile.format === 'new' ? newFormatCsvToJsonTransform(jsonObj) : csvToJsonTransform(jsonObj);
+
         if (metric.accuracy) {
-          try {
-            const jsonObjA = await csv().fromFile(path.join(basePath,
-              `${prefix}${metric.metric}-accuracy.csv`));
-            outJSON.a = csvToJsonTransform(jsonObjA);
-          } catch (error) {
+          matchingFile = checkMetricFileName(geography, metric, 'accuracy');
+          if (!matchingFile) {
             console.error(
-              `Error parsing ${prefix}${metric.metric}-accuracy.csv for ${geography}: ${error.message}`,
+              `Could not find m${metric.metric}-accuracy.csv for ${geography}.`,
             );
+          }
+          else {
+            try {
+              const jsonObjA = await csv().fromFile(matchingFile.name);
+              outJSON.a = csvToJsonTransform(jsonObjA);
+            } catch (error) {
+              console.error(
+                `Error parsing m${metric.metric}-accuracy.csv for ${geography}: ${error.message}`,
+              );
+            }
           }
         }
         return writeMetricFile(destPath, metric, outJSON);
       } catch (error) {
         console.error(
-          `Error parsing ${prefix}${metric.metric}.csv for ${geography}: ${error.message}`,
+          `Error parsing ${matchingFile.name} for ${geography}: ${error.message}`,
         );
       }
     }
 
     if (metric.type === 'weighted') {
       const outJSON = {};
-      const oldFormatCSVFilenames = [
-        path.join(basePath, `r${metric.metric}.csv`),
-        path.join(basePath, `d${metric.metric}.csv`)];
-      const newFormatCSVFilenames = [
-        path.join(basePath, `${metric.metric}_numerator.csv`),
-        path.join(basePath, `${metric.metric}_denominator.csv`)];
+      const files = [checkMetricFileName(geography, metric, 'r'), checkMetricFileName(geography, metric, 'd')];
 
-      let filenames = oldFormatCSVFilenames;
-      if (fs.existsSync(newFormatCSVFilenames[0]) && fs.existsSync(newFormatCSVFilenames[1])) {
-        filenames = newFormatCSVFilenames;
-      }
-
-      const [jsonArrayR, jsonArrayD] = await Promise.all(filenames.map(async filename => {
-        const csvArray = await csv().fromFile(filename);
-        if (filenames === newFormatCSVFilenames) {
+      const [jsonArrayR, jsonArrayD] = await Promise.all(files.map(async file => {
+        const csvArray = await csv().fromFile(file.name);
+        if (file.format === 'new') {
           return newFormatCsvToJsonTransform(csvArray);
         }
         return csvToJsonTransform(csvArray);
@@ -231,14 +225,21 @@ async function main() {
       outJSON.w = jsonArrayD;
       outJSON.map = jsonArrayR;
       if (metric.accuracy) {
-        try {
-          const jsonObjA = await csv().fromFile(path.join(basePath,
-            `m${metric.metric}-accuracy.csv`));
-          outJSON.a = csvToJsonTransform(jsonObjA);
-        } catch (error) {
+        const accuracyFile = checkMetricFileName(geography, metric, 'accuracy');
+        if (!accuracyFile) {
           console.error(
-            `Error parsing m${metric.metric}-accuracy.csv for ${geography}: ${error.message}`,
+            `Could not find m${metric.metric}-accuracy.csv for ${geography}.`,
           );
+        }
+        else {
+          try {
+            const jsonObjA = await csv().fromFile(accuracyFile.name);
+            outJSON.a = csvToJsonTransform(jsonObjA);
+          } catch (error) {
+            console.error(
+              `Error parsing m${metric.metric}-accuracy.csv for ${geography}: ${error.message}`,
+            );
+          }
         }
       }
       return writeMetricFile(destPath, metric, outJSON);
