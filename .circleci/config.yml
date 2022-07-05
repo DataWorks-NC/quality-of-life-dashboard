@@ -6,7 +6,7 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: circleci/node:14-browsers
+      - image: cimg/node:lts-browsers
 
     working_directory: ~/repo
 
@@ -16,12 +16,11 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v3-dependencies-{{ checksum "package.json" }}
+          - v4-dependencies-{{ checksum "package.json" }}
           # fallback to using the latest cache if no exact match is found
-          - v3-dependencies-
+          - v4-dependencies-
 
-      - run: npm install
-      - run: npm install --only=dev
+      - run: npm install --production=false
 
       - run:
           name: Run jest tests
@@ -36,7 +35,7 @@ jobs:
             libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 \
             libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 \
             libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates \
-            fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils wget
+            fonts-liberation libnss3 libappindicator1 lsb-release xdg-utils wget
       - run:
           name: Install puppeteer with chronium
           command: |
@@ -45,7 +44,7 @@ jobs:
       - save_cache:
           paths:
             - node_modules
-          key: v3-dependencies-{{ checksum "package.json" }}
+          key: v4-dependencies-{{ checksum "package.json" }}
 
       # run tests!
       - run: npm run build-site

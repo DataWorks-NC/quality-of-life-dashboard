@@ -168,7 +168,7 @@ async function main() {
           matchingFile = checkMetricFileName(geography, metric, 'accuracy');
           if (!matchingFile) {
             console.error(
-              `Could not find m${metric.metric}-accuracy.csv for ${geography}.`,
+              `Could not find matching accuracy file for ${metric.metric} for ${geography}.`,
             );
           }
           else {
@@ -177,7 +177,7 @@ async function main() {
               outJSON.a = csvToJsonTransform(jsonObjA);
             } catch (error) {
               console.error(
-                `Error parsing m${metric.metric}-accuracy.csv for ${geography}: ${error.message}`,
+                `Error parsing accuracy file for ${metric.metric} for ${geography}: ${error.message}`,
               );
             }
           }
@@ -229,7 +229,7 @@ async function main() {
         const accuracyFile = checkMetricFileName(geography, metric, 'accuracy');
         if (!accuracyFile) {
           console.error(
-            `Could not find m${metric.metric}-accuracy.csv for ${geography}.`,
+            `Could not find accuracy file for ${metric.metric} for ${geography}.`,
           );
         }
         else {
@@ -238,7 +238,7 @@ async function main() {
             outJSON.a = csvToJsonTransform(jsonObjA);
           } catch (error) {
             console.error(
-              `Error parsing m${metric.metric}-accuracy.csv for ${geography}: ${error.message}`,
+              `Error parsing accuracy file for ${metric.metric} for ${geography}: ${error.message}`,
             );
           }
         }
