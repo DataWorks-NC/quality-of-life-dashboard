@@ -111,3 +111,4 @@ Create the string keys and string items in either English or Spanish in the `en.
 * sass-loader@10.x because of webpack dependencies
 * eslint@6.x as required by vue eslint airbnb plugin
 * MapboxGL@1.x because we're not upgrading to the new ToS yet
+* Chartist at 0.x because plugins don't work with chartist v1 yet.
