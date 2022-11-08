@@ -1,6 +1,4 @@
 // return true if convertable to number
-function isNumeric(n) {
+export default function isNumeric(n) {
   return !Number.isNaN(parseFloat(n)) && Number.isFinite(n);
 }
-
-module.exports = isNumeric;

@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import { xor } from 'lodash';
 import { fetchResponseJSON } from '../modules/fetch';
 import config from '../modules/config';
@@ -60,7 +59,7 @@ export default {
     // Populate metrics array on report data, which tracks visibility as well.
     populateMetrics(state, { geography }) {
       const geographyMetrics = Object.keys(dataConfig).filter(m => dataConfig[m].geographies.indexOf(geography.id) > -1);
-      geographyMetrics.forEach(m => Vue.set(state.metrics, m, { visible: true, ...dataConfig[m] }));
+      geographyMetrics.forEach(m => state.metrics[m] = { visible: true, ...dataConfig[m] });
     },
 
     // Hide all metrics, so that we can individually toggle on specific metrics/categories.
@@ -92,9 +91,9 @@ export default {
     setMetricValues(state, { metric, values }) {
       const metricConfig = dataConfig[`m${metric}`];
       if (!(metricConfig.category in state.metricValues)) {
-        Vue.set(state.metricValues, metricConfig.category, {});
+        state.metricValues[metricConfig.category] = {};
       }
-      Vue.set(state.metricValues[metricConfig.category], metric, values);
+      state.metricValues[metricConfig.category][metric] = values;
     },
     setCountyAverages(state, countyAverages) {
       state.countyAverages = countyAverages;
@@ -179,7 +178,7 @@ export default {
             .filter(m => (m.geographies.indexOf(rootState.geography.id) > -1
               && m.metric in data)).forEach((m) => {
               if (!(m.category in countyAverages)) {
-                Vue.set(countyAverages, m.category, {});
+                countyAverages[m.category] = {};
               }
               countyAverages[m.category][m.metric] = data[m.metric];
             });

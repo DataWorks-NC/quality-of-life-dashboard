@@ -1,8 +1,7 @@
 <template lang="html">
   <v-card v-if="validGeographies" class="geography-switcher">
-    <template v-for="geography in validGeographies">
+    <template v-for="geography in validGeographies" :key="geography.id">
       <v-btn
-        :key="geography.id"
         :disabled="!geography.isAvailable"
         :to="{ name: 'compass', params: {...$route.params, geographyLevel: geography.id }, query: $route.query }"
         rounded

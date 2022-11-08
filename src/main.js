@@ -1,11 +1,10 @@
-import Vue from 'vue';
+import { createApp } from 'vue';
 import VueAnalytics from 'vue-analytics';
 
-import { sync } from 'vuex-router-sync';
 import VueScrollTo from 'vue-scrollto';
 import VueObserveVisibility from 'vue-observe-visibility';
 import store from './js/vuex-store';
-import router from './js/router';
+import createRouter from './js/router';
 import i18n from './js/i18n';
 import vuetify from './plugins/vuetify';
 
@@ -14,12 +13,8 @@ import App from './js/App.vue';
 import './scss/main.scss';
 import { debugLog } from './js/modules/tracking';
 
-Vue.config.productionTip = false;
-Vue.use(VueScrollTo);
-Vue.use(VueObserveVisibility);
-
 // Sync store & router with vuex-router-sync.
-sync(store, router);
+// TODO: FIX.
 store.watch((state, getters) => {
   if (state.route.name === 'report') {
     return getters.selected;
@@ -37,9 +32,11 @@ store.watch((state) => state.route && state.route.params.locale,
 // Router navigation guard:
 // Handles locale switching and redirecting from root URL to language-specific
 // homepage. Also handles setting title & metadata.
+const router = createRouter(store);
 router.beforeEach((to, from, next) => {
   debugLog('Router guard: set metadata');
   debugLog(`${from.path} => ${to.path}`);
+  const { t } = i18n.global;
 
   // Language handling.
   if (!to.params.locale) {
@@ -57,34 +54,34 @@ router.beforeEach((to, from, next) => {
 
   if (to.path !== from.path) {
     // Set title
-    let title = i18n.t('strings.DurhamNeighborhoodCompass');
-    let description = i18n.t('strings.metaDescriptionHome');
+    let title = t('strings.DurhamNeighborhoodCompass');
+    let description = t('strings.metaDescriptionHome');
 
     if (to.name === 'report' && Object.keys(to.query).length) {
       const reportTitle = store.getters.reportTitle;
       if (reportTitle !== '') {
         title = `${reportTitle} - ${title}`;
-        description = i18n.t('strings.metaDescriptionReport', { area: reportTitle });
+        description = t('strings.metaDescriptionReport', { area: reportTitle });
       }
     } else if (to.name === 'compass') {
       const metricTitle = i18n.locale === 'es'
         ? store.state.metric.config.title_es
         : store.state.metric.config.title;
       const geographyName = store.state.geography.id && store.state.geography.id.length > 0
-        ? ` (${i18n.t(`geographies.${store.state.geography.id}.name`)})`
+        ? ` (${t(`geographies.${store.state.geography.id}.name`)})`
         : '';
 
       // TODO: Add "Why is this important to metadata in a way that doesn't break the build process.
       // Using getters.metadataImportant seems to fail.
-      description = `${i18n.t('strings.metaDescriptionMetric', {
+      description = `${t('strings.metaDescriptionMetric', {
         metric: metricTitle.toLocaleLowerCase(i18n.locale),
         geography: geographyName.toLocaleLowerCase(i18n.locale),
       })}`;
       title = `${metricTitle}${geographyName} - ${title}`;
 
       if (store.state.printMode === true) {
-        title = `${title} - ${i18n.t('undermapButtons.printEmbed')}`;
-        description = `${i18n.t('strings.metaDescriptionPrint', {
+        title = `${title} - ${t('undermapButtons.printEmbed')}`;
+        description = `${t('strings.metaDescriptionPrint', {
           metric: metricTitle.toLocaleLowerCase(i18n.locale),
           geography: geographyName.toLocaleLowerCase(i18n.locale),
         })}`;
@@ -157,13 +154,8 @@ router.beforeEach((to, from, next) => {
 
 /* eslint-disable no-new */
 /* eslint-disable no-unused-vars */
-const app = new Vue({
-  i18n,
-  store,
-  router,
-  el: '#app',
-  vuetify,
-  data: { mapboxgl: null },
+const app = createApp({
+  data: () => ({ mapboxgl: null }),
   beforeCreate() {
     // Preload map resources so that they live on even between switching to Report and back.
     // @see https://github.com/mapbox/mapbox-gl-js/pull/9391
@@ -177,15 +169,26 @@ const app = new Vue({
   render: h => h(App),
 });
 
-Vue.filter('allcaps', (value) => {
-  if (!value) return '';
-  return String(value).toUpperCase();
-});
+app.config.productionTip = false;
+app.use(VueScrollTo);
+app.use(VueObserveVisibility);
+app.use(vuetify);
+app.use(router);
+app.use(i18n);
+app.use(store);
 
-Vue.filter('capitalize', (value) => {
-  if (!value) return '';
-  return String(value).charAt(0).toUpperCase() + String(value).slice(1);
-});
+app.mount('#app');
+
+// TODO - replace these with computed values
+// Vue.filter('allcaps', (value) => {
+//   if (!value) return '';
+//   return String(value).toUpperCase();
+// });
+//
+// Vue.filter('capitalize', (value) => {
+//   if (!value) return '';
+//   return String(value).charAt(0).toUpperCase() + String(value).slice(1);
+// });
 
 // Set string compare function based on locale dynamically.
 const stringCompareEn = new Intl.Collator('en').compare;
@@ -193,12 +196,12 @@ const stringCompareEs = new Intl.Collator('es').compare;
 i18n.localizedStringCompareFn = (a, b) => (i18n.locale === 'es' ? stringCompareEs(a, b) : stringCompareEn(a, b));
 
 // Google analytics
-if (process.env.VUE_APP_GOOGLE_ANALYTICS_ID) {
-  Vue.use(VueAnalytics, {
-    id: process.env.VUE_APP_GOOGLE_ANALYTICS_ID,
-    router,
-    debug: {
-      sendHitTask: process.env.NODE_ENV === 'production',
-    },
-  });
-}
+// if (process.env.VUE_APP_GOOGLE_ANALYTICS_ID) {
+//   Vue.use(VueAnalytics, {
+//     id: process.env.VUE_APP_GOOGLE_ANALYTICS_ID,
+//     router,
+//     debug: {
+//       sendHitTask: process.env.NODE_ENV === 'production',
+//     },
+//   });
+// }

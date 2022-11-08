@@ -26,14 +26,14 @@
               <ul>
                 <li>{{ $t('reportSelector.instructions[0]') }}</li>
                 <li>{{ $t('reportSelector.instructions[1]') }}</li>
-                <i18n path="reportSelector.instructions[2]" tag="li">
+                <i18n-t keypath="reportSelector.instructions[2]" tag="li">
                   <router-link
                     place="goBack"
                     :to="$store.state.lastCompassRoute ? $store.state.lastCompassRoute : { name: 'homepage', params: $route.params, query: { selected: $route.query.selected } }"
                   >
                     {{ $t('reportSelector.goBack') }}
                   </router-link>
-                </i18n>
+                </i18n-t>
                 <li>
                   {{ $t('reportSelector.instructions[3]') }}
                   <a :href="getReportURL()" class="metric-selector__report-link">

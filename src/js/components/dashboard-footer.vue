@@ -14,13 +14,13 @@
     <RouterLink :to="{name: 'about' }" class="logos overline text-center">
       {{ $t('footer.about') }}
     </RouterLink>
-    <i18n path="footer.radCredit" tag="p" class="logos overline text-center">
+    <i18n-t keypath="footer.radCredit" tag="p" class="logos overline text-center">
       <template #radLink>
         <ExternalLink href="https://rad.cat">
           Research Action Design
         </ExternalLink>
       </template>
-    </i18n>
+    </i18n-t>
   </v-footer>
 </template>
 

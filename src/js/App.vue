@@ -9,6 +9,7 @@
 </template>
 
 <script>
+import { VApp } from 'vuetify/components';
 
 export default {
   name: 'App',

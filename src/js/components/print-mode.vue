@@ -20,11 +20,11 @@
       <v-spacer />
       <v-card class="map d-print-inline">
         <map-container :mapbox-access-token="config.privateConfig.mapboxAccessToken" :map-config="Object.assign({ trackResize: false }, config.mapConfig)" />
-        <i18n path="printMode.footerText" tag="p" class="print__footer">
+        <i18n-t keypath="printMode.footerText" tag="p" class="print__footer">
           <template #compassLink>
             <a href="https://compass.durhamnc.gov">{{ $t('strings.theCompass') }}</a>
           </template>
-        </i18n>
+        </i18n-t>
       </v-card>
     </v-content>
   </div>

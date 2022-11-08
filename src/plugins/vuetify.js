@@ -1,10 +1,8 @@
-import Vue from 'vue';
-import Vuetify from 'vuetify/lib';
+import 'vuetify/styles';
+import { createVuetify } from 'vuetify';
 import minifyTheme from 'minify-css-string';
 
-Vue.use(Vuetify);
-
-export default new Vuetify({
+export default createVuetify({
   theme: {
     options: {
       customProperties: true,

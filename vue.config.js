@@ -48,7 +48,23 @@ if (!('VUE_APP_MAPBOX_ACCESS_TOKEN' in process.env) || process.env.VUE_APP_MAPBO
 
 module.exports = {
   lintOnSave: false,
+  chainWebpack: (config) => {
+    config.resolve.alias.set('vue', '@vue/compat')
 
+    config.module
+    .rule('vue')
+    .use('vue-loader')
+    .tap((options) => {
+      return {
+        ...options,
+        compilerOptions: {
+          compatConfig: {
+            MODE: 2
+          }
+        }
+      }
+    })
+  },
   pluginOptions: {
     pwa: {
       iconPaths: {

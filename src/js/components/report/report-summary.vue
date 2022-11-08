@@ -14,13 +14,13 @@
     </v-row>
     <v-row>
       <v-col cols="12" sm="6">
-        <i18n path="reportSummary.about[0]" tag="p">
+        <i18n-t keypath="reportSummary.about[0]" tag="p">
           <a place="compassLink" href="/">
             <span class="link-underline">{{ $t('strings.DurhamNeighborhoodCompass') }}</span>
           </a>
-        </i18n>
-        <i18n path="reportSummary.about[1]" tag="p" />
-        <i18n path="reportSummary.about[2]" tag="p" />
+        </i18n-t>
+        <i18n-t keypath="reportSummary.about[1]" tag="p" />
+        <i18n-t keypath="reportSummary.about[2]" tag="p" />
       </v-col>
       <v-col cols="12" sm="6">
         <ReportMap v-if="mapboxgl"

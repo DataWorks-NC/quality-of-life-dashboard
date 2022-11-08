@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import colors from './breaks';
 
-const mapConfig = require('../../../data/config/map');
-const siteConfig = require('../../../data/config/site');
-const dataConfigUnsorted = require('../../../data/config/data');
-const selectGroups = require('../../../data/config/selectgroups');
+import mapConfig from '../../../data/config/map';
+import siteConfig from '../../../data/config/site';
+import dataConfigUnsorted from '../../../data/config/data';
+import selectGroups from '../../../data/config/selectgroups';
 
 // Sort dataConfig alphabetically by metric and category
 let dataConfigTemp = [];
@@ -33,7 +33,7 @@ const metricsByCategory = _.fromPairs(
   ),
 );
 
-export default {
+const config = {
   categories, // List of category names only
   colors: colors.breaksGnBu5,
   dataConfig, // Object where keys are metric IDs and values are config for that metric.
@@ -42,7 +42,9 @@ export default {
   siteConfig,
   selectGroups,
   privateConfig: {
-    mapboxAccessToken: process.env.VUE_APP_MAPBOX_ACCESS_TOKEN,
-    mailchimpUrl: process.env.VUE_APP_MAILCHIMP_SIGNUP_URL,
+    mapboxAccessToken: import.meta.env.VUE_APP_MAPBOX_ACCESS_TOKEN,
+    mailchimpUrl: import.meta.env.VUE_APP_MAILCHIMP_SIGNUP_URL,
   },
 };
+
+export default config;

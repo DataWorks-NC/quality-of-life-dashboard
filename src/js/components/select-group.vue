@@ -1,10 +1,10 @@
 <template>
   <div v-if="validSelectGroups" id="selectgroup">
     <span>{{ $t('selectGroup.orSelectA') }}</span>
-    <template v-for="(group, groupKey, groupIndex) in selectGroups">
-      <span v-if="groupIndex > 0 && (groupIndex < Object.keys(selectGroups).length - 1)" :key="groupKey" style="margin-left:-0.15em;">, </span>
+    <template v-for="(group, groupKey, groupIndex) in selectGroups" :key="groupKey">
+      <span v-if="groupIndex > 0 && (groupIndex < Object.keys(selectGroups).length - 1)" style="margin-left:-0.15em;">, </span>
       <span v-if="groupIndex === (Object.keys(selectGroups).length - 1)" :key="groupKey">{{ $t('strings.or') }}</span>
-      <v-menu :key="`${groupKey}-menu`" offset-y :attach="`#selectgroup-attach-${groupIndex}`">
+      <v-menu offset-y :attach="`#selectgroup-attach-${groupIndex}`">
         <template #activator="{ on }">
           <v-btn :id="`selectgroup-${groupIndex}`" :key="`${groupKey}_button`" text class="selectgroup__button" :disabled="!group.hasOwnProperty(geography.id)" v-on="on">
             {{ $t(`selectGroup['${groupKey}']`) }}
@@ -16,7 +16,7 @@
           </v-list-item>
         </v-list>
       </v-menu>
-      <span :id="`selectgroup-attach-${groupIndex}`" :key="`${groupKey}__attach`" />
+      <span :id="`selectgroup-attach-${groupIndex}`" />
     </template>
   </div>
 </template>

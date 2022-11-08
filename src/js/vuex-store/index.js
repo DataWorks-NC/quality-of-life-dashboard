@@ -1,5 +1,4 @@
-import Vuex from 'vuex';
-import Vue from 'vue';
+import { createStore } from 'vuex';
 
 import config from '../modules/config';
 import jenksBreaks from '../modules/jenksbreaks';
@@ -10,13 +9,12 @@ import { calcValue, wValsToArray, sum } from '../modules/metric_calculations';
 
 import report from './report';
 
-Vue.use(Vuex);
-
-export default new Vuex.Store({
+export default new createStore({
   modules: {
     report,
   },
   state: {
+    route: { params: { locale: 'en' }}, // TODO: populate this.
     metric: { // Currently selected metric
       config: null,
       years: [],
@@ -90,8 +88,8 @@ export default new Vuex.Store({
         state.geography = config.siteConfig.geographies.find(
           (obj) => obj.id === newGeographyId,
         );
-
-        Object.freeze(state.geography);
+        // TODO: Test if this still improves performance
+        // Object.freeze(state.geography);
       }
     },
     setMetricId(state, newMetricId) {
@@ -99,17 +97,19 @@ export default new Vuex.Store({
     },
     setMetric(state, metric) {
       state.metric = metric;
-      Object.freeze(state.metric);
+      // TODO: Test if this still improves performance
+      // Object.freeze(state.metric);
     },
     setMetricMetadata(state, metadata) {
       state.metadata = metadata;
-      Object.freeze(state.metadata);
+      // TODO: Test if this still improves performance
+      // Object.freeze(state.metadata);
     },
     setYear(state, year) {
       state.year = year;
     },
     setBreaks(state, breaks) {
-      state.breaks = Object.freeze(breaks);
+      state.breaks = breaks;
     },
     setHighlight(state, highlight) {
       state.highlight = highlight;
@@ -120,6 +120,9 @@ export default new Vuex.Store({
     },
     setLegendTitle(state, title) {
       state.customLegendTitle = title;
+    },
+    setRoute(state, route) {
+      state.route = route;
     },
     clearMetric(state) {
       state.metricId = null;

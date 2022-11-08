@@ -1,4 +1,4 @@
-const isNumeric = require('./isnumeric');
+import isNumeric from './isnumeric';
 
 function sum(arr) {
   if (arr.length === 0) return '--';
@@ -67,6 +67,6 @@ function calcValue(data, calcType = sum, year, keys) {
   return false;
 }
 
-module.exports = {
+export {
   sum, mean, weighted, median, valsToArray, wValsToArray, calcValue,
 };
