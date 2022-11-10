@@ -58,9 +58,10 @@ export default {
   mounted() {
     this.geocoder = null;
     this.addressMarker = null;
+    console.log(config);
     this.initGeocoder();
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.map) {
       this.map.removeControl(this.geocoder);
     }

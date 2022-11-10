@@ -1,14 +1,14 @@
-<template lang="html">
-  <v-app-bar dark extension="tabs" class="d-print-none">
+<template>
+  <v-app-bar theme="dark" extension="tabs" class="d-print-none">
     <v-toolbar-title>
       <router-link :to="{ name: 'homepage' }">
-        <img :src="require('@/assets/img/logo.png')" :alt="$t('strings.DurhamNeighborhoodCompass')">
+        <img src="@/assets/img/logo.png" :alt="$t('strings.DurhamNeighborhoodCompass')">
       </router-link>
     </v-toolbar-title>
     <div class="flex-grow-1" />
     <report-selector />
     <div class="flex-grow-1" />
-    <v-btn text @click="swapLanguage()">
+    <v-btn variant="text" @click="swapLanguage()">
       {{ $t('strings.ChangeLanguage') }}
     </v-btn>
     <v-btn icon :aria-label="$t('about.link')" :to="{ name: 'about' }">

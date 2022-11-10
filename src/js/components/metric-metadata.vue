@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
   <div id="metadata">
     <h3 v-if="metadataImportant">
       {{ $t('metadata.whyImportant') }}
@@ -19,7 +19,7 @@
 import { mapGetters } from "vuex";
 
 export default {
-  name: "Metadata",
+  name: "MetricMetadata",
   computed: mapGetters([
     "metadataAbout",
     "metadataImportant",

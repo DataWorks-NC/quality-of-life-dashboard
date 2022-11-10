@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
   <div id="map" />
 </template>
 
@@ -6,6 +6,8 @@
 import { mapGetters } from 'vuex';
 
 import config from '../../modules/config';
+import osmLiberty from '@/assets/osm-liberty.json';
+import selectGroups from '@/../data/selectgroups.geojson.json';
 
 export default {
   name: 'ReportMap',
@@ -39,7 +41,7 @@ export default {
   mounted() {
     this.map = this.initMap();
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.map.remove();
   },
   methods: {
@@ -47,8 +49,7 @@ export default {
       const { mapConfig } = this;
       const mapOptions = {
         container: 'map',
-        // eslint-disable-next-line global-require
-        style: require('@/assets/osm-liberty.json'),
+        style: osmLiberty,
         ...mapConfig,
         interactive: false,
         attributionControl: false,
@@ -111,8 +112,7 @@ export default {
         if (_this.selectGroupName) {
           map.addSource('selectGroup', {
             type: 'geojson',
-            // eslint-disable-next-line global-require
-            data: require('@/../data/selectgroups.geojson.json'),
+            data: selectGroups,
           });
 
           map.addLayer({

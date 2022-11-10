@@ -42,8 +42,8 @@ const config = {
   siteConfig,
   selectGroups,
   privateConfig: {
-    mapboxAccessToken: import.meta.env.VUE_APP_MAPBOX_ACCESS_TOKEN,
-    mailchimpUrl: import.meta.env.VUE_APP_MAILCHIMP_SIGNUP_URL,
+    mapboxAccessToken: import.meta.env.VITE_MAPBOX_ACCESS_TOKEN,
+    mailchimpUrl: import.meta.env.VITE_MAILCHIMP_SIGNUP_URL,
   },
 };
 

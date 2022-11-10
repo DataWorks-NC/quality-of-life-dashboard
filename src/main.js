@@ -1,5 +1,5 @@
-import { createApp } from 'vue';
-import VueAnalytics from 'vue-analytics';
+import { createApp, h } from 'vue';
+// TODO: Add analytics.
 
 import VueScrollTo from 'vue-scrollto';
 import VueObserveVisibility from 'vue-observe-visibility';
@@ -108,14 +108,14 @@ router.beforeEach((to, from, next) => {
         lang: to.params.locale,
       },
       linkCanonical: {
-        href: `${process.env.VUE_APP_BASE_URL}${to.fullPath}`,
+        href: `${import.meta.env.BASE_URL}${to.fullPath}`,
       },
       linkEn: {
-        href: `${process.env.VUE_APP_BASE_URL}${
+        href: `${import.meta.env.BASE_URL}${
           enUrl}`,
       },
       linkEs: {
-        href: `${process.env.VUE_APP_BASE_URL}${
+        href: `${import.meta.env.BASE_URL}${
           esUrl}`,
       },
       description: {
@@ -127,7 +127,7 @@ router.beforeEach((to, from, next) => {
         title,
       },
       ogUrl: {
-        content: `${process.env.VUE_APP_BASE_URL}${to.fullPath}`,
+        content: `${import.meta.env.BASE_URL}${to.fullPath}`,
       },
       ogDescription: {
         content:
@@ -166,7 +166,7 @@ const app = createApp({
       });
     });
   },
-  render: h => h(App),
+  render: () => h(App),
 });
 
 app.config.productionTip = false;
@@ -177,31 +177,30 @@ app.use(router);
 app.use(i18n);
 app.use(store);
 
-app.mount('#app');
 
-// TODO - replace these with computed values
-// Vue.filter('allcaps', (value) => {
-//   if (!value) return '';
-//   return String(value).toUpperCase();
-// });
-//
-// Vue.filter('capitalize', (value) => {
-//   if (!value) return '';
-//   return String(value).charAt(0).toUpperCase() + String(value).slice(1);
-// });
-
-// Set string compare function based on locale dynamically.
 const stringCompareEn = new Intl.Collator('en').compare;
 const stringCompareEs = new Intl.Collator('es').compare;
-i18n.localizedStringCompareFn = (a, b) => (i18n.locale === 'es' ? stringCompareEs(a, b) : stringCompareEn(a, b));
+// Set string compare function based on locale dynamically.
+app.config.globalProperties.localizedSortByName = (a, b) => (i18n.global.locale === 'es' ? stringCompareEs(a, b) : stringCompareEn(a, b));
+app.config.globalProperties.$filters = {
+  allcaps: (value) => {
+    if (!value) return '';
+    return String(value).toUpperCase();
+  },
+  capitalize: (value) => {
+    if (!value) return '';
+    return String(value).charAt(0).toUpperCase() + String(value).slice(1);
+  },
+};
+app.mount('#app');
 
 // Google analytics
-// if (process.env.VUE_APP_GOOGLE_ANALYTICS_ID) {
+// if (import.meta.env.VITE_GOOGLE_ANALYTICS_ID) {
 //   Vue.use(VueAnalytics, {
-//     id: process.env.VUE_APP_GOOGLE_ANALYTICS_ID,
+//     id: import.meta.env.VITE_GOOGLE_ANALYTICS_ID,
 //     router,
 //     debug: {
-//       sendHitTask: process.env.NODE_ENV === 'production',
+//       sendHitTask: import.meta.env.PROD,
 //     },
 //   });
 // }

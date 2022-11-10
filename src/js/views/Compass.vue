@@ -5,8 +5,8 @@
       <div v-if="!printMode">
         <v-container fluid grid-list-lg>
           <v-layout wrap>
-            <v-flex sm12 md8>
-              <div v-if="metric.config">
+            <v-row>
+              <v-col v-if="metric.config" cols="12" md="8">
                 <v-card>
                   <div v-if="mapboxgl" style="min-height: 600px;">
                     <map-container
@@ -21,10 +21,10 @@
                   </div>
                   <v-spacer />
                   <data-table />
-                  <Metadata />
+                  <MetricMetadata />
                 </v-card>
-              </div>
-              <div v-else>
+              </v-col>
+              <v-col v-else cols="12" md="8">
                 <v-card>
                   <div class="flexcontainer landing-page">
                     <div class="flex-item">
@@ -33,8 +33,8 @@
                       <div v-if="$i18n.locale === 'es'">
                         <h3>Cómo usarlo:</h3>
                         <v-card color="primary" class="d-flex">
-                          <v-img :src="require('../../assets/img/Choose_Metric.png')" alt />
-                          <v-card-text class="white--text">
+                          <v-img src="@/assets/img/Choose_Metric-es.png" alt />
+                          <v-card-text class="text-white">
                             <p class="font-weight-bold">
                               Elija una categoría y un tema del menú en la parte superior de la página. Por ejemplo:
                               <RouterLink
@@ -55,11 +55,11 @@
                         </v-card>
                         <v-card color="primary" class="d-flex">
                           <v-img
-                            :src="require('../../assets/img/Find_Neighborhood.png')"
+                            src="@/assets/img/Find_Neighborhood-es.png"
                             alt
                             width="50%"
                           />
-                          <v-card-text class="white--text">
+                          <v-card-text class="text-white">
                             <p
                               class="font-weight-bold"
                             >
@@ -69,11 +69,11 @@
                         </v-card>
                         <v-card color="primary" class="d-flex">
                           <v-img
-                            :src="require('../../assets/img/Create_Report.png')"
+                            src="@/assets/img/Create_Report-es.png"
                             alt
                             width="50%"
                           />
-                          <v-card-text class="white--text">
+                          <v-card-text class="text-white">
                             <p
                               class="font-weight-bold"
                             >
@@ -85,8 +85,8 @@
                       <div v-else>
                         <h3>Here's how to get started:</h3>
                         <v-card color="primary" class="d-flex">
-                          <v-img :src="require('../../assets/img/Choose_Metric.png')" alt />
-                          <v-card-text class="white--text">
+                          <v-img cover src="@/assets/img/Choose_Metric.png" alt />
+                          <v-card-text class="text-white">
                             <p class="font-weight-bold">
                               Choose a category and topic from the menu at top. For example:
                               <RouterLink
@@ -113,8 +113,8 @@
                         </v-card>
 
                         <v-card color="primary" class="d-flex">
-                          <v-img :src="require('../../assets/img/Find_Neighborhood.png')" alt />
-                          <v-card-text class="white--text">
+                          <v-img cover src="@/assets/img/Find_Neighborhood.png" alt />
+                          <v-card-text class="text-white">
                             <p
                               class="font-weight-bold"
                             >
@@ -123,8 +123,8 @@
                           </v-card-text>
                         </v-card>
                         <v-card color="primary" class="d-flex">
-                          <v-img :src="require('../../assets/img/Create_Report.png')" alt />
-                          <v-card-text class="white--text">
+                          <v-img cover src="@/assets/img/Create_Report.png" alt />
+                          <v-card-text class="text-white">
                             <p
                               class="font-weight-bold"
                             >
@@ -136,29 +136,29 @@
                     </div>
                   </div>
                 </v-card>
-              </div>
-            </v-flex>
-            <v-flex sm12 md4>
-              <geography-switcher v-if="metric.config" />
-              <v-spacer v-if="metric.config" />
-              <distribution-chart v-if="metric.config" :county-values="chartCountyValues" />
-              <v-spacer v-if="metric.config && metric.years.length > 1" />
-              <v-card
-                v-if="metric.config && metric.years.length > 1 && (chartValues || chartCountyValues)"
-              >
-                <trend-chart
-                  :metric-config="metric.config"
-                  :years="metric.years.map(i => Number(i))"
-                  :values="chartValues"
-                  :county-values="chartCountyValues"
-                  framework="mdl"
-                />
-              </v-card>
-              <v-spacer v-if="metric.config" />
-              <feedback />
-              <v-spacer />
-              <social />
-            </v-flex>
+              </v-col>
+              <v-col cols="12" md="4">
+                <geography-switcher v-if="metric.config" />
+                <v-spacer v-if="metric.config" />
+                <distribution-chart v-if="metric.config" :county-values="chartCountyValues" />
+                <v-spacer v-if="metric.config && metric.years.length > 1" />
+                <v-card
+                  v-if="metric.config && metric.years.length > 1 && (chartValues || chartCountyValues)"
+                >
+                  <trend-chart
+                    :metric-config="metric.config"
+                    :years="metric.years.map(i => Number(i))"
+                    :values="chartValues"
+                    :county-values="chartCountyValues"
+                    framework="mdl"
+                  />
+                </v-card>
+                <v-spacer v-if="metric.config" />
+                <feedback />
+                <v-spacer />
+                <social />
+              </v-col>
+            </v-row>
           </v-layout>
         </v-container>
       </div>
@@ -171,6 +171,7 @@
 </template>
 
 <script>
+import { defineAsyncComponent } from 'vue';
 import { mapGetters, mapState } from "vuex";
 
 import config from "../modules/config";
@@ -180,16 +181,16 @@ import DashboardFooter from "../components/dashboard-footer.vue";
 import DataTable from "../components/datatable.vue";
 import Feedback from "../components/feedback.vue";
 import GeographySwitcher from "../components/geography-switcher.vue";
-import Metadata from "../components/metadata.vue";
+import MetricMetadata from "../components/metric-metadata.vue";
 import PrintMode from "../components/print-mode.vue";
 import Social from "../components/social.vue";
 import UndermapButtons from "../components/undermap-buttons.vue";
 import CompassNav from "../components/CompassNav.vue";
 
-const MapContainer = () => import(/* webpackChunkName: "compass-map" */ "../components/map/MapContainer.vue");
-const DistributionChart = () => import(/* webpackChunkName: "distribution-chart" */ "../components/distribution-chart.vue");
-const TrendChart = () => import(/* webpackChunkName: "trend-chart" */ "../components/trend-chart.vue");
-const YearSlider = () => import(/* webpackChunkName: "year-slider" */ "../components/year-slider.vue");
+const MapContainer = defineAsyncComponent(() => import("../components/map/MapContainer.vue"));
+const DistributionChart = defineAsyncComponent(() => import("../components/distribution-chart.vue"));
+const TrendChart = defineAsyncComponent(() => import("../components/trend-chart.vue"));
+const YearSlider = defineAsyncComponent(() => import("../components/year-slider.vue"));
 
 export default {
   name: "Dashboard",
@@ -201,7 +202,7 @@ export default {
     Feedback,
     GeographySwitcher,
     MapContainer,
-    Metadata,
+    MetricMetadata,
     PrintMode,
     Social,
     TrendChart,

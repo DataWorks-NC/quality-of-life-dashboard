@@ -10,14 +10,15 @@
 </template>
 
 <script>
+import { defineAsyncComponent } from 'vue';
 import { mapState } from 'vuex';
 
 import config from '../modules/config';
 
-const MapContainer = () => import(/* webpackChunkName: "compass-map" */ '../components/map/MapContainer.vue');
+const MapContainer = defineAsyncComponent(() => import('../components/map/MapContainer.vue'));
 
 export default {
-  name: 'Embed',
+  name: 'CompassEmbed',
   components: {
     MapContainer,
   },

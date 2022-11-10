@@ -1,26 +1,26 @@
-<template lang="html">
+<template>
   <div v-if="selected.length > 0 && metric.data" id="datatable">
     <div class="tablescroll">
-      <v-simple-table class="datatable">
+      <v-table class="datatable">
         <thead>
           <tr>
             <th>
               <span :title="$t(`geographies.${geography.id}.description`)" class="tooltip">{{ $t(`geographies.${geography.id}.name`) }}</span>
             </th>
             <th>
-              {{ curYear }} {{ $t('strings.value') | capitalize }} <span v-if="metric.config.label">({{ $t('metricLabels.' + metric.config.label) }})</span>
+              {{ curYear }} {{ $filters.capitalize($t('strings.value')) }} <span v-if="metric.config.label">({{ $t('metricLabels.' + metric.config.label) }})</span>
             </th>
             <th v-if="metric.data.a">
-              {{ $t('strings.accuracy') | capitalize }}
+              {{ $filters.capitalize($t('strings.accuracy')) }}
             </th>
             <th v-if="metric.years.length > 1">
-              {{ $t('strings.trend') | capitalize }}<br>{{ trendStartYear }}-{{ trendEndYear }}
+              {{ $filters.capitalize($t('strings.trend')) }}<br>{{ trendStartYear }}-{{ trendEndYear }}
             </th>
             <th v-if="metric.config.raw_label">
-              {{ $t('strings.numberOf') | capitalize }} {{ $t('metricLabels.' + metric.config.raw_label) }}
+              {{ $filters.capitalize($t('strings.numberOf')) }} {{ $t('metricLabels.' + metric.config.raw_label) }}
             </th>
             <th v-if="metric.years.length > 1 && metric.config.raw_label">
-              {{ $t('strings.trend') | capitalize }}<br>{{ trendStartYear }}-{{ trendEndYear }}
+              {{ $filters.capitalize($t('strings.trend')) }}<br>{{ trendStartYear }}-{{ trendEndYear }}
             </th>
           </tr>
         </thead>
@@ -46,13 +46,14 @@
             </td>
           </tr>
         </tbody>
-      </v-simple-table>
+      </v-table>
     </div>
     <p class="text-right">
-      <v-btn text href="data.csv" download class="download"
-             @click="downloadTable('#datatable table')"
+      <v-btn
+        variant="text" href="data.csv" download class="download"
+        @click="downloadTable('#datatable table')"
       >
-        {{ $t('strings.download') | capitalize }}
+        {{ $filters.capitalize($t('strings.download')) }}
       </v-btn>
     </p>
   </div>

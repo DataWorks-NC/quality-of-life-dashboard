@@ -2,7 +2,7 @@
   <v-row class="jump-nav-bar">
     <v-col xs="12">
       <div>
-        <v-tabs v-model="activeTab" background-color="primary" show-arrows grow dark>
+        <v-tabs v-model="activeTab" bg-color="primary" show-arrows grow theme="dark">
           <v-tab v-scroll-to="{ el: summaryId, offset: -150, cancelable: false }" tag="button" rounded depressed>
             {{ $t('strings.metricCategories.Summary') }}
           </v-tab>
@@ -53,7 +53,7 @@ export default {
         .map(categoryName => ({
           name: this.$t(`strings.metricCategories['${categoryName}']`),
         }))
-        .sort((a, b) => this.$i18n.localizedStringCompareFn(a.name, b.name));
+        .sort(this.localizedSortByName);
     },
     summaryId() {
       return `#${this.$t('strings.metricCategories.Summary').toLowerCase()}`;

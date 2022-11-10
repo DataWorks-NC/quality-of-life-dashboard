@@ -1,8 +1,8 @@
 <template>
   <v-card>
-    <v-text-field id="maptitle" ref="maptitle" v-model="title" :aria-label="$t('printMapHeader.setTitle')" name="maptitle" maxlength="150" :label="$t('strings.title') | capitalize" />
+    <v-text-field id="maptitle" ref="maptitle" v-model="title" :aria-label="$t('printMapHeader.setTitle')" name="maptitle" maxlength="150" :label="$filters.capitalize($t('strings.title'))" />
 
-    <v-textarea id="embedcode" ref="embedcode" :value="embedcode" class="mdl-textfield__input" type="text" name="embedcode" maxlength="200" rows="2" :label="$t('printMapHeader.copy')" @click="selectAndCopy()" />
+    <v-textarea id="embedcode" ref="embedcode" :model-value="embedcode" class="mdl-textfield__input" type="text" name="embedcode" maxlength="200" rows="2" :label="$t('printMapHeader.copy')" @click="selectAndCopy()" />
     <div id="embedcode__copied" :style="showCopiedIndicator ? 'opacity: 100;' : ''">
       {{ $t('printMapHeader.copied') }}
     </div>
@@ -18,7 +18,7 @@ export default {
   name: 'PrintMapHeader',
   data() {
     return {
-      baseURL: process.env.VUE_APP_BASE_URL || 'https://compass.durhamnc.gov',
+      baseURL: import.meta.env.BASE_URL || 'https://compass.durhamnc.gov',
       showCopiedIndicator: false,
       copiedIndicatorInterval: null,
     };

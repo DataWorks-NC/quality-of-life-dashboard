@@ -1,13 +1,14 @@
-<template lang="html">
-  <div v-if="years.length > 1"
-       class="qol-chart"
+<template>
+  <div
+    v-if="years.length > 1"
+    class="qol-chart"
   >
-    <p v-if="metricConfig" class="title text-center">
+    <p v-if="metricConfig" class="text-h6 text-center">
       {{ $i18n.locale === 'en' ? metricConfig.title : metricConfig.title_es }}
     </p>
     <div class="legend text-center">
-      <span v-if="countyValues" class="caption"><v-icon color="#778b91">{{ mdiTrendingUp }}</v-icon> {{ $t('strings.county') | capitalize }}</span>
-      <span v-if="values" class="caption"><v-icon color="accent">{{ mdiTrendingUp }}</v-icon> {{ $t('strings.selected') | capitalize }}</span>
+      <span v-if="countyValues" class="text-caption"><v-icon color="#778b91">{{ mdiTrendingUp }}</v-icon> {{ $filters.capitalize($t('strings.county')) }}</span>
+      <span v-if="values" class="text-caption"><v-icon color="accent">{{ mdiTrendingUp }}</v-icon> {{ $filters.capitalize($t('strings.selected')) }}</span>
     </div>
     <div class="trendchart">
       <div :id="'ct-trendchart-' + metricConfig.metric" class="ct-trendchart chartist" />
@@ -70,7 +71,7 @@ export default {
   updated() {
     this.renderChart();
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.chart) {
       this.chart.detach();
     }

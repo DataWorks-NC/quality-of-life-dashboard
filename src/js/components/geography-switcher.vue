@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
   <v-card v-if="validGeographies" class="geography-switcher">
     <template v-for="geography in validGeographies" :key="geography.id">
       <v-btn

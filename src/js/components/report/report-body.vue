@@ -27,10 +27,10 @@ export default {
           metrics: Object.values(this.$store.state.report.metrics)
             .filter(m => m.category === categoryName && m.visible)
             .map(m => ({ ...m, name: (this.$i18n.locale === 'es' ? m.title_es : m.title) }))
-            .sort((a, b) => this.$i18n.localizedStringCompareFn(a.name, b.name)),
+            .sort(this.localizedSortByName),
         }
         ),
-      ).sort((a, b) => this.$i18n.localizedStringCompareFn(a.name, b.name));
+      ).sort(this.localizedSortByName);
     },
   },
 };

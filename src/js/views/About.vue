@@ -4,7 +4,8 @@
     <v-main>
       <v-container fluid grid-list-lg>
         <v-layout wrap>
-          <v-flex sm12 md8>
+          <!--          TODO: was v-flex sm12 md 8-->
+          <div>
             <v-card>
               <div class="flexcontainer landing-page">
                 <div class="flex-item">
@@ -61,10 +62,11 @@
                         Para saber más acerca de cómo usar el Compass, mire los tutoriales en video
                         de los becarios de DataWorks del otoño de 2019, Sydney y Jesse.
                       </p>
-                      <iframe v-for="youtubeUrl in youtubeHowToUseUrls" :key="youtubeUrl"
-                              width="100%" height="315" :src="youtubeUrl" frameborder="0"
-                              allow="accelerometer; encrypted-media; gyroscope;" allowfullscreen
-                              class="youtube"
+                      <iframe
+                        v-for="youtubeUrl in youtubeHowToUseUrls" :key="youtubeUrl"
+                        width="100%" height="315" :src="youtubeUrl" frameborder="0"
+                        allow="accelerometer; encrypted-media; gyroscope;" allowfullscreen
+                        class="youtube"
                       />
                     </section>
                     <section>
@@ -252,10 +254,11 @@
                     <section>
                       <h3>How to use this site</h3>
                       <p>To learn more about how to use the Compass, check out the video tutorials from DataWorks' fall 2019 student interns, Sydney and Jesse.</p>
-                      <iframe v-for="youtubeUrl in youtubeHowToUseUrls" :key="youtubeUrl"
-                              width="100%" height="315" :src="youtubeUrl" frameborder="0"
-                              allow="accelerometer; encrypted-media; gyroscope;" allowfullscreen
-                              class="youtube"
+                      <iframe
+                        v-for="youtubeUrl in youtubeHowToUseUrls" :key="youtubeUrl"
+                        width="100%" height="315" :src="youtubeUrl" frameborder="0"
+                        allow="accelerometer; encrypted-media; gyroscope;" allowfullscreen
+                        class="youtube"
                       />
                     </section>
                     <section>
@@ -408,12 +411,13 @@
                 </div>
               </div>
             </v-card>
-          </v-flex>
-          <v-flex sm12 md4>
+          </div>
+          <!--          TODO: was v-flex sm12 md 4-->
+          <div>
             <Feedback />
             <v-spacer />
             <Social />
-          </v-flex>
+          </div>
         </v-layout>
       </v-container>
     </v-main>

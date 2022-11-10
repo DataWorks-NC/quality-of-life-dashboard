@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
   <div class="map-container" style="min-height:600px;">
     <div class="" style="position: relative; width: 100%; height: 100%">
       <div id="map" />
@@ -12,18 +12,19 @@
 
 <script>
 import { isFinite } from 'lodash';
+import { defineAsyncComponent } from 'vue';
 import { mapGetters, mapState } from 'vuex';
 
-import { prettyNumber } from '../../modules/number_format';
-import FullExtent from '../../modules/map-fullextent';
-import config from '../../modules/config';
-
+import { prettyNumber } from '@/js/modules/number_format';
+import FullExtent from '@/js/modules/map-fullextent';
+import config from '@/js/modules/config';
+import osmLiberty from '@/assets/osm-liberty.json';
 import DashboardLegend from "../dashboard-legend.vue";
 import debugLogMixin from '../mixins/debugLogMixin';
 
-const Geocoder = () => import(/* webpackChunkName: "geocoder" */ './Geocoder.vue');
-const SelectGroupOutline = () => import(/* webpackChunkName: "select-group-outline" */ './SelectGroupOutline.vue');
-const SelectedLayers = () => import(/* webpackChunkName: "selected-layers" */ './SelectedLayers.vue');
+const Geocoder = defineAsyncComponent(() => import('./Geocoder.vue'));
+const SelectGroupOutline = defineAsyncComponent(() => import('./SelectGroupOutline.vue'));
+const SelectedLayers = defineAsyncComponent(() => import('./SelectedLayers.vue'));
 
 export default {
   // You would think to just name this component 'Map', but <map> is in the HTML5 spec!
@@ -133,7 +134,7 @@ export default {
     this.hoverPopup = null;
     this.initMap();
   },
-  destroyed() {
+  unmounted() {
     this.map.remove();
   },
   methods: {
@@ -141,8 +142,7 @@ export default {
       const mapOptions = {
         container: 'map',
         attributionControl: false,
-        // eslint-disable-next-line global-require
-        style: require('@/assets/osm-liberty.json'),
+        style: osmLiberty,
         ...this.mapConfig,
         accessToken: config.privateConfig.mapboxAccessToken,
       };

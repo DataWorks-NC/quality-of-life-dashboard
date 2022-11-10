@@ -5,16 +5,16 @@
       <tbody>
         <tr>
           <th class="metric-table__year">
-            {{ $t('strings.year') | capitalize }}
+            {{ $filters.capitalize($t('strings.year')) }}
           </th>
           <th v-if="metricValues" class="metric-table__feature-value">
-            <span v-if="metric.label">{{ $t(`metricLabels.${metric.label}`) | capitalize }}</span>
+            <span v-if="metric.label">{{ $filters.capitalize($t(`metricLabels.${metric.label}`)) }}</span>
             <span v-else>{{ $t('strings.FeatureValue') }}</span>
           </th>
           <th v-if="countyAverages" class="metric-table__county-average">
             <span
               v-if="metric.label"
-            >{{ $t(`metricLabels.${metric.label}`) | capitalize }} ({{ $t('strings.CountyAverage') }})</span>
+            >{{ $filters.capitalize($t(`metricLabels.${metric.label}`)) }} ({{ $t('strings.CountyAverage') }})</span>
             <span v-else>{{ $t('strings.CountyAverage') }}</span>
           </th>
         </tr>
@@ -50,11 +50,12 @@
 </template>
 
 <script>
+import { defineAsyncComponent } from 'vue';
 import { prettyNumber } from "../../modules/number_format";
 
 import MoreInfo from "./report-more-info.vue";
 
-const TrendChart = () => import(/* webpackChunkName: "trend-chart" */ "../trend-chart.vue");
+const TrendChart = defineAsyncComponent(() => import("../trend-chart.vue"));
 
 export default {
   name: "ReportMetric",

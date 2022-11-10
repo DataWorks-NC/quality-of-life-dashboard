@@ -1,11 +1,11 @@
-<template lang="html">
+<template>
   <v-card>
-    <p class="title text-center">
+    <p class="text-h6 text-center">
       {{ $t('distributionChart.DataDistribution') }}, {{ year }}
     </p>
     <div class="legend text-center">
-      <span v-show="selected.length > 0" class="caption"><v-icon color="accent" size="14px">{{ mdiCircle }}</v-icon> {{ $t('strings.selected') | capitalize }}</span>
-      <span v-if="mounted" class="caption"><v-icon size="14px" color="#666">{{ mdiDotsHorizontal }}</v-icon> {{ $t('strings.CountyAverage') }}: {{ countyAverageString }}</span>
+      <span v-show="selected.length > 0" class="text-caption"><v-icon color="accent" size="14px">{{ mdiCircle }}</v-icon> {{ $filters.capitalize($t('strings.selected')) }}</span>
+      <span v-if="mounted" class="text-caption"><v-icon size="14px" color="#666">{{ mdiDotsHorizontal }}</v-icon> {{ $t('strings.CountyAverage') }}: {{ countyAverageString }}</span>
     </div>
     <div class="ct-distributionchart chartist" />
   </v-card>
@@ -50,7 +50,7 @@ export default {
     this.renderChart();
     this.mounted = true;
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.chart) {
       this.chart.detach();
     }

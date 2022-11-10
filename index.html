@@ -42,10 +42,10 @@
     <meta data-vue-router-controlled="ogUrl" property="og:url" content="<%= VUE_APP_BASE_URL %>en" />
     <meta data-vue-router-controlled="ogDescription" property="og:description" content="Explore your Durham neighborhood with this regularly-updated website. Find current data, create reports and maps, and track changes in your community. The best resource for accurate data about neighborhoods in Durham, North Carolina." />
     <meta data-vue-router-controlled="description" name="description" content="Explore your Durham neighborhood with this regularly-updated website. Find current data, create reports and maps, and track changes in your community. The best resource for accurate data about neighborhoods in Durham, North Carolina." />
-    <link data-vue-router-controlled="linkCanonical" rel="canonical" href="<%= VUE_APP_BASE_URL %>en" />
-    <link data-vue-router-controlled="linkEn" rel="alternate" href="<%= VUE_APP_BASE_URL %>en" hreflang="x-default" />
-    <link data-vue-router-controlled="linkEn" rel="alternate" href="<%= VUE_APP_BASE_URL %>en" hreflang="en" />
-    <link data-vue-router-controlled="linkEs" rel="alternate" href="<%= VUE_APP_BASE_URL %>es" hreflang="es" />
+    <link data-vue-router-controlled="linkCanonical" rel="canonical" href="/en" />
+    <link data-vue-router-controlled="linkEn" rel="alternate" href="/en" hreflang="x-default" />
+    <link data-vue-router-controlled="linkEn" rel="alternate" href="/en" hreflang="en" />
+    <link data-vue-router-controlled="linkEs" rel="alternate" href="/es" hreflang="es" />
 
     <!-- Intl polyfill, @see https://github.com/andyearnshaw/Intl.js/ -->
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Intl.~locale.en,Intl.~locale.es"></script>
@@ -58,6 +58,7 @@
 <div id="app" style="width: 100%;">
     <div style="width: 100%; height: 64px; background-color: rgb(66,66,66);"></div>
     <div style="width: 100%; height: 600px;"></div></div>
+   <script>window.global = window;</script>
    <script type="module" src="/src/main.js"></script>
 </body>
 </html>

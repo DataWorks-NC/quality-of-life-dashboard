@@ -1,6 +1,6 @@
 <template>
-  <v-expansion-panels focusable>
-    <v-expansion-panel @change="toggleMoreInfo">
+  <v-expansion-panels>
+    <v-expansion-panel @group:selected="toggleMoreInfo">
       <v-expansion-panel-header>{{ collapsed ? $t('reportMoreInfo.show') : $t('reportMoreInfo.hide') }}</v-expansion-panel-header>
       <v-expansion-panel-content>
         <div v-html="moreInfo" />

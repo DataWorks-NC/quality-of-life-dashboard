@@ -4,7 +4,7 @@
       <v-col>
         <img
           class="logo-image"
-          :src="require('../../../assets/img/report-logo.png')"
+          src="@/assets/img/report-logo.png"
           :alt="$t('strings.DurhamNeighborhoodCompass')"
         >
         <h1 class="subtitle">
@@ -23,11 +23,12 @@
         <i18n-t keypath="reportSummary.about[2]" tag="p" />
       </v-col>
       <v-col cols="12" sm="6">
-        <ReportMap v-if="mapboxgl"
-                   :map-config="mapConfig"
-                   :geography-id="geographyId"
-                   :selected-geographies="selected"
-                   :select-group-name="selectGroupName"
+        <ReportMap
+          v-if="mapboxgl"
+          :map-config="mapConfig"
+          :geography-id="geographyId"
+          :selected-geographies="selected"
+          :select-group-name="selectGroupName"
         />
       </v-col>
     </v-row>
@@ -57,10 +58,11 @@
 </template>
 
 <script>
+import { defineAsyncComponent} from 'vue';
 import { mapGetters, mapMutations } from "vuex";
 import { prettyNumber } from "../../modules/number_format";
 
-const ReportMap = () => import(/* webpackChunkName: "report-map" */ "./report-map.vue");
+const ReportMap = defineAsyncComponent(() => import("./report-map.vue"));
 
 export default {
   name: "ReportSummary",

@@ -1,16 +1,18 @@
-<template lang="html">
-  <div v-if="metric.config" id="legend" class="top left">
+<template>
+  <div v-if="metric.config" id="legend" :class="legendClass">
     <div>
       <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=" class="background-print-img" aria-hidden="true" alt="">
       <div class="legendposition">
-        <a class="no-underline" :title="$t('legend.MoveTableOfContents')" href="javascript:void(0)" @click="position"><v-icon>{{ mdiCursorMove }}</v-icon></a>
+        <a class="no-underline" :title="$t('legend.MoveTableOfContents')" href="javascript:void(0)" @click="cyclePosition">
+          <v-icon>mdi-cursor-move</v-icon>
+        </a>
       </div>
-      <h1 class="title">
+      <h1 class="text-h6">
         {{ $store.getters.legendTitle }}
       </h1>
       <div class="metricboxes">
         <div v-if="selected.length > 0" class="metricbox">
-          <span class="metrictype">{{ $t('strings.selected') | allcaps }}</span>
+          <span class="metrictype">{{ $filters.allcaps($t('strings.selected')) }}</span>
           <span class="metricvalue">{{ selectedValue }}</span>
           <span v-if="metric.config.label" class="metriclabel">{{ $t('metricLabels.' + metric.config.label.toLowerCase()) }}</span>
           <span v-if="metric.config.raw_label && selected.length > 0 && selectedValueRaw" class="metric-raw">
@@ -20,7 +22,7 @@
           </span>
         </div>
         <div class="metricbox">
-          <span class="metrictype">{{ $t('strings.county') | allcaps }}</span>
+          <span class="metrictype">{{ $filters.allcaps($t('strings.county')) }}</span>
           <span class="metricvalue">{{ areaValue }}</span>
           <span v-if="metric.config.label" class="metriclabel">{{ $t('metricLabels.' + metric.config.label.toLowerCase()) }}</span>
           <span v-if="metric.config.raw_label && areaValueRaw" class="metric-raw">
@@ -49,7 +51,6 @@
 </template>
 
 <script>
-import { mdiCursorMove } from '@mdi/js';
 import { mapGetters, mapState } from 'vuex';
 import config from '../modules/config';
 
@@ -62,10 +63,10 @@ export default {
   // You would think to just name this component 'Legend', but <legend> is in the HTML5 spec!
   name: 'DashboardLegend',
   data: () => ({
-    mdiCursorMove,
     selectedValue: null,
     selectedValueRaw: null,
     colors: config.colors,
+    position: 'top-left',
   }),
   computed: {
     ...mapState({
@@ -77,6 +78,14 @@ export default {
       areaValueRaw(state) { return prettyNumber(state.metric.averageValues[state.year].rawValue, { prefix: state.metric.config.prefix }); },
     }),
     ...mapGetters(['selected']),
+    legendClass() {
+      return {
+        top: this.position.startsWith('top'),
+        bottom: this.position.startsWith('bottom'),
+        'float-left': this.position.endsWith('left'),
+        'float-right': this.position.endsWith('right'),
+      }
+    }
   },
   watch: {
     'metric': 'processSelected',
@@ -133,23 +142,16 @@ export default {
         this.selectedValueRaw = prettyNumber(rawValue, { prefix: metricConfig.prefix });
       }
     },
-    /**
-     * Add query selectors to reposition the legend in a different corner.
-     */
-    position() {
-      const el = document.querySelector("#legend");
-
-      if (el.classList.contains("right")) { // move to top left from bottom right
-        el.classList.remove('bottom');
-        el.classList.remove('right');
-        el.classList.add('top');
-        el.classList.add('left');
-      } else if (el.classList.contains("bottom")) { // move to bottom right from bottom left
-        el.classList.remove('left');
-        el.classList.add('right');
-      } else if (el.classList.contains("top")) { // move to bottom left from top left\n
-        el.classList.remove('top');
-        el.classList.add('bottom');
+    cyclePosition() {
+      console.log('Change position');
+      if (this.position === 'top-left') {
+        this.position = 'bottom-left';
+      } else if (this.position === 'bottom-left') {
+        this.position = 'bottom-right';
+      } else if (this.position === 'bottom-right') {
+        this.position = 'top-right';
+      } else if (this.position === 'top-right') {
+        this.position = 'top-left';
       }
     },
   },

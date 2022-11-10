@@ -49,7 +49,7 @@ export default {
   mounted() {
     this.showLayers();
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.map) {
       this.hideLayers();
     }

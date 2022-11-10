@@ -4,6 +4,7 @@
 
 <script>
 import debugLogMixin from '../mixins/debugLogMixin';
+import selectGroups from '@/../data/selectgroups.geojson.json';
 
 export default {
   name: "SelectGroupOutline",
@@ -91,7 +92,7 @@ export default {
   mounted() {
     this.showSelectGroup(this.selectGroupName, null);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.map) {
       this.hideSelectGroup();
     }
@@ -121,8 +122,7 @@ export default {
         map.addSource('selectGroup', {
           type: 'geojson',
           promoteId: 'id',
-          // eslint-disable-next-line global-require
-          data: require('@/../data/selectgroups.geojson.json'),
+          data: selectGroups,
         });
       }
 

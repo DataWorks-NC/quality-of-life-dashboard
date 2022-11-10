@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
   <v-footer color="background" class="d-print-none">
     <p class="logos text-center">
       <ExternalLink href="https://durhamnc.gov">
@@ -11,10 +11,10 @@
         <img src="../../assets/img/countyLogo.png" :alt="$t('strings.DurhamCountyLogo')" height="125">
       </ExternalLink>
     </p>
-    <RouterLink :to="{name: 'about' }" class="logos overline text-center">
+    <RouterLink :to="{name: 'about' }" class="logos text-overline text-center">
       {{ $t('footer.about') }}
     </RouterLink>
-    <i18n-t keypath="footer.radCredit" tag="p" class="logos overline text-center">
+    <i18n-t keypath="footer.radCredit" tag="p" class="logos text-overline text-center">
       <template #radLink>
         <ExternalLink href="https://rad.cat">
           Research Action Design

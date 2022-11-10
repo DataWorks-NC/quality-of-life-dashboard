@@ -47,38 +47,29 @@
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
-    "@vitejs/plugin-vue": "^1.6.1",
-    "@vue/eslint-config-airbnb": "^7.0",
+    "@babel/eslint-parser": "^7.19.1",
+    "@babel/preset-env": "^7.20.2",
+    "@intlify/unplugin-vue-i18n": "^0.7.1",
+    "@vitejs/plugin-legacy": "^2.3.1",
+    "@vitejs/plugin-vue": "^3.0",
     "advanced-sitemap-generator": "^1.8.5",
     "async": "^3.2.0",
     "autoprefixer": "^10.0",
-    "babel-eslint": "^10.1.0",
     "bundlesize": "^0.18.0",
     "csvtojson": "^2.0.10",
     "eslint": "^8.0",
     "eslint-plugin-import": "^2.24.2",
     "eslint-plugin-vue": "^9.0",
+    "eslint-plugin-vuetify": "^2.0.0-beta.2",
     "jest": "^29.0",
     "lint-staged": "^13.0",
     "marked": "^4.0.12",
     "prerender-spa-plugin": "^3.2.1",
     "sass": "^1.43.2",
-    "vite": "^2.5.4",
-    "vite-plugin-vuetify": "^1.0.0"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "@vue/airbnb"
-    ],
-    "rules": {},
-    "parserOptions": {
-      "parser": "babel-eslint"
-    }
+    "terser": "^5.15.1",
+    "vite": "^3",
+    "vite-plugin-vuetify": "^1.0.0",
+    "yorkie": "^2.0.0"
   },
   "postcss": {
     "plugins": {
@@ -129,7 +120,7 @@
   },
   "lint-staged": {
     "*.{js,vue}": [
-      "vue-cli-service lint"
+      "eslint --ignore-path .gitignore --fix src"
     ]
   }
 }

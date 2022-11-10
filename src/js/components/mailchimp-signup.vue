@@ -3,12 +3,12 @@
   <div class="signup-embed">
     <div id="mc_embed_signup">
       <form id="mc-embedded-subscribe-form" :action="url" method="post" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
-        <v-text-field id="mce-EMAIL" type="email" value="" name="EMAIL" class="email" :placeholder="$t('feedback.email')" required />
+        <v-text-field id="mce-EMAIL" type="email" model-value="" name="EMAIL" class="email" :placeholder="$t('feedback.email')" required />
         <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
         <div style="position: absolute; left: -5000px;" aria-hidden="true">
           <input type="text" name="b_9b69fbf4536829ebc21196618_a338a67315" tabindex="-1" value="">
         </div>
-        <v-btn id="mc-embedded-subscribe" dark small type="submit" value="Subscribe" name="subscribe" class="button">
+        <v-btn id="mc-embedded-subscribe" theme="dark" size="small" type="submit" value="Subscribe" name="subscribe" class="button">
           {{ $t('feedback.Subscribe') }}
         </v-btn>
       </form>

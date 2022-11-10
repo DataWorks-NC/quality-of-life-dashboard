@@ -1,14 +1,14 @@
-<template lang="html">
+<template>
   <div class="flex-item" :style="{flexBasis: `${75*metric.years.length}px`}">
+    <!--    TODO: Hide ticks and thumb-labels on smallest breakpoint. -->
     <v-slider
       v-model="year"
       :min="0"
       :max="metric.years.length - 1"
-      :tick-labels="$vuetify.breakpoint.name === 'xs' ? [] : metric.years"
       :hint="$t('yearSlider.useSlider')"
       :class="densityClass"
-      ticks="always"
-      :thumb-label="$vuetify.breakpoint.name === 'xs' ? 'always' : true"
+      show-ticks="always"
+      thumb-label="always"
       persistent-hint
     >
       <template #thumb-label="{ value }">

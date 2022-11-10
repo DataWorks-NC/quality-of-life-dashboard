@@ -3,12 +3,12 @@
     <v-dialog
       v-model="dialog"
       fullscreen
-      hide-overlay
+      :scrim="false"
       transition="dialog-bottom-transition"
       class="metric-selector"
     >
       <template #activator="{ on }">
-        <v-btn text v-on="on">
+        <v-btn variant="text" v-on="on">
           {{ $t('reportSelector.customize') }}
         </v-btn>
       </template>
@@ -54,7 +54,7 @@
             >
               <v-list>
                 <v-list-item
-                  :input-value="category.metrics.every(m=>m.visible)"
+                  :active="category.metrics.every(m=>m.visible)"
                   class="metric-selector__category"
                   :class="category.metrics.some(m => m.visible) && 'partially-active'"
                   @click.prevent="toggleCategory(category)"
@@ -62,7 +62,7 @@
                   <v-list-item-icon>
                     <v-icon>{{ category.metrics.every(m=>m.visible) ? mdiEye : mdiEyeOff }}</v-icon>
                   </v-list-item-icon>
-                  <v-list-item-title class="title">
+                  <v-list-item-title class="text-h6">
                     {{ category.name }}
                   </v-list-item-title>
                 </v-list-item>
@@ -70,7 +70,7 @@
                   <v-list-item
                     v-for="metric in category.metrics"
                     :key="metric.metric"
-                    :input-value="metric.visible"
+                    :active="metric.visible"
                     :value="metric.visible"
                     class="metric-selector__metric"
                     icon
@@ -97,6 +97,7 @@
 import { mdiClose, mdiEye, mdiEyeOff } from "@mdi/js";
 import { mapGetters, mapState } from "vuex";
 import config from "../../modules/config";
+
 
 export default {
   name: "ReportSelector",
@@ -126,9 +127,9 @@ export default {
               ...m,
               name: this.$i18n.locale === "es" ? m.title_es : m.title,
             }))
-            .sort((a, b) => this.$i18n.localizedStringCompareFn(a.name, b.name)),
+            .sort(this.localizedSortByName),
         }))
-        .sort((a, b) => this.$i18n.localizedStringCompareFn(a.name, b.name));
+        .sort(this.localizedSortByName);
     },
   },
   updated() {

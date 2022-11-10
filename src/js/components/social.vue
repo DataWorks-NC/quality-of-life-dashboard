@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <p class="title text-center">
+    <p class="text-h6 text-center">
       {{ $t('strings.share') }}
     </p>
     <v-card-actions>
@@ -42,7 +42,7 @@ export default {
   name: 'Social',
   components: { ExternalLink },
   data: () => ({
-    baseUrl: process.env.VUE_APP_BASE_URL || 'https://compass.durhamnc.gov',
+    baseUrl: import.meta.env.BASE_URL || 'https://compass.durhamnc.gov',
     mdiTwitter,
     mdiFacebook,
     mdiPrinter,
