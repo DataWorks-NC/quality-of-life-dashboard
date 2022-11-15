@@ -7,8 +7,8 @@
       {{ $i18n.locale === 'en' ? metricConfig.title : metricConfig.title_es }}
     </p>
     <div class="legend text-center">
-      <span v-if="countyValues" class="text-caption"><v-icon color="#778b91">{{ mdiTrendingUp }}</v-icon> {{ $filters.capitalize($t('strings.county')) }}</span>
-      <span v-if="values" class="text-caption"><v-icon color="accent">{{ mdiTrendingUp }}</v-icon> {{ $filters.capitalize($t('strings.selected')) }}</span>
+      <span v-if="countyValues" class="text-caption"><v-icon color="#778b91" :icon="mdiTrendingUp" /> {{ $filters.capitalize($t('strings.county')) }}</span>
+      <span v-if="values" class="text-caption"><v-icon color="accent" :icon="mdiTrendingUp" /> {{ $filters.capitalize($t('strings.selected')) }}</span>
     </div>
     <div class="trendchart">
       <div :id="'ct-trendchart-' + metricConfig.metric" class="ct-trendchart chartist" />
@@ -189,7 +189,7 @@ export default {
 
 .qol-chart .ct-series-b .ct-line,
 .qol-chart .ct-series-b .ct-point {
-  stroke: var(--v-accent-base);
+  stroke: rgb(var(--v-theme-accent));
 }
 .qol-chart .ct-series-a .ct-line,
 .qol-chart .ct-series-a .ct-point {

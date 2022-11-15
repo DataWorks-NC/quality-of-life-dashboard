@@ -10,6 +10,8 @@ import "../../scss/chartist.min.css";
 import * as axisTitle from 'chartist-plugin-axistitle';
 import 'chartist-plugin-tooltips';
 
+// TODO: Upgrade chartist to 1.0
+
 axisTitle();
 
 export default Chartist;

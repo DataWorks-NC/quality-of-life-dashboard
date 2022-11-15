@@ -61,7 +61,7 @@ export default {
 }
 .theme--light.v-expansion-panels button.v-expansion-panel-header {
   width: auto;
-  color: var(--v-accent-base);
+  color: rgb(var(--v-theme-accent));
   padding: 0;
   min-height: 35px;
   border-bottom: 2px solid rgba(104, 8, 158, 0);

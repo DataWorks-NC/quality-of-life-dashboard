@@ -15,7 +15,7 @@
       <v-card class="metric-selector">
         <v-toolbar dark>
           <v-btn icon @click="dialog = false">
-            <v-icon>{{ mdiClose }}</v-icon>
+            <v-icon :icon="mdiClose" />
           </v-btn>
           <v-toolbar-title>{{ $t('reportSelector.customize') }}</v-toolbar-title>
         </v-toolbar>
@@ -60,7 +60,7 @@
                   @click.prevent="toggleCategory(category)"
                 >
                   <v-list-item-icon>
-                    <v-icon>{{ category.metrics.every(m=>m.visible) ? mdiEye : mdiEyeOff }}</v-icon>
+                    <v-icon :icon="category.metrics.every(m=>m.visible) ? mdiEye : mdiEyeOff" />
                   </v-list-item-icon>
                   <v-list-item-title class="text-h6">
                     {{ category.name }}
@@ -77,9 +77,7 @@
                     @click.prevent="toggleMetric(metric)"
                   >
                     <v-list-item-icon>
-                      <v-icon size="16px">
-                        {{ metric.visible ? mdiEye : mdiEyeOff }}
-                      </v-icon>
+                      <v-icon size="16px" :icon="metric.visible ? mdiEye : mdiEyeOff" />
                     </v-list-item-icon>
                     <v-list-item-title>{{ metric.name }}</v-list-item-title>
                   </v-list-item>

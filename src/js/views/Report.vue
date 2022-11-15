@@ -11,7 +11,7 @@
           :summary-metrics="summaryMetrics"
           :map-config="mapConfig"
         />
-        <v-spacer />
+        <div class="spacer" />
         <report-body />
       </v-container>
     </v-main>

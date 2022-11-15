@@ -1,35 +1,30 @@
 @import "./typography.scss";
 @import "./modules/a11y.css";
 
-.v-btn:not(.v-btn--text):not(.v-btn--outlined):not(.v-btn--icon) {
+.v-btn:not(.v-btn--variant-text):not(.v-btn--variant-outlined):not(.v-btn--icon) {
   margin: 2px;
   box-sizing: border-box;
 
-  &:not(.theme--dark) {
-    &:before {
-      background-color: #dedede;
-      opacity: 1;
-    }
+  &:not(.v-theme--dark) {
+    background: #dedede;
+    opacity: 1;
 
-    &:hover:before {
+    &:hover {
       box-shadow: inset 0 0 0 2px rgba(104, 8, 158, .4) !important;
     }
 
-    &.v-btn--active:before {
-      background-color: var(--v-accent-base);
+    &.v-btn--active {
+      background-color: rgb(var(--v-theme-accent));
       box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12);
       opacity: 1;
-    }
-
-    &.v-btn--active {
       color: white;
     }
   }
 
-  &.theme--dark {
-      background-color: var(--v-accent-base);
+  &.v-theme--dark {
+      background-color: rgb(var(--v-theme-accent));
       &.v-btn--disabled {
-        background-color: rgba(0,0,0,.26) !important;
+        background: rgba(0,0,0,.26) !important;
       }
   }
 }
@@ -39,11 +34,11 @@
 }
 
 .theme--dark {
-  .v-list-item--link:not(.v-list-group__header)::before {
-    background-color: var(--v-accent-base);
+  .v-list-item--link:not(.v-list-group__header) {
+    background: rgb(var(--v-theme-accent));
   }
 
-  .v-list-item__title, .v-list-item__icon {
+  .v-list-item-title, .v-list-item__icon {
     color: white;
     caret-color: white;
   }
@@ -51,7 +46,7 @@
   .v-list-group__items {
 
     .v-list-item--active:not(.v-list-group__header) {
-      background-color: var(--v-accent-base);
+      background: rgb(var(--v-theme-accent));
     }
 
     .v-list-item--active:before {
@@ -61,7 +56,7 @@
 }
 
 .v-card {
-  padding: 8px;
+  padding: 8px !important;
 }
 
 .spacer {
@@ -152,5 +147,5 @@ textarea {
 
 // Fix for Vuetify bug where when scrolling menu vertically the background scrolls up and out of view.
 .v-menu__content.menuable__content__active {
-  background-color: white;
+  background: white;
 }

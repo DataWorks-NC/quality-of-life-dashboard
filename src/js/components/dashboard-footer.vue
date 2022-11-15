@@ -36,6 +36,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.v-footer {
+  flex-wrap: wrap;
+}
+
 .logos {
   width: 100%;
   a::before {

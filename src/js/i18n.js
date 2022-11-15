@@ -15,7 +15,7 @@ function loadLocaleMessages() {
   return messages;
 }
 
-const i18n = new createI18n({
+const i18n = createI18n({
   locale: import.meta.env.VITE_I18N_LOCALE || 'en',
   fallbackLocale: import.meta.env.VITE_I18N_FALLBACK_LOCALE || 'en',
   messages: loadLocaleMessages(),

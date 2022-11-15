@@ -32,17 +32,13 @@
               &#177;{{ row.accuracy }}
             </td>
             <td v-if="metric.years.length > 1 && row.trend">
-              <v-icon size="14px">
-                {{ row.trend.icon }}
-              </v-icon>{{ row.trend.label }}
+              <v-icon size="14px" :icon="row.trend.icon" />{{ row.trend.label }}
             </td>
             <td v-if="row.rawValue">
               {{ row.rawValue }}
             </td>
             <td v-if="metric.years.length > 1 && row.rawTrend">
-              <v-icon size="14px">
-                {{ row.rawTrend.icon }}
-              </v-icon>{{ row.rawTrend.label }}
+              <v-icon size="14px" :icon="row.rawTrend.icon" />{{ row.rawTrend.label }}
             </td>
           </tr>
         </tbody>

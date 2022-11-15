@@ -4,8 +4,8 @@
       {{ $t('distributionChart.DataDistribution') }}, {{ year }}
     </p>
     <div class="legend text-center">
-      <span v-show="selected.length > 0" class="text-caption"><v-icon color="accent" size="14px">{{ mdiCircle }}</v-icon> {{ $filters.capitalize($t('strings.selected')) }}</span>
-      <span v-if="mounted" class="text-caption"><v-icon size="14px" color="#666">{{ mdiDotsHorizontal }}</v-icon> {{ $t('strings.CountyAverage') }}: {{ countyAverageString }}</span>
+      <span v-show="selected.length > 0" class="text-caption"><v-icon color="accent" size="14px" :icon="mdiCircle" /> {{ $filters.capitalize($t('strings.selected')) }}</span>
+      <span v-if="mounted" class="text-caption"><v-icon size="14px" color="#666" :icon="mdiDotsHorizontal" /> {{ $t('strings.CountyAverage') }}: {{ countyAverageString }}</span>
     </div>
     <div class="ct-distributionchart chartist" />
   </v-card>
@@ -225,7 +225,7 @@ export default {
 }
 /* selected */
 .ct-distributionchart .ct-point {
-    stroke: var(--v-accent-base);
+    stroke: rgb(var(--v-theme-accent));
 }
 
 /* distribution series */

@@ -8,16 +8,16 @@
       </v-toolbar-title>
       <div class="flex-grow-1" />
       <v-btn @click="print()">
-        <v-icon>{{ mdiPrinter }}</v-icon> {{ $filters.allcaps($t('printMapHeader.print')) }}
+        <v-icon :icon="mdiPrinter" /> {{ $filters.allcaps($t('printMapHeader.print')) }}
       </v-btn>
       <v-btn :to="{ query: { ...$route.query, mode: undefined, legendTitle: undefined } }">
-        <v-icon>{{ mdiArrowLeft }}</v-icon> {{ $filters.allcaps($t('printMapHeader.back')) }}
+        <v-icon :icon="mdiArrowLeft" /> {{ $filters.allcaps($t('printMapHeader.back')) }}
       </v-btn>
     </v-app-bar>
     <v-main>
       <print-map-header class="d-print-none" />
       <img :alt="$t('strings.DataWorksNCLogo')" src="@/assets/img/report-logo.png?url" class="header__logo">
-      <v-spacer />
+      <div class="spacer" />
       <v-card class="map d-print-inline">
         <map-container :mapbox-access-token="config.privateConfig.mapboxAccessToken" :map-config="Object.assign({ trackResize: false }, config.mapConfig)" />
         <i18n-t keypath="printMode.footerText" tag="p" class="print__footer">

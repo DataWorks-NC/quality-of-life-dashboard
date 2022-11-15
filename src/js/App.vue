@@ -1,5 +1,5 @@
 <template>
-  <v-app :style="{ backgroundColor: $vuetify.theme.themes['light'].background }">
+  <v-app :style="{ backgroundColor: $vuetify.theme.themes['light'].background }" theme="light">
     <div v-if="loading">
       <div style="width: 100%; height: 64px; background-color: rgb(66,66,66);" />
       <div style="width: 100%; height: 600px;" />

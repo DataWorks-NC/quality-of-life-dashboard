@@ -12,7 +12,7 @@
       {{ $t('strings.ChangeLanguage') }}
     </v-btn>
     <v-btn icon :aria-label="$t('about.link')" :to="{ name: 'about' }">
-      <v-icon>{{ mdiInformation }}</v-icon>
+      <v-icon :icon="mdiInformation" />
     </v-btn>
   </v-app-bar>
 </template>

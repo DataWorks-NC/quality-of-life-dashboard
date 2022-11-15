@@ -6,24 +6,16 @@
     <v-card-actions>
       <div class="flex-grow-1" />
       <ExternalLink :href="twitter" :show-icon="false" class="social__link">
-        <v-icon size="36px" color="#1DA1F2" :aria-label="$t('social.twitter')">
-          {{ mdiTwitter }}
-        </v-icon>
+        <v-icon size="36px" color="#1DA1F2" :aria-label="$t('social.twitter')" :icon="mdiTwitter" />
       </ExternalLink>
       <ExternalLink :href="facebook" :show-icon="false" class="social__link">
-        <v-icon size="36px" color="#4E71A8" :aria-label="$t('social.facebook')">
-          {{ mdiFacebook }}
-        </v-icon>
+        <v-icon size="36px" color="#4E71A8" :aria-label="$t('social.facebook')" :icon="mdiFacebook" />
       </ExternalLink>
       <ExternalLink :href="whatsapp" :show-icon="false" class="social__link">
-        <v-icon size="36px" color="#25D366" :aria-label="$t('social.linkedIn')">
-          {{ mdiWhatsapp }}
-        </v-icon>
+        <v-icon size="36px" color="#25D366" :aria-label="$t('social.linkedIn')" :icon="mdiWhatsapp" />
       </ExternalLink>
       <router-link v-if="$route.name === 'compass'" :to="{ query: { ...$route.query, mode: 'print' } }" class="social__link">
-        <v-icon size="36px" color="#1686B0" :aria-label="$t('social.viewGitHub')">
-          {{ mdiPrinter }}
-        </v-icon>
+        <v-icon size="36px" color="#1686B0" :aria-label="$t('social.print')" :icon="mdiPrinter" />
       </router-link>
       <div class="flex-grow-1" />
     </v-card-actions>
@@ -64,6 +56,6 @@ export default {
   margin: 0 0.5em;
 }
 .social__link svg:hover {
-  color: var(--v-accent-base) !important;
+  color: rgb(var(--v-theme-accent)) !important;
 }
 </style>

@@ -39,6 +39,6 @@ export default {
 }
 
 >>> #mc_embed_signup .button {
-  background-color: var(--v-primary-base);
+  background-color: rgb(var(--v-theme-primary));
 }
 </style>

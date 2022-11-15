@@ -98,7 +98,7 @@ h2 {
     content: "";
     width: 150px;
     height: 3px;
-    background-color: var(--v-primary-base);
+    background-color: rgb(var(--v-theme-primary));
     position: absolute;
     bottom: -10px;
     left: 0;

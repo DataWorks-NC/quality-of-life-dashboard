@@ -4,10 +4,10 @@
       <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=" class="background-print-img" aria-hidden="true" alt="">
       <div class="legendposition">
         <a class="no-underline" :title="$t('legend.MoveTableOfContents')" href="javascript:void(0)" @click="cyclePosition">
-          <v-icon>mdi-cursor-move</v-icon>
+          <v-icon :icon="icons.mdiCursorMove" />
         </a>
       </div>
-      <h1 class="text-h6">
+      <h1 class="text-h6 legend--title">
         {{ $store.getters.legendTitle }}
       </h1>
       <div class="metricboxes">
@@ -53,6 +53,7 @@
 <script>
 import { mapGetters, mapState } from 'vuex';
 import config from '../modules/config';
+import { mdiCursorMove } from '@mdi/js';
 
 import {
   legendLabelNumber, prettyNumber,
@@ -67,6 +68,9 @@ export default {
     selectedValueRaw: null,
     colors: config.colors,
     position: 'top-left',
+    icons: {
+      mdiCursorMove,
+    },
   }),
   computed: {
     ...mapState({
@@ -164,7 +168,7 @@ export default {
   top: 8px;
 }
 
-#legend.left {
+#legend.float-left {
   left: 8px;
 }
 
@@ -172,7 +176,7 @@ export default {
   bottom: 8px;
 }
 
-#legend.right {
+#legend.float-right {
   right: 8px;
 }
 
@@ -206,7 +210,7 @@ export default {
   fill: #ccc;
 }
 
-.title, .description, .legend, .metricboxes {
+.legend--title, .description, .legend, .metricboxes {
   position: relative;
 }
 
@@ -249,7 +253,7 @@ export default {
   line-height: 1.3em;
 }
 
-.title {
+.legend--title {
   padding: 10px 10px 7px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.15);
   word-wrap: break-word;

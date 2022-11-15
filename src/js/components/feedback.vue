@@ -1,9 +1,7 @@
 <template>
   <v-card v-if="siteConfig && (siteConfig.feedbackUrl || siteConfig.signupEmbed)">
     <v-btn v-if="siteConfig.feedbackUrl" size="small" @click="openSurvey">
-      {{ $t('feedback.ShareFeedback') }} <v-icon size="14px">
-        {{ mdiOpenInNew }}
-      </v-icon>
+      {{ $t('feedback.ShareFeedback') }} <v-icon size="14px" :icon="mdiOpenInNew" />
     </v-btn>
     <v-btn v-if="mailchimpUrl" size="small" :active="showSignup" @click="showSignup = !showSignup">
       {{ $t('feedback.JoinMailingList') }}

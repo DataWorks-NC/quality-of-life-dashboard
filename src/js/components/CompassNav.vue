@@ -1,43 +1,39 @@
 <template>
   <div>
-    <v-app-bar extension-height="48" theme="dark" absolute>
+    <v-app-bar extension-height="48" theme="dark" absolute elevation="0">
       <v-app-bar-nav-icon :aria-label="$t('strings.openMobileNav')" class="d-md-none" @click.stop="drawer = !drawer" />
       <!-- Mobile nav -->
       <v-dialog v-model="drawer" fullscreen :scrim="false" transition="dialog-bottom-transition" scrollable>
         <v-toolbar flat>
           <v-btn icon @click="drawer = false">
-            <v-icon>mdi-close</v-icon>
+            <v-icon :icon="icons.mdiClose" />
           </v-btn>
           <v-toolbar-title>{{ $t('strings.chooseATopic') }}</v-toolbar-title>
         </v-toolbar>
-        <v-container>
-          <v-list nav>
-            <v-list-group v-for="category in categories" :key="category.id" :value="category.id">
-              <template #activator="{ props }">
-                <v-list-item v-bind="props">
-                  <v-list-item-title>{{ category.name }}</v-list-item-title>
-                </v-list-item>
-              </template>
-              <v-list-item v-for="m in categoryMetrics[category.originalName]" :key="m.name" :value="m.name" @click="drawer = !drawer">
-                <router-link v-if="!m.children.length" :to="{ name: 'compass', params: { ...$route.params, metric: m.metric }, query: $route.query }">
-                  <v-list-item-title> {{ m.name }} </v-list-item-title>
-                </router-link>
-                <v-list-group v-if="m.children.length" :value="`${m.name}-children`">
-                  <template #activator="{ props }">
-                    <v-list-item v-bind="props">
-                      <v-list-item-title>{{ m.name }}</v-list-item-title>
-                    </v-list-item>
-                  </template>
-                  <v-list-item v-for="m2 in m.children" :key="m2.metric" :value="m2.metric" @click="drawer = !drawer">
-                    <router-link :to="{ name: 'compass', params: { ...$route.params, metric: m2.metric }, query: $route.query }">
-                      <v-list-item-title> {{ m2.name }} </v-list-item-title>
-                    </router-link>
-                  </v-list-item>
-                </v-list-group>
+        <v-list nav>
+          <v-list-group v-for="category in categories" :key="category.id" :value="category.id">
+            <template #activator="{ props }">
+              <v-list-item v-bind="props">
+                <v-list-item-title>{{ category.name }}</v-list-item-title>
               </v-list-item>
-            </v-list-group>
-          </v-list>
-        </v-container>
+            </template>
+            <template v-for="m in categoryMetrics[category.originalName]">
+              <v-list-item v-if="!m.children.length" :key="m.name" :value="m.name" :to="{ name: 'compass', params: { ...$route.params, metric: m.metric }, query: $route.query }" @click="drawer = !drawer">
+                <v-list-item-title> {{ m.name }} </v-list-item-title>
+              </v-list-item>
+              <v-list-group v-else :key="m.name" :value="`${m.name}-children`">
+                <template #activator="{ props }">
+                  <v-list-item v-bind="props">
+                    <v-list-item-title>{{ m.name }}</v-list-item-title>
+                  </v-list-item>
+                </template>
+                <v-list-item v-for="m2 in m.children" :key="m2.metric" :value="m2.metric" :to="{ name: 'compass', params: { ...$route.params, metric: m2.metric }, query: $route.query }" @click="drawer = !drawer">
+                  <v-list-item-title> {{ m2.name }} </v-list-item-title>
+                </v-list-item>
+              </v-list-group>
+            </template>
+          </v-list-group>
+        </v-list>
       </v-dialog>
 
       <v-toolbar-title>
@@ -51,15 +47,15 @@
         {{ $t('strings.ChangeLanguage') }}
       </v-btn>
       <v-btn icon :aria-label="$t('about.link')" :to="{ name: 'about' }">
-        <v-icon>mdi-information</v-icon>
+        <v-icon :icon="icons.mdiInformation" />
       </v-btn>
       <v-btn icon :aria-label="$t('strings.DownloadData')" href="/download/download.zip" @click="gaEvent('send', 'event', 'download', 'metric zip file download')">
-        <v-icon>mdi-download</v-icon>
+        <v-icon :icon="icons.mdiDownload" />
       </v-btn>
 
       <!-- Desktop nav -->
       <template #extension>
-        <v-tabs v-model="categoryTab" optional center-active show-arrows>
+        <v-tabs v-model="categoryTab" :hide-slider="false" :grow="true" :show-arrows="true">
           <v-tab
             v-for="category in categories"
             :key="category.id"
@@ -72,42 +68,42 @@
     </v-app-bar>
 
     <div v-if="categoryTab" class="d-none d-md-flex">
-      <v-window v-model="categoryTab" class="metric__buttons" theme="light">
-        <v-window-item
-          v-for="category in categories"
-          :key="'tab-'+category.id"
-          :value="category.id"
-        >
-          <template v-for="m in categoryMetrics[category.originalName]">
-            <template v-if="m.children.length">
-              <v-menu :key="m.metric" :attach="'#' + kebabCase(m.originalName)">
-                <template #activator="{ props }">
-                  <!-- TODO: Add attach property for a11y -->
-                  <v-btn v-if="metric.config && metric.config.subcategory === m.originalName" rounded variant="flat" class="v-btn--active" v-bind="props">
-                    {{ $i18n.locale === 'es' ? metric.config.title_es : metric.config.title }} <v-icon :icon="`mdiSvg${icons.mdiTriangleSmallDown}}`" />
-                  </v-btn>
-                  <v-btn v-else rounded variant="flat" v-bind="props">
-                    {{ m.name }} <v-icon :icon="`mdiSvg${icons.mdiTriangleSmallDown}}`" />
-                  </v-btn>
-                </template>
-                <v-list nav dense offset-y max-height="75vh">
-                  <v-list-item v-for="m2 in m.children" :key="m2.metric">
-                    <v-list-item-title>
-                      <router-link :to="{ name: 'compass', params: { ...$route.params, metric: m2.metric }, query: $route.query }">
+      <v-sheet theme="light" width="100%">
+        <v-window v-model="categoryTab" class="metric__buttons">
+          <v-window-item
+            v-for="category in categories"
+            :key="'tab-'+category.id"
+            :value="category.id"
+          >
+            <template v-for="m in categoryMetrics[category.originalName]">
+              <template v-if="m.children.length">
+                <v-menu :key="m.metric" :attach="'#' + kebabCase(m.originalName)">
+                  <template #activator="{ props }">
+                    <!-- TODO: Add attach property for a11y -->
+                    <v-btn v-if="metric.config && metric.config.subcategory === m.originalName" rounded variant="flat" class="v-btn--active" v-bind="props">
+                      {{ $i18n.locale === 'es' ? metric.config.title_es : metric.config.title }} <v-icon :icon="icons.mdiTriangleSmallDown" />
+                    </v-btn>
+                    <v-btn v-else rounded variant="flat" v-bind="props">
+                      {{ m.name }} <v-icon :icon="icons.mdiTriangleSmallDown" />
+                    </v-btn>
+                  </template>
+                  <v-list nav dense offset-y max-height="75vh">
+                    <v-list-item v-for="m2 in m.children" :key="m2.metric" :to="{ name: 'compass', params: { ...$route.params, metric: m2.metric }, query: $route.query }">
+                      <v-list-item-title>
                         {{ m2.name }}
-                      </router-link>
-                    </v-list-item-title>
-                  </v-list-item>
-                </v-list>
-              </v-menu>
-              <span :id="kebabCase(m.originalName)" :key="`${m.originalName}-attach`" />
+                      </v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+                <span :id="kebabCase(m.originalName)" :key="`${m.originalName}-attach`" />
+              </template>
+              <v-btn v-else :key="m.metric" exact rounded variant="flat" :to="{ name: 'compass', params: { ...$route.params, metric: m.metric }, query: $route.query }">
+                {{ m.name }}
+              </v-btn>
             </template>
-            <v-btn v-else :key="m.metric" exact rounded variant="flat" :to="{ name: 'compass', params: { ...$route.params, metric: m.metric }, query: $route.query }">
-              {{ m.name }}
-            </v-btn>
-          </template>
-        </v-window-item>
-      </v-window>
+          </v-window-item>
+        </v-window>
+      </v-sheet>
     </div>
   </div>
 </template>
@@ -115,7 +111,7 @@
 <script>
 import { mapState } from 'vuex';
 import { fromPairs, kebabCase, uniq } from 'lodash';
-import { mdiTriangleSmallDown } from '@mdi/js';
+import { mdiTriangleSmallDown, mdiClose, mdiDownload, mdiInformation } from '@mdi/js';
 
 import { gaEvent } from '../modules/tracking';
 import config from '../modules/config';
@@ -129,6 +125,9 @@ export default {
     title: config.siteConfig.title,
     icons: {
       mdiTriangleSmallDown,
+      mdiClose,
+      mdiDownload,
+      mdiInformation,
     }
   }),
   computed: {

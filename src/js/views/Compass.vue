@@ -14,12 +14,12 @@
                     />
                   </div>
                   <div v-else style="width: 600px; height:600px;" />
-                  <v-spacer />
+                  <div class="spacer" />
                   <div class="flex-container">
                     <year-slider v-if="metric.years.length > 1" />
                     <undermap-buttons />
                   </div>
-                  <v-spacer />
+                  <div class="spacer" />
                   <data-table />
                   <MetricMetadata />
                 </v-card>
@@ -139,9 +139,9 @@
               </v-col>
               <v-col cols="12" md="4">
                 <geography-switcher v-if="metric.config" />
-                <v-spacer v-if="metric.config" />
+                <div v-if="metric.config" class="spacer" />
                 <distribution-chart v-if="metric.config" :county-values="chartCountyValues" />
-                <v-spacer v-if="metric.config && metric.years.length > 1" />
+                <div v-if="metric.config && metric.years.length > 1" class="spacer" />
                 <v-card
                   v-if="metric.config && metric.years.length > 1 && (chartValues || chartCountyValues)"
                 >
@@ -153,9 +153,9 @@
                     framework="mdl"
                   />
                 </v-card>
-                <v-spacer v-if="metric.config" />
+                <div v-if="metric.config" class="spacer" />
                 <feedback />
-                <v-spacer />
+                <div class="spacer" />
                 <social />
               </v-col>
             </v-row>
@@ -289,7 +289,7 @@ export default {
     overflow: auto;
   }
 
-  .v-card__text {
+  .v-card-text {
     font-size: 1em;
 
     a {
@@ -351,5 +351,9 @@ export default {
   p {
     max-width: 680px;
   }
+}
+
+.v-main {
+  padding-top: 0;
 }
 </style>

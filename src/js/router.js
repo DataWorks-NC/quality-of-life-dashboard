@@ -4,28 +4,28 @@ import store from './vuex-store';
 import config from './modules/config';
 import { debugLog } from './modules/tracking';
 
-const About = () => import(/* webpackChunkName: "about" */ './views/About.vue');
-const Compass = () => import(/* webpackChunkName: "compass" */ './views/Compass.vue');
-const Report = () => import(/* webpackChunkName: "report" */'./views/Report.vue');
-const Embed = () => import(/* webpackChunkName: "embed" */'./views/CompassEmbed.vue');
+const About = () => import('./views/About.vue');
+const Compass = () => import('./views/Compass.vue');
+const Report = () => import('./views/Report.vue');
+const Embed = () => import('./views/CompassEmbed.vue');
 
 const routes = [
   {
     name: 'compass',
     path: '/:locale/compass/:metric/:geographyLevel?',
     component: Compass,
-    beforeEnter(to, from, next) {
+    beforeEnter(to, from) {
+      debugLog(to);
       if (!to.params.geographyLevel) {
         let geographyLevel = 'tract';
         if ('geographyLevel' in from.params) {
           geographyLevel = from.params.geographyLevel;
         }
-        next({
+        return {
           name: 'compass',
           params: {...to.params, geographyLevel}
-        });
+        };
       }
-      next();
     },
   },
   {
@@ -42,18 +42,16 @@ const routes = [
     name: 'about',
     path: '/:locale/about/',
     component: About,
-    beforeEnter(to, from, next) {
+    beforeEnter() {
       store.commit('clearMetric');
-      next();
     },
   },
   {
     name: 'homepage',
     path: '/:locale/',
     component: Compass,
-    beforeEnter(to, from, next) {
+    beforeEnter() {
       store.commit('clearMetric');
-      next();
     },
   },
   {
@@ -84,25 +82,25 @@ export default function(store) {
     });
 
 // Validate params.
+  // TODO: Refactor routeguards into a separate file.
 // TODO: Make these dynamically pull valid values from config.
-  router.beforeEach((to, from, next) => {
+  router.beforeEach((to, from) => {
     debugLog('Route guard: Validate params');
     debugLog(`${from.path} => ${to.path}`);
 
     if (to.params.locale && ['en', 'es'].indexOf(to.params.locale) === -1) {
-      next({ ...to, params: { ...to.params, locale: 'en' } });
+      return { ...to, params: { ...to.params, locale: 'en' } };
     } else if (to.params.geographyLevel && ['blockgroup', 'tract'].indexOf(to.params.geographyLevel) === -1) {
-      next({ ...to, params: { ...to.params, geographyLevel: 'tract' } });
+      return { ...to, params: { ...to.params, geographyLevel: 'tract' } };
     } else if (to.params.metric && !(`m${to.params.metric}` in config.dataConfig)) {
-      next({ name: 'homepage', params: { locale: ('locale' in to.params) ? to.params.locale : 'en' } });
+      return { name: 'homepage', params: { locale: ('locale' in to.params) ? to.params.locale : 'en' } };
     } else {
       store.commit('setRoute', to);
-      next();
     }
   });
 
 // // Load geography & selected on each route.
-router.beforeEach((to, from, next) => {
+router.beforeEach( (to, from) => {
   debugLog('Route guard: Load geography');
   debugLog(`${from.path} => ${to.path}`);
 
@@ -118,11 +116,9 @@ router.beforeEach((to, from, next) => {
 
   // For compass routes only, load metric and set print mode.
   if ('metric' in to.params && 'geographyLevel' in to.params && (to.params.geographyLevel !== store.state.geography.id || store.state.metricId !== to.params.metric)) {
-    return store.dispatch('changeMetric', {
+    store.dispatch('changeMetric', {
       newMetricId: to.params.metric,
       newGeographyId: to.params.geographyLevel,
-    }).then(() => {
-      next();
     });
   }
 
@@ -149,13 +145,9 @@ router.beforeEach((to, from, next) => {
     }
 
     if (!Object.keys(store.state.report.metricValues).length) {
-      return store.dispatch('loadData').then(() => {
-        next();
-      });
+      store.dispatch('loadData');
     }
   }
-
-  return next();
 });
 
 // Check that URL params match current state; in case the geography level has changed.

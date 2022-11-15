@@ -127,7 +127,8 @@
   "facebook": "Share on Facebook",
   "linkedIn": "Share on LinkedIn",
   "twitter": "Share on Twitter",
-  "viewGitHub": "View the project on GitHub"
+  "viewGitHub": "View the project on GitHub",
+  "print": "TODO",
  },
  "undermapButtons": {
   "clear": "Clear Selected",

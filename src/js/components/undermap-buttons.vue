@@ -5,19 +5,19 @@
       :to="{ query: {
         ...$route.query, selected: [], selectGroupType: undefined, selectGroupName: undefined, legendTitle: undefined
       } }"
-      dark
+      theme="dark"
     >
       {{ $t('undermapButtons.clear') }}
     </v-btn>
     <v-btn
       :to="{ name: 'report', params: $route.params, query: { ...$route.query, legendTitle: undefined }, hash: `#metric-${metricId}` }"
-      dark
+      theme="dark"
     >
       {{ $t('undermapButtons.report') }}
     </v-btn>
     <v-btn
       :to="{ query: { ...$route.query, mode: 'print' } }"
-      dark
+      theme="dark"
     >
       {{ $t('undermapButtons.printEmbed') }}
     </v-btn>
@@ -39,6 +39,6 @@ export default {
 <style lang="scss" scoped>
 /* Force these buttons to be purple, because something in the build process forces them back to black in production */
 .theme--dark.v-btn:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined) {
-  background-color: var(--v-accent-base);
+  background-color: rgb(var(--v-theme-accent));
 }
 </style>
