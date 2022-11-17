@@ -18,9 +18,9 @@
 
 <script>
 import { mdiTrendingUp } from "@mdi/js";
-import Chartist from "../modules/chartist";
+import { LineChart, Interpolation, Svg, AutoScaleAxis } from 'chartist';
 
-import { legendLabelNumber, prettyNumber } from "../modules/number_format";
+import { legendLabelNumber } from "../modules/number_format";
 
 export default {
   name: "TrendChart",
@@ -91,14 +91,14 @@ export default {
         chartPadding: {
           right: 40,
         },
-        lineSmooth: Chartist.Interpolation.cardinal({
+        lineSmooth: Interpolation.cardinal({
           fillHoles: true,
         }),
         axisY: {
           labelInterpolationFnc: value => legendLabelNumber(value, metricConfig),
         },
         axisX: {
-          type: Chartist.AutoScaleAxis,
+          type: AutoScaleAxis,
           onlyInteger: true,
           labelInterpolationFnc: (value, index) => {
             if (len > 6) {
@@ -107,44 +107,46 @@ export default {
             return value;
           },
         },
-        plugins: [
-          Chartist.plugins.tooltip({
-            appendToBody: true,
-            transformTooltipTextFnc: (value) => prettyNumber(
-              Number(value.split(",")[1]),
-              metricConfig,
-            ),
-          }),
-        ],
+        // plugins: [
+        // TODO: Re-add tooltips
+        //   Chartist.plugins.tooltip({
+        //     appendToBody: true,
+        //     transformTooltipTextFnc: (value) => prettyNumber(
+        //       Number(value.split(",")[1]),
+        //       metricConfig,
+        //     ),
+        //   }),
+        // ],
       };
 
       // Axis labels
-      if (metricConfig.label) {
-        options.plugins.push(
-          Chartist.plugins.ctAxisTitle({
-            axisX: {
-              axisTitle: "",
-              axisClass: "ct-axis-title",
-              offset: {
-                x: 0,
-                y: 50,
-              },
-              textAnchor: "middle",
-            },
-            axisY: {
-              axisTitle: this.$t(`metricLabels.${metricConfig.label}`),
-              axisClass: "ct-axis-title",
-              offset: {
-                x: 0,
-                y: -1,
-              },
-              flipTitle: false,
-              textAnchor: "middle",
-            },
-          }),
-        );
-      }
-      this.chart = new Chartist.Line(
+      // TODO: re-add
+      // if (metricConfig.label) {
+      //   options.plugins.push(
+      //     Chartist.plugins.ctAxisTitle({
+      //       axisX: {
+      //         axisTitle: "",
+      //         axisClass: "ct-axis-title",
+      //         offset: {
+      //           x: 0,
+      //           y: 50,
+      //         },
+      //         textAnchor: "middle",
+      //       },
+      //       axisY: {
+      //         axisTitle: this.$t(`metricLabels.${metricConfig.label}`),
+      //         axisClass: "ct-axis-title",
+      //         offset: {
+      //           x: 0,
+      //           y: -1,
+      //         },
+      //         flipTitle: false,
+      //         textAnchor: "middle",
+      //       },
+      //     }),
+      //   );
+      // }
+      this.chart = new LineChart(
         `#ct-trendchart-${metricConfig.metric}`,
         {
           labels: this.years,
@@ -166,7 +168,7 @@ export default {
                 .translate(0, data.chartRect.height())
                 .stringify(),
               to: data.path.clone().stringify(),
-              easing: Chartist.Svg.Easing.easeOutQuint,
+              easing: Svg.Easing.easeOutQuint,
             },
             opacity: {
               begin: 500 * data.index,

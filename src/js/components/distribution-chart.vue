@@ -15,7 +15,7 @@
 import { mdiCircle, mdiDotsHorizontal } from "@mdi/js";
 
 import { mapGetters, mapState } from 'vuex';
-import Chartist from '../modules/chartist';
+import { LineChart } from 'chartist';
 import isNumeric from '../modules/isnumeric';
 import { legendLabelNumber, prettyNumber } from '../modules/number_format';
 
@@ -87,39 +87,41 @@ export default {
             showArea: false,
           },
         },
-        plugins: [
-          Chartist.plugins.tooltip({
-            appendToBody: true,
-            transformTooltipTextFnc: (value) => prettyNumber(value, this.metric.config),
-          }),
-        ],
+        // plugins: [
+        // TODO: Re-add tooltips
+        //   Chartist.plugins.tooltip({
+        //     appendToBody: true,
+        //     transformTooltipTextFnc: (value) => prettyNumber(value, this.metric.config),
+        //   }),
+        // ],
       };
 
       // Axis labels
-      if (this.metric.config.label) {
-        options.plugins.push(Chartist.plugins.ctAxisTitle({
-          axisX: {
-            axisTitle: '',
-            axisClass: 'ct-axis-title',
-            offset: {
-              x: 0,
-              y: 50,
-            },
-            textAnchor: 'middle',
-          },
-          axisY: {
-            axisTitle: this.$t(`metricLabels.${this.metric.config.label}`),
-            axisClass: 'ct-axis-title',
-            offset: {
-              x: 0,
-              y: -1,
-            },
-            flipTitle: false,
-            textAnchor: 'middle',
-          },
-        }));
-      }
-      this.chart = new Chartist.Line('.ct-distributionchart', data, options);
+      // TODO: Re-add axis labels
+      // if (this.metric.config.label) {
+      //   options.plugins.push(Chartist.plugins.ctAxisTitle({
+      //     axisX: {
+      //       axisTitle: '',
+      //       axisClass: 'ct-axis-title',
+      //       offset: {
+      //         x: 0,
+      //         y: 50,
+      //       },
+      //       textAnchor: 'middle',
+      //     },
+      //     axisY: {
+      //       axisTitle: this.$t(`metricLabels.${this.metric.config.label}`),
+      //       axisClass: 'ct-axis-title',
+      //       offset: {
+      //         x: 0,
+      //         y: -1,
+      //       },
+      //       flipTitle: false,
+      //       textAnchor: 'middle',
+      //     },
+      //   }));
+      // }
+      this.chart = new LineChart('.ct-distributionchart', data, options);
     },
     updateData() {
       const chartData = {
