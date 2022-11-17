@@ -3,20 +3,20 @@
     <span>{{ $t('selectGroup.orSelectA') }}</span>
     <template v-for="(group, groupKey, groupIndex) in selectGroups" :key="groupKey">
       <span v-if="groupIndex > 0 && (groupIndex < Object.keys(selectGroups).length - 1)" style="margin-left:-0.15em;">, </span>
-      <span v-if="groupIndex === (Object.keys(selectGroups).length - 1)" :key="groupKey">{{ $t('strings.or') }}</span>
+      <span v-if="groupIndex === (Object.keys(selectGroups).length - 1)">{{ $t('strings.or') }}</span>
+      <span :id="`selectgroup-attach-${groupIndex}`" />
       <v-menu :attach="`#selectgroup-attach-${groupIndex}`">
-        <template #activator="{ on }">
-          <v-btn :id="`selectgroup-${groupIndex}`" :key="`${groupKey}_button`" variant="text" class="selectgroup__button" :disabled="!group.hasOwnProperty(geography.id)" v-on="on">
+        <template #activator="{ props }">
+          <v-btn :id="`selectgroup-${groupIndex}`" variant="text" class="selectgroup__button" :disabled="!group.hasOwnProperty(geography.id)" v-bind="props">
             {{ $t(`selectGroup['${groupKey}']`) }}
           </v-btn>
         </template>
-        <v-list :key="`selectgroup-${groupIndex}`" :for="`selectgroup-${groupIndex}`" nav dense offset-y max-height="50vh">
+        <v-list :for="`selectgroup-${groupIndex}`" nav dense max-height="50vh">
           <v-list-item v-for="(item, key) in group[geography.id]" :key="key" @click="select(key, groupKey)">
-            <v-list-item-title>{{ $te(`selectGroup['${key}']`) ? $t(`selectGroup['${key}']`) : key }}</v-list-item-title>
+            <v-list-item-title>{{ $t(`selectGroup['${key}']`, key, { missingWarn: false }) }}</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
-      <span :id="`selectgroup-attach-${groupIndex}`" />
     </template>
   </div>
 </template>
@@ -52,9 +52,20 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+.v-card.geography-switcher {
+  overflow: visible;
+  z-index: 10;
+
+  p {
+    font-size: 0.9em;
+    padding-top: 0.5em;
+  }
+}
+
 #selectgroup {
   margin-top: 10px;
+  overflow: visible !important;
 }
 
 .selectgroup__button {
@@ -70,10 +81,5 @@ export default {
       margin: 0 0.25em;
     }
   }
-}
-
-p {
-    font-size: 0.9em;
-    padding-top: 0.5em;
 }
 </style>

@@ -2,10 +2,9 @@ import { createApp, h } from 'vue';
 // TODO: Add analytics.
 
 import VueScrollTo from 'vue-scrollto';
-import VueObserveVisibility from 'vue-observe-visibility';
 import store from './js/vuex-store';
-import createRouter from './js/router';
-import i18n from './js/i18n';
+import createRouter from './plugins/router';
+import i18n from './plugins/i18n';
 import vuetify from './plugins/vuetify';
 
 import App from './js/App.vue';
@@ -37,6 +36,7 @@ const router = createRouter(store);
 router.beforeEach((to, from) => {
   debugLog('Router guard: set language');
   debugLog(`${from.path} => ${to.path}`);
+  debugLog(to);
 
   // Language handling.
   if (!to.params.locale) {
@@ -44,11 +44,11 @@ router.beforeEach((to, from) => {
       ...to,
       params: {
         ...to.params,
-        locale: i18n.locale,
+        locale: i18n.global.locale,
       },
     };
   } else {
-    i18n.locale = to.params.locale;
+    i18n.global.locale.value = to.params.locale;
     document.lang = to.params.locale;
   }
 //  TODO: Add metadata population using vite-ssr
@@ -171,7 +171,6 @@ const app = createApp({
 
 app.config.productionTip = false;
 app.use(VueScrollTo);
-app.use(VueObserveVisibility);
 app.use(vuetify);
 app.use(router);
 app.use(i18n);

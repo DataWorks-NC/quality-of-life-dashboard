@@ -1,7 +1,8 @@
 <template>
   <div v-if="validMetrics.length">
     <v-card>
-      <v-container :id="`${formatAnchor(category.name)}-container`" v-observe-visibility="visibilityOptions">
+      <!--      TODO: FIX visibility observer. Was: v-observe-visibility="visibilityOptions" -->
+      <v-container :id="`${formatAnchor(category.name)}-container`">
         <v-row>
           <v-col cols="12">
             <h2 :id="formatAnchor(category.name)">

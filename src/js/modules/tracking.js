@@ -9,7 +9,7 @@ function gaEvent(type, title, category) {
 }
 
 const debugLog = (msg) => {
-  if (import.meta.DEV) {
+  if (import.meta.env.DEV) {
     // eslint-disable-next-line no-console
     console.log(msg);
   }

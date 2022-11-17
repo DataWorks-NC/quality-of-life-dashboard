@@ -55,7 +55,7 @@
 
       <!-- Desktop nav -->
       <template #extension>
-        <v-tabs v-model="categoryTab" :hide-slider="false" :grow="true" :show-arrows="true">
+        <v-tabs v-model="categoryTab">
           <v-tab
             v-for="category in categories"
             :key="category.id"
@@ -68,18 +68,20 @@
     </v-app-bar>
 
     <div v-if="categoryTab" class="d-none d-md-flex">
-      <v-sheet theme="light" width="100%">
+      <v-sheet theme="light" width="100%" elevation="1">
         <v-window v-model="categoryTab" class="metric__buttons">
           <v-window-item
             v-for="category in categories"
             :key="'tab-'+category.id"
             :value="category.id"
           >
-            <template v-for="m in categoryMetrics[category.originalName]">
+            <template v-for="m in categoryMetrics[category.originalName]" :key="kebabCase(m.originalName)">
               <template v-if="m.children.length">
+                <span :id="kebabCase(m.originalName)">
+                  <!-- Needed so that focus can be directed for accessibility. -->
+                </span>
                 <v-menu :key="m.metric" :attach="'#' + kebabCase(m.originalName)">
                   <template #activator="{ props }">
-                    <!-- TODO: Add attach property for a11y -->
                     <v-btn v-if="metric.config && metric.config.subcategory === m.originalName" rounded variant="flat" class="v-btn--active" v-bind="props">
                       {{ $i18n.locale === 'es' ? metric.config.title_es : metric.config.title }} <v-icon :icon="icons.mdiTriangleSmallDown" />
                     </v-btn>
@@ -95,7 +97,6 @@
                     </v-list-item>
                   </v-list>
                 </v-menu>
-                <span :id="kebabCase(m.originalName)" :key="`${m.originalName}-attach`" />
               </template>
               <v-btn v-else :key="m.metric" exact rounded variant="flat" :to="{ name: 'compass', params: { ...$route.params, metric: m.metric }, query: $route.query }">
                 {{ m.name }}
@@ -119,8 +120,8 @@ import config from '../modules/config';
 export default {
   name: 'CompassNav',
   data: () => ({
+    categoryTab: null,
     drawer: false,
-    filterVal: null,
     metricsByCategory: config.metricsByCategory,
     title: config.siteConfig.title,
     icons: {
@@ -137,20 +138,6 @@ export default {
         .sort(this.localizedSortByName);
     },
 
-    // Used on navbar. Needs to supply both getter and setter so that an error is not thrown when
-    // using this with v-model.
-    categoryTab: {
-      get() {
-        let categoryId = this.filterVal && this.filterVal.id;
-        if (this.filterVal === null) {
-          categoryId = this.metric.config && this.metric.config.category.replace(/\s+/g, '');
-        }
-        return categoryId;
-      },
-      set(val) {
-        this.filterVal = this.categories.find(c => c.id === val);
-      },
-    },
     // Return sorted array of metrics by category, with the names translated as needed.
     categoryMetrics() {
       return fromPairs(config.categories.map(c => {
@@ -179,6 +166,13 @@ export default {
       }));
     },
   },
+  watch: {
+    metric(newMetric) {
+      if (newMetric.config) {
+        this.categoryTab = newMetric.config.category;
+      }
+    }
+  },
   methods: {
     swapLanguage() {
       let newLanguage = 'es';
@@ -193,9 +187,17 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .v-toolbar {
   position:relative !important;
+}
+
+.v-app-bar.v-toolbar .v-tabs .v-slide-group__container {
+  color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity));
+
+  .v-tab--selected {
+    color: rgb(var(--v-theme-on-surface))
+  }
 }
 
 .v-window {

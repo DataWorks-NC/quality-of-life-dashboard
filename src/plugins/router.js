@@ -1,32 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-import store from './vuex-store';
-import config from './modules/config';
-import { debugLog } from './modules/tracking';
+import store from '../js/vuex-store';
+import config from '../js/modules/config';
+import { debugLog } from '../js/modules/tracking';
 
-const About = () => import('./views/About.vue');
-const Compass = () => import('./views/Compass.vue');
-const Report = () => import('./views/Report.vue');
-const Embed = () => import('./views/CompassEmbed.vue');
+const About = () => import('../js/views/About.vue');
+const Compass = () => import('../js/views/Compass.vue');
+const Report = () => import('../js/views/Report.vue');
+const Embed = () => import('../js/views/CompassEmbed.vue');
 
 const routes = [
   {
     name: 'compass',
     path: '/:locale/compass/:metric/:geographyLevel?',
     component: Compass,
-    beforeEnter(to, from) {
-      debugLog(to);
-      if (!to.params.geographyLevel) {
-        let geographyLevel = 'tract';
-        if ('geographyLevel' in from.params) {
-          geographyLevel = from.params.geographyLevel;
-        }
-        return {
-          name: 'compass',
-          params: {...to.params, geographyLevel}
-        };
-      }
-    },
   },
   {
     name: 'report',
@@ -87,6 +74,18 @@ export default function(store) {
   router.beforeEach((to, from) => {
     debugLog('Route guard: Validate params');
     debugLog(`${from.path} => ${to.path}`);
+    debugLog(to);
+
+    if (to.name === 'compass' && !to.params.geographyLevel) {
+      let geographyLevel = 'tract';
+      if ('geographyLevel' in from.params) {
+        geographyLevel = from.params.geographyLevel;
+      }
+      return {
+        name: 'compass',
+        params: {...to.params, geographyLevel}
+      };
+    }
 
     if (to.params.locale && ['en', 'es'].indexOf(to.params.locale) === -1) {
       return { ...to, params: { ...to.params, locale: 'en' } };
@@ -100,7 +99,7 @@ export default function(store) {
   });
 
 // // Load geography & selected on each route.
-router.beforeEach( (to, from) => {
+router.afterEach( (to, from) => {
   debugLog('Route guard: Load geography');
   debugLog(`${from.path} => ${to.path}`);
 

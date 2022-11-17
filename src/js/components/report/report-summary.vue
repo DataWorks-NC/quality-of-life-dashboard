@@ -1,5 +1,7 @@
 <template>
-  <v-card :id="summaryId" v-observe-visibility="visibilityOptions" class="page page-front">
+  <!--      TODO: FIX visibility observer. Was: v-observe-visibility="visibilityOptions" -->
+
+  <v-card :id="summaryId" class="page page-front">
     <v-row>
       <v-col>
         <img

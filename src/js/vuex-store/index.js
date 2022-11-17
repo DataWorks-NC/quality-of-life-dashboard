@@ -14,7 +14,7 @@ export default new createStore({
     report,
   },
   state: {
-    route: { params: { locale: 'en' }}, // TODO: populate this.
+    route: { params: { locale: import.meta.env.VITE_I18N_FALLBACK_LOCALE }},
     metric: { // Currently selected metric
       config: null,
       years: [],
@@ -34,7 +34,7 @@ export default new createStore({
     },
     printMode: false,
     customLegendTitle: '',
-    lastCompassRoute: null, // Store the last route used in compass so we can navigate back from report.
+    lastCompassRoute: null, // Store the last route used in compass so that we can navigate back from report.
   },
   getters: {
     language: ({ route: { params: { locale = 'en ' } } }) => locale,
@@ -88,8 +88,6 @@ export default new createStore({
         state.geography = config.siteConfig.geographies.find(
           (obj) => obj.id === newGeographyId,
         );
-        // TODO: Test if this still improves performance
-        // Object.freeze(state.geography);
       }
     },
     setMetricId(state, newMetricId) {
@@ -97,13 +95,9 @@ export default new createStore({
     },
     setMetric(state, metric) {
       state.metric = metric;
-      // TODO: Test if this still improves performance
-      // Object.freeze(state.metric);
     },
     setMetricMetadata(state, metadata) {
       state.metadata = metadata;
-      // TODO: Test if this still improves performance
-      // Object.freeze(state.metadata);
     },
     setYear(state, year) {
       state.year = year;
@@ -140,7 +134,6 @@ export default new createStore({
   },
   actions: {
     async loadMetricData({ commit, state }) {
-      // TODO: Cache this result.
       const path = `/data/metric/${state.geography.id}/m${state.metricId}.json`;
       const metricJSON = await fetchResponseJSON(path);
       const nKeys = Object.keys(metricJSON.map);

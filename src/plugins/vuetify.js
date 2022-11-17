@@ -1,9 +1,16 @@
 import 'vuetify/styles';
 
+import { createVueI18nAdapter } from 'vuetify/locale/adapters/vue-i18n';
+import { useI18n } from 'vue-i18n';
+import i18n from './i18n';
+
 import { createVuetify } from 'vuetify';
 import { aliases, mdi } from 'vuetify/iconsets/mdi-svg';
 
 export default createVuetify({
+  locale: {
+    adapter: createVueI18nAdapter({ i18n, useI18n }),
+  },
   icons: {
     defaultSet: 'mdi',
     aliases,
@@ -20,6 +27,7 @@ export default createVuetify({
     themes: {
       light: {
         colors: {
+          'surface-variant': '#016888',
           primary: '#016888',
           secondary: '#566330',
           accent: '#68089e',
@@ -36,8 +44,5 @@ export default createVuetify({
         },
       },
     },
-  },
-  lang: {
-    locales: ['en', 'es'],
   },
 });

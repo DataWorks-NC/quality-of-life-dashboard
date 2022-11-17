@@ -1,7 +1,7 @@
 import { xor } from 'lodash';
 import { fetchResponseJSON } from '../modules/fetch';
 import config from '../modules/config';
-import i18n from '../i18n';
+import i18n from '../../plugins/i18n';
 
 const { siteConfig, dataConfig } = config;
 

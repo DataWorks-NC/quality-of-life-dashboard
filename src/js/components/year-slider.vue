@@ -1,18 +1,20 @@
 <template>
   <div class="flex-item" :style="{flexBasis: `${75*metric.years.length}px`}">
-    <!--    TODO: Hide ticks and thumb-labels on smallest breakpoint. -->
+    <!-- eslint-disable vuetify/no-deprecated-props -->
     <v-slider
       v-model="year"
-      :min="0"
+      min="0"
+      :ticks="tickLabels"
       :max="metric.years.length - 1"
+      step="1"
+      tick-size="2"
       :hint="$t('yearSlider.useSlider')"
-      :class="densityClass"
+      :dense="metric.years.length > 5"
       show-ticks="always"
       thumb-label="always"
-      persistent-hint
     >
-      <template #thumb-label="{ value }">
-        {{ metric.years[value] }}
+      <template #thumb-label="{ modelValue }">
+        {{ metric.years[modelValue] }}
       </template>
     </v-slider>
   </div>
@@ -29,15 +31,18 @@ export default {
         this.$store.commit('setYear', this.metric.years[tick]);
       },
       get() {
-        return this.metric.years.indexOf(this.$store.state.year);
+        if (this.$store.state.year) {
+          return this.metric.years.indexOf(this.$store.state.year);
+        }
+        return this.metric.years.length - 1;
       },
     },
     ...mapState({
       metric: 'metric',
     }),
-    densityClass() {
-      return this.metric.years.length > 5 ? 'dense' : '';
-    },
+    tickLabels() {
+      return Object.assign({}, this.metric.years);
+    }
   },
 };
 </script>
@@ -51,11 +56,16 @@ export default {
   margin-bottom: 1.25em;
 }
 
-.v-application--is-ltr .v-input__slider.dense .v-slider--horizontal .v-slider__tick .v-slider__tick-label, .v-application--is-ltr .v-input__slider.dense .v-slider--horizontal .v-slider__tick:first-child .v-slider__tick-label {
-  transform: translateX(-25%) rotate(45deg);
+.v-slider__container .v-slider-track__fill {
+  background-color: transparent !important;
 }
 
-.v-application--is-ltr .v-input__slider.dense .v-slider--horizontal .v-slider__tick:last-child .v-slider__tick-label {
-  transform: translateY(10%) translateX(-25%) rotate(45deg);
+.v-slider.v-input--horizontal .v-slider-track__tick .v-slider-track__tick-label.v-locale--is-ltr, .v-locale--is-ltr .v-slider.v-input--horizontal .v-slider-track__tick .v-slider-track__tick-label {
+  transform: translateY(5px) translateX(-25%) rotate(45deg) !important;
+}
+
+/* Make all ticks the same color, otherwise left most (unselected) ones will be a different color */
+.v-slider-track__tick.v-slider-track__tick--filled {
+  background-color: rgb(var(--v-theme-surface-variant));
 }
 </style>
