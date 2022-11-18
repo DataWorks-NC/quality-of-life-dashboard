@@ -1,4 +1,5 @@
 // return true if convertable to number
 export default function isNumeric(n) {
-  return !Number.isNaN(parseFloat(n)) && Number.isFinite(n);
+  const number = parseFloat(n);
+  return !Number.isNaN(number) && Number.isFinite(number);
 }

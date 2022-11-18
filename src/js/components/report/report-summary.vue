@@ -40,8 +40,9 @@
           <v-row no-gutters align="stretch">
             <v-card v-for="metric in summaryMetrics" :key="metric.metric" flat>
               <p class="stat-category">
+                <!--  TODO: Restore scroll-to behavior, was             v-scroll-to="{ el: getAnchor(metric.category), offset: -60 }"     -->
+
                 <a
-                  v-scroll-to="{ el: getAnchor(metric.category), offset: -60 }"
                   class="stat-category-link"
                 >{{ $t(`strings.metricCategories.${metric.category}`) }}</a>
               </p>

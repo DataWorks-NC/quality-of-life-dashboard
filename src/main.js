@@ -1,7 +1,6 @@
 import { createApp, h } from 'vue';
 // TODO: Add analytics.
 
-import VueScrollTo from 'vue-scrollto';
 import store from './js/vuex-store';
 import createRouter from './plugins/router';
 import i18n from './plugins/i18n';
@@ -170,7 +169,6 @@ const app = createApp({
 });
 
 app.config.productionTip = false;
-app.use(VueScrollTo);
 app.use(vuetify);
 app.use(router);
 app.use(i18n);
@@ -193,6 +191,7 @@ app.config.globalProperties.$filters = {
 };
 app.mount('#app');
 
+// TODO: Add analytics back in.
 // Google analytics
 // if (import.meta.env.VITE_GOOGLE_ANALYTICS_ID) {
 //   Vue.use(VueAnalytics, {

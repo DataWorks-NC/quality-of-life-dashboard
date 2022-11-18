@@ -12,12 +12,15 @@
 </template>
 
 <script>
+import 'chartist/dist/index.css';
 import { mdiCircle, mdiDotsHorizontal } from "@mdi/js";
 
 import { mapGetters, mapState } from 'vuex';
 import { LineChart } from 'chartist';
-import isNumeric from '../modules/isnumeric';
-import { legendLabelNumber, prettyNumber } from '../modules/number_format';
+import isNumeric from '@/js/modules/isnumeric';
+import { legendLabelNumber, prettyNumber } from '@/js/modules/number_format';
+import {ctAxisTitle } from '@/js/modules/ctAxisTitle';
+import {ctTooltip} from '@/js/modules/ctTooltip';
 
 export default {
   name: 'DistributionChart',
@@ -44,7 +47,7 @@ export default {
     'year': 'renderChart',
   },
   mounted() {
-    // Set these here rather than as data so they are not reactive.
+    // Set these here rather than as data so that they are not reactive.
     this.chart = null;
     this.chartData = null;
     this.renderChart();
@@ -87,41 +90,42 @@ export default {
             showArea: false,
           },
         },
-        // plugins: [
-        // TODO: Re-add tooltips
-        //   Chartist.plugins.tooltip({
-        //     appendToBody: true,
-        //     transformTooltipTextFnc: (value) => prettyNumber(value, this.metric.config),
-        //   }),
-        // ],
       };
 
-      // Axis labels
       // TODO: Re-add axis labels
-      // if (this.metric.config.label) {
-      //   options.plugins.push(Chartist.plugins.ctAxisTitle({
-      //     axisX: {
-      //       axisTitle: '',
-      //       axisClass: 'ct-axis-title',
-      //       offset: {
-      //         x: 0,
-      //         y: 50,
-      //       },
-      //       textAnchor: 'middle',
-      //     },
-      //     axisY: {
-      //       axisTitle: this.$t(`metricLabels.${this.metric.config.label}`),
-      //       axisClass: 'ct-axis-title',
-      //       offset: {
-      //         x: 0,
-      //         y: -1,
-      //       },
-      //       flipTitle: false,
-      //       textAnchor: 'middle',
-      //     },
-      //   }));
-      // }
       this.chart = new LineChart('.ct-distributionchart', data, options);
+
+      const addTooltips = ctTooltip({
+        appendToBody: true,
+        transformTooltipTextFnc: (value) => prettyNumber(value, this.metric.config)
+      });
+      addTooltips(this.chart);
+
+      // Axis labels
+      if (this.metric.config.label) {
+        const addAxisTitles = ctAxisTitle({
+          axisX: {
+            axisTitle: '',
+            axisClass: 'ct-axis-title',
+            offset: {
+              x: 0,
+              y: 50,
+            },
+            textAnchor: 'middle',
+          },
+          axisY: {
+            axisTitle: this.$t(`metricLabels.${this.metric.config.label}`),
+            axisClass: 'ct-axis-title',
+            offset: {
+              x: 0,
+              y: 5,
+            },
+            flipTitle: true,
+            textAnchor: 'middle',
+          },
+        });
+        addAxisTitles(this.chart);
+      }
     },
     updateData() {
       const chartData = {
@@ -227,7 +231,7 @@ export default {
 }
 /* selected */
 .ct-distributionchart .ct-point {
-    stroke: rgb(var(--v-theme-accent));
+    stroke: rgb(var(--v-theme-accent)) !important;
 }
 
 /* distribution series */

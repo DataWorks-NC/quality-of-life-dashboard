@@ -17,10 +17,13 @@
 </template>
 
 <script>
+import 'chartist/dist/index.css';
 import { mdiTrendingUp } from "@mdi/js";
 import { LineChart, Interpolation, Svg, AutoScaleAxis } from 'chartist';
 
-import { legendLabelNumber } from "../modules/number_format";
+import { legendLabelNumber, prettyNumber } from "../modules/number_format";
+import { ctAxisTitle } from '@/js/modules/ctAxisTitle';
+import { ctTooltip } from '@/js/modules/ctTooltip';
 
 export default {
   name: "TrendChart",
@@ -107,45 +110,8 @@ export default {
             return value;
           },
         },
-        // plugins: [
-        // TODO: Re-add tooltips
-        //   Chartist.plugins.tooltip({
-        //     appendToBody: true,
-        //     transformTooltipTextFnc: (value) => prettyNumber(
-        //       Number(value.split(",")[1]),
-        //       metricConfig,
-        //     ),
-        //   }),
-        // ],
       };
 
-      // Axis labels
-      // TODO: re-add
-      // if (metricConfig.label) {
-      //   options.plugins.push(
-      //     Chartist.plugins.ctAxisTitle({
-      //       axisX: {
-      //         axisTitle: "",
-      //         axisClass: "ct-axis-title",
-      //         offset: {
-      //           x: 0,
-      //           y: 50,
-      //         },
-      //         textAnchor: "middle",
-      //       },
-      //       axisY: {
-      //         axisTitle: this.$t(`metricLabels.${metricConfig.label}`),
-      //         axisClass: "ct-axis-title",
-      //         offset: {
-      //           x: 0,
-      //           y: -1,
-      //         },
-      //         flipTitle: false,
-      //         textAnchor: "middle",
-      //       },
-      //     }),
-      //   );
-      // }
       this.chart = new LineChart(
         `#ct-trendchart-${metricConfig.metric}`,
         {
@@ -154,6 +120,43 @@ export default {
         },
         options,
       );
+
+
+      const addTooltips = ctTooltip({
+        appendToBody: true,
+        transformTooltipTextFnc: (value) => prettyNumber(
+          Number(value.split(",")[1]),
+          metricConfig,
+        )});
+
+      addTooltips(this.chart);
+
+      // Axis labels
+      if (metricConfig.label) {
+        console.log('Add axis title');
+        const ctAxisTitlePlugin = ctAxisTitle({
+          axisX: {
+            axisTitle: '',
+            axisClass: 'ct-axis-title',
+            offset: {
+              x: 0,
+              y: 50,
+            },
+            textAnchor: 'middle',
+          },
+          axisY: {
+            axisTitle: this.$t(`metricLabels.${metricConfig.label}`),
+            axisClass: 'ct-axis-title',
+            offset: {
+              x: 0,
+              y: 5,
+            },
+            flipTitle: true,
+            textAnchor: 'middle',
+          },
+        });
+        ctAxisTitlePlugin(this.chart);
+      }
 
       // Animation.
       this.chart.on("draw", (data) => {
@@ -197,6 +200,15 @@ export default {
 .qol-chart .ct-series-a .ct-point {
   stroke: #778b91;
 }
+
+.chartist-tooltip.ct-series-a {
+  background: #778b91;
+
+  &::before {
+    border-top-color: #778b91;
+  }
+}
+
 .qol-chart .ct-series-a .ct-line {
   stroke-dasharray: 5, 2;
   stroke-width: 2;

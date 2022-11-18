@@ -1,0 +1,32 @@
+.chartist-tooltip {
+    position: absolute;
+    display: inline-block;
+    opacity: 0;
+    min-width: 5em;
+    padding: .5em;
+    background: rgb(var(--v-theme-accent));
+    color: rgb(var(--v-theme-on-surface-variant));
+    text-align: center;
+    pointer-events: none;
+    border-radius: 5px;
+    z-index: 1000;
+    -webkit-transition: opacity .2s linear;
+    -moz-transition: opacity .2s linear;
+    -o-transition: opacity .2s linear;
+    transition: opacity .2s linear; }
+.chartist-tooltip:before {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    margin-left: -15px;
+    border: 15px solid transparent;
+    border-top-color: rgb(var(--v-theme-accent));
+}
+.chartist-tooltip.tooltip-show {
+    opacity: 1; }
+
+.ct-area, .ct-line {
+    pointer-events: none; }

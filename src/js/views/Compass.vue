@@ -177,6 +177,7 @@ import { mapGetters, mapState } from "vuex";
 import config from "../modules/config";
 import { calcValue } from "../modules/metric_calculations";
 
+// TODO: Check which components have a heavier bundle and only make those ones async loaded.
 import DashboardFooter from "../components/dashboard-footer.vue";
 import DataTable from "../components/datatable.vue";
 import Feedback from "../components/feedback.vue";
