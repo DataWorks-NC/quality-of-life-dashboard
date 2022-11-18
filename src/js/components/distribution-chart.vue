@@ -21,9 +21,11 @@ import isNumeric from '@/js/modules/isnumeric';
 import { legendLabelNumber, prettyNumber } from '@/js/modules/number_format';
 import {ctAxisTitle } from '@/js/modules/ctAxisTitle';
 import {ctTooltip} from '@/js/modules/ctTooltip';
+import brushBreaksCategoriesMixin from '@/js/components/mixins/brushBreaksCategoriesMixin';
 
 export default {
   name: 'DistributionChart',
+  mixins: [brushBreaksCategoriesMixin,],
   props: {
     countyValues: {
       type: Object,
@@ -92,7 +94,6 @@ export default {
         },
       };
 
-      // TODO: Re-add axis labels
       this.chart = new LineChart('.ct-distributionchart', data, options);
 
       const addTooltips = ctTooltip({
@@ -126,6 +127,40 @@ export default {
         });
         addAxisTitles(this.chart);
       }
+
+      this.makeBrushable();
+    },
+    makeBrushable() {
+      const isSeries = e => e.target.classList.contains('ct-area');
+      this.chart.container.addEventListener('mouseover', (e) => {
+        if (isSeries(e)) {
+          const seriesName = e.target.parentNode.getAttribute('ct:series-name');
+          if (!seriesName) {
+            return;
+          }
+
+          const breakNumber = Number(seriesName[seriesName.length - 1]) - 1;
+          this.changeHighlight(breakNumber);
+        }
+      });
+
+      this.chart.container.addEventListener('mouseout', (e) => {
+          if (isSeries(e)) {
+            this.changeHighlight(-1);
+          }
+          });
+
+      this.chart.container.addEventListener('click', (e) => {
+        if (isSeries(e)) {
+          const seriesName = e.target.parentNode.getAttribute('ct:series-name');
+          if (!seriesName) {
+            return;
+          }
+
+          const breakNumber = Number(seriesName[seriesName.length - 1]) - 1;
+          this.selectBreak(breakNumber);
+        }
+      })
     },
     updateData() {
       const chartData = {
@@ -237,6 +272,9 @@ export default {
 /* distribution series */
 .ct-distributionchart .ct-area {
     fill-opacity: 1;
+
+    /* Needed for interactivity on mouseover */
+    pointer-events: visible;
 }
 .ct-distributionchart .ct-series-a .ct-line, .ct-distributionchart .ct-series-a .ct-area {
     stroke: #b2f3ed;

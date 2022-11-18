@@ -55,6 +55,7 @@ import { mapGetters, mapState } from 'vuex';
 import config from '../modules/config';
 import { mdiCursorMove } from '@mdi/js';
 
+import brushBreaksCategoriesMixin from './mixins/brushBreaksCategoriesMixin';
 import {
   legendLabelNumber, prettyNumber,
 } from '../modules/number_format';
@@ -63,6 +64,7 @@ import { calcValue, wValsToArray, sum } from '../modules/metric_calculations';
 export default {
   // You would think to just name this component 'Legend', but <legend> is in the HTML5 spec!
   name: 'DashboardLegend',
+  mixins: [brushBreaksCategoriesMixin,],
   data: () => ({
     selectedValue: null,
     selectedValueRaw: null,
@@ -100,32 +102,6 @@ export default {
     this.processSelected();
   },
   methods: {
-    changeHighlight(n) {
-      if (n === -1) {
-        this.$store.commit('setHighlight', []);
-      } else {
-        this.$store.commit('setHighlight', this.getBreakIds(n));
-      }
-    },
-    selectBreak(n) {
-      this.$router.push({ query: { ...this.$route.query, selected: this.getBreakIds(n) } });
-    },
-    getBreakIds(n) {
-      const data = this.metric.data.map;
-      const ids = [];
-
-      // loop through data to get id's
-      Object.keys(data).forEach((id) => {
-        const value = data[id][`y_${this.year}`];
-
-        if (value !== null && value >= this.breaks[n] && value < this.breaks[n + 1]) {
-          ids.push(id.toString());
-        }
-      });
-
-      return ids;
-    },
-
     abbrNumber(value) {
       return legendLabelNumber(value, this.metric.config, false);
     },
