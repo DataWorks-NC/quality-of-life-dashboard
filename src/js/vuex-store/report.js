@@ -1,4 +1,4 @@
-import { xor } from 'lodash';
+import { xor } from 'lodash-es';
 import { fetchResponseJSON } from '../modules/fetch';
 import config from '../modules/config';
 import i18n from '../../plugins/i18n';

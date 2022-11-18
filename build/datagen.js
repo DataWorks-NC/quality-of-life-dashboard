@@ -1,26 +1,31 @@
-/* eslint-disable no-console,import/no-extraneous-dependencies */
-const path = require('path');
-const jsonminify = require('jsonminify');
-const csv = require('csvtojson');
-const _ = require('lodash');
-const { marked } = require('marked');
-const stringify = require('json-stable-stringify');
+import path from 'path';
+import jsonminify from 'jsonminify';
+import csv from 'csvtojson';
+import {each } from 'lodash-es';
+import { marked } from 'marked';
+import stringify from 'json-stable-stringify';
 
-const fs = require('fs');
-const dataConfig = require('../data/config/data');
-const siteConfig = require('../data/config/site');
+import fs from 'fs';
 
-const {
+// Weird workaround for command line use of this tool.
+import siteConfigData from '../data/config/site.js';
+import dataConfigData from '../data/config/data.js';
+
+const dataConfig = dataConfigData.default;
+const siteConfig = siteConfigData.default;
+
+import {
   isNumeric,
   csvToJsonTransform,
   newFormatCsvToJsonTransform,
   writeMetricFile,
   checkMetricFileName,
-} = require('./datagen-functions');
+} from './datagen-functions.js';
 
 const fsPromises = fs.promises;
 
 const dest = './public/data/metric';
+console.log(siteConfig);
 
 // /////////////////////////////////////////////////
 // Create destination folders
@@ -32,7 +37,7 @@ const directoriesToMake = [
   'data/meta/en',
   'data/meta/es',
   'data/metric'];
-_.each(siteConfig.geographies, (geography) => {
+  each(siteConfig.geographies, (geography) => {
   directoriesToMake.push(`data/metric/${geography.id}`);
 });
 

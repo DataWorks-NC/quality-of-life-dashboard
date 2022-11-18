@@ -1,17 +1,20 @@
 /* eslint-disable no-console */
-/* eslint-disable import/no-extraneous-dependencies */
-const _ = require('lodash');
-const async = require('async');
-const fs = require('fs');
-const jsonminify = require('jsonminify');
-const md5 = require('js-md5');
-const path = require('path');
-const { stringify } = require('csv-stringify');
-const JSONstringify = require('json-stable-stringify');
+import { each, forEach, forOwn, mapKeys, flatMap, map } from 'lodash-es';
+import async from 'async';
+import fs from 'fs';
+import jsonminify from 'jsonminify';
+import md5 from 'js-md5';
+import path from 'path';
+import { stringify } from 'csv-stringify';
+import JSONstringify from 'json-stable-stringify';
 
-const siteConfig = require('../data/config/site');
-const dataConfig = require('../data/config/data');
-const { calcValue } = require('../src/js/modules/metric_calculations');
+import { calcValue } from '../src/js/modules/metric_calculations.js';
+
+import siteConfigData from '../data/config/site.js';
+import dataConfigData from '../data/config/data.js';
+
+const dataConfig = dataConfigData.default;
+const siteConfig = siteConfigData.default;
 
 const dest = './public/data/';
 
@@ -20,7 +23,7 @@ async function main() {
 // Create destination folders
 // /////////////////////////////////////////////////
   const directoriesToMake = ['', 'data', 'data/report', 'download'];
-  _.each(siteConfig.geographies, (geography) => {
+  each(siteConfig.geographies, (geography) => {
     directoriesToMake.push(`data/report/${geography.id}`);
   });
   directoriesToMake.forEach((name) => {
@@ -72,7 +75,7 @@ async function main() {
           );
           return callback(exception);
         }
-        _.forOwn(contents.map, (value, key) => {
+        forOwn(contents.map, (value, key) => {
           if (!(key in geographyMetricsCached)) {
             geographyMetricsCached[key] = {};
           }
@@ -87,7 +90,7 @@ async function main() {
         // Use worldval for county average if it is set in config/data.js.
         if ('world_val' in metric) {
           if (!(metric.metric in countyAverages)) {
-            countyAverages[metric.metric] = _.mapKeys(metric.world_val,
+            countyAverages[metric.metric] = mapKeys(metric.world_val,
               (value, key) => key.replace('y_', ''));
           }
         }
@@ -137,7 +140,7 @@ async function main() {
       async.each(siteConfig.geographies, (geography, callback) => {
         // Write a file for each distinct geography at this level with just the metrics for that geography.
         // TODO: This could be made async as well.
-        _.forOwn(allGeographyMetricsCached[geography.id], (value, key) => {
+        forOwn(allGeographyMetricsCached[geography.id], (value, key) => {
           let filename = key;
           if (geography.id === 'neighborhood') {
             filename = md5(key);
@@ -194,12 +197,12 @@ async function main() {
 
         // Create CSV table for data output.
         let metricsList = null;
-        _.forOwn(allGeographyMetricsCached[geography.id],
+        forOwn(allGeographyMetricsCached[geography.id],
           (geographyData, geographyId) => {
             if (!metricsList) {
               metricsList = [];
               // Use the first geography to populate header row with names of metrics & the years they contain.
-              _.forOwn(geographyData, (value, key) => {
+              forOwn(geographyData, (value, key) => {
                 if (!value.map) {
                   console.error(`Error on ${key} ${value}`);
                 } else {
@@ -211,8 +214,8 @@ async function main() {
               });
 
               // Now generate the human readable header row for the CSV table.
-              const headerRow = _.flatMap(metricsList,
-                metric => _.map(metric.years,
+              const headerRow = flatMap(metricsList,
+                metric => map(metric.years,
                   year => `${dataConfig[`m${metric.metric}`].title}, ${
                     year.slice(-4)}`));
               headerRow.unshift('Geography Id', 'Geography Label');
@@ -227,10 +230,10 @@ async function main() {
             // Then spit out one giant row for each geography with each metric value for each year, in order.
             const dataRow = [geographyId, geography.label(geographyId)];
             const weightsRow = [geographyId, geography.label(geographyId)];
-            _.forEach(metricsList, (metric) => {
+            forEach(metricsList, (metric) => {
               const prefix = dataConfig[`m${metric.metric}`].prefix || '';
               const suffix = dataConfig[`m${metric.metric}`].suffix || '';
-              _.forEach(metric.years, (year) => {
+              forEach(metric.years, (year) => {
                 // Write metric data.
                 if (metric.metric in geographyData && year
                     in geographyData[metric.metric].map

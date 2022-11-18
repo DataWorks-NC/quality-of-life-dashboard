@@ -9,7 +9,7 @@ import { calcValue, wValsToArray, sum } from '../modules/metric_calculations';
 
 import report from './report';
 
-export default new createStore({
+const store = new createStore({
   modules: {
     report,
   },
@@ -224,3 +224,19 @@ export default new createStore({
     },
   },
 });
+
+store.watch((state, getters) => {
+    if (state.route.name === 'report') {
+      return getters.selected;
+    }
+    return null;
+  },
+  () => {
+    if (store.getters.selected.length > 0) {
+      return store.dispatch('loadData');
+    }
+  });
+store.watch((state) => state.route && state.route.params.locale,
+  () => store.dispatch('loadMetricMetadata'));
+
+export default store;

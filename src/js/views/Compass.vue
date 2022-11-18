@@ -8,10 +8,12 @@
             <v-row>
               <v-col v-if="metric.config" cols="12" md="8">
                 <v-card>
-                  <div v-if="mapboxgl" style="min-height: 600px;">
-                    <map-container
-                      :map-config="config.mapConfig"
-                    />
+                  <div v-if="mapboxglLoaded" style="min-height: 600px;">
+                    <ClientOnly>
+                      <map-container
+                        :map-config="config.mapConfig"
+                      />
+                    </ClientOnly>
                   </div>
                   <div v-else style="width: 600px; height:600px;" />
                   <div class="spacer" />
@@ -210,6 +212,7 @@ export default {
     UndermapButtons,
     YearSlider,
   },
+  inject: ['mapboxglLoaded'],
   data: () => ({
     config,
   }),

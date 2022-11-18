@@ -26,7 +26,7 @@
       </v-col>
       <v-col cols="12" sm="6">
         <ReportMap
-          v-if="mapboxgl"
+          v-if="mapboxglLoaded"
           :map-config="mapConfig"
           :geography-id="geographyId"
           :selected-geographies="selected"
@@ -72,6 +72,7 @@ export default {
   components: {
     ReportMap,
   },
+  inject: ['mapboxglLoaded',],
   props: {
     summaryMetrics: {
       type: Array,
@@ -109,9 +110,6 @@ export default {
       return this.$t('strings.metricCategories.Summary').toLowerCase();
     },
     ...mapGetters(['selectGroupName']),
-    mapboxgl() {
-      return this.$root.mapboxgl;
-    },
   },
   methods: {
     ...mapMutations(["setActiveCategory"]),

@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { isFinite } from 'lodash';
+import { isFinite } from 'lodash-es';
 import { defineAsyncComponent } from 'vue';
 import { mapGetters, mapState } from 'vuex';
 
@@ -36,6 +36,7 @@ export default {
     SelectGroupOutline,
   },
   mixins: [debugLogMixin],
+  inject: ['mapboxgl',],
   props: {
     mapConfig: {
       type: Object,
@@ -57,9 +58,6 @@ export default {
       ['breaks', 'geography', 'highlight', 'metric', 'metricId', 'printMode', 'year'],
     ),
     ...mapGetters(['selected', 'selectGroupName', 'selectGroupType']),
-    mapboxgl() {
-      return this.$root.mapboxgl;
-    },
     metricData() {
       if (this.metric) {
         return this.metric.data;
@@ -232,42 +230,39 @@ export default {
       });
 
       // fix for popup cancelling click event on iOS
-      // TODO: evaluate if necessary
-      const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-      if (!iOS) {
-        map.on('mouseleave', `${this.geography.id}-fill`, () => {
+      // TODO: Test on ios
+      map.on('mouseleave', `${this.geography.id}-fill`, () => {
+        _this.hoverPopup.remove();
+      });
+
+      // show feature info on mouse move
+      map.on('mousemove', (e) => {
+        if (!_this.metric.config || !_this.metric.data) {
+          return;
+        }
+        const features = map.queryRenderedFeatures(e.point, { layers: [`${_this.geography.id}-fill`] })
+          .filter(f => f.properties.id in _this.metric.data.map && _this.metric.data.map[f.properties.id][`y_${_this.year}`] !== null); // Only show popup when metric value is not null
+
+        if (!features.length) {
           _this.hoverPopup.remove();
-        });
+          map.getCanvas().style.cursor = '';
+          return;
+        }
 
-        // show feature info on mouse move
-        map.on('mousemove', (e) => {
-          if (!_this.metric.config || !_this.metric.data) {
-            return;
-          }
-          const features = map.queryRenderedFeatures(e.point, { layers: [`${_this.geography.id}-fill`] })
-            .filter(f => f.properties.id in _this.metric.data.map && _this.metric.data.map[f.properties.id][`y_${_this.year}`] !== null); // Only show popup when metric value is not null
+        map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
 
-          if (!features.length) {
-            _this.hoverPopup.remove();
-            map.getCanvas().style.cursor = '';
-            return;
-          }
-
-          map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
-
-          const feature = features[0];
-          const { id } = feature.properties;
-          const data = _this.metric.data.map[id][`y_${_this.year}`];
-          const geographyLabel = _this.$i18n.locale === 'es' ? feature.properties.label_es : feature.properties.label;
-          const val = prettyNumber(data, _this.metric.config);
-          const label = _this.metric.config.label ? ` ${_this.$t(`metricLabels.${_this.metric.config.label}`)}` : '';
-          _this.hoverPopup.setLngLat(map.unproject(e.point))
-            .setHTML(
-              `<div style="text-align:center; margin:0; padding:0;"><h3 style="font-size:1.2em; margin:0; padding:0; line-height:1em; font-weight:bold;">${geographyLabel}</h3>${val}${label}</div>`,
-            )
-            .addTo(map);
-        });
-      }
+        const feature = features[0];
+        const { id } = feature.properties;
+        const data = _this.metric.data.map[id][`y_${_this.year}`];
+        const geographyLabel = _this.$i18n.locale === 'es' ? feature.properties.label_es : feature.properties.label;
+        const val = prettyNumber(data, _this.metric.config);
+        const label = _this.metric.config.label ? ` ${_this.$t(`metricLabels.${_this.metric.config.label}`)}` : '';
+        _this.hoverPopup.setLngLat(map.unproject(e.point))
+          .setHTML(
+            `<div style="text-align:center; margin:0; padding:0;"><h3 style="font-size:1.2em; margin:0; padding:0; line-height:1em; font-weight:bold;">${geographyLabel}</h3>${val}${label}</div>`,
+          )
+          .addTo(map);
+      });
     },
     updateGeography(newGeography, oldGeography) {
       if (!this.geography.id) return;

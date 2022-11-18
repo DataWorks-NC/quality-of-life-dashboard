@@ -4,7 +4,6 @@
 
 <script>
 import debugLogMixin from '../mixins/debugLogMixin';
-import selectGroups from '@/../data/selectgroups.geojson.json';
 
 export default {
   name: "SelectGroupOutline",
@@ -20,6 +19,7 @@ export default {
       default: null,
     },
   },
+  emits: ['layers-loaded'],
   data: () => ({
     layersLoaded: {},
   }),
@@ -105,7 +105,7 @@ export default {
         }
       });
     },
-    showSelectGroup(newName, oldName) {
+    async showSelectGroup(newName, oldName) {
       if ((!newName && !oldName) || (newName === oldName)) return;
 
       const map = this.map;
@@ -118,13 +118,14 @@ export default {
 
       // TODO: Is this potentially faster if we split up the selectgroups geoJSON file
       //  into separate files for each selectGroup?
-      if (!map.getSource('selectGroup')) {
-        map.addSource('selectGroup', {
-          type: 'geojson',
-          promoteId: 'id',
-          data: selectGroups,
-        });
-      }
+      const selectGroups = await import('@/../data/selectgroups.geojson.json');
+        if (!map.getSource('selectGroup')) {
+          map.addSource('selectGroup', {
+            type: 'geojson',
+            promoteId: 'id',
+            data: selectGroups,
+          });
+        }
 
       this.layerNames.forEach(name => {
         if (!map.getLayer(name)) {

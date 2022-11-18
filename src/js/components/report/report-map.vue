@@ -11,6 +11,7 @@ import selectGroups from '@/../data/selectgroups.geojson.json';
 
 export default {
   name: 'ReportMap',
+  inject: ['mapboxgl',],
   props: {
     mapConfig: {
       type: Object,
@@ -31,9 +32,6 @@ export default {
   },
   computed: {
     ...mapGetters(['reportTitle']),
-    mapboxgl() {
-      return this.$root.mapboxgl;
-    },
   },
   watch: {
     '$i18n.locale': 'setLabelLanguage',

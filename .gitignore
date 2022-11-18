@@ -37,3 +37,6 @@ deploy.sh
 
 # Lighthouse
 .lighthouseci/
+
+# Vite ssg
+.vite-ssg-temp/

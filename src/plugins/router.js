@@ -1,5 +1,3 @@
-import { createRouter, createWebHistory } from 'vue-router';
-
 import store from '../js/vuex-store';
 import config from '../js/modules/config';
 import { debugLog } from '../js/modules/tracking';
@@ -53,20 +51,20 @@ const routes = [
   },
 ];
 
-export default function(store) {
-  const router = createRouter({
-      history: createWebHistory(),
-      encodeQuery: true,
-      routes,
-      scrollBehavior(to, from, savedPosition) {
-        if (to.hash) {
-          return { selector: to.hash, offset: { x: 0, y: 60 } };
-        } if (savedPosition) {
-          return savedPosition;
-        }
-        return { x: 0, y: 0 };
-      },
-    });
+const routerOptions = {
+  encodeQuery: true,
+  routes,
+  scrollBehavior(to, from, savedPosition) {
+    if (to.hash) {
+      return { selector: to.hash, offset: { x: 0, y: 60 } };
+    } if (savedPosition) {
+      return savedPosition;
+    }
+    return { x: 0, y: 0 };
+  },
+};
+
+const setUpRouterHooks = function(router, store) {
 
 // Validate params.
   // TODO: Refactor routeguards into a separate file.
@@ -183,3 +181,5 @@ router.afterEach( (to, from) => {
 
   return router;
 }
+
+export { routerOptions, setUpRouterHooks };

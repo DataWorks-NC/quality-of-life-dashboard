@@ -156,7 +156,7 @@ export default {
       // i hate you ie
       if (window.navigator.msSaveBlob) {
         const blob = new Blob([csvData], { type: 'application/csv;charset=utf-8;' });
-        navigator.msSaveBlob(blob, 'data.csv');
+        window.navigator.msSaveBlob(blob, 'data.csv');
       } else {
         document.querySelector('#datatable .download').href = `data:text/csv;charset=utf-8;base64,${btoa(csvData)}`;
       }

@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { uniqBy } from 'lodash';
+import { uniqBy } from 'lodash-es';
 
 import MapboxGlGeocoder from '@mapbox/mapbox-gl-geocoder';
 import { mapGetters, mapState } from 'vuex';
@@ -16,6 +16,7 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 export default {
   name: 'Geocoder',
   mixins: [debugLogMixin],
+  inject: ['mapboxgl',],
   props: {
     map: {
       type: Object,
@@ -33,9 +34,6 @@ export default {
       ['geography'],
     ),
     ...mapGetters(['selected']),
-    mapboxgl() {
-      return this.$root.mapboxgl;
-    },
     selectGroups() {
       const categories = Object.keys(this.selectGroupsData);
       const selectGroups = {};

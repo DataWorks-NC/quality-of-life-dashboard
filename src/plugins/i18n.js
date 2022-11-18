@@ -1,5 +1,5 @@
 import { createI18n } from 'vue-i18n';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 
 function loadLocaleMessages() {
   const locales = import.meta.glob('../../**/locales/*.json', { eager: true });

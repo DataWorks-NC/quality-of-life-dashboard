@@ -111,7 +111,7 @@
 
 <script>
 import { mapState } from 'vuex';
-import { fromPairs, kebabCase, uniq } from 'lodash';
+import { fromPairs, kebabCase, uniq } from 'lodash-es';
 import { mdiTriangleSmallDown, mdiClose, mdiDownload, mdiInformation } from '@mdi/js';
 
 import { gaEvent } from '../modules/tracking';

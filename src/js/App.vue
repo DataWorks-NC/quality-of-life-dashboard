@@ -13,6 +13,7 @@ export default {
   name: 'App',
   data: () => ({
     loading: true,
+    mapboxgl: null,
   }),
   mounted() {
     this.loading = false;

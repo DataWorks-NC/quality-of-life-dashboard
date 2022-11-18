@@ -1,8 +1,11 @@
-import { createApp, h } from 'vue';
+import { computed } from 'vue';
+import { ViteSSG } from 'vite-ssg';
+import dataConfig from '../data/config/data';
+
 // TODO: Add analytics.
 
 import store from './js/vuex-store';
-import createRouter from './plugins/router';
+import { routerOptions, setUpRouterHooks } from './plugins/router';
 import i18n from './plugins/i18n';
 import vuetify from './plugins/vuetify';
 
@@ -11,45 +14,42 @@ import App from './js/App.vue';
 import '@/scss/main.scss';
 import { debugLog } from './js/modules/tracking';
 
-// Sync store & router with vuex-router-sync.
-// TODO: FIX.
-store.watch((state, getters) => {
-  if (state.route.name === 'report') {
-    return getters.selected;
-  }
-  return null;
-},
-() => {
-  if (store.getters.selected.length > 0) {
-    return store.dispatch('loadData');
-  }
-});
-store.watch((state) => state.route && state.route.params.locale,
-  () => store.dispatch('loadMetricMetadata'));
-
 // TODO: Refactor routeguards into a separate file.
 // Router navigation guard:
 // Handles locale switching and redirecting from root URL to language-specific
 // homepage. Also handles setting title & metadata.
-const router = createRouter(store);
-router.beforeEach((to, from) => {
-  debugLog('Router guard: set language');
-  debugLog(`${from.path} => ${to.path}`);
-  debugLog(to);
 
-  // Language handling.
-  if (!to.params.locale) {
-    return {
-      ...to,
-      params: {
-        ...to.params,
-        locale: i18n.global.locale,
-      },
-    };
-  } else {
-    i18n.global.locale.value = to.params.locale;
-    document.lang = to.params.locale;
-  }
+export const createApp = ViteSSG(
+  App,
+  routerOptions,
+  ({ app, router }) => {
+    app.config.productionTip = false;
+    app.use(vuetify);
+    app.use(i18n);
+    app.use(store);
+
+    setUpRouterHooks(router, store);
+
+    router.beforeEach((to, from) => {
+      debugLog('Router guard: set language');
+      debugLog(`${from.path} => ${to.path}`);
+      debugLog(to);
+
+      // Language handling.
+      if (!to.params.locale) {
+        return {
+          ...to,
+          params: {
+            ...to.params,
+            locale: i18n.global.locale,
+          },
+        };
+      } else {
+        i18n.global.locale.value = to.params.locale;
+        if (typeof window !== 'undefined') {
+          window.document.lang = to.params.locale;
+        }
+      }
 //  TODO: Add metadata population using vite-ssr
 //
 //   if (to.path !== from.path) {
@@ -149,47 +149,37 @@ router.beforeEach((to, from) => {
 //     });
 //   }
 //
-});
+    });
 
-/* eslint-disable no-new */
-/* eslint-disable no-unused-vars */
-const app = createApp({
-  data: () => ({ mapboxgl: null }),
-  beforeCreate() {
-    // Preload map resources so that they live on even between switching to Report and back.
-    // @see https://github.com/mapbox/mapbox-gl-js/pull/9391
+    const stringCompareEn = new Intl.Collator('en').compare;
+    const stringCompareEs = new Intl.Collator('es').compare;
+// Set string compare function based on locale dynamically.
+    app.config.globalProperties.localizedSortByName = (a, b) => (i18n.global.locale === 'es' ? stringCompareEs(a, b) : stringCompareEn(a, b));
+    app.config.globalProperties.$filters = {
+      allcaps: (value) => {
+        if (!value) return '';
+        return String(value).toUpperCase();
+      },
+      capitalize: (value) => {
+        if (!value) return '';
+        return String(value).charAt(0).toUpperCase() + String(value).slice(1);
+      },
+    };
+    let mapboxglLoaded = false;
+    app.provide('mapboxglLoaded', () => computed(() => mapboxglLoaded));
+
     import(/* webpackChunkName: "mapboxgl" */ 'mapbox-gl').then((mapboxgl) => {
+      if (!mapboxgl || !mapboxgl.prewarm) {
+        return;
+      }
       mapboxgl.prewarm();
       import(/* webpackChunkName: "mapboxgl" */ 'mapbox-gl/dist/mapbox-gl.css').then(() => {
-        this.$root.mapboxgl = mapboxgl;
+        mapboxglLoaded = true;
+        app.provide('mapboxgl', mapboxgl);
       });
     });
-  },
-  render: () => h(App),
-});
-
-app.config.productionTip = false;
-app.use(vuetify);
-app.use(router);
-app.use(i18n);
-app.use(store);
-
-
-const stringCompareEn = new Intl.Collator('en').compare;
-const stringCompareEs = new Intl.Collator('es').compare;
-// Set string compare function based on locale dynamically.
-app.config.globalProperties.localizedSortByName = (a, b) => (i18n.global.locale === 'es' ? stringCompareEs(a, b) : stringCompareEn(a, b));
-app.config.globalProperties.$filters = {
-  allcaps: (value) => {
-    if (!value) return '';
-    return String(value).toUpperCase();
-  },
-  capitalize: (value) => {
-    if (!value) return '';
-    return String(value).charAt(0).toUpperCase() + String(value).slice(1);
-  },
-};
-app.mount('#app');
+  }
+);
 
 // TODO: Add analytics back in.
 // Google analytics
@@ -202,3 +192,18 @@ app.mount('#app');
 //     },
 //   });
 // }
+
+// Specify all routes to be pre-rendered.
+export function includedRoutes() {
+  return ['en', 'es'].flatMap(
+    lang => ([
+      `/${lang}/`,
+      `/${lang}/about/`,
+      `/${lang}/report/blockgroup/`,
+      `/${lang}/report/tract/`,
+    ].concat(Object.values(dataConfig).filter(m => !m.exclude_from_map).flatMap(
+      m => m.geographies.map(
+          g => `/${lang}/compass/${m.metric}/${g}/`)
+    ))
+  ));
+}

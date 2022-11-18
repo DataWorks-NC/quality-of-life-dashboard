@@ -16,6 +16,16 @@ export default defineConfig({
       include: [resolve(dirname(fileURLToPath(import.meta.url)), './src/locales/*.json'),resolve(dirname(fileURLToPath(import.meta.url)), './data/locales/*.json')]
     }),
   ],
+  ssr: {
+    noExternal: ['vuetify'],
+  },
+  ssgOptions: {
+    crittersOptions: {
+      // E.g., change the preload strategy
+      preload: "media",
+      // Other options: https://github.com/GoogleChromeLabs/critters#usage
+    },
+  },
   resolve: {
     alias: {
       "@": resolve(dirname(fileURLToPath(import.meta.url)), "./src"),

@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { fromPairs } from 'lodash-es';
 import colors from './breaks';
 
 import mapConfig from '../../../data/config/map';
@@ -27,7 +27,7 @@ dataConfigTemp = dataConfigTemp.sort((a, b) => {
 const dataConfig = dataConfigTemp.reduce((obj, curVal) => { obj[curVal._key] = curVal; return obj; }, {});
 const categories = dataConfigTemp.reduce((categoriesArray, curVal) => { if (categoriesArray.indexOf(curVal.category) === -1) categoriesArray.push(curVal.category); return categoriesArray; }, []);
 
-const metricsByCategory = _.fromPairs(
+const metricsByCategory = fromPairs(
   categories.map(
     category => [category, Object.values(dataConfig).filter(metric => metric.category === category)],
   ),

@@ -1,4 +1,4 @@
-import isNumeric from './isnumeric';
+import isNumeric from './isnumeric.js';
 
 function sum(arr) {
   if (arr.length === 0) return '--';
@@ -26,7 +26,7 @@ function median(arr) {
   return (arr[half - 1] + arr[half]) / 2.0;
 }
 
-function valsToArray(data, years, keys) {
+function valsToArray(data = {}, years, keys) {
   const arr = [];
   for (let y = 0; y < years.length; y++) {
     for (let i = 0; i < keys.length; i++) {
@@ -38,7 +38,7 @@ function valsToArray(data, years, keys) {
   return arr;
 }
 
-function wValsToArray(data, weight, years, keys) {
+function wValsToArray(data = {}, weight = {}, years, keys) {
   const arr = [];
   for (let y = 0; y < years.length; y++) {
     for (let i = 0; i < keys.length; i++) {
