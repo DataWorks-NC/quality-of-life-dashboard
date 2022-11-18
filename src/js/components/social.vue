@@ -26,7 +26,8 @@
 import {
   mdiTwitter, mdiFacebook, mdiPrinter, mdiWhatsapp,
 } from '@mdi/js';
-import { mapState } from 'vuex';
+import { mapState } from 'pinia';
+import { mainStore } from '@/js/stores/index.js';
 
 import ExternalLink from './external-link.vue';
 
@@ -44,7 +45,7 @@ export default {
     pageUrl() { return encodeURIComponent(this.baseUrl + this.$route.fullPath); },
     facebook() { return `https://www.facebook.com/sharer.php?u=${this.pageUrl}`; },
     whatsapp() { return `https://wa.me/?text=${this.pageUrl}`; },
-    ...mapState({
+    ...mapState(mainStore, {
       twitter(state) { return `https://twitter.com/intent/tweet?text=${state.metric.config ? encodeURIComponent(state.metric.config.title) : ''}&url=${this.pageUrl}`; },
     }),
   },

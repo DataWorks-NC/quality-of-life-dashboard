@@ -29,7 +29,7 @@
                 <i18n-t keypath="reportSelector.instructions[2]" tag="li">
                   <router-link
                     place="goBack"
-                    :to="$store.state.lastCompassRoute ? $store.state.lastCompassRoute : { name: 'homepage', params: $route.params, query: { selected: $route.query.selected } }"
+                    :to="lastCompassRoute ? lastCompassRoute : { name: 'homepage', params: $route.params, query: { selected: $route.query.selected } }"
                   >
                     {{ $t('reportSelector.goBack') }}
                   </router-link>
@@ -93,7 +93,9 @@
 
 <script>
 import { mdiClose, mdiEye, mdiEyeOff } from "@mdi/js";
-import { mapGetters, mapState } from "vuex";
+import { mapState, mapActions } from "pinia";
+import { reportStore } from '@/js/stores/report.js';
+import { mainStore } from '@/js/stores/index.js';
 import config from "../../modules/config";
 
 
@@ -106,20 +108,15 @@ export default {
     mdiEyeOff,
   }),
   computed: {
-    ...mapGetters(["reportTitle", "visibleCategories", "categoryNames"]),
-    ...mapState({
-      metricValues: state => state.report.metricValues,
-      countyAverages: state => state.report.countyAverages,
-      metrics: state => state.report.metrics,
-    }),
-
+    ...mapState(mainStore, ['lastCompassRoute']),
+    ...mapState(reportStore, ['totallyVisibleCategories', 'visibleMetricsInMixedCategories', 'metricValues', 'countyAverages', 'metrics',"reportTitle", "visibleCategories", "categoryNames"]),
     categories() {
       return this.categoryNames
         .map(categoryName => ({
           name: this.$t(`strings.metricCategories['${categoryName}']`),
           originalName: categoryName,
           visible: this.visibleCategories.indexOf(categoryName) !== -1,
-          metrics: Object.values(this.$store.state.report.metrics)
+          metrics: Object.values(this.metrics)
             .filter(m => m.category === categoryName && ((this.metricValues[categoryName] && m.metric in this.metricValues[categoryName]) || (this.countyAverages[categoryName] && m.metric in this.countyAverages[categoryName])))
             .map(m => ({
               ...m,
@@ -134,15 +131,16 @@ export default {
     this.handleLinks();
   },
   methods: {
+    ...mapActions(reportStore, ['toggleCategory', 'toggleMetric']),
     toggleCategory(category) {
-      this.$store.commit("toggleCategory", {
+      this.toggleCategory({
         categoryName: category.originalName,
         visibility: !category.visible,
       });
       this.updateRoute();
     },
     toggleMetric(metric) {
-      this.$store.commit("toggleMetric", {
+      this.toggleMetric({
         metricId: `m${metric.metric}`,
         visibility: !metric.visible,
       });
@@ -153,8 +151,8 @@ export default {
         params: this.$route.params,
         query: {
           ...this.$route.query,
-          visibleCategories: this.$store.getters.totallyVisibleCategories,
-          visibleMetrics: this.$store.getters.visibleMetricsInMixedCategories,
+          visibleCategories: this.totallyVisibleCategories,
+          visibleMetrics: this.visibleMetricsInMixedCategories,
         },
       });
     },

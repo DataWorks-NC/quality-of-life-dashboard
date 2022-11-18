@@ -174,7 +174,8 @@
 
 <script>
 import { defineAsyncComponent } from 'vue';
-import { mapGetters, mapState } from "vuex";
+import { mapState } from "pinia";
+import { mainStore } from '@/js/stores/index.js';
 
 import config from "../modules/config";
 import { calcValue } from "../modules/metric_calculations";
@@ -217,12 +218,12 @@ export default {
     config,
   }),
   computed: {
-    ...mapGetters(['selected']),
-    ...mapState({
+    ...mapState(mainStore, {
+      selected: 'selected',
       printMode: "printMode",
       metric: "metric",
       chartValues(state) {
-        if (!this.selected.length || state.metric.years.length <= 1) return {};
+        if (!state.selected.length || state.metric.years.length <= 1) return {};
         const metricValues = {};
         for (let i = 0; i < state.metric.years.length; i += 1) {
           metricValues[state.metric.years[i]] = calcValue(
@@ -254,19 +255,6 @@ export default {
   },
   mounted() {
     this.setPrintClass();
-    // Force material design lite to register dynamic components in the DOM *after* dashboard has loaded.
-    // componentHandler is a global defined by the material design library at load time.
-
-    this.$nextTick(() => {
-      let event;
-      if (typeof Event === "function") {
-        event = new Event("x-app-rendered");
-      } else {
-        event = document.createEvent("Event");
-        event.initEvent("x-app-rendered", true, true);
-      }
-      document.dispatchEvent(event);
-    });
   },
   methods: {
     setPrintClass() {

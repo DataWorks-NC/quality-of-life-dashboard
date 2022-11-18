@@ -1,41 +1,35 @@
-import { createStore } from 'vuex';
+import { defineStore } from 'pinia';
+import config from '@/js/modules/config.js';
+import getSubstringIndex from '@/js/modules/substring-nth.js';
+import {fetchResponseHTML, fetchResponseJSON} from '@/js/modules/fetch.js';
+import {calcValue, sum, wValsToArray} from '@/js/modules/metric_calculations.js';
+import jenksBreaks from '@/js/modules/jenksbreaks.js';
+import {gaEvent} from '@/js/modules/tracking.js';
 
-import config from '../modules/config';
-import jenksBreaks from '../modules/jenksbreaks';
-import getSubstringIndex from '../modules/substring-nth';
-import { gaEvent } from '../modules/tracking';
-import { fetchResponseJSON, fetchResponseHTML } from '../modules/fetch';
-import { calcValue, wValsToArray, sum } from '../modules/metric_calculations';
-
-import report from './report';
-
-const store = new createStore({
-  modules: {
-    report,
-  },
-  state: {
-    route: { params: { locale: import.meta.env.VITE_I18N_FALLBACK_LOCALE }},
-    metric: { // Currently selected metric
-      config: null,
-      years: [],
-      data: null,
-      averageValues: {},
-    },
-    breaks: [0, 0, 0, 0, 0, 0],
-    highlight: [],
-    year: null,
-    metadata: null,
-    metricId: null,
-    geography: {
-      id: null,
-      name: null,
-      label: null,
-      description: null,
-    },
-    printMode: false,
-    customLegendTitle: '',
-    lastCompassRoute: null, // Store the last route used in compass so that we can navigate back from report.
-  },
+export const mainStore = defineStore('main', {
+  state: () => ({
+      route: { params: { locale: import.meta.env.VITE_I18N_FALLBACK_LOCALE }},
+      metric: { // Currently selected metric
+        config: null,
+        years: [],
+        data: null,
+        averageValues: {},
+      },
+      breaks: [0, 0, 0, 0, 0, 0],
+      highlight: [],
+      year: null,
+      metadata: null,
+      metricId: null,
+      geography: {
+        id: null,
+        name: null,
+        label: null,
+        description: null,
+      },
+      printMode: false,
+      customLegendTitle: '',
+      lastCompassRoute: null, // Store the last route used in compass so that we can navigate back from report.
+    }),
   getters: {
     language: ({ route: { params: { locale = 'en ' } } }) => locale,
     selected: ({ route: { query: { selected = [], selectGroupType = null, selectGroupName = null } }, geography = { id: null } }) => {
@@ -60,16 +54,16 @@ const store = new createStore({
       return null;
     },
     legendTitle: ({
-      customLegendTitle = false, metric, route: { params: { locale = 'en ' } }, year,
-    }) => {
+                    customLegendTitle = false, metric, route: { params: { locale = 'en ' } }, year,
+                  }) => {
       if (customLegendTitle) return customLegendTitle;
       if (metric.config) return `${locale === 'es' ? metric.config.title_es : metric.config.title}, ${year}`;
       return '';
     },
     metadataImportant: (state) => (state.metadata ? state.metadata.substring(getSubstringIndex(state.metadata, '</h3>', 1) + 5, getSubstringIndex(state.metadata, '<h3', 2)) : ''),
-    metadataImportantForHeader: (state, getters) => {
-      if (getters.metadataImportant) {
-        const doc = new DOMParser().parseFromString(getters.metadataImportant, 'text/html');
+    metadataImportantForHeader() {
+      if (this.metadataImportant) {
+        const doc = new DOMParser().parseFromString(this.metadataImportant, 'text/html');
         return doc.body.textContent || '';
       }
       return '';
@@ -77,65 +71,29 @@ const store = new createStore({
     metadataResources: (state) => (state.metadata ? state.metadata.substring(getSubstringIndex(state.metadata, '</h3>', 3) + 5, state.metadata.length).replace(/<table/g, '<table class="meta-table table"') : ''),
     metadataAbout: (state) => (state.metadata ? state.metadata.substring(getSubstringIndex(state.metadata, '</h3>', 2) + 5, getSubstringIndex(state.metadata, '<h3', 3)) : ''),
   },
-  mutations: {
-    setGeographyId(state, newGeographyId) {
-      if (state.geography.id) {
-        // state.selected = []; TODO: Rewrite this.
-        state.highlight = [];
-      }
-
-      if (state.geography.id !== newGeographyId) {
-        state.geography = config.siteConfig.geographies.find(
-          (obj) => obj.id === newGeographyId,
-        );
-      }
+  actions: {
+    setPrintMode(printMode = true) {
+      this.printMode = printMode;
+      if (!printMode) this.customLegendTitle = false;
     },
-    setMetricId(state, newMetricId) {
-      state.metricId = newMetricId;
-    },
-    setMetric(state, metric) {
-      state.metric = metric;
-    },
-    setMetricMetadata(state, metadata) {
-      state.metadata = metadata;
-    },
-    setYear(state, year) {
-      state.year = year;
-    },
-    setBreaks(state, breaks) {
-      state.breaks = breaks;
-    },
-    setHighlight(state, highlight) {
-      state.highlight = highlight;
-    },
-    setPrintMode(state, printMode = true) {
-      state.printMode = printMode;
-      if (!printMode) state.customLegendTitle = false;
-    },
-    setLegendTitle(state, title) {
-      state.customLegendTitle = title;
-    },
-    setRoute(state, route) {
-      state.route = route;
-    },
-    clearMetric(state) {
-      state.metricId = null;
-      state.metric = { // Currently selected metric
+    clearMetric() {
+      this.metricId = null;
+      this.metric = { // Currently selected metric
         config: null,
         years: [],
         data: null,
         averageValues: {},
       };
-      state.metadata = null;
+      this.metadata = null;
     },
-    setLastCompassRoute(state, route) {
-      state.lastCompassRoute = route;
-    },
-  },
-  actions: {
-    async loadMetricData({ commit, state }) {
-      const path = `/data/metric/${state.geography.id}/m${state.metricId}.json`;
+    async loadMetricData() {
+      if (!this.metricId || !this.geography.id) return;
+      const path = `/data/metric/${this.geography.id}/m${this.metricId}.json`;
       const metricJSON = await fetchResponseJSON(path);
+      if (!metricJSON) {
+        return;
+      }
+
       const nKeys = Object.keys(metricJSON.map);
       const yKeys = Object.keys(metricJSON.map[nKeys[0]]);
       const years = yKeys.map(el => el.replace('y_', ''));
@@ -148,14 +106,14 @@ const store = new createStore({
       // }
 
       // Calculate average values.
-      const metricConfig = config.dataConfig[`m${state.metricId}`];
+      const metricConfig = config.dataConfig[`m${this.metricId}`];
       const keys = Object.keys(metricJSON.map);
       const averageValues = {};
       years.forEach((year) => {
         let areaValue = null;
         let areaValueRaw = null;
         if (metricConfig.world_val
-            && metricConfig.world_val[`y_${year}`]) {
+          && metricConfig.world_val[`y_${year}`]) {
           areaValue = metricConfig.world_val[`y_${year}`];
         } else {
           areaValue = calcValue(metricJSON, metricConfig.type, year, keys);
@@ -172,71 +130,65 @@ const store = new createStore({
         averageValues[year] = { value: areaValue, rawValue: areaValueRaw };
       });
 
-      commit('setMetric', {
-        config: config.dataConfig[`m${state.metricId}`],
+      this.metric = {
+        config: config.dataConfig[`m${this.metricId}`],
         years,
         data: metricJSON,
         averageValues,
-      });
-      commit('setYear', years[years.length - 1]);
-      commit('setBreaks', jenksBreaks(metricJSON.map, years, nKeys, 5));
+      };
+      this.year = years[years.length - 1];
+      this.breaks = jenksBreaks(metricJSON.map, years, nKeys, 5);
     },
-    async loadMetricMetadata({ commit, state }) {
-      if (state.metricId) {
+    async loadMetricMetadata() {
+      if (this.metricId) {
         const metricMetadata = await fetchResponseHTML(
-          `/data/meta/${state.route.params.locale}/m${state.metricId}.html`,
+          `/data/meta/${this.route.params.locale}/m${this.metricId}.html`,
         );
-        commit('setMetricMetadata', metricMetadata);
+        this.metadata = metricMetadata;
       }
     },
 
     // In contrast to the mutation function by the same name, this checks to see if new data also needs to be loaded.
-    async setGeographyId({ commit, dispatch, state }, newGeographyId) {
-      if (state.geography.id === newGeographyId) return;
-      commit('setGeographyId', newGeographyId);
-      return dispatch('loadMetricData');
+    async setGeographyId(newGeographyId) {
+      if (this.geography.id === newGeographyId) return;
+      if (this.geography.id) {
+        // state.selected = []; TODO: Rewrite this.
+        this.highlight = [];
+      }
+
+      if (this.geography.id !== newGeographyId) {
+        this.geography = config.siteConfig.geographies.find(
+          (obj) => obj.id === newGeographyId,
+        );
+      }
+      return this.loadMetricData();
     },
 
-    async changeMetric({ commit, dispatch, state }, params) {
+    async changeMetric(params) {
       // Validate geography ID in params and set it to a default if it is invalid.
       if (!('newGeographyId' in params) || config.dataConfig[`m${params.newMetricId}`].geographies.indexOf(params.newGeographyId) === -1) {
         params.newGeographyId = config.dataConfig[`m${params.newMetricId}`].geographies[0];
       }
 
       let geographyChanged = false;
-      if (params.newGeographyId !== state.geography.id) {
-        commit('setGeographyId', params.newGeographyId);
+      if (params.newGeographyId !== this.geography.id) {
+        await this.setGeographyId(params.newGeographyId);
         geographyChanged = true;
       }
 
-      if (state.metricId !== params.newMetricId) {
-        commit('setMetricId', params.newMetricId);
+      if (this.metricId !== params.newMetricId) {
+        this.metricId = params.newMetricId;
         gaEvent('metric',
           config.dataConfig[`m${params.newMetricId}`].title.trim(),
           config.dataConfig[`m${params.newMetricId}`].category.trim());
         // Only load metadata if the metric has changed.
-        return Promise.all([dispatch('loadMetricData'), dispatch('loadMetricMetadata')]);
+        return Promise.all([this.loadMetricData(), this.loadMetricMetadata()]);
       }
 
       if (geographyChanged) {
-        return dispatch('loadMetricData');
+        return this.loadMetricData();
       }
     },
-  },
+  }
 });
 
-store.watch((state, getters) => {
-    if (state.route.name === 'report') {
-      return getters.selected;
-    }
-    return null;
-  },
-  () => {
-    if (store.getters.selected.length > 0) {
-      return store.dispatch('loadData');
-    }
-  });
-store.watch((state) => state.route && state.route.params.locale,
-  () => store.dispatch('loadMetricMetadata'));
-
-export default store;

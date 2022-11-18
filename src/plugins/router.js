@@ -1,6 +1,7 @@
-import store from '../js/vuex-store';
 import config from '../js/modules/config';
 import { debugLog } from '../js/modules/tracking';
+import { mainStore } from '@/js/stores/index.js';
+import { reportStore as makeReportStore } from '@/js/stores/report.js';
 
 const About = () => import('../js/views/About.vue');
 const Compass = () => import('../js/views/Compass.vue');
@@ -28,7 +29,8 @@ const routes = [
     path: '/:locale/about/',
     component: About,
     beforeEnter() {
-      store.commit('clearMetric');
+      const store = mainStore();
+      store.clearMetric();
     },
   },
   {
@@ -36,7 +38,8 @@ const routes = [
     path: '/:locale/',
     component: Compass,
     beforeEnter() {
-      store.commit('clearMetric');
+      const store = mainStore();
+      store.clearMetric();
     },
   },
   {
@@ -64,12 +67,13 @@ const routerOptions = {
   },
 };
 
-const setUpRouterHooks = function(router, store) {
+const setUpRouterHooks = function(router) {
 
 // Validate params.
   // TODO: Refactor routeguards into a separate file.
 // TODO: Make these dynamically pull valid values from config.
   router.beforeEach((to, from) => {
+    const store = mainStore();
     debugLog('Route guard: Validate params');
     debugLog(`${from.path} => ${to.path}`);
     debugLog(to);
@@ -92,57 +96,60 @@ const setUpRouterHooks = function(router, store) {
     } else if (to.params.metric && !(`m${to.params.metric}` in config.dataConfig)) {
       return { name: 'homepage', params: { locale: ('locale' in to.params) ? to.params.locale : 'en' } };
     } else {
-      store.commit('setRoute', to);
+      store.route = to;
     }
   });
 
 // // Load geography & selected on each route.
-router.afterEach( (to, from) => {
+router.afterEach(async (to, from) => {
+  const store = mainStore();
   debugLog('Route guard: Load geography');
   debugLog(`${from.path} => ${to.path}`);
 
-  if (to.name === 'report' && to.params.geographyLevel !== store.state.geography.id) {
-    store.commit('setGeographyId', to.params.geographyLevel);
+  if (to.name === 'report' && store.geography && to.params.geographyLevel !== store.geography.id) {
+    await store.setGeographyId(to.params.geographyLevel);
   }
 
   if ('mode' in to.query && to.query.mode === 'print') {
-    store.commit('setPrintMode', true);
-  } else if (store.state.printMode) {
-    store.commit('setPrintMode', false);
+    store.setPrintMode(true);
+  } else if (store.printMode) {
+    store.setPrintMode(false);
   }
 
   // For compass routes only, load metric and set print mode.
-  if ('metric' in to.params && 'geographyLevel' in to.params && (to.params.geographyLevel !== store.state.geography.id || store.state.metricId !== to.params.metric)) {
-    store.dispatch('changeMetric', {
+  if ('metric' in to.params && 'geographyLevel' in to.params && (to.params.geographyLevel !== store.geography.id || store.metricId !== to.params.metric)) {
+    await store.changeMetric({
       newMetricId: to.params.metric,
       newGeographyId: to.params.geographyLevel,
     });
+    await store.loadMetricMetadata();
   }
 
   if (to.name === 'report') {
-    if (!Object.keys(store.state.report.metrics).length || to.params.geographyLevel !== store.state.geography.id) {
-      store.commit('populateMetrics', { geography: store.state.geography });
+    const reportStore = makeReportStore();
+    if (!Object.keys(reportStore.metrics).length || to.params.geographyLevel !== store.geography.id) {
+      reportStore.populateMetrics({ geography: store.geography });
     }
 
     if ('visibleCategories' in to.query || 'visibleMetrics' in to.query) {
-      store.commit('hideAllMetrics');
+      reportStore.hideAllMetrics();
       if ('visibleCategories' in to.query) {
         [].concat(to.query.visibleCategories).forEach((category) => {
-          store.commit('toggleCategory', { categoryName: category, visibility: true });
+          reportStore.toggleCategory({ categoryName: category, visibility: true });
         });
       }
       if ('visibleMetrics' in to.query) {
         [].concat(to.query.visibleMetrics).forEach((metric) => {
           // TODO: Flag to make usage of m prefix consistent.
-          store.commit('toggleMetric', { metricId: `m${metric}`, visibility: true });
+          reportStore.toggleMetric({ metricId: `m${metric}`, visibility: true });
         });
       }
     } else {
-      store.commit('showAllMetrics');
+      reportStore.showAllMetrics();
     }
 
-    if (!Object.keys(store.state.report.metricValues).length) {
-      store.dispatch('loadData');
+    if (!Object.keys(reportStore.metricValues).length) {
+      await reportStore.loadData();
     }
   }
 });

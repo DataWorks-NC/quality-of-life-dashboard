@@ -6,7 +6,8 @@
 import { uniqBy } from 'lodash-es';
 
 import MapboxGlGeocoder from '@mapbox/mapbox-gl-geocoder';
-import { mapGetters, mapState } from 'vuex';
+import { mapState } from 'pinia';
+import { mainStore } from '@/js/stores/index.js';
 
 import debugLogMixin from '../mixins/debugLogMixin';
 import config from '../../modules/config';
@@ -30,10 +31,9 @@ export default {
     };
   },
   computed: {
-    ...mapState(
-      ['geography'],
+    ...mapState(mainStore,
+      ['geography', 'selected'],
     ),
-    ...mapGetters(['selected']),
     selectGroups() {
       const categories = Object.keys(this.selectGroupsData);
       const selectGroups = {};

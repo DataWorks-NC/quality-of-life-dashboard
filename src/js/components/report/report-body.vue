@@ -5,7 +5,8 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState } from 'pinia';
+import { reportStore } from '@/js/stores/report.js';
 
 import ReportCategory from './report-category.vue';
 
@@ -15,16 +16,13 @@ export default {
     ReportCategory,
   },
   computed: {
-    ...mapState({
-      metricValues: state => state.report.metricValues,
-      countyAverages: state => state.report.countyAverages,
-    }),
+    ...mapState(reportStore, ['metricValues', 'countyAverages', 'visibleCategories', 'metrics']),
     categories() {
-      return this.$store.getters.visibleCategories.map(
+      return this.visibleCategories.map(
         categoryName => ({
           name: this.$t(`strings.metricCategories['${categoryName}']`),
           originalName: categoryName,
-          metrics: Object.values(this.$store.state.report.metrics)
+          metrics: Object.values(this.metrics)
             .filter(m => m.category === categoryName && m.visible)
             .map(m => ({ ...m, name: (this.$i18n.locale === 'es' ? m.title_es : m.title) }))
             .sort(this.localizedSortByName),

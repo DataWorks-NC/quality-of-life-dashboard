@@ -15,7 +15,8 @@
 import 'chartist/dist/index.css';
 import { mdiCircle, mdiDotsHorizontal } from "@mdi/js";
 
-import { mapGetters, mapState } from 'vuex';
+import { mapState } from 'pinia';
+import { mainStore } from '@/js/stores/index.js';
 import { LineChart } from 'chartist';
 import isNumeric from '@/js/modules/isnumeric';
 import { legendLabelNumber, prettyNumber } from '@/js/modules/number_format';
@@ -34,8 +35,7 @@ export default {
   },
   data: () => ({ mounted: false, mdiCircle, mdiDotsHorizontal }),
   computed: {
-    ...mapState(['breaks', 'metric', 'year']),
-    ...mapGetters(['selected']),
+    ...mapState(mainStore, ['selected', 'breaks', 'metric', 'year', 'geography']),
     countyAverage() {
       return this.year in this.countyValues ? this.countyValues[this.year] : false;
     },
@@ -188,7 +188,7 @@ export default {
         chartData.labels.push(data[i].id);
         // set selected points
         if (_this.selected.indexOf(data[i].id) !== -1) {
-          dataArraySelected.push({ meta: (_this.$i18n.locale === 'es' ? _this.$store.state.geography.label_es(data[i].id) : _this.$store.state.geography.label(data[i].id)), value: data[i].val });
+          dataArraySelected.push({ meta: (_this.$i18n.locale === 'es' ? _this.geography.label_es(data[i].id) : _this.geography.label(data[i].id)), value: data[i].val });
         } else {
           dataArraySelected.push(null); // This is needed to have padding values so that the selected points show up in the right place on x-axis.
         }

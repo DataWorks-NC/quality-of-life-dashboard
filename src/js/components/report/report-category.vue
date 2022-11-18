@@ -31,7 +31,8 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapActions } from "pinia";
+import { reportStore } from '@/js/stores/report.js';
 import ReportMetric from "./report-metric.vue";
 
 export default {
@@ -72,7 +73,7 @@ export default {
     },
   },
   methods: {
-    ...mapMutations(["setActiveCategory"]),
+    ...mapActions(reportStore, ["setActiveCategory"]),
     formatAnchor(category) {
       return category.toLowerCase().replace(/\s/g, "-");
     },

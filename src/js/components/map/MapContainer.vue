@@ -13,7 +13,8 @@
 <script>
 import { isFinite } from 'lodash-es';
 import { defineAsyncComponent } from 'vue';
-import { mapGetters, mapState } from 'vuex';
+import { mapState } from 'pinia';
+import { mainStore } from '@/js/stores/index.js';
 
 import { prettyNumber } from '@/js/modules/number_format';
 import FullExtent from '@/js/modules/map-fullextent';
@@ -54,10 +55,9 @@ export default {
   },
 
   computed: {
-    ...mapState(
-      ['breaks', 'geography', 'highlight', 'metric', 'metricId', 'printMode', 'year'],
+    ...mapState(mainStore,
+      ['breaks', 'geography', 'highlight', 'metric', 'metricId', 'printMode', 'year', 'selected', 'selectGroupName', 'selectGroupType'],
     ),
-    ...mapGetters(['selected', 'selectGroupName', 'selectGroupType']),
     metricData() {
       if (this.metric) {
         return this.metric.data;

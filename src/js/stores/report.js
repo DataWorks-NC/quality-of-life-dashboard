@@ -1,21 +1,23 @@
+import { defineStore } from 'pinia';
 import { xor } from 'lodash-es';
 import { fetchResponseJSON } from '../modules/fetch';
 import config from '../modules/config';
 import i18n from '../../plugins/i18n';
+import { mainStore } from '@/js/stores/index.js';
 
 const { siteConfig, dataConfig } = config;
 
 const getJSONFilename = (geographyId, areaId) => `/data/report/${geographyId}/${areaId}.json`;
 
-export default {
-  state: {
+export const reportStore = defineStore('report', {
+  state: () => ( {
     categoryNamesBase: new Array(...new Set(Object.values(dataConfig).map(m => (m.category)))),
     metrics: {}, // Config values for each metric which is in the current geography, plus new visibility flag. Keyed by metric ID.
     metricValues: {}, // Values for each metric in the report.
     countyAverages: {},
     activeCategory: '',
     areaDataLoadedFor: {}, // Store the selection for which area data was last loaded.
-  },
+  }),
   getters: {
     categoryNames: state => state.categoryNamesBase.filter(c => (c in state.metricValues || c in state.countyAverages)),
     areaNames: (state, getters, rootState) => getters.selected.map(id => (getters.language === 'es' ? rootState.geography.label_es(id) : rootState.geography.label(id))),
@@ -53,70 +55,60 @@ export default {
         return metric;
       }).filter(i => i);
     },
-    activeCategory: state => state.activeCategory,
   },
-  mutations: {
+  actions: {
     // Populate metrics array on report data, which tracks visibility as well.
-    populateMetrics(state, { geography }) {
+    populateMetrics({ geography }) {
       const geographyMetrics = Object.keys(dataConfig).filter(m => dataConfig[m].geographies.indexOf(geography.id) > -1);
-      geographyMetrics.forEach(m => state.metrics[m] = { visible: true, ...dataConfig[m] });
+      geographyMetrics.forEach(m => this.metrics[m] = { visible: true, ...dataConfig[m] });
     },
 
     // Hide all metrics, so that we can individually toggle on specific metrics/categories.
-    hideAllMetrics(state) {
-      Object.values(state.metrics).forEach((m) => { m.visible = false; });
+    hideAllMetrics() {
+      Object.values(this.metrics).forEach((m) => { m.visible = false; });
     },
 
     // Show all metrics.
-    showAllMetrics(state) {
-      Object.values(state.metrics).forEach((m) => { m.visible = true; });
+    showAllMetrics() {
+      Object.values(this.metrics).forEach((m) => { m.visible = true; });
     },
 
     // Turn on or off all metrics within a particular category.
-    toggleCategory(state, { categoryName, visibility }) {
-      Object.keys(state.metrics).forEach((m) => {
-        if (state.metrics[m].category === categoryName) {
-          state.metrics[m].visible = visibility;
+    toggleCategory({ categoryName, visibility }) {
+      Object.keys(this.metrics).forEach((m) => {
+        if (this.metrics[m].category === categoryName) {
+          this.metrics[m].visible = visibility;
         }
       });
     },
 
-    toggleMetric(state, { metricId, visibility }) {
-      if (metricId in state.metrics) {
-        state.metrics[metricId].visible = visibility;
+    toggleMetric({ metricId, visibility }) {
+      if (metricId in this.metrics) {
+        this.metrics[metricId].visible = visibility;
       }
     },
 
     // Metric is the ID of a metric, without the 'm' prefix. Values is an object mapping years to data values.
-    setMetricValues(state, { metric, values }) {
+    setMetricValues({ metric, values }) {
       const metricConfig = dataConfig[`m${metric}`];
-      if (!(metricConfig.category in state.metricValues)) {
-        state.metricValues[metricConfig.category] = {};
+      if (!(metricConfig.category in this.metricValues)) {
+        this.metricValues[metricConfig.category] = {};
       }
-      state.metricValues[metricConfig.category][metric] = values;
+      this.metricValues[metricConfig.category][metric] = values;
     },
-    setCountyAverages(state, countyAverages) {
-      state.countyAverages = countyAverages;
-    },
-    setActiveCategory(state, category) {
-      state.activeCategory = category;
-    },
-    setAreaDataLoadedFor(state, selected) {
-      state.areaDataLoadedFor = selected;
-    },
-  },
-  actions: {
+
+
     // Load data first (from individual JSONs, one for each area included in the report, then set area IDs.
-    async loadAreaData({
-      commit, getters, rootState, state,
-    }) {
-      if (getters.selected.length === 0) {
+    async loadAreaData() {
+      const rootState = mainStore();
+
+      if (rootState.selected.length === 0) {
         return;
       }
 
-      const selected = getters.selected;
+      const selected = rootState.selected;
 
-      if (xor(selected, state.areaDataLoadedFor).length === 0) {
+      if (xor(selected, this.areaDataLoadedFor).length === 0) {
         // If areaDataLoaded is exactly equal to selected, return.
         return;
       }
@@ -133,7 +125,7 @@ export default {
 
           // Pull list of years to load for this metric from the first data file values.
           const years = Object.keys(areaData[0][key].map)
-            .map(year => year.replace('y_', ''));
+          .map(year => year.replace('y_', ''));
           years.forEach((year) => {
             // Aggregate the data values for this metric for this year from all the areas included in the report.
             if (metric.type === 'sum') {
@@ -152,41 +144,43 @@ export default {
               ).length;
             } else if (metric.type === 'weighted') {
               metricValues[year] = areaData.reduce((prevVal, file) => (
-                file[key] && file[key].w[`y_${year}`] !== null && file[key].map[`y_${year}`] !== null
-                  ? prevVal + file[key].map[`y_${year}`] * file[key].w[`y_${year}`]
-                  : prevVal), 0)
+                  file[key] && file[key].w[`y_${year}`] !== null && file[key].map[`y_${year}`] !== null
+                    ? prevVal + file[key].map[`y_${year}`] * file[key].w[`y_${year}`]
+                    : prevVal), 0)
                 / areaData.reduce((prevVal, file) => (
                   file[key] && file[key].w[`y_${year}`] !== null
                     ? prevVal + file[key].w[`y_${year}`]
                     : prevVal), 0);
             }
           });
-          commit('setMetricValues', { metric: key, values: metricValues });
+          this.setMetricValues({ metric: key, values: metricValues });
         });
 
-        commit('setAreaDataLoadedFor', selected);
+        this.areaDataLoadedFor = selected;
       });
     },
 
     // eslint-disable-next-line no-unused-vars
-    async loadCountyAverages({ state, commit, rootState }) {
-      if (Object.values(state.countyAverages).length) return;
+    async loadCountyAverages() {
+      const rootState = mainStore();
+
+      if (Object.values(this.countyAverages).length) return;
       return fetchResponseJSON('/data/report/county_averages.json')
-        .then((data) => {
-          const countyAverages = {};
-          Object.values(dataConfig) // Loop through all metrics in dataConfig and pull out those in the dataFile
-            .filter(m => (m.geographies.indexOf(rootState.geography.id) > -1
-              && m.metric in data)).forEach((m) => {
-              if (!(m.category in countyAverages)) {
-                countyAverages[m.category] = {};
-              }
-              countyAverages[m.category][m.metric] = data[m.metric];
-            });
-          commit('setCountyAverages', countyAverages);
+      .then((data) => {
+        const countyAverages = {};
+        Object.values(dataConfig) // Loop through all metrics in dataConfig and pull out those in the dataFile
+          .filter(m => (m.geographies.indexOf(rootState.geography.id) > -1
+            && m.metric in data)).forEach((m) => {
+          if (!(m.category in countyAverages)) {
+            countyAverages[m.category] = {};
+          }
+          countyAverages[m.category][m.metric] = data[m.metric];
         });
+        this.countyAverages = countyAverages;
+      });
     },
-    async loadData({ dispatch }) {
-      return Promise.all([dispatch('loadAreaData'), dispatch('loadCountyAverages')]);
+    async loadData() {
+      return Promise.all([this.loadAreaData(), this.loadCountyAverages()]);
     },
-  },
-};
+  }
+})

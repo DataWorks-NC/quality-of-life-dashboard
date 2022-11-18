@@ -110,7 +110,8 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState } from 'pinia';
+import { mainStore } from '@/js/stores/index.js';
 import { fromPairs, kebabCase, uniq } from 'lodash-es';
 import { mdiTriangleSmallDown, mdiClose, mdiDownload, mdiInformation } from '@mdi/js';
 
@@ -132,7 +133,7 @@ export default {
     }
   }),
   computed: {
-    ...mapState(['metric', 'metricId']),
+    ...mapState(mainStore, ['metric', 'metricId']),
     categories() {
       return config.categories.map(c => ({ id: c.replace(/\s+/g, ''), name: this.$t(`strings.metricCategories['${c}']`), originalName: c }))
         .sort(this.localizedSortByName);

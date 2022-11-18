@@ -17,7 +17,7 @@ export default defineConfig({
     }),
   ],
   ssr: {
-    noExternal: ['vuetify'],
+    noExternal: ['vuetify', /vue-i18n/],
   },
   ssgOptions: {
     crittersOptions: {

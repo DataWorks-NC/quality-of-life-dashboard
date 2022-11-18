@@ -21,25 +21,24 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState } from 'pinia';
+import { mainStore } from '@/js/stores/index.js';
 
 export default {
   name: 'YearSlider',
   computed: {
     year: {
       set(tick) {
-        this.$store.commit('setYear', this.metric.years[tick]);
+        this.year = this.metric.years[tick];
       },
       get() {
-        if (this.$store.state.year) {
-          return this.metric.years.indexOf(this.$store.state.year);
+        if (this.year) {
+          return this.metric.years.indexOf(this.year);
         }
         return this.metric.years.length - 1;
       },
     },
-    ...mapState({
-      metric: 'metric',
-    }),
+    ...mapState(mainStore, ['metric', 'year']),
     tickLabels() {
       return Object.assign({}, this.metric.years);
     }

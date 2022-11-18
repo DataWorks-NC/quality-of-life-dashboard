@@ -62,7 +62,8 @@
 
 <script>
 import { defineAsyncComponent} from 'vue';
-import { mapGetters, mapMutations } from "vuex";
+import { mapState } from "pinia";
+import { reportStore } from '@/js/stores/report.js';
 import { prettyNumber } from "../../modules/number_format";
 
 const ReportMap = defineAsyncComponent(() => import("./report-map.vue"));
@@ -109,10 +110,9 @@ export default {
     summaryId() {
       return this.$t('strings.metricCategories.Summary').toLowerCase();
     },
-    ...mapGetters(['selectGroupName']),
+    ...mapState(reportStore, ['selectGroupName', 'activeCategory']),
   },
   methods: {
-    ...mapMutations(["setActiveCategory"]),
     prettyValue(metric) {
       return prettyNumber(
         metric.value,
@@ -123,7 +123,7 @@ export default {
       if (!isVisible) {
         return;
       }
-      this.setActiveCategory(`${entry.target.id}`);
+      this.activeCategory = entry.target.id;
     },
     formatAnchor(category) {
       return category.toLowerCase().replace(/\s/g, "-");
@@ -195,8 +195,8 @@ export default {
 
   &.v-card--flat {
     border-radius: 0;
-    padding-bottom: 15px;
     padding: 25px 35px;
+    padding-bottom: 15px;
     width: 33%;
     @media (min-width: 768px) {
       &:nth-child(-n + 3) {

@@ -16,22 +16,26 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapState, mapActions } from "pinia";
+import { mainStore } from '@/js/stores/index.js';
 
 export default {
   name: "MetricMetadata",
-  computed: mapGetters([
+  computed: mapState(mainStore, [
     "metadataAbout",
     "metadataImportant",
     "metadataResources",
   ]),
   mounted() {
+    this.loadMetricMetadata();
     this.handleLinks();
   },
   updated() {
+    this.loadMetricMetadata();
     this.handleLinks();
   },
   methods: {
+    ...mapActions(mainStore, ['loadMetricMetadata']),
     handleLinks() {
       const links = this.$el.getElementsByTagName("a");
       for (let i = 0; i < links.length; i += 1) {

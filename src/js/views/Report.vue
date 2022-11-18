@@ -20,7 +20,9 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex';
+import { mapState } from 'pinia';
+import { mainStore } from '@/js/stores/index.js';
+import { reportStore } from '@/js/stores/report.js';
 import config from '../modules/config';
 
 import DashboardFooter from '../components/dashboard-footer.vue';
@@ -40,24 +42,11 @@ export default {
   },
   data: () => ({
     mapConfig: config.mapConfig,
-    storeWatchers: [],
   }),
   computed: {
-    ...mapState(['geography']),
-    ...mapGetters(['summaryMetrics', 'selected']),
-    reportTitle() { return this.$store.getters.reportTitle || this.$t('strings.DurhamCounty'); },
-  },
-  mounted() {
-    this.$nextTick(() => {
-      let event;
-      if (typeof Event === 'function') {
-        event = new Event("x-app-rendered");
-      } else {
-        event = document.createEvent('Event');
-        event.initEvent('x-app-rendered', true, true);
-      }
-      document.dispatchEvent(event);
-    });
+    ...mapState(mainStore, ['geography']),
+    ...mapState(reportStore, ['reportTitle', 'summaryMetrics', 'selected']),
+    reportTitle() { return this.reportTitle || this.$t('strings.DurhamCounty'); },
   },
 };
 </script>

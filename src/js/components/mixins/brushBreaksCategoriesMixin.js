@@ -1,10 +1,17 @@
+import { mainStore } from '@/js/stores/index.js';
+import { mapWritableState, mapState } from 'pinia';
+
 export default {
+  computed:{
+    ...mapState(mainStore, ['metric', 'breaks']),
+    ...mapWritableState(mainStore, ['highlight']),
+  },
   methods: {
     changeHighlight(n) {
       if (n === -1) {
-        this.$store.commit('setHighlight', []);
+        this.highlight = [];
       } else {
-        this.$store.commit('setHighlight', this.getBreakIds(n));
+        this.highlight = this.getBreakIds(n);
       }
     },
     selectBreak(n) {

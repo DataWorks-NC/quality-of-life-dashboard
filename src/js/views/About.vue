@@ -451,18 +451,6 @@ export default {
       'https://www.youtube.com/embed/_kgXqqjDsFA',
       'https://www.youtube.com/embed/e3nPdpHPpBc'],
   }),
-  mounted() {
-    this.$nextTick(() => {
-      let event;
-      if (typeof Event === 'function') {
-        event = new Event('x-app-rendered');
-      } else {
-        event = document.createEvent('Event');
-        event.initEvent('x-app-rendered', true, true);
-      }
-      document.dispatchEvent(event);
-    });
-  },
 };
 </script>
 

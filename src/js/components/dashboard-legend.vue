@@ -8,7 +8,7 @@
         </a>
       </div>
       <h1 class="text-h6 legend--title">
-        {{ $store.getters.legendTitle }}
+        {{ legendTitle }}
       </h1>
       <div class="metricboxes">
         <div v-if="selected.length > 0" class="metricbox">
@@ -18,7 +18,7 @@
           <span v-if="metric.config.raw_label && selected.length > 0 && selectedValueRaw" class="metric-raw">
             <span>{{ $t('strings.or') }}</span>
             <span class="metricvalue metricraw">{{ selectedValueRaw }}</span>
-            <span class="metriclabel" v-html="$t('metricLabels.' + metric.config.raw_label.toLowerCase())" />
+            <span class="metriclabel">{{ $t('metricLabels.' + metric.config.raw_label.toLowerCase()) }}</span>
           </span>
         </div>
         <div class="metricbox">
@@ -28,7 +28,7 @@
           <span v-if="metric.config.raw_label && areaValueRaw" class="metric-raw">
             <span>{{ $t('strings.or') }}</span>
             <span class="metricvalue metricraw">{{ areaValueRaw }}</span>
-            <span class="metriclabel" v-html="$t('metricLabels.' + metric.config.raw_label.toLowerCase())" />
+            <span class="metriclabel">{{ $t('metricLabels.' + metric.config.raw_label.toLowerCase()) }}</span>
           </span>
         </div>
       </div>
@@ -51,7 +51,9 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex';
+import { mapState } from 'pinia';
+import { mainStore } from '@/js/stores/index.js';
+
 import config from '../modules/config';
 import { mdiCursorMove } from '@mdi/js';
 
@@ -75,15 +77,13 @@ export default {
     },
   }),
   computed: {
-    ...mapState({
-      breaks: 'breaks',
-      highlight: 'highlight',
-      metric: 'metric',
+    ...mapState(mainStore, {
+      legendTitle: 'legendTitle',
+      selected: 'selected',
       year: 'year',
       areaValue(state) { return prettyNumber(state.metric.averageValues[state.year].value, state.metric.config); },
       areaValueRaw(state) { return prettyNumber(state.metric.averageValues[state.year].rawValue, { prefix: state.metric.config.prefix }); },
     }),
-    ...mapGetters(['selected']),
     legendClass() {
       return {
         top: this.position.startsWith('top'),

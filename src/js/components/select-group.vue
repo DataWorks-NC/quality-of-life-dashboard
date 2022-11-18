@@ -22,8 +22,8 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
-
+import { mapState } from 'pinia';
+import {mainStore } from '@/js/stores/index.js';
 import config from '../modules/config';
 
 export default {
@@ -33,7 +33,7 @@ export default {
       selectGroups: config.selectGroups,
     };
   },
-  computed: mapState({
+  computed: mapState(mainStore, {
     geography: 'geography',
     // Returns null if there is a valid select group, non-null otherwise.
     validSelectGroups(state) {

@@ -25,13 +25,13 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex';
+import { mapState } from 'pinia';
+import { mainStore } from '@/js/stores/index.js';
 
 export default {
   name: 'UndermapButtons',
   computed: {
-    ...mapState(['metricId']),
-    ...mapGetters(['selected']),
+    ...mapState(mainStore, ['metricId', 'selected']),
   },
 };
 </script>

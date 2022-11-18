@@ -17,7 +17,8 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState } from 'pinia';
+import { mainStore } from '@/js/stores/index.js';
 
 import SelectGroup from './select-group.vue';
 
@@ -26,7 +27,7 @@ import config from '../modules/config';
 export default {
   name: 'GeographySwitcher',
   components: { SelectGroup },
-  computed: mapState({
+  computed: mapState(mainStore, {
     selectedGeography: 'geography',
     validGeographies(state) {
       if (!state.metric.config) { return null; }

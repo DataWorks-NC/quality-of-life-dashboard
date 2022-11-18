@@ -11,7 +11,8 @@
 
 <script>
 import { defineAsyncComponent } from 'vue';
-import { mapState } from 'vuex';
+import { mapState } from 'pinia';
+import { mainStore } from '@/js/stores/index.js';
 
 import config from '../modules/config';
 
@@ -29,22 +30,8 @@ export default {
       config,
     };
   },
-  computed: Object.assign(
-    mapState({
-      metric: 'metric',
-    }),
-  ),
-  mounted() {
-    this.$nextTick(() => {
-      let event;
-      if (typeof Event === 'function') {
-        event = new Event("x-app-rendered");
-      } else {
-        event = document.createEvent('Event');
-        event.initEvent('x-app-rendered', true, true);
-      }
-      document.dispatchEvent(event);
-    });
+  computed: {
+    ...mapState(mainStore, ['metric']),
   },
 };
 </script>

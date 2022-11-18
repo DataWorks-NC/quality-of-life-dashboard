@@ -3,8 +3,9 @@ import 'whatwg-fetch';
 const jsonCache = {};
 const htmlCache = {};
 let readFileSync = null;
+let fileExists = null;
 if (import.meta.env.SSR) {
-  import('fs').then(({ readFileSync: readFileSyncFunc}) => { readFileSync = readFileSyncFunc; });
+  import('fs').then(({ readFileSync: readFileSyncFunc, existsSync }) => { readFileSync = readFileSyncFunc; fileExists = existsSync; });
 }
 
 async function fetchResponseJSON(path) {
@@ -15,9 +16,12 @@ async function fetchResponseJSON(path) {
     if (import.meta.env.SSR) {
       // When rendering the page as a static site, load these using import.
       // eslint disable-next-line
-      const json = JSON.parse(readFileSync('dist' + path));
-      jsonCache[path] = json;
-      return Promise.resolve(json);
+      if (fileExists('dist' + path)) {
+        const json = JSON.parse(readFileSync('dist' + path));
+        jsonCache[path] = json;
+        return Promise.resolve(json);
+      }
+      return Promise.resolve(null);
     } else {
       return fetch(path).then(response => response.json()).then((json) => {
         jsonCache[path] = json;

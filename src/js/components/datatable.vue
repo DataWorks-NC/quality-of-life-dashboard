@@ -25,7 +25,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="row in dataTable" :key="row.geogIndex" @mouseover="highlight(row.geogIndex)" @mouseout="highlight([])">
+          <tr v-for="row in dataTable" :key="row.geogIndex" @mouseover="highlight([row.geogIndex,])" @mouseout="highlight([])">
             <td>{{ $i18n.locale === 'en' ? geography.label(row.geogIndex) : geography.label_es(row.geogIndex) }}</td>
             <td>{{ row.value }}</td>
             <td v-if="row.accuracy">
@@ -57,7 +57,8 @@
 
 <script>
 import { mdiTrendingDown, mdiTrendingNeutral, mdiTrendingUp } from '@mdi/js';
-import { mapGetters, mapState } from 'vuex';
+import { mapState } from 'pinia';
+import { mainStore } from '@/js/stores/index.js';
 
 import table2csv from '../modules/table2csv';
 import { prettyNumber, round } from '../modules/number_format';
@@ -67,8 +68,10 @@ export default {
   name: 'DataTable',
   data: () => ({ mdiTrendingDown, mdiTrendingNeutral, mdiTrendingUp }),
   computed: {
-    ...mapGetters(['selected']),
-    ...mapState({
+    ...mapState(mainStore,
+      {
+        highlight: 'highlight',
+        selected: 'selected',
       metric: 'metric',
       geography: 'geography',
       curYear: 'year',
@@ -148,7 +151,7 @@ export default {
   },
   methods: {
     highlight(n) {
-      this.$store.commit('setHighlight', n);
+      this.highlight = n;
     },
     downloadTable(theTable) {
       // TODO: rewrite this?

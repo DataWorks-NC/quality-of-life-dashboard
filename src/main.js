@@ -4,7 +4,7 @@ import dataConfig from '../data/config/data';
 
 // TODO: Add analytics.
 
-import store from './js/vuex-store';
+import { createPinia } from 'pinia';
 import { routerOptions, setUpRouterHooks } from './plugins/router';
 import i18n from './plugins/i18n';
 import vuetify from './plugins/vuetify';
@@ -23,12 +23,13 @@ export const createApp = ViteSSG(
   App,
   routerOptions,
   ({ app, router }) => {
+    const pinia = createPinia();
     app.config.productionTip = false;
     app.use(vuetify);
     app.use(i18n);
-    app.use(store);
+    app.use(pinia);
 
-    setUpRouterHooks(router, store);
+    setUpRouterHooks(router);
 
     router.beforeEach((to, from) => {
       debugLog('Router guard: set language');

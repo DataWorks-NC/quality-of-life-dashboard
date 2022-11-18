@@ -24,12 +24,13 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapState } from "pinia";
+import { reportStore } from '@/js/stores/report.js';
 
 export default {
   name: "ReportJumpNav",
   computed: {
-    ...mapGetters(["visibleCategories", "activeCategory"]),
+    ...mapState(reportStore, ["visibleCategories", "activeCategory"]),
     activeTab: {
       get() {
         if (this.activeCategory === this.$t('strings.metricCategories.Summary')) {

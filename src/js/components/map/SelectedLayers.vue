@@ -3,7 +3,8 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex';
+import { mapState } from 'pinia';
+import { mainStore } from '@/js/stores/index.js';
 
 import debugLogMixin from '../mixins/debugLogMixin';
 
@@ -21,14 +22,14 @@ export default {
       default: () => [],
     },
   },
+  emits: ['layers-loaded'],
   data: () => ({
     layersLoaded: {},
   }),
   computed: {
-    ...mapState(
-      ['geography'],
+    ...mapState(mainStore,
+      ['geography', 'selected', 'selectGroupName', 'selectGroupType'],
     ),
-    ...mapGetters(['selected', 'selectGroupName', 'selectGroupType']),
     selectedToLabel() {
       if (this.selectGroupName && this.selectGroupType) return [];
       return this.selected;
