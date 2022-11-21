@@ -13,8 +13,7 @@
 <script>
 import { isFinite } from 'lodash-es';
 import { defineAsyncComponent } from 'vue';
-import { mapState } from 'pinia';
-import { mainStore } from '@/js/stores/index.js';
+import { store } from '@/js/stores/compass-store.js';
 
 import { prettyNumber } from '@/js/modules/number_format';
 import FullExtent from '@/js/modules/map-fullextent';
@@ -37,7 +36,7 @@ export default {
     SelectGroupOutline,
   },
   mixins: [debugLogMixin],
-  inject: ['mapboxgl',],
+  inject: ['mapboxgl','metric','geography','breaks', 'selectGroupName', 'selectGroupType', 'selected', 'printMode'],
   props: {
     mapConfig: {
       type: Object,
@@ -51,15 +50,13 @@ export default {
       mapLoaded: false,
       map: null,
       colors: config.colors,
+      store,
     };
   },
 
   computed: {
-    ...mapState(mainStore,
-      ['breaks', 'geography', 'highlight', 'metric', 'metricId', 'printMode', 'year', 'selected', 'selectGroupName', 'selectGroupType'],
-    ),
     metricData() {
-      if (this.metric) {
+      if (this.metric.loaded) {
         return this.metric.data;
       }
       return {};
@@ -67,9 +64,9 @@ export default {
 
     // Returns a Mapbox GL Expression assigning tract/blockgroup values to the color which matches their metric value
     // using this.colors and this.breaks to set colors and break values. Also highlights tracts/blockgroups in yellow
-    // when their IDs are in this.highlight.
+    // when their IDs are in this.store.highlight.
     colorMap() {
-      if (!this.metricData) return;
+      if (!this.metric.loaded) return;
 
       // Array of arrays of IDs. Places 0-4 correspond to choropleth colors 1-5 and place 5 corresponds to highlight.
       const stops = [[], [], [], [], [], []];
@@ -92,8 +89,8 @@ export default {
       };
 
       Object.keys(this.metricData.map).forEach((id) => {
-        const value = this.metricData.map[id][`y_${this.year}`];
-        if (this.highlight.indexOf(id) !== -1) {
+        const value = this.metricData.map[id][`y_${this.store.year}`];
+        if (this.store.highlight.indexOf(id) !== -1) {
           stops[5].push(id);
         } else if (isFinite(value) && (getStop(value) !== null)) {
           try {
@@ -214,7 +211,7 @@ export default {
 
       // on feature click add or remove from selected set
       map.on('click', (e) => {
-        const features = map.queryRenderedFeatures(e.point, { layers: [`${_this.geography.id}-fill`] }).filter(f => _this.metric.data.map[f.properties.id][`y_${_this.year}`] !== null); // Only allow select when metric value is not null;
+        const features = map.queryRenderedFeatures(e.point, { layers: [`${_this.geography.id}-fill`] }).filter(f => _this.metric.data.map[f.properties.id][`y_${_this.store.year}`] !== null); // Only allow select when metric value is not null;
         if (!features.length) {
           return;
         }
@@ -241,7 +238,7 @@ export default {
           return;
         }
         const features = map.queryRenderedFeatures(e.point, { layers: [`${_this.geography.id}-fill`] })
-          .filter(f => f.properties.id in _this.metric.data.map && _this.metric.data.map[f.properties.id][`y_${_this.year}`] !== null); // Only show popup when metric value is not null
+          .filter(f => f.properties.id in _this.metric.data.map && _this.metric.data.map[f.properties.id][`y_${_this.store.year}`] !== null); // Only show popup when metric value is not null
 
         if (!features.length) {
           _this.hoverPopup.remove();
@@ -253,7 +250,7 @@ export default {
 
         const feature = features[0];
         const { id } = feature.properties;
-        const data = _this.metric.data.map[id][`y_${_this.year}`];
+        const data = _this.metric.data.map[id][`y_${_this.store.year}`];
         const geographyLabel = _this.$i18n.locale === 'es' ? feature.properties.label_es : feature.properties.label;
         const val = prettyNumber(data, _this.metric.config);
         const label = _this.metric.config.label ? ` ${_this.$t(`metricLabels.${_this.metric.config.label}`)}` : '';

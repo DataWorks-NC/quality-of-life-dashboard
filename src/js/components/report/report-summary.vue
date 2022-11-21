@@ -25,13 +25,12 @@
         <i18n-t keypath="reportSummary.about[2]" tag="p" />
       </v-col>
       <v-col cols="12" sm="6">
-        <ReportMap
-          v-if="mapboxglLoaded"
-          :map-config="mapConfig"
-          :geography-id="geographyId"
-          :selected-geographies="selected"
-          :select-group-name="selectGroupName"
-        />
+        <ClientOnly>
+          <ReportMap
+            v-if="mapboxglLoaded"
+            :geography-id="geographyId"
+          />
+        </ClientOnly>
       </v-col>
     </v-row>
     <v-row id="metric-summary-box" class="metric-box">
@@ -73,7 +72,7 @@ export default {
   components: {
     ReportMap,
   },
-  inject: ['mapboxglLoaded',],
+  inject: ['mapboxglLoaded',  'reportTitle'],
   props: {
     summaryMetrics: {
       type: Array,
@@ -82,18 +81,6 @@ export default {
     geographyId: {
       type: String,
       default: "tract",
-    },
-    selected: {
-      type: Array,
-      default: () => [],
-    },
-    mapConfig: {
-      type: Object,
-      default: () => ({}),
-    },
-    reportTitle: {
-      type: String,
-      default: "",
     },
   },
   data() {
@@ -110,7 +97,7 @@ export default {
     summaryId() {
       return this.$t('strings.metricCategories.Summary').toLowerCase();
     },
-    ...mapState(reportStore, ['selectGroupName', 'activeCategory']),
+    ...mapState(reportStore, ['activeCategory']),
   },
   methods: {
     prettyValue(metric) {

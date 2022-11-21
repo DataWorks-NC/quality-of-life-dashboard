@@ -1,10 +1,11 @@
 import config from '../js/modules/config';
 import { debugLog } from '../js/modules/tracking';
-import { mainStore } from '@/js/stores/index.js';
 import { reportStore as makeReportStore } from '@/js/stores/report.js';
+import { store } from '@/js/stores/compass-store.js';
 
 const About = () => import('../js/views/About.vue');
 const Compass = () => import('../js/views/Compass.vue');
+const Homepage = () => import('../js/views/Homepage.vue');
 const Report = () => import('../js/views/Report.vue');
 const Embed = () => import('../js/views/CompassEmbed.vue');
 
@@ -28,19 +29,11 @@ const routes = [
     name: 'about',
     path: '/:locale/about/',
     component: About,
-    beforeEnter() {
-      const store = mainStore();
-      store.clearMetric();
-    },
   },
   {
     name: 'homepage',
     path: '/:locale/',
-    component: Compass,
-    beforeEnter() {
-      const store = mainStore();
-      store.clearMetric();
-    },
+    component: Homepage,
   },
   {
     name: 'homepage-en',
@@ -70,10 +63,7 @@ const routerOptions = {
 const setUpRouterHooks = function(router) {
 
 // Validate params.
-  // TODO: Refactor routeguards into a separate file.
-// TODO: Make these dynamically pull valid values from config.
   router.beforeEach((to, from) => {
-    const store = mainStore();
     debugLog('Route guard: Validate params');
     debugLog(`${from.path} => ${to.path}`);
     debugLog(to);
@@ -95,41 +85,24 @@ const setUpRouterHooks = function(router) {
       return { ...to, params: { ...to.params, geographyLevel: 'tract' } };
     } else if (to.params.metric && !(`m${to.params.metric}` in config.dataConfig)) {
       return { name: 'homepage', params: { locale: ('locale' in to.params) ? to.params.locale : 'en' } };
-    } else {
-      store.route = to;
     }
   });
 
 // // Load geography & selected on each route.
 router.afterEach(async (to, from) => {
-  const store = mainStore();
+
   debugLog('Route guard: Load geography');
   debugLog(`${from.path} => ${to.path}`);
 
-  if (to.name === 'report' && store.geography && to.params.geographyLevel !== store.geography.id) {
-    await store.setGeographyId(to.params.geographyLevel);
+  if (to.name === 'compass') {
+    store.lastCompassRoute = to;
   }
-
-  if ('mode' in to.query && to.query.mode === 'print') {
-    store.setPrintMode(true);
-  } else if (store.printMode) {
-    store.setPrintMode(false);
-  }
-
-  // For compass routes only, load metric and set print mode.
-  if ('metric' in to.params && 'geographyLevel' in to.params && (to.params.geographyLevel !== store.geography.id || store.metricId !== to.params.metric)) {
-    await store.changeMetric({
-      newMetricId: to.params.metric,
-      newGeographyId: to.params.geographyLevel,
-    });
-    await store.loadMetricMetadata();
-  }
-
   if (to.name === 'report') {
     const reportStore = makeReportStore();
-    if (!Object.keys(reportStore.metrics).length || to.params.geographyLevel !== store.geography.id) {
-      reportStore.populateMetrics({ geography: store.geography });
-    }
+    //
+    // if (!Object.keys(reportStore.metrics).length || to.params.geographyLevel !== store.geography.id) {
+    //   reportStore.populateMetrics({ geography: store.geography });
+    // }
 
     if ('visibleCategories' in to.query || 'visibleMetrics' in to.query) {
       reportStore.hideAllMetrics();
@@ -146,10 +119,6 @@ router.afterEach(async (to, from) => {
       }
     } else {
       reportStore.showAllMetrics();
-    }
-
-    if (!Object.keys(reportStore.metricValues).length) {
-      await reportStore.loadData();
     }
   }
 });

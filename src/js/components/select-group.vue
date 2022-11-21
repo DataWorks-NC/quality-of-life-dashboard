@@ -22,24 +22,21 @@
 </template>
 
 <script>
-import { mapState } from 'pinia';
-import {mainStore } from '@/js/stores/index.js';
 import config from '../modules/config';
 
 export default {
   name: 'SelectGroup',
+  inject: ['geography'],
   data() {
     return {
       selectGroups: config.selectGroups,
     };
   },
-  computed: mapState(mainStore, {
-    geography: 'geography',
-    // Returns null if there is a valid select group, non-null otherwise.
-    validSelectGroups(state) {
-      return Object.keys(this.selectGroups).find(g => state.geography.id in this.selectGroups[g]);
+  computed: {
+    validSelectGroups() {
+      return Object.keys(this.selectGroups).find(g => this.geography.id in this.selectGroups[g]);
     },
-  }),
+  },
   methods: {
     select(key, groupKey) {
       this.$router.push({

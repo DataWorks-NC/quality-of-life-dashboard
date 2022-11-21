@@ -51,8 +51,7 @@
 </template>
 
 <script>
-import { mapState } from 'pinia';
-import { mainStore } from '@/js/stores/index.js';
+import { store } from '@/js/stores/compass-store.js';
 
 import config from '../modules/config';
 import { mdiCursorMove } from '@mdi/js';
@@ -67,6 +66,9 @@ export default {
   // You would think to just name this component 'Legend', but <legend> is in the HTML5 spec!
   name: 'DashboardLegend',
   mixins: [brushBreaksCategoriesMixin,],
+  inject: [
+    'selected', 'metric',
+  ],
   data: () => ({
     selectedValue: null,
     selectedValueRaw: null,
@@ -75,15 +77,30 @@ export default {
     icons: {
       mdiCursorMove,
     },
+    store,
   }),
   computed: {
-    ...mapState(mainStore, {
-      legendTitle: 'legendTitle',
-      selected: 'selected',
-      year: 'year',
-      areaValue(state) { return prettyNumber(state.metric.averageValues[state.year].value, state.metric.config); },
-      areaValueRaw(state) { return prettyNumber(state.metric.averageValues[state.year].rawValue, { prefix: state.metric.config.prefix }); },
-    }),
+    legendTitle() {
+      if (this.$route.query.legendTitle) {
+        return this.$route.query.legendTitle;
+      }
+      if (this.metric.config) return `${this.$i18n.locale === 'es' ? this.metric.config.title_es : this.metric.config.title}, ${this.store.year}`;
+      return '';
+    },
+    areaValue() {
+      if (this.metric.averageValues && this.store.year in this.metric.averageValues) {
+        return prettyNumber(this.metric.averageValues[this.store.year].value, this.metric.config);
+      }
+      return '';
+    },
+    areaValueRaw() {
+      if (this.metric.averageValues && this.store.year in this.metric.averageValues) {
+        return this.metric.averageValues &&
+          prettyNumber(this.metric.averageValues[this.store.year].rawValue,
+            {prefix: this.metric.config.prefix});
+      }
+      return '';
+    },
     legendClass() {
       return {
         top: this.position.startsWith('top'),
@@ -98,7 +115,7 @@ export default {
     'selected': 'processSelected',
     'year': 'processSelected',
   },
-  mounted() {
+  created() {
     this.processSelected();
   },
   methods: {
@@ -111,10 +128,10 @@ export default {
       const metricConfig = this.metric.config;
       const metricData = this.metric.data;
 
-      const selectedValue = calcValue(metricData, metricConfig.type, this.year, this.selected);
+      const selectedValue = calcValue(metricData, metricConfig.type, this.store.year, this.selected);
       this.selectedValue = prettyNumber(selectedValue, metricConfig);
       if (metricConfig.raw_label) {
-        const rawArray = wValsToArray(metricData.map, metricData.w, [this.year], this.selected);
+        const rawArray = wValsToArray(metricData.map, metricData.w, [this.store.year], this.selected);
         let rawValue = sum(rawArray);
         if (metricConfig.suffix === '%') {
           rawValue /= 100;

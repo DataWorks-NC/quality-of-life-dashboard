@@ -82,8 +82,8 @@
                 </span>
                 <v-menu :key="m.metric" :attach="'#' + kebabCase(m.originalName)">
                   <template #activator="{ props }">
-                    <v-btn v-if="metric.config && metric.config.subcategory === m.originalName" rounded variant="flat" class="v-btn--active" v-bind="props">
-                      {{ $i18n.locale === 'es' ? metric.config.title_es : metric.config.title }} <v-icon :icon="icons.mdiTriangleSmallDown" />
+                    <v-btn v-if="m.metric.config && m.metric.config.subcategory === m.originalName" rounded variant="flat" class="v-btn--active" v-bind="props">
+                      {{ $i18n.locale === 'es' ? mm.etric.config.title_es : m.metric.config.title }} <v-icon :icon="icons.mdiTriangleSmallDown" />
                     </v-btn>
                     <v-btn v-else rounded variant="flat" v-bind="props">
                       {{ m.name }} <v-icon :icon="icons.mdiTriangleSmallDown" />
@@ -110,8 +110,6 @@
 </template>
 
 <script>
-import { mapState } from 'pinia';
-import { mainStore } from '@/js/stores/index.js';
 import { fromPairs, kebabCase, uniq } from 'lodash-es';
 import { mdiTriangleSmallDown, mdiClose, mdiDownload, mdiInformation } from '@mdi/js';
 
@@ -120,6 +118,11 @@ import config from '../modules/config';
 
 export default {
   name: 'CompassNav',
+  inject: {
+    metric: {
+      default: {},
+    },
+  },
   data: () => ({
     categoryTab: null,
     drawer: false,
@@ -133,7 +136,6 @@ export default {
     }
   }),
   computed: {
-    ...mapState(mainStore, ['metric', 'metricId']),
     categories() {
       return config.categories.map(c => ({ id: c.replace(/\s+/g, ''), name: this.$t(`strings.metricCategories['${c}']`), originalName: c }))
         .sort(this.localizedSortByName);

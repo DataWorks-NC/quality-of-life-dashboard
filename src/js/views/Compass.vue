@@ -6,7 +6,7 @@
         <v-container fluid grid-list-lg>
           <v-layout wrap>
             <v-row>
-              <v-col v-if="metric.config" cols="12" md="8">
+              <v-col cols="12" md="8">
                 <v-card>
                   <div v-if="mapboxglLoaded" style="min-height: 600px;">
                     <ClientOnly>
@@ -23,126 +23,13 @@
                   </div>
                   <div class="spacer" />
                   <data-table />
-                  <MetricMetadata />
-                </v-card>
-              </v-col>
-              <v-col v-else cols="12" md="8">
-                <v-card>
-                  <div class="flexcontainer landing-page">
-                    <div class="flex-item">
-                      <h2>{{ $t('welcome.title') }}</h2>
-                      <p>{{ $t('strings.about') }}</p>
-                      <div v-if="$i18n.locale === 'es'">
-                        <h3>Cómo usarlo:</h3>
-                        <v-card color="primary" class="d-flex">
-                          <v-img src="@/assets/img/Choose_Metric-es.png" alt />
-                          <v-card-text class="text-white">
-                            <p class="font-weight-bold">
-                              Elija una categoría y un tema del menú en la parte superior de la página. Por ejemplo:
-                              <RouterLink
-                                :to="{name: 'compass', params: {locale: 'es', metric: 'DIABETES_TOTAL', geographyLevel: 'tract'}}"
-                                class="get-started-link"
-                              >
-                                Diabetes
-                              </RouterLink>o
-                              <RouterLink
-                                :to="{name: 'compass', params: {locale: 'es', metric: 'CCC', geographyLevel: 'blockgroup'}}"
-                                class="get-started-link"
-                              >
-                                Centros de Cuidado de Niños
-                              </RouterLink>.
-                            </p>
-                            <p>En teléfono celular, toque las tres líneas que se encuentran en la parte superior izquierda para abrir el menú</p>
-                          </v-card-text>
-                        </v-card>
-                        <v-card color="primary" class="d-flex">
-                          <v-img
-                            src="@/assets/img/Find_Neighborhood-es.png"
-                            alt
-                            width="50%"
-                          />
-                          <v-card-text class="text-white">
-                            <p
-                              class="font-weight-bold"
-                            >
-                              Encuentre una dirección o vecindario usando la barra de búsqueda ubicada en el mapa
-                            </p>
-                          </v-card-text>
-                        </v-card>
-                        <v-card color="primary" class="d-flex">
-                          <v-img
-                            src="@/assets/img/Create_Report-es.png"
-                            alt
-                            width="50%"
-                          />
-                          <v-card-text class="text-white">
-                            <p
-                              class="font-weight-bold"
-                            >
-                              Genere un informe haciendo clic en el botón “Informe”
-                            </p>
-                          </v-card-text>
-                        </v-card>
-                      </div>
-                      <div v-else>
-                        <h3>Here's how to get started:</h3>
-                        <v-card color="primary" class="d-flex">
-                          <v-img cover src="@/assets/img/Choose_Metric.png" alt />
-                          <v-card-text class="text-white">
-                            <p class="font-weight-bold">
-                              Choose a category and topic from the menu at top. For example:
-                              <RouterLink
-                                :to="{name: 'compass', params: {locale: 'en', metric: 'DIABETES_TOTAL', geographyLevel: 'tract'}}"
-                                class="get-started-link"
-                              >
-                                Diabetes
-                              </RouterLink>,
-                              <RouterLink
-                                :to="{name: 'compass', params: {locale: 'en', metric: 'SUMEJECT', geographyLevel: 'blockgroup'}}"
-                                class="get-started-link"
-                              >
-                                Evictions
-                              </RouterLink>, or
-                              <RouterLink
-                                :to="{name: 'compass', params: {locale: 'en', metric: 'CCC', geographyLevel: 'blockgroup'}}"
-                                class="get-started-link"
-                              >
-                                Childcare Centers
-                              </RouterLink>.
-                            </p>
-                            <p>On a mobile device, tap the three lines at the top-left to open the menu.</p>
-                          </v-card-text>
-                        </v-card>
-
-                        <v-card color="primary" class="d-flex">
-                          <v-img cover src="@/assets/img/Find_Neighborhood.png" alt />
-                          <v-card-text class="text-white">
-                            <p
-                              class="font-weight-bold"
-                            >
-                              Find an address or neighborhood using the address search tool on the map.
-                            </p>
-                          </v-card-text>
-                        </v-card>
-                        <v-card color="primary" class="d-flex">
-                          <v-img cover src="@/assets/img/Create_Report.png" alt />
-                          <v-card-text class="text-white">
-                            <p
-                              class="font-weight-bold"
-                            >
-                              Make a report by clicking the "Report" button.
-                            </p>
-                          </v-card-text>
-                        </v-card>
-                      </div>
-                    </div>
-                  </div>
+                  <MetricMetadata :metric-id="$route.params.metric" :locale="$route.params.locale" />
                 </v-card>
               </v-col>
               <v-col cols="12" md="4">
-                <geography-switcher v-if="metric.config" />
+                <geography-switcher />
                 <div v-if="metric.config" class="spacer" />
-                <distribution-chart v-if="metric.config" :county-values="chartCountyValues" />
+                <distribution-chart :county-values="chartCountyValues" />
                 <div v-if="metric.config && metric.years.length > 1" class="spacer" />
                 <v-card
                   v-if="metric.config && metric.years.length > 1 && (chartValues || chartCountyValues)"
@@ -155,7 +42,7 @@
                     framework="mdl"
                   />
                 </v-card>
-                <div v-if="metric.config" class="spacer" />
+                <div class="spacer" />
                 <feedback />
                 <div class="spacer" />
                 <social />
@@ -173,12 +60,12 @@
 </template>
 
 <script>
-import { defineAsyncComponent } from 'vue';
-import { mapState } from "pinia";
-import { mainStore } from '@/js/stores/index.js';
+import { defineAsyncComponent, computed } from 'vue';
+import { store } from '../stores/compass-store.js';
+import parseRouteMixin from '@/js/components/mixins/parseRouteMixin.js';
 
 import config from "../modules/config";
-import { calcValue } from "../modules/metric_calculations";
+import {calcValue, sum, wValsToArray} from '../modules/metric_calculations';
 
 // TODO: Check which components have a heavier bundle and only make those ones async loaded.
 import DashboardFooter from "../components/dashboard-footer.vue";
@@ -190,6 +77,9 @@ import PrintMode from "../components/print-mode.vue";
 import Social from "../components/social.vue";
 import UndermapButtons from "../components/undermap-buttons.vue";
 import CompassNav from "../components/CompassNav.vue";
+import {fetchResponseJSON, fetchResponseJSONSync} from '@/js/modules/fetch.js';
+import jenksBreaks from '@/js/modules/jenksbreaks.js';
+import {gaEvent} from '@/js/modules/tracking.js';
 
 const MapContainer = defineAsyncComponent(() => import("../components/map/MapContainer.vue"));
 const DistributionChart = defineAsyncComponent(() => import("../components/distribution-chart.vue"));
@@ -213,50 +103,160 @@ export default {
     UndermapButtons,
     YearSlider,
   },
-  inject: ['mapboxglLoaded'],
-  data: () => ({
-    config,
-  }),
+  mixins: [parseRouteMixin],
+  inject: ['mapboxglLoaded',],
+  provide() {
+    return {
+      metric: computed(() => this.metric),
+      geography: computed(() => this.geography),
+      breaks: computed(() => this.breaks),
+      selected: computed(() => this.selected),
+      selectGroupName: computed(() => this.selectGroupName),
+      selectGroupType: computed(() => this.selectGroupType),
+      printMode: computed(() => this.printMode),
+    };
+  },
+  data() {
+    return {
+      config,
+      metric: {
+        id: null,
+        config: {},
+        years: [],
+        averageValues: {},
+        loaded: false,
+      },
+      breaks: [],
+      printMode: false,
+      store,
+    }
+  },
   computed: {
-    ...mapState(mainStore, {
-      selected: 'selected',
-      printMode: "printMode",
-      metric: "metric",
-      chartValues(state) {
-        if (!state.selected.length || state.metric.years.length <= 1) return {};
-        const metricValues = {};
-        for (let i = 0; i < state.metric.years.length; i += 1) {
-          metricValues[state.metric.years[i]] = calcValue(
-            state.metric.data,
-            state.metric.config.type,
-            state.metric.years[i],
-            this.selected,
-          );
-        }
-        return metricValues;
-      },
-      chartCountyValues(state) {
-        const averageValues = {};
-        const years = Object.keys(state.metric.averageValues);
-        for (let i = 0; i < years.length; i += 1) {
-          averageValues[years[i]] = state.metric.averageValues[years[i]].value;
-        }
-        return averageValues;
-      },
-      mapboxgl() {
-        return this.$root.mapboxgl;
-      },
-    }),
+    chartValues() {
+      if (!this.selected.length || this.metric.years.length <= 1) return {};
+      const metricValues = {};
+      for (let i = 0; i < this.metric.years.length; i += 1) {
+        metricValues[this.metric.years[i]] = calcValue(
+          this.metric.data,
+          this.metric.config.type,
+          this.metric.years[i],
+          this.selected,
+        );
+      }
+      return metricValues;
+    },
+    chartCountyValues() {
+      const averageValues = {};
+      const years = Object.keys(this.metric.averageValues);
+      for (let i = 0; i < years.length; i += 1) {
+        averageValues[years[i]] = this.metric.averageValues[years[i]].value;
+      }
+      return averageValues;
+    },
   },
   watch: {
     printMode() {
       this.setPrintClass();
     },
   },
+  created() {
+    this.initFromRoute();
+    this.$watch(() => this.$route.params, (newParams, oldParams) => {
+      this.initFromRoute(newParams.metric !== oldParams.metric, newParams.geographyLevel !== oldParams.geographyLevel);
+    });
+    this.$watch(() => this.$route.query.printMode, (newMode) => {
+      this.printMode = newMode;
+      this.setPrintClass();
+    });
+  },
   mounted() {
     this.setPrintClass();
   },
   methods: {
+    initFromRoute(metricChanged = true, geographyChanged = true) {
+      console.log('Event from Route');
+
+      // Base metric info.
+      const metricId = this.$route.params.metric;
+
+      this.metric.id = metricId;
+      this.metric.config = config.dataConfig[`m${metricId}`];
+
+      this.geography =
+
+      this.printMode = this.$route.query.mode === 'print';
+
+      // Load metric data.
+      if (metricChanged) {
+        gaEvent('metric',
+          this.metric.config.title.trim(),
+          this.metric.config.category.trim());
+      }
+      if (geographyChanged) {
+        this.store.highlight = [];
+      }
+      if (metricChanged || geographyChanged) {
+        this.loadMetricData();
+      }
+    },
+    async loadMetricData() {
+      if (!this.metric.id || !this.geography.id) return;
+
+      const path = `/data/metric/${this.geography.id}/m${this.metric.id}.json`;
+
+      let metricJSON = {};
+      if (import.meta.env.SSR) {
+        metricJSON = fetchResponseJSONSync(path);
+      }
+      else {
+        metricJSON = await fetchResponseJSON(path);
+      }
+      if (!metricJSON) {
+        return;
+      }
+
+      const nKeys = Object.keys(metricJSON.map);
+      const yKeys = Object.keys(metricJSON.map[nKeys[0]]);
+      const years = yKeys.map(el => el.replace('y_', ''));
+
+      // drop invalid selected values
+      // TODO: is this even needed?
+      // const selected = state.selected.filter(id => nKeys.indexOf(id) > 0);
+      // if (selected.length !== state.selected.length) {
+      //   commit('setSelected', selected);
+      // }
+
+      // Calculate average values.
+      const keys = Object.keys(metricJSON.map);
+      const averageValues = {};
+      years.forEach((year) => {
+        let areaValue = null;
+        let areaValueRaw = null;
+        if (this.metric.config.world_val
+          && this.metric.config.world_val[`y_${year}`]) {
+          areaValue = this.metric.config.world_val[`y_${year}`];
+        } else {
+          areaValue = calcValue(metricJSON, this.metric.config.type, year, keys);
+        }
+        if (this.metric.config.raw_label) {
+          const rawArray = wValsToArray(metricJSON.map,
+            metricJSON.w, [year], keys);
+          let rawValue = sum(rawArray);
+          if (this.metric.config.suffix === '%') {
+            rawValue /= 100;
+          }
+          areaValueRaw = rawValue;
+        }
+        averageValues[year] = { value: areaValue, rawValue: areaValueRaw };
+      });
+
+      this.metric.years = years;
+      this.metric.data = metricJSON;
+      this.metric.averageValues = averageValues;
+      this.store.year = years[years.length - 1];
+      this.breaks = jenksBreaks(metricJSON.map, years, nKeys, 5);
+      this.metric.loaded = true;
+    },
     setPrintClass() {
       // Add print mode class to body.
       if (this.printMode) {
@@ -272,80 +272,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-.landing-page {
-  padding: 15px 25px;
-
-  div {
-    overflow: auto;
-  }
-
-  .v-card-text {
-    font-size: 1em;
-
-    a {
-      color: white;
-      text-decoration: none;
-      border-bottom: 2px solid rgba(255, 255, 255, 0.5);
-      -webkit-transition: 0.2s cubic-bezier(0.4, 0, 0.6, 1);
-      transition: 0.2s cubic-bezier(0.4, 0, 0.6, 1);
-
-      &:hover {
-        border-color:rgba(255, 255, 255, 1);
-      }
-    }
-
-    @media (max-width: 767px) {
-      font-size: 0.75em;
-      p {
-        margin-bottom: 0;
-      }
-    }
-  }
-
-  .v-image {
-    overflow: hidden;
-
-    @media (min-width: 768px) {
-      width: 50%;
-    }
-  }
-
-  .v-card.d-flex {
-    @media (max-width: 767px) {
-      flex-direction: column;
-    }
-  }
-
-  .v-card.d-flex + .v-card.d-flex {
-    margin-top: 25px;
-  }
-
-  .v-card > *:first-child:not(.v-btn):not(.v-chip) {
-    border-radius: inherit;
-  }
-
-  h2 {
-    font-size: 24px;
-    margin-bottom: 0.75em;
-    @media (max-width: 767px) {
-      font-size: 20px;
-    }
-  }
-
-  h3 {
-    font-size: 20px;
-    margin-bottom: 0.75rem;
-    margin-top: 1.5em;
-  }
-
-  p {
-    max-width: 680px;
-  }
-}
-
-.v-main {
-  padding-top: 0;
-}
-</style>

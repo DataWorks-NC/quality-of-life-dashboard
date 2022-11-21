@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <p class="text-h6 text-center">
-      {{ $t('distributionChart.DataDistribution') }}, {{ year }}
+      {{ $t('distributionChart.DataDistribution') }}, {{ store.year }}
     </p>
     <div class="legend text-center">
       <span v-show="selected.length > 0" class="text-caption"><v-icon color="accent" size="14px" :icon="mdiCircle" /> {{ $filters.capitalize($t('strings.selected')) }}</span>
@@ -14,9 +14,8 @@
 <script>
 import 'chartist/dist/index.css';
 import { mdiCircle, mdiDotsHorizontal } from "@mdi/js";
+import { store } from '@/js/stores/compass-store.js';
 
-import { mapState } from 'pinia';
-import { mainStore } from '@/js/stores/index.js';
 import { LineChart } from 'chartist';
 import isNumeric from '@/js/modules/isnumeric';
 import { legendLabelNumber, prettyNumber } from '@/js/modules/number_format';
@@ -27,17 +26,17 @@ import brushBreaksCategoriesMixin from '@/js/components/mixins/brushBreaksCatego
 export default {
   name: 'DistributionChart',
   mixins: [brushBreaksCategoriesMixin,],
+  inject: ['selected', 'breaks', 'metric', 'geography'],
   props: {
     countyValues: {
       type: Object,
       default: () => {},
     },
   },
-  data: () => ({ mounted: false, mdiCircle, mdiDotsHorizontal }),
+  data: () => ({ mounted: false, mdiCircle, mdiDotsHorizontal, store }),
   computed: {
-    ...mapState(mainStore, ['selected', 'breaks', 'metric', 'year', 'geography']),
     countyAverage() {
-      return this.year in this.countyValues ? this.countyValues[this.year] : false;
+      return this.store.year in this.countyValues ? this.countyValues[this.store.year] : false;
     },
     countyAverageString() {
       return this.countyAverage && prettyNumber(this.countyAverage, this.metric.config);
@@ -46,12 +45,14 @@ export default {
   watch: {
     'metric': 'renderChart',
     'selected': 'renderChart',
-    'year': 'renderChart',
+    'store.year': 'renderChart',
   },
-  mounted() {
+  beforeCreate() {
     // Set these here rather than as data so that they are not reactive.
     this.chart = null;
     this.chartData = null;
+  },
+  mounted() {
     this.renderChart();
     this.mounted = true;
   },
@@ -172,7 +173,7 @@ export default {
       if (!metric.data) return false;
 
       // get values
-      const data = this.dataToSortedArray(metric.data.map, this.year);
+      const data = this.dataToSortedArray(metric.data.map, this.store.year);
 
       // populate chart data
       const dataArrayA = [];

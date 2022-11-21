@@ -25,6 +25,7 @@ export default {
   },
   computed: {
     title: {
+      // TODO: Fix.
       set(title) {
         this.$store.commit('setLegendTitle', title);
       },

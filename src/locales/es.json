@@ -104,7 +104,7 @@
   "instructions": [
    "Haga clic en el título de una categoría para ocultar o mostrar todos los indicadores de esa categoría.",
    "Haga clic en el título de un indicador determinado para ocultarlo o mostrarlo.",
-   "Si quiere elegir una parte distinta de la ciudad para ver este informe, necesitará {goBack}",
+   "Si quiere elegir una parte distinta de la ciudad para ver este informe, necesitará {0}",
    "Comparta su informe personalizado usando el siguiente URL:"
   ],
   "metricsShown": "Indicadores presentados en su informe"

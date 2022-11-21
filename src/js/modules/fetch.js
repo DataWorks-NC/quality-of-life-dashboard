@@ -33,13 +33,25 @@ async function fetchResponseJSON(path) {
   }
 }
 
+function fetchResponseJSONSync(path) {
+  if (path in jsonCache) {
+    return jsonCache[path];
+  }
+  if (!import.meta.env.SSR) {
+    return null;
+  }
+  const json = JSON.parse(readFileSync('dist' + path));
+  jsonCache[path] = json;
+  return json;
+}
+
 function fetchResponseHTML(path) {
   if (path in htmlCache) {
     return Promise.resolve(htmlCache[path]);
   }
   try {
     if (import.meta.env.SSR) {
-      const html = readFileSync('dist' + path);
+      const html = readFileSync('dist' + path, 'utf8');
       htmlCache[path] = html;
       return Promise.resolve(html);
     } else {
@@ -53,4 +65,16 @@ function fetchResponseHTML(path) {
   }
 }
 
-export { fetchResponseJSON, fetchResponseHTML };
+function fetchResponseHTMLSync(path) {
+  if (path in htmlCache) {
+    return htmlCache[path];
+  }
+  if (!import.meta.env.SSR) {
+    return null;
+  }
+  const html = readFileSync('dist' + path, 'utf8');
+  htmlCache[path] = html;
+  return html;
+}
+
+export { fetchResponseJSON, fetchResponseJSONSync, fetchResponseHTML, fetchResponseHTMLSync };

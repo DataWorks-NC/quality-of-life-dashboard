@@ -8,7 +8,7 @@
               <span :title="$t(`geographies.${geography.id}.description`)" class="tooltip">{{ $t(`geographies.${geography.id}.name`) }}</span>
             </th>
             <th>
-              {{ curYear }} {{ $filters.capitalize($t('strings.value')) }} <span v-if="metric.config.label">({{ $t('metricLabels.' + metric.config.label) }})</span>
+              {{ store.year }} {{ $filters.capitalize($t('strings.value')) }} <span v-if="metric.config.label">({{ $t('metricLabels.' + metric.config.label) }})</span>
             </th>
             <th v-if="metric.data.a">
               {{ $filters.capitalize($t('strings.accuracy')) }}
@@ -57,8 +57,7 @@
 
 <script>
 import { mdiTrendingDown, mdiTrendingNeutral, mdiTrendingUp } from '@mdi/js';
-import { mapState } from 'pinia';
-import { mainStore } from '@/js/stores/index.js';
+import { store } from '@/js/stores/compass-store.js';
 
 import table2csv from '../modules/table2csv';
 import { prettyNumber, round } from '../modules/number_format';
@@ -66,92 +65,86 @@ import isNumeric from '../modules/isnumeric';
 
 export default {
   name: 'DataTable',
-  data: () => ({ mdiTrendingDown, mdiTrendingNeutral, mdiTrendingUp }),
+  inject: ['selected', 'metric', 'geography'],
+  data() { return { mdiTrendingDown, mdiTrendingNeutral, mdiTrendingUp, store };
+  },
   computed: {
-    ...mapState(mainStore,
-      {
-        highlight: 'highlight',
-        selected: 'selected',
-      metric: 'metric',
-      geography: 'geography',
-      curYear: 'year',
-      // If a year other than the final year is selected, the trend chart shows the trend that year until the present.
-      // Otherwise, show the trend over the full length of data we have.
-      trendStartYear(state) {
-        if (state.year
-          === state.metric.years[state.metric.years.length - 1]) return state.metric.years[0];
-        return state.year;
-      },
-      trendEndYear(state) {
-        return state.metric.years[state.metric.years.length - 1];
-      },
+    // If a year other than the final year is selected, the trend chart shows the trend that year until the present.
+    // Otherwise, show the trend over the full length of data we have.
+    trendStartYear() {
+      if (this.store.year
+        === this.metric.years[this.metric.years.length - 1]) return this.metric.years[0];
+      return this.store.year;
+    },
+    trendEndYear() {
+      return this.metric.years[this.metric.years.length - 1];
+    },
+    // Create the formatted data table. Each row is a selected geography.
+    dataTable() {
+      const trend = (geogIndex) => {
+        const begin = this.metric.data.map[geogIndex][`y_${this.trendEndYear}`];
+        const end = this.metric.data.map[geogIndex][`y_${this.trendStartYear}`];
 
-      // Create the formatted data table. Each row is a selected geography.
-      dataTable(state) {
-        const trend = (geogIndex) => {
-          const begin = state.metric.data.map[geogIndex][`y_${this.trendEndYear}`];
-          const end = state.metric.data.map[geogIndex][`y_${this.trendStartYear}`];
-
-          if (isNumeric(begin) && isNumeric(end)) {
-            const trendVal = round(Number(begin), state.metric.config.decimals)
-              - round(Number(end), state.metric.config.decimals);
-            return {
-              icon: this.trendIcon(trendVal),
-              label: prettyNumber(trendVal,
-                state.metric.config),
-            };
-          }
+        if (isNumeric(begin) && isNumeric(end)) {
+          const trendVal = round(Number(begin), this.metric.config.decimals)
+            - round(Number(end), this.metric.config.decimals);
           return {
-            icon: null,
-            label: '--',
+            icon: this.trendIcon(trendVal),
+            label: prettyNumber(trendVal,
+              this.metric.config),
           };
+        }
+        return {
+          icon: null,
+          label: '--',
         };
+      };
 
-        const rawTrend = (geogIndex) => {
-          const begin = state.metric.data.map[geogIndex][`y_${this.trendEndYear}`]
-            * state.metric.data.w[geogIndex][`y_${this.trendEndYear}`];
-          const end = state.metric.data.map[geogIndex][`y_${this.trendStartYear}`]
-            * state.metric.data.w[geogIndex][`y_${this.trendStartYear}`];
+      const rawTrend = (geogIndex) => {
+        const begin = this.metric.data.map[geogIndex][`y_${this.trendEndYear}`]
+          * this.metric.data.w[geogIndex][`y_${this.trendEndYear}`];
+        const end = this.metric.data.map[geogIndex][`y_${this.trendStartYear}`]
+          * this.metric.data.w[geogIndex][`y_${this.trendStartYear}`];
 
-          if (isNumeric(begin) && isNumeric(end)) {
-            const trendVal = (begin - end) * (state.metric.config.suffix === '%' ? 0.01 : 1);
-            return {
-              icon: this.trendIcon(trendVal),
-              label: prettyNumber(trendVal, {}),
-            };
-          }
+        if (isNumeric(begin) && isNumeric(end)) {
+          const trendVal = (begin - end) * (this.metric.config.suffix === '%' ? 0.01 : 1);
           return {
-            icon: null,
-            trendVal: '--',
+            icon: this.trendIcon(trendVal),
+            label: prettyNumber(trendVal, {}),
           };
+        }
+        return {
+          icon: null,
+          trendVal: '--',
         };
+      };
 
-        const rawValue = geogIndex => state.metric.data.w[geogIndex] && prettyNumber(
-          state.metric.data.w[geogIndex][`y_${state.year}`]
-          * state.metric.data.map[geogIndex][`y_${state.year}`]
-          * (state.metric.config.suffix === '%' ? 0.01 : 1), { prefix: state.metric.config.prefix },
-        );
+      const rawValue = geogIndex => this.metric.data.w[geogIndex] && prettyNumber(
+        this.metric.data.w[geogIndex][`y_${this.store.year}`]
+        * this.metric.data.map[geogIndex][`y_${this.store.year}`]
+        * (this.metric.config.suffix === '%' ? 0.01 : 1), { prefix: this.metric.config.prefix },
+      );
 
-        return this.selected.filter(geogIndex => geogIndex in state.metric.data.map)
-          .sort()
-          .map(geogIndex => ({
-            geogIndex,
-            value: prettyNumber(state.metric.data.map[geogIndex][`y_${state.year}`],
-              state.metric.config),
-            accuracy: state.metric.config.accuracy
-              && prettyNumber(state.metric.data.a[geogIndex][`y_${state.year}`],
-                state.metric.config),
-            trend: trend(geogIndex),
-            rawValue: state.metric.config.raw_label && rawValue(geogIndex),
-            rawTrend: state.metric.config.raw_label && state.metric.data.w[geogIndex]
-              && rawTrend(geogIndex),
-          }));
-      },
-    }),
+      return this.selected.filter(geogIndex => geogIndex in this.metric.data.map)
+      .sort()
+      .map(geogIndex => ({
+        geogIndex,
+        value: prettyNumber(this.metric.data.map[geogIndex][`y_${this.store.year}`],
+          this.metric.config),
+        accuracy: this.metric.config.accuracy
+          && prettyNumber(this.metric.data.a[geogIndex][`y_${this.store.year}`],
+            this.metric.config),
+        trend: trend(geogIndex),
+        rawValue: this.metric.config.raw_label && rawValue(geogIndex),
+        rawTrend: this.metric.config.raw_label && this.metric.data.w[geogIndex]
+          && rawTrend(geogIndex),
+      }));
+    },
   },
   methods: {
+    // TODO: Switch to using brushBreaksCategories mixin.
     highlight(n) {
-      this.highlight = n;
+      this.store.highlight = n;
     },
     downloadTable(theTable) {
       // TODO: rewrite this?

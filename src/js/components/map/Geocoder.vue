@@ -6,8 +6,6 @@
 import { uniqBy } from 'lodash-es';
 
 import MapboxGlGeocoder from '@mapbox/mapbox-gl-geocoder';
-import { mapState } from 'pinia';
-import { mainStore } from '@/js/stores/index.js';
 
 import debugLogMixin from '../mixins/debugLogMixin';
 import config from '../../modules/config';
@@ -17,7 +15,7 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 export default {
   name: 'Geocoder',
   mixins: [debugLogMixin],
-  inject: ['mapboxgl',],
+  inject: ['mapboxgl', 'geography', 'selected'],
   props: {
     map: {
       type: Object,
@@ -31,9 +29,6 @@ export default {
     };
   },
   computed: {
-    ...mapState(mainStore,
-      ['geography', 'selected'],
-    ),
     selectGroups() {
       const categories = Object.keys(this.selectGroupsData);
       const selectGroups = {};

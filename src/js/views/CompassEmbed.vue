@@ -11,9 +11,8 @@
 
 <script>
 import { defineAsyncComponent } from 'vue';
-import { mapState } from 'pinia';
-import { mainStore } from '@/js/stores/index.js';
 
+import parseRouteMixin from '@/js/components/mixins/parseRouteMixin.js';
 import config from '../modules/config';
 
 const MapContainer = defineAsyncComponent(() => import('../components/map/MapContainer.vue'));
@@ -23,15 +22,13 @@ export default {
   components: {
     MapContainer,
   },
+  mixins: [parseRouteMixin],
   data() {
     return {
       siteConfig: config.siteConfig,
       mapConfig: config.mapConfig,
       config,
     };
-  },
-  computed: {
-    ...mapState(mainStore, ['metric']),
   },
 };
 </script>

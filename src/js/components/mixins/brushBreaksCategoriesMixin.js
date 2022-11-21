@@ -1,17 +1,11 @@
-import { mainStore } from '@/js/stores/index.js';
-import { mapWritableState, mapState } from 'pinia';
-
 export default {
-  computed:{
-    ...mapState(mainStore, ['metric', 'breaks']),
-    ...mapWritableState(mainStore, ['highlight']),
-  },
+  inject: ['metric', 'breaks'],
   methods: {
     changeHighlight(n) {
       if (n === -1) {
-        this.highlight = [];
+        this.store.highlight = [];
       } else {
-        this.highlight = this.getBreakIds(n);
+        this.store.highlight = this.getBreakIds(n);
       }
     },
     selectBreak(n) {
@@ -23,7 +17,7 @@ export default {
 
       // loop through data to get id's
       Object.keys(data).forEach((id) => {
-        const value = data[id][`y_${this.year}`];
+        const value = data[id][`y_${this.store.year}`];
 
         if (value !== null && value > this.breaks[n] && value <= this.breaks[n + 1]) {
           ids.push(id.toString());

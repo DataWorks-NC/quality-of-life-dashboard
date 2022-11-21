@@ -64,11 +64,6 @@ export default {
     TrendChart,
   },
   props: {
-    visible: {
-      type: Boolean,
-      required: true,
-      default: () => true,
-    },
     metric: {
       type: Object,
       required: true,

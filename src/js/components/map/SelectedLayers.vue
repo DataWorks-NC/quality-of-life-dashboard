@@ -3,14 +3,12 @@
 </template>
 
 <script>
-import { mapState } from 'pinia';
-import { mainStore } from '@/js/stores/index.js';
-
 import debugLogMixin from '../mixins/debugLogMixin';
 
 export default {
   name: "SelectedLayers",
   mixins: [debugLogMixin],
+  inject: ['selected', 'geography', 'selectGroupName', 'selectGroupType'],
   props: {
     map: {
       type: Object,
@@ -27,9 +25,6 @@ export default {
     layersLoaded: {},
   }),
   computed: {
-    ...mapState(mainStore,
-      ['geography', 'selected', 'selectGroupName', 'selectGroupType'],
-    ),
     selectedToLabel() {
       if (this.selectGroupName && this.selectGroupType) return [];
       return this.selected;

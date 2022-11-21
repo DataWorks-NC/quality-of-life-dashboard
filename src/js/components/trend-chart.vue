@@ -67,8 +67,10 @@ export default {
       });
     },
   },
-  mounted() {
+  beforeCreate() {
     this.chart = null;
+  },
+  mounted() {
     this.renderChart();
   },
   updated() {

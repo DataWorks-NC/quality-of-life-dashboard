@@ -1,5 +1,8 @@
 <template>
   <v-row justify="center">
+    <v-btn variant="text" @click.stop="dialog = !dialog">
+      {{ $t('reportSelector.customize') }}
+    </v-btn>
     <v-dialog
       v-model="dialog"
       fullscreen
@@ -7,11 +10,6 @@
       transition="dialog-bottom-transition"
       class="metric-selector"
     >
-      <template #activator="{ on }">
-        <v-btn variant="text" v-on="on">
-          {{ $t('reportSelector.customize') }}
-        </v-btn>
-      </template>
       <v-card class="metric-selector">
         <v-toolbar dark>
           <v-btn icon @click="dialog = false">
@@ -28,8 +26,7 @@
                 <li>{{ $t('reportSelector.instructions[1]') }}</li>
                 <i18n-t keypath="reportSelector.instructions[2]" tag="li">
                   <router-link
-                    place="goBack"
-                    :to="lastCompassRoute ? lastCompassRoute : { name: 'homepage', params: $route.params, query: { selected: $route.query.selected } }"
+                    :to="store.lastCompassRoute ? store.lastCompassRoute : { name: 'homepage', params: $route.params, query: { selected: $route.query.selected } }"
                   >
                     {{ $t('reportSelector.goBack') }}
                   </router-link>
@@ -54,13 +51,13 @@
             >
               <v-list>
                 <v-list-item
-                  :active="category.metrics.every(m=>m.visible)"
+                  :active="fullyVisibleCategories.includes(category.originalName)"
                   class="metric-selector__category"
-                  :class="category.metrics.some(m => m.visible) && 'partially-active'"
+                  :class="partiallyVisibleCategories.includes(category.originalName) && 'partially-active'"
                   @click.prevent="toggleCategory(category)"
                 >
                   <v-list-item-icon>
-                    <v-icon :icon="category.metrics.every(m=>m.visible) ? mdiEye : mdiEyeOff" />
+                    <v-icon :icon="fullyVisibleCategories.includes(category.originalName) ? mdiEye : mdiEyeOff" />
                   </v-list-item-icon>
                   <v-list-item-title class="text-h6">
                     {{ category.name }}
@@ -70,14 +67,14 @@
                   <v-list-item
                     v-for="metric in category.metrics"
                     :key="metric.metric"
-                    :active="metric.visible"
-                    :value="metric.visible"
+                    :active="metricIsVisible(metric)"
+                    :value="metricIsVisible(metric)"
                     class="metric-selector__metric"
                     icon
                     @click.prevent="toggleMetric(metric)"
                   >
                     <v-list-item-icon>
-                      <v-icon size="16px" :icon="metric.visible ? mdiEye : mdiEyeOff" />
+                      <v-icon size="16px" :icon="metricIsVisible(metric) ? mdiEye : mdiEyeOff" />
                     </v-list-item-icon>
                     <v-list-item-title>{{ metric.name }}</v-list-item-title>
                   </v-list-item>
@@ -93,30 +90,29 @@
 
 <script>
 import { mdiClose, mdiEye, mdiEyeOff } from "@mdi/js";
-import { mapState, mapActions } from "pinia";
-import { reportStore } from '@/js/stores/report.js';
-import { mainStore } from '@/js/stores/index.js';
 import config from "../../modules/config";
-
+import reportCategoriesFromRouteMixin
+  from '@/js/components/mixins/reportCategoriesFromRouteMixin.js';
+import { store } from '@/js/stores/compass-store.js';
 
 export default {
   name: "ReportSelector",
+  mixins: [reportCategoriesFromRouteMixin],
+  inject: ['geography', 'metricValues', 'countyAverages', "reportTitle",'categoryNames'],
   data: () => ({
     dialog: false,
     mdiClose,
     mdiEye,
     mdiEyeOff,
+    store,
   }),
   computed: {
-    ...mapState(mainStore, ['lastCompassRoute']),
-    ...mapState(reportStore, ['totallyVisibleCategories', 'visibleMetricsInMixedCategories', 'metricValues', 'countyAverages', 'metrics',"reportTitle", "visibleCategories", "categoryNames"]),
     categories() {
       return this.categoryNames
         .map(categoryName => ({
           name: this.$t(`strings.metricCategories['${categoryName}']`),
           originalName: categoryName,
-          visible: this.visibleCategories.indexOf(categoryName) !== -1,
-          metrics: Object.values(this.metrics)
+          metrics: Object.values(this.allMetrics)
             .filter(m => m.category === categoryName && ((this.metricValues[categoryName] && m.metric in this.metricValues[categoryName]) || (this.countyAverages[categoryName] && m.metric in this.countyAverages[categoryName])))
             .map(m => ({
               ...m,
@@ -131,30 +127,11 @@ export default {
     this.handleLinks();
   },
   methods: {
-    ...mapActions(reportStore, ['toggleCategory', 'toggleMetric']),
     toggleCategory(category) {
-      this.toggleCategory({
-        categoryName: category.originalName,
-        visibility: !category.visible,
-      });
-      this.updateRoute();
+      this.$router.push(this.getToggleCategoryRoute(this.$route, category.originalName));
     },
     toggleMetric(metric) {
-      this.toggleMetric({
-        metricId: `m${metric.metric}`,
-        visibility: !metric.visible,
-      });
-      this.updateRoute();
-    },
-    updateRoute() {
-      this.$router.push({
-        params: this.$route.params,
-        query: {
-          ...this.$route.query,
-          visibleCategories: this.totallyVisibleCategories,
-          visibleMetrics: this.visibleMetricsInMixedCategories,
-        },
-      });
+      this.$router.push(this.getToggleMetricRoute(this.$route, metric));
     },
     getReportURL() {
       return (
@@ -163,7 +140,7 @@ export default {
     },
     handleLinks() {
       const link = document.querySelector(".router-link-active");
-      if (!link.querySelector(".link-underline")) {
+      if (link && !link.querySelector(".link-underline")) {
         link.innerHTML = `<span class="link-underline">${link.innerHTML}</span>`;
       }
     },

@@ -2,7 +2,7 @@
   <div class="flex-item" :style="{flexBasis: `${75*metric.years.length}px`}">
     <!-- eslint-disable vuetify/no-deprecated-props -->
     <v-slider
-      v-model="year"
+      v-model="sliderYear"
       min="0"
       :ticks="tickLabels"
       :max="metric.years.length - 1"
@@ -21,24 +21,28 @@
 </template>
 
 <script>
-import { mapState } from 'pinia';
-import { mainStore } from '@/js/stores/index.js';
+import { store } from '@/js/stores/compass-store.js';
 
 export default {
   name: 'YearSlider',
+  inject: ['metric'],
+  data() {
+    return {
+      store,
+    }
+  },
   computed: {
-    year: {
+    sliderYear: {
       set(tick) {
-        this.year = this.metric.years[tick];
+        this.store.year = this.metric.years[tick];
       },
       get() {
-        if (this.year) {
-          return this.metric.years.indexOf(this.year);
+        if (this.store.year) {
+          return this.metric.years.indexOf(this.store.year);
         }
         return this.metric.years.length - 1;
       },
     },
-    ...mapState(mainStore, ['metric', 'year']),
     tickLabels() {
       return Object.assign({}, this.metric.years);
     }

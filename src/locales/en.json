@@ -104,7 +104,7 @@
   "instructions": [
    "Click on the title of a category to hide or show all of the metrics in that category.",
    "Click on the title of an individual metric to hide or show just that metric.",
-   "If you want to choose a different part of the city to view for this report, you'll need to {goBack}",
+   "If you want to choose a different part of the city to view for this report, you'll need to {0}",
    "Share your customized report using the following URL:"
   ],
   "metricsShown": "Metrics shown in your report"

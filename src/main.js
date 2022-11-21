@@ -28,6 +28,7 @@ export const createApp = ViteSSG(
     app.use(vuetify);
     app.use(i18n);
     app.use(pinia);
+    app.config.unwrapInjectedRef = true;
 
     setUpRouterHooks(router);
 
@@ -169,16 +170,18 @@ export const createApp = ViteSSG(
     let mapboxglLoaded = false;
     app.provide('mapboxglLoaded', () => computed(() => mapboxglLoaded));
 
-    import(/* webpackChunkName: "mapboxgl" */ 'mapbox-gl').then((mapboxgl) => {
-      if (!mapboxgl || !mapboxgl.prewarm) {
-        return;
-      }
-      mapboxgl.prewarm();
-      import(/* webpackChunkName: "mapboxgl" */ 'mapbox-gl/dist/mapbox-gl.css').then(() => {
-        mapboxglLoaded = true;
-        app.provide('mapboxgl', mapboxgl);
+    if (!import.meta.env.SSR) {
+      import(/* webpackChunkName: "mapboxgl" */ 'mapbox-gl').then((mapboxgl) => {
+        if (!mapboxgl || !mapboxgl.prewarm) {
+          return;
+        }
+        mapboxgl.prewarm();
+        import(/* webpackChunkName: "mapboxgl" */ 'mapbox-gl/dist/mapbox-gl.css').then(() => {
+          mapboxglLoaded = true;
+          app.provide('mapboxgl', mapboxgl);
+        });
       });
-    });
+    }
   }
 );
 

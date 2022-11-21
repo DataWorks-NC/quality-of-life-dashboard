@@ -26,14 +26,17 @@
 import {
   mdiTwitter, mdiFacebook, mdiPrinter, mdiWhatsapp,
 } from '@mdi/js';
-import { mapState } from 'pinia';
-import { mainStore } from '@/js/stores/index.js';
 
 import ExternalLink from './external-link.vue';
 
 export default {
   name: 'Social',
   components: { ExternalLink },
+  inject: {
+    metric: {
+      default: {}
+    },
+  },
   data: () => ({
     baseUrl: import.meta.env.BASE_URL || 'https://compass.durhamnc.gov',
     mdiTwitter,
@@ -45,9 +48,7 @@ export default {
     pageUrl() { return encodeURIComponent(this.baseUrl + this.$route.fullPath); },
     facebook() { return `https://www.facebook.com/sharer.php?u=${this.pageUrl}`; },
     whatsapp() { return `https://wa.me/?text=${this.pageUrl}`; },
-    ...mapState(mainStore, {
-      twitter(state) { return `https://twitter.com/intent/tweet?text=${state.metric.config ? encodeURIComponent(state.metric.config.title) : ''}&url=${this.pageUrl}`; },
-    }),
+    twitter() { return `https://twitter.com/intent/tweet?text=${this.metric.config ? encodeURIComponent(this.metric.config.title) : ''}&url=${this.pageUrl}`; },
   },
 };
 </script>

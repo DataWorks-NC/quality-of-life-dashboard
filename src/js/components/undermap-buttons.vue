@@ -10,7 +10,7 @@
       {{ $t('undermapButtons.clear') }}
     </v-btn>
     <v-btn
-      :to="{ name: 'report', params: $route.params, query: { ...$route.query, legendTitle: undefined }, hash: `#metric-${metricId}` }"
+      :to="{ name: 'report', params: $route.params, query: { ...$route.query, legendTitle: undefined }, hash: `#metric-${metric.id}` }"
       theme="dark"
     >
       {{ $t('undermapButtons.report') }}
@@ -25,14 +25,9 @@
 </template>
 
 <script>
-import { mapState } from 'pinia';
-import { mainStore } from '@/js/stores/index.js';
-
 export default {
   name: 'UndermapButtons',
-  computed: {
-    ...mapState(mainStore, ['metricId', 'selected']),
-  },
+  inject: ['metric', 'selected'],
 };
 </script>
 

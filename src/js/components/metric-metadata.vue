@@ -1,41 +1,83 @@
 <template>
   <div id="metadata">
-    <h3 v-if="metadataImportant">
-      {{ $t('metadata.whyImportant') }}
-    </h3>
-    <div v-html="metadataImportant" />
-    <h3 v-if="metadataAbout">
-      {{ $t("metadata.about") }}
-    </h3>
-    <div v-html="metadataAbout" />
-    <h4 v-if="metadataResources">
-      {{ $t("metadata.resources") }}
-    </h4>
-    <div v-html="metadataResources" />
+    <template v-if="metadata">
+      <h3 v-if="metadataImportant">
+        {{ $t('metadata.whyImportant') }}
+      </h3>
+      <div v-html="metadataImportant" />
+      <h3 v-if="metadataAbout">
+        {{ $t("metadata.about") }}
+      </h3>
+      <div v-html="metadataAbout" />
+      <h4 v-if="metadataResources">
+        {{ $t("metadata.resources") }}
+      </h4>
+      <div v-html="metadataResources" />
+    </template>
+    <div v-else style="height:350px" />
   </div>
 </template>
 
 <script>
-import { mapState, mapActions } from "pinia";
-import { mainStore } from '@/js/stores/index.js';
+import {fetchResponseHTML, fetchResponseHTMLSync} from '@/js/modules/fetch.js';
+import getSubstringIndex from '@/js/modules/substring-nth.js';
 
 export default {
   name: "MetricMetadata",
-  computed: mapState(mainStore, [
-    "metadataAbout",
-    "metadataImportant",
-    "metadataResources",
-  ]),
+  props: {
+    metricId: {
+      type: String,
+      required: false,
+    },
+    locale: {
+      type: String,
+      default: 'en',
+    }
+  },
+  data() {
+    return {
+      metadata: null,
+    }
+  },
+  computed: {
+    metadataImportant() {
+      return this.metadata ?
+        this.metadata.substring(getSubstringIndex(this.metadata, '</h3>', 1) + 5,
+          getSubstringIndex(this.metadata, '<h3', 2)) :
+        '';
+    },
+    metadataResources() {
+      return this.metadata ?
+        this.metadata.substring(getSubstringIndex(this.metadata, '</h3>', 3) + 5,
+          this.metadata.length).replace(/<table/g, '<table class="meta-table table"') :
+        '';
+    },
+    metadataAbout() {
+      return this.metadata ? this.metadata.substring(getSubstringIndex(this.metadata, '</h3>', 2) + 5, getSubstringIndex(this.metadata, '<h3', 3)) : '';
+    },
+  },
+  async created() {
+    await this.loadMetricMetadata();
+  },
   mounted() {
-    this.loadMetricMetadata();
     this.handleLinks();
   },
-  updated() {
-    this.loadMetricMetadata();
+  async updated() {
+    await this.loadMetricMetadata();
     this.handleLinks();
   },
   methods: {
-    ...mapActions(mainStore, ['loadMetricMetadata']),
+    async loadMetricMetadata() {
+      if (this.metricId) {
+        const path = `/data/meta/${this.locale}/m${this.metricId}.html`;
+
+        if (import.meta.env.SSR) {
+          this.metadata = fetchResponseHTMLSync(path);
+        } else {
+          this.metadata = await fetchResponseHTML(path);
+        }
+      }
+    },
     handleLinks() {
       const links = this.$el.getElementsByTagName("a");
       for (let i = 0; i < links.length; i += 1) {

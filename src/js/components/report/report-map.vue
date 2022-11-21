@@ -3,36 +3,24 @@
 </template>
 
 <script>
-import { mapState } from 'pinia';
-import { reportStore } from '@/js/stores/report.js';
-
 import config from '../../modules/config';
 import osmLiberty from '@/assets/osm-liberty.json';
 import selectGroups from '@/../data/selectgroups.geojson.json';
 
 export default {
   name: 'ReportMap',
-  inject: ['mapboxgl',],
+  inject: ['mapboxgl','reportTitle', 'selected', 'selectGroupName', 'geography'],
   props: {
-    mapConfig: {
-      type: Object,
-      required: true,
-    },
-    geographyId: {
-      type: String,
-      required: true,
-    },
     selectedGeographies: {
       type: Array,
       default: () => [],
     },
-    selectGroupName: {
-      type: String,
-      default: '',
-    },
   },
-  computed: {
-    ...mapState(reportStore, ['reportTitle']),
+  data() {
+    return {
+      mapConfig: config.mapConfig,
+      geographyId: this.geography.id,
+    };
   },
   watch: {
     '$i18n.locale': 'setLabelLanguage',

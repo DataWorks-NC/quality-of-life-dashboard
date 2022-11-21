@@ -1,6 +1,10 @@
 @import "./typography.scss";
 @import "./modules/a11y.css";
 
+.v-main {
+  padding-top: 0 !important;
+}
+
 .v-btn:not(.v-btn--variant-text):not(.v-btn--variant-outlined):not(.v-btn--icon) {
   margin: 2px;
   box-sizing: border-box;
