@@ -195,14 +195,6 @@ export default {
   position:relative !important;
 }
 
-.v-app-bar.v-toolbar .v-tabs .v-slide-group__container {
-  color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity));
-
-  .v-tab--selected {
-    color: rgb(var(--v-theme-on-surface))
-  }
-}
-
 .v-window {
   width: 100%;
 }

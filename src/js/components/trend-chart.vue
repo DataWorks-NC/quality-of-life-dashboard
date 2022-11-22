@@ -135,7 +135,6 @@ export default {
 
       // Axis labels
       if (metricConfig.label) {
-        console.log('Add axis title');
         const ctAxisTitlePlugin = ctAxisTitle({
           axisX: {
             axisTitle: '',

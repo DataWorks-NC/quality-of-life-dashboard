@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar theme="dark" extension="tabs" class="d-print-none">
+  <v-app-bar theme="dark" extension="tabs" absolute class="d-print-none">
     <v-toolbar-title>
       <router-link :to="{ name: 'homepage' }">
         <img src="@/assets/img/logo.png" :alt="$t('strings.DurhamNeighborhoodCompass')">

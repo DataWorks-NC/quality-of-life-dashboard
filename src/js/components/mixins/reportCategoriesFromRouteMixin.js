@@ -34,7 +34,6 @@ export default {
         return [this.$route.query.visibleCategories];
       },
       partiallyVisibleCategories() {
-        console.log(this.visibleMetrics);
         const partiallyVisibleCategories = new Set();
         this.visibleMetrics.forEach(metricId => partiallyVisibleCategories.add(config.dataConfig[`m${metricId}`].category))
         return Array.from(partiallyVisibleCategories);
@@ -93,9 +92,6 @@ export default {
       };
     },
     getToggleMetricRoute(currentRoute, { metric, category }) {
-      console.log(metric);
-      console.log(`Visible metrics: ${this.visibleMetrics}`);
-
       // If metric is in the visibleMetrics array, then remove it.
       if (this.visibleMetrics.includes(metric)) {
         return {

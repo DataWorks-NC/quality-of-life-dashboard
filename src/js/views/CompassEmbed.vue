@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { defineAsyncComponent } from 'vue';
+import {computed, defineAsyncComponent} from 'vue';
 
 import parseRouteMixin from '@/js/components/mixins/parseRouteMixin.js';
 import config from '../modules/config';
@@ -23,6 +23,17 @@ export default {
     MapContainer,
   },
   mixins: [parseRouteMixin],
+  provide() {
+    return {
+      metric: computed(() => this.metric),
+      geography: computed(() => this.geography),
+      breaks: computed(() => this.breaks),
+      selected: computed(() => this.selected),
+      selectGroupName: computed(() => this.selectGroupName),
+      selectGroupType: computed(() => this.selectGroupType),
+      printMode: computed(() => this.printMode),
+    };
+  },
   data() {
     return {
       siteConfig: config.siteConfig,

@@ -54,11 +54,9 @@
                   :active="fullyVisibleCategories.includes(category.originalName)"
                   class="metric-selector__category"
                   :class="partiallyVisibleCategories.includes(category.originalName) && 'partially-active'"
+                  :prepend-icon="fullyVisibleCategories.includes(category.originalName) ? mdiEye : mdiEyeOff"
                   @click.prevent="toggleCategory(category)"
                 >
-                  <v-list-item-icon>
-                    <v-icon :icon="fullyVisibleCategories.includes(category.originalName) ? mdiEye : mdiEyeOff" />
-                  </v-list-item-icon>
                   <v-list-item-title class="text-h6">
                     {{ category.name }}
                   </v-list-item-title>
@@ -70,12 +68,9 @@
                     :active="metricIsVisible(metric)"
                     :value="metricIsVisible(metric)"
                     class="metric-selector__metric"
-                    icon
+                    :prepend-icon="metricIsVisible(metric) ? mdiEye : mdiEyeOff"
                     @click.prevent="toggleMetric(metric)"
                   >
-                    <v-list-item-icon>
-                      <v-icon size="16px" :icon="metricIsVisible(metric) ? mdiEye : mdiEyeOff" />
-                    </v-list-item-icon>
                     <v-list-item-title>{{ metric.name }}</v-list-item-title>
                   </v-list-item>
                 </v-list>

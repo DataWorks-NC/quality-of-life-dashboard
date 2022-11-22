@@ -1,10 +1,10 @@
 <template>
   <v-expansion-panels>
     <v-expansion-panel @group:selected="toggleMoreInfo">
-      <v-expansion-panel-header>{{ collapsed ? $t('reportMoreInfo.show') : $t('reportMoreInfo.hide') }}</v-expansion-panel-header>
-      <v-expansion-panel-content>
+      <v-expansion-panel-title>{{ collapsed ? $t('reportMoreInfo.show') : $t('reportMoreInfo.hide') }}</v-expansion-panel-title>
+      <v-expansion-panel-text>
         <div v-html="moreInfo" />
-      </v-expansion-panel-content>
+      </v-expansion-panel-text>
     </v-expansion-panel>
   </v-expansion-panels>
 </template>
@@ -23,7 +23,7 @@ export default {
   data() {
     return {
       collapsed: true,
-      moreInfo: "Loading",
+      moreInfo: this.$t('strings.loading'),
     };
   },
   updated() {

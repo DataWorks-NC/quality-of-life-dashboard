@@ -1,7 +1,5 @@
 <template>
-  <!--      TODO: FIX visibility observer. Was: v-observe-visibility="visibilityOptions" -->
-
-  <v-card :id="summaryId" class="page page-front">
+  <v-card id="summary-container" class="page page-front" data-category="Summary">
     <v-row>
       <v-col>
         <img
@@ -61,8 +59,6 @@
 
 <script>
 import { defineAsyncComponent} from 'vue';
-import { mapState } from "pinia";
-import { reportStore } from '@/js/stores/report.js';
 import { prettyNumber } from "../../modules/number_format";
 
 const ReportMap = defineAsyncComponent(() => import("./report-map.vue"));
@@ -72,7 +68,7 @@ export default {
   components: {
     ReportMap,
   },
-  inject: ['mapboxglLoaded',  'reportTitle'],
+  inject: ['mapboxglLoaded',  'reportTitle', 'intersectionObserver'],
   props: {
     summaryMetrics: {
       type: Array,
@@ -85,19 +81,29 @@ export default {
   },
   data() {
     return {
-      visibilityOptions: {
-        callback: this.categoryVisible,
-        intersection: {
-          threshold: 0.1,
-        },
-      },
+      isObserved: false,
     };
   },
   computed: {
     summaryId() {
       return this.$t('strings.metricCategories.Summary').toLowerCase();
     },
-    ...mapState(reportStore, ['activeCategory']),
+  },
+  mounted() {
+    if (this.intersectionObserver) {
+      this.isObserved = true;
+      this.intersectionObserver.observe(
+        document.getElementById('summary-container')
+      );
+    }
+  },
+  updated() {
+    if (this.intersectionObserver && !this.isObserved) {
+      this.isObserved = true;
+      this.intersectionObserver.observe(
+        document.getElementById('summary-container')
+      );
+    }
   },
   methods: {
     prettyValue(metric) {

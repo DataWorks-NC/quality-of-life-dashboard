@@ -12,6 +12,7 @@
   "close": "close",
   "county": "county",
   "download": "download",
+  "loading": "Loading...",
   "median": "median",
   "numberOf": "number of",
   "opensInNewWindow": "(opens in new window)",

@@ -51,7 +51,6 @@ export default {
   mounted() {
     this.geocoder = null;
     this.addressMarker = null;
-    console.log(config);
     this.initGeocoder();
   },
   beforeUnmount() {

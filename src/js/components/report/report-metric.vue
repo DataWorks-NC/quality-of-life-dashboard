@@ -1,7 +1,7 @@
 <template>
   <div v-if="metricValues || countyAverages" :id="`metric-${metric.metric}`">
     <h3>{{ metric.name }}</h3>
-    <v-simple-table class="metric-table">
+    <v-table class="metric-table">
       <tbody>
         <tr>
           <th class="metric-table__year">
@@ -33,8 +33,8 @@
           </td>
         </tr>
       </tbody>
-    </v-simple-table>
-    <v-spacer />
+    </v-table>
+    <div class="spacer" />
     <div v-if="years.length > 1" class="metric-trendchart">
       <TrendChart
         :metric-config="metric"
@@ -44,7 +44,7 @@
         :selected="[]"
       />
     </div>
-    <v-spacer />
+    <div class="spacer" />
     <MoreInfo :href="`/data/meta/${$i18n.locale}/m${metric.metric}.html`" />
   </div>
 </template>

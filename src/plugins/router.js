@@ -1,6 +1,5 @@
 import config from '../js/modules/config';
 import { debugLog } from '../js/modules/tracking';
-import { reportStore as makeReportStore } from '@/js/stores/report.js';
 import { store } from '@/js/stores/compass-store.js';
 
 const About = () => import('../js/views/About.vue');
@@ -80,80 +79,25 @@ const setUpRouterHooks = function(router) {
     }
 
     if (to.params.locale && ['en', 'es'].indexOf(to.params.locale) === -1) {
-      return { ...to, params: { ...to.params, locale: 'en' } };
-    } else if (to.params.geographyLevel && ['blockgroup', 'tract'].indexOf(to.params.geographyLevel) === -1) {
-      return { ...to, params: { ...to.params, geographyLevel: 'tract' } };
+      return {...to, params: {...to.params, locale: 'en'}};
+    } else if (to.params.geographyLevel &&
+      ['blockgroup', 'tract'].indexOf(to.params.geographyLevel) === -1) {
+      return {...to, params: {...to.params, geographyLevel: 'tract'}};
     } else if (to.params.metric && !(`m${to.params.metric}` in config.dataConfig)) {
-      return { name: 'homepage', params: { locale: ('locale' in to.params) ? to.params.locale : 'en' } };
+      return {
+        name: 'homepage',
+        params: {locale: ('locale' in to.params) ? to.params.locale : 'en'}
+      };
     }
   });
 
 // // Load geography & selected on each route.
-router.afterEach(async (to, from) => {
-
-  debugLog('Route guard: Load geography');
-  debugLog(`${from.path} => ${to.path}`);
-
-  if (to.name === 'compass') {
-    store.lastCompassRoute = to;
-  }
-  if (to.name === 'report') {
-    const reportStore = makeReportStore();
-    //
-    // if (!Object.keys(reportStore.metrics).length || to.params.geographyLevel !== store.geography.id) {
-    //   reportStore.populateMetrics({ geography: store.geography });
-    // }
-
-    if ('visibleCategories' in to.query || 'visibleMetrics' in to.query) {
-      reportStore.hideAllMetrics();
-      if ('visibleCategories' in to.query) {
-        [].concat(to.query.visibleCategories).forEach((category) => {
-          reportStore.toggleCategory({ categoryName: category, visibility: true });
-        });
-      }
-      if ('visibleMetrics' in to.query) {
-        [].concat(to.query.visibleMetrics).forEach((metric) => {
-          // TODO: Flag to make usage of m prefix consistent.
-          reportStore.toggleMetric({ metricId: `m${metric}`, visibility: true });
-        });
-      }
-    } else {
-      reportStore.showAllMetrics();
+  router.afterEach(async (to) => {
+    if (to.name === 'compass') {
+      debugLog("Route guard: store last compass path");
+      store.lastCompassRoute = to;
     }
-  }
-});
-
-// Check that URL params match current state; in case the geography level has changed.
-// router.beforeEach((to, from, next) => {
-//   debugLog('Route guard: Set legend title & validate geography level');
-//   debugLog(`${from.path} => ${to.path}`);
-//
-//   if (from.name === 'compass' && to.name !== 'compass') {
-//     store.commit('setLastCompassRoute', from);
-//   }
-//
-//   if ('legendTitle' in to.query) {
-//     store.commit('setLegendTitle', to.query.legendTitle);
-//   } else if (store.state.customLegendTitle !== '') {
-//     store.commit('setLegendTitle', '');
-//   }
-//
-//   if (store.state.geography.id !== to.params.geographyLevel) {
-//     next({
-//       ...to,
-//       params: {
-//         ...to.params,
-//         geographyLevel: store.state.geography.id,
-//       },
-//       query: {
-//         ...to.query,
-//         selected: [],
-//       },
-//     });
-//   } else {
-//     next();
-//   }
-// });
+  });
 
   return router;
 }

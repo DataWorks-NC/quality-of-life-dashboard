@@ -1,8 +1,7 @@
 <template>
   <div v-if="validMetrics.length">
     <v-card>
-      <!--      TODO: FIX visibility observer. Was: v-observe-visibility="visibilityOptions" -->
-      <v-layout :id="`${formatAnchor(category.name)}-container`">
+      <v-container :id="`${formatAnchor(category.name)}-container`" :data-category="category.name">
         <v-row>
           <v-col cols="12">
             <h2 :id="formatAnchor(category.name)">
@@ -10,21 +9,23 @@
             </h2>
           </v-col>
         </v-row>
-        <div v-if="countyAverages && metricValues">
-          <v-row v-for="m in validMetrics" :key="m.metric">
-            <v-col cols="12">
-              <ReportMetric
-                :metric="m"
-                :metric-values="metricValues[m.metric]"
-                :county-averages="countyAverages[m.metric]"
-              />
-            </v-col>
-          </v-row>
-          <v-spacer />
-        </div>
-      </v-layout>
+        <template v-if="countyAverages && metricValues">
+          <template v-for="m in validMetrics" :key="m.metric">
+            <v-row>
+              <v-col cols="12">
+                <ReportMetric
+                  :metric="m"
+                  :metric-values="metricValues[m.metric]"
+                  :county-averages="countyAverages[m.metric]"
+                />
+              </v-col>
+            </v-row>
+            <div class="spacer" />
+          </template>
+        </template>
+      </v-container>
     </v-card>
-    <v-spacer />
+    <div class="spacer" />
   </div>
 </template>
 
@@ -35,6 +36,7 @@ export default {
   components: {
     ReportMetric,
   },
+  inject: ['intersectionObserver'],
   props: {
     category: {
       type: Object,
@@ -53,19 +55,27 @@ export default {
   },
   data() {
     return {
-      visibilityOptions: {
-        callback: this.categoryVisible,
-        throttle: 300,
-        intersection: {
-          threshold: 0.1,
-        },
-      },
+      isObserved: false,
     };
   },
   computed: {
     validMetrics() {
       return this.category.metrics.filter(m => ((this.metricValues && (m.metric in this.metricValues)) || (this.countyAverages && (m.metric in this.countyAverages))));
     },
+  },
+  mounted() {
+    if (this.intersectionObserver) {
+      this.isObserved = true;
+      this.intersectionObserver.observe(
+        document.getElementById(`${this.formatAnchor(this.category.name)}-container`));
+    }
+  },
+  updated() {
+    if (this.intersectionObserver && !this.isObserved) {
+      this.isObserved = true;
+      this.intersectionObserver.observe(
+        document.getElementById(`${this.formatAnchor(this.category.name)}-container`));
+    }
   },
   methods: {
     formatAnchor(category) {

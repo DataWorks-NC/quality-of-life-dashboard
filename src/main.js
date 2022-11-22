@@ -4,7 +4,6 @@ import dataConfig from '../data/config/data';
 
 // TODO: Add analytics.
 
-import { createPinia } from 'pinia';
 import { routerOptions, setUpRouterHooks } from './plugins/router';
 import i18n from './plugins/i18n';
 import vuetify from './plugins/vuetify';
@@ -23,11 +22,9 @@ export const createApp = ViteSSG(
   App,
   routerOptions,
   ({ app, router }) => {
-    const pinia = createPinia();
     app.config.productionTip = false;
     app.use(vuetify);
     app.use(i18n);
-    app.use(pinia);
     app.config.unwrapInjectedRef = true;
 
     setUpRouterHooks(router);

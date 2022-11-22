@@ -1,53 +1,73 @@
 <template>
-  <v-row class="jump-nav-bar">
-    <v-col xs="12">
-      <div>
-        <v-tabs v-model="activeTab" bg-color="primary" show-arrows grow theme="dark">
-          <!--  TODO: Restore scroll-to behavior, was  v-scroll-to="{ el: summaryId, offset: -150, cancelable: false }"       -->
-          <v-tab tag="button" rounded depressed>
-            {{ $t('strings.metricCategories.Summary') }}
-          </v-tab>
-          <!--  TODO: Restore scroll-to behavior, was             v-scroll-to="{ el: `#${formatAnchor(category.name)}`, offset: -60, cancelable: false }"     -->
-          <v-tab
-            v-for="category in categories"
-            :key="formatAnchor(category.name)"
-            tag="button"
-            rounded
-            depressed
-          >
-            {{ category.name }}
-          </v-tab>
-        </v-tabs>
-      </div>
-    </v-col>
-  </v-row>
+  <v-theme-provider theme="dark">
+    <div class="jump-nav-bar v-theme--dark">
+      <v-tabs v-model="activeTab" bg-color="primary" show-arrows grow>
+        <!--  TODO: Restore scroll-to behavior, was  v-scroll-to="{ el: summaryId, offset: -150, cancelable: false }"       -->
+        <v-tab tag="button" depressed>
+          {{ $t('strings.metricCategories.Summary') }}
+        </v-tab>
+        <!--  TODO: Restore scroll-to behavior, was             v-scroll-to="{ el: `#${formatAnchor(category.name)}`, offset: -60, cancelable: false }"     -->
+        <v-tab
+          v-for="category in categories"
+          :key="formatAnchor(category.name)"
+          tag="button"
+          depressed
+        >
+          {{ category.name }}
+        </v-tab>
+      </v-tabs>
+    </div>
+  </v-theme-provider>
 </template>
 
 <script>
-import { mapState } from "pinia";
-import { reportStore } from '@/js/stores/report.js';
+import reportCategoriesFromRouteMixin
+  from '@/js/components/mixins/reportCategoriesFromRouteMixin.js';
+
+import { reportStore } from '@/js/stores/report-store.js';
 
 export default {
   name: "ReportJumpNav",
+  mixins: [reportCategoriesFromRouteMixin],
+  inject: ['geography'],
+  data() { return {
+    reportStore,
+  };
+  },
   computed: {
-    ...mapState(reportStore, ["visibleCategories", "activeCategory"]),
     activeTab: {
       get() {
-        if (this.activeCategory === this.$t('strings.metricCategories.Summary')) {
+        if (!this.reportStore.activeCategory) {
           return 0;
         }
-        const cat = this.activeCategory.split("-").slice(0, -1).join(" ");
+        if (this.reportStore.activeCategory === 'Summary') {
+          return 0;
+        }
+
         for (let i = 0; i < this.categories.length; i += 1) {
-          const item = this.categories[i].name.toLowerCase();
-          if (cat === item) {
+          if (this.reportStore.activeCategory === this.categories[i].name) {
             return i + 1;
           }
         }
         return null;
       },
-      set() {
-        // Null but needed so we can use v-model without errors with activeTab. Could posslby move the
-        // v-scroll-to logic into this setter too at some point.
+      set(i) {
+        const scrollIntoViewOptions = {
+          behavior: 'smooth',
+        };
+
+        this.reportStore.isScrolling = true;
+
+        if (i === 0) {
+          this.reportStore.activeCategory = 'Summary';
+          document.getElementById('summary-container').scrollIntoView(scrollIntoViewOptions);
+        } else {
+          const categoryName = this.categories[i - 1].name;
+          this.reportStore.activeCategory = categoryName;
+          document.getElementById(`${this.formatAnchor(categoryName)}-container`).scrollIntoView(scrollIntoViewOptions);
+        }
+
+        setTimeout(() => this.reportStore.isScrolling = false, 500);
       },
     },
     categories() {
@@ -69,19 +89,10 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .jump-nav-bar {
   position: sticky;
   top: 0;
   z-index: 10;
-
-  .col {
-    padding-top: 0;
-  }
-}
-
-.v-tab a {
-  color: white;
-  text-decoration: none;
 }
 </style>

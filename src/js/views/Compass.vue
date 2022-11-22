@@ -174,15 +174,11 @@ export default {
   },
   methods: {
     initFromRoute(metricChanged = true, geographyChanged = true) {
-      console.log('Event from Route');
-
       // Base metric info.
       const metricId = this.$route.params.metric;
 
       this.metric.id = metricId;
       this.metric.config = config.dataConfig[`m${metricId}`];
-
-      this.geography =
 
       this.printMode = this.$route.query.mode === 'print';
 

@@ -1,7 +1,7 @@
 <template>
   <div class="report">
     <report-nav />
-    <v-main>
+    <v-main id="report-container">
       <v-container>
         <report-jump-nav />
         <report-summary
@@ -18,7 +18,7 @@
 <script>
 import { computed } from 'vue';
 import parseRouteMixin from '@/js/components/mixins/parseRouteMixin.js';
-
+import { reportStore } from '@/js/stores/report-store.js';
 import config from '../modules/config';
 const categoryNamesBase = new Array(...new Set(Object.values(config.dataConfig).map(m => (m.category))));
 
@@ -51,6 +51,7 @@ export default {
       metricValues: computed(() => this.metricValues),
       countyAverages: computed(() => this.countyAverages),
       categoryNames: computed(() => this.categoryNames),
+      intersectionObserver: computed(() => this.intersectionObserver),
     };
   },
   data: () => ({
@@ -58,6 +59,8 @@ export default {
     metricValues: {},
     countyAverages: {},
     areaDataLoadedFor: [],
+    intersectionObserver: null,
+    reportStore,
   }),
   computed: {
     // Pull the most recent year for each metric listed in siteConfig.summaryMetrics for which we have valid metric values.
@@ -99,8 +102,29 @@ export default {
   mounted() {
     // TODO: Move data load into created method and parse out what can be done server-side.
     this.loadData();
+
+    this.intersectionObserver = new IntersectionObserver(
+      this.onElementObserved,
+      {
+        root: null,
+      }
+    );
+  },
+  beforeUnmount() {
+    this.intersectionObserver.disconnect();
   },
   methods: {
+    onElementObserved(entries) {
+      if (this.reportStore.isScrolling) {
+        return;
+      }
+      entries.forEach(({ target, isIntersecting }) => {
+        if (isIntersecting) {
+          this.reportStore.activeCategory = target.getAttribute('data-category');
+        }
+      });
+    },
+
     // Load data first from individual JSONs, one for each area included in the report, then set area IDs.
     async loadAreaData() {
       if (this.selected.length === 0) {
