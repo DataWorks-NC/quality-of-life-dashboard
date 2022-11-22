@@ -4,6 +4,7 @@ import vuetify, {transformAssetUrls} from 'vite-plugin-vuetify';
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'url'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
+import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -15,6 +16,7 @@ export default defineConfig({
     VueI18nPlugin({
       include: [resolve(dirname(fileURLToPath(import.meta.url)), './src/locales/*.json'),resolve(dirname(fileURLToPath(import.meta.url)), './data/locales/*.json')]
     }),
+    VitePWA({ registerType: 'autoUpdate' }),
   ],
   ssr: {
     noExternal: ['vuetify', /vue-i18n/],

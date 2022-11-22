@@ -64,6 +64,7 @@
     "sass": "^1.43.2",
     "terser": "^5.15.1",
     "vite": "^3",
+    "vite-plugin-pwa": "^0.13.3",
     "vite-plugin-vuetify": "^1.0.0",
     "vite-ssg": "^0.21.2",
     "yorkie": "^2.0.0"
