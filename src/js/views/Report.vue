@@ -1,5 +1,19 @@
 <template>
   <div class="report">
+    <SetHead>
+      <meta
+        name="og:type" content="article"
+      >
+      <meta
+        name="description"
+        :content="$t('strings.metaDescriptionReport', { title: reportTitle})"
+      >
+      <meta
+        name="og:description"
+        :content="$t('strings.metaDescriptionReport', { title: reportTitle})"
+      >
+      <title>{{ reportTitle }} - {{ $t('strings.DurhamNeighborhoodCompass') }}</title>
+    </SetHead>
     <report-nav />
     <v-main id="report-container">
       <v-container>
@@ -99,9 +113,9 @@ export default {
   watch: {
     selected() { this.loadData(); }
   },
-  mounted() {
+  async mounted() {
     // TODO: Move data load into created method and parse out what can be done server-side.
-    this.loadData();
+    await this.loadData();
 
     this.intersectionObserver = new IntersectionObserver(
       this.onElementObserved,

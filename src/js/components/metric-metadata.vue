@@ -1,5 +1,9 @@
 <template>
   <div id="metadata">
+    <SetHead>
+      <meta name="description" :content="metadataImportant.replace(/(<([^>]+)>)/gi, '').trim()">
+      <meta name="og:description" :content="metadataImportant.replace(/(<([^>]+)>)/gi, '').trim()">
+    </SetHead>
     <template v-if="metadata">
       <h3 v-if="metadataImportant">
         {{ $t('metadata.whyImportant') }}

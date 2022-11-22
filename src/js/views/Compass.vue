@@ -60,6 +60,7 @@
 </template>
 
 <script>
+import { useHead } from '@vueuse/head';
 import { defineAsyncComponent, computed } from 'vue';
 import { store } from '../stores/compass-store.js';
 import parseRouteMixin from '@/js/components/mixins/parseRouteMixin.js';
@@ -87,7 +88,7 @@ const TrendChart = defineAsyncComponent(() => import("../components/trend-chart.
 const YearSlider = defineAsyncComponent(() => import("../components/year-slider.vue"));
 
 export default {
-  name: "Dashboard",
+  name: "Compass",
   components: {
     CompassNav,
     DashboardFooter,
@@ -115,6 +116,8 @@ export default {
       selectGroupType: computed(() => this.selectGroupType),
       printMode: computed(() => this.printMode),
     };
+  },
+  setup() {
   },
   data() {
     return {
@@ -168,11 +171,44 @@ export default {
       this.printMode = newMode;
       this.setPrintClass();
     });
+
+    this.setMetadata();
   },
   mounted() {
     this.setPrintClass();
   },
   methods: {
+    setMetadata() {
+      const metricTitle = this.$i18n.locale === 'es'
+        ? this.metric.config.title_es
+        : this.metric.config.title;
+      const geographyName = this.geography.id && this.geography.id.length > 0
+        ? ` (${this.$t(`geographies.${this.geography.id}.name`)})`
+        : '';
+
+      let title = `${metricTitle}${geographyName} - ${this.$t('strings.DurhamNeighborhoodCompass')}`;
+      const meta = [
+        {
+          name: 'og:title',
+          content: title,
+        }
+      ];
+      if (this.printMode) {
+        title = `${title} - ${this.$t('undermapButtons.printEmbed')}`;
+        meta.push({
+          name: 'description',
+          content: `${this.$t('strings.metaDescriptionPrint', [
+           metricTitle.toLocaleLowerCase(this.$i18n.locale),
+           geographyName.toLocaleLowerCase(this.$i18n.locale),
+         ])}`
+        });
+      }
+
+      useHead({
+        title: title,
+        meta,
+      });
+    },
     initFromRoute(metricChanged = true, geographyChanged = true) {
       // Base metric info.
       const metricId = this.$route.params.metric;
