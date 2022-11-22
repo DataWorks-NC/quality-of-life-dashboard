@@ -2,11 +2,9 @@
   <v-theme-provider theme="dark">
     <div class="jump-nav-bar v-theme--dark">
       <v-tabs v-model="activeTab" bg-color="primary" show-arrows grow>
-        <!--  TODO: Restore scroll-to behavior, was  v-scroll-to="{ el: summaryId, offset: -150, cancelable: false }"       -->
         <v-tab tag="button" depressed>
           {{ $t('strings.metricCategories.Summary') }}
         </v-tab>
-        <!--  TODO: Restore scroll-to behavior, was             v-scroll-to="{ el: `#${formatAnchor(category.name)}`, offset: -60, cancelable: false }"     -->
         <v-tab
           v-for="category in categories"
           :key="formatAnchor(category.name)"

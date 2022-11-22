@@ -67,6 +67,7 @@
     "vite-plugin-pwa": "^0.13.3",
     "vite-plugin-vuetify": "^1.0.0",
     "vite-ssg": "^0.21.2",
+    "vue-gtag": "^2.0.1",
     "yorkie": "^2.0.0"
   },
   "postcss": {

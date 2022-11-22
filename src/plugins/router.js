@@ -1,6 +1,7 @@
 import config from '../js/modules/config';
 import { debugLog } from '../js/modules/tracking';
 import { store } from '@/js/stores/compass-store.js';
+import { pageview } from 'vue-gtag';
 
 const About = () => import('../js/views/About.vue');
 const Compass = () => import('../js/views/Compass.vue');
@@ -97,6 +98,7 @@ const setUpRouterHooks = function(router) {
       debugLog("Route guard: store last compass path");
       store.lastCompassRoute = to;
     }
+    pageview(to);
   });
 
   return router;

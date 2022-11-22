@@ -142,7 +142,6 @@ export default {
     },
   },
   methods: {
-    // TODO: Switch to using brushBreaksCategories mixin.
     highlight(n) {
       this.store.highlight = n;
     },
