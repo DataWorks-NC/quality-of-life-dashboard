@@ -6,17 +6,6 @@ import { fileURLToPath } from 'url'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
-// TODO: Replace this with variants of the .env file.
-if (import.meta.env.CIRCLE_BRANCH) {
-  if (import.meta.env.CIRCLE_BRANCH === 'staging') {
-    import.meta.env.VUE_APP_BASE_URL = 'https://nbhdcompassstage.azurewebsites.us';
-  } else if (import.meta.env.CIRCLE_BRANCH === 'develop') {
-    import.meta.env.VUE_APP_BASE_URL = 'https://nbhdcompassdev.azurewebsites.us';
-  } else {
-    import.meta.env.VUE_APP_BASE_URL = 'https://compass.durhamnc.gov';
-  }
-}
-
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [

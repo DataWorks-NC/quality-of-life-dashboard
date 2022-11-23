@@ -13,6 +13,11 @@ jobs:
     steps:
       - checkout
       - run: git clone https://github.com/DataWorks-NC/durham-quality-of-life-data.git data
+#        TODO: Remove this step once fully upgraded
+      - run:
+          command: git checkout develop
+          working_directory: data
+
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -35,6 +40,26 @@ jobs:
       - run: npm run build-data 2>&1 | tee npm-build-output-data.txt
       - store_artifacts:
           path: ~/repo/npm-build-output-data.txt
+
+      # Copy env file based on environment
+      - when:
+          condition:
+            equal: [ main, << pipeline.git.branch >> ]
+          steps:
+            - run: cp .circleci/.env.production ./.env.production
+
+      - when:
+          condition:
+            equal: [ staging, << pipeline.git.branch >> ]
+          steps:
+            - run: cp .circleci/.env.staging ./.env.staging
+
+      - when:
+          condition:
+            equal: [ develop, << pipeline.git.branch >> ]
+          steps:
+            - run: cp .circleci/.env.develop ./.env.develop
+
       - run: npm run build 2>&1 | tee npm-build-output.txt
       - store_artifacts:
           path: ~/repo/npm-build-output.txt
