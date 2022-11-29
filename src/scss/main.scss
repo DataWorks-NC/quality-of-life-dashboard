@@ -5,13 +5,6 @@
   padding-top: 0 !important;
 }
 
-.v-slide-group {
-  // Fix for bug where top metric categories menu does not scroll.
-  // Will be merged as https://github.com/vuetifyjs/vuetify/pull/16118/files
-  overflow: hidden !important;
-}
-
-
 .v-app-bar.v-toolbar .v-tabs, .v-main .jump-nav-bar {
   .v-slide-group__container {
     color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity));
