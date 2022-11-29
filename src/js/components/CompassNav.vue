@@ -80,10 +80,10 @@
                 <span :id="kebabCase(m.originalName)">
                   <!-- Needed so that focus can be directed for accessibility. -->
                 </span>
-                <v-menu :key="m.metric" :attach="'#' + kebabCase(m.originalName)">
+                <v-menu :key="m.metric || m.originalName" :attach="'#' + kebabCase(m.originalName)">
                   <template #activator="{ props }">
-                    <v-btn v-if="m.metric.config && m.metric.config.subcategory === m.originalName" rounded variant="flat" class="v-btn--active" v-bind="props">
-                      {{ $i18n.locale === 'es' ? mm.etric.config.title_es : m.metric.config.title }} <v-icon :icon="icons.mdiTriangleSmallDown" />
+                    <v-btn v-if="metric.config && metric.config.subcategory === m.originalName" rounded variant="flat" class="v-btn--active" v-bind="props">
+                      {{ $i18n.locale === 'es' ? metric.config.title_es : metric.config.title }} <v-icon :icon="icons.mdiTriangleSmallDown" />
                     </v-btn>
                     <v-btn v-else rounded variant="flat" v-bind="props">
                       {{ m.name }} <v-icon :icon="icons.mdiTriangleSmallDown" />
