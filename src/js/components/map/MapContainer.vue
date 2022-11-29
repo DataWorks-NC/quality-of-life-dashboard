@@ -25,6 +25,7 @@ import debugLogMixin from '../mixins/debugLogMixin';
 const Geocoder = defineAsyncComponent(() => import('./Geocoder.vue'));
 const SelectGroupOutline = defineAsyncComponent(() => import('./SelectGroupOutline.vue'));
 const SelectedLayers = defineAsyncComponent(() => import('./SelectedLayers.vue'));
+const mapConfig = config.mapConfig;
 
 export default {
   // You would think to just name this component 'Map', but <map> is in the HTML5 spec!
@@ -37,13 +38,6 @@ export default {
   },
   mixins: [debugLogMixin],
   inject: ['mapboxgl','metric','geography','breaks', 'selectGroupName', 'selectGroupType', 'selected', 'printMode'],
-  props: {
-    mapConfig: {
-      type: Object,
-      required: true,
-    },
-  },
-
   data() {
     return {
       locationPopup: null,
@@ -138,7 +132,8 @@ export default {
         container: 'map',
         attributionControl: false,
         style: osmLiberty,
-        ...this.mapConfig,
+        ...mapConfig,
+        trackResize: !this.printMode,
         accessToken: config.privateConfig.mapboxAccessToken,
       };
       this.map = new this.mapboxgl.Map(mapOptions);

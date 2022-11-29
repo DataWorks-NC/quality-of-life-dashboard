@@ -6,22 +6,11 @@
 import config from '../../modules/config';
 import osmLiberty from '@/assets/osm-liberty.json';
 import selectGroups from '@/../data/selectgroups.geojson.json';
+const mapConfig = config.mapConfig;
 
 export default {
   name: 'ReportMap',
   inject: ['mapboxgl','reportTitle', 'selected', 'selectGroupName', 'geography'],
-  props: {
-    selectedGeographies: {
-      type: Array,
-      default: () => [],
-    },
-  },
-  data() {
-    return {
-      mapConfig: config.mapConfig,
-      geographyId: this.geography.id,
-    };
-  },
   watch: {
     '$i18n.locale': 'setLabelLanguage',
   },
@@ -33,7 +22,6 @@ export default {
   },
   methods: {
     initMap() {
-      const { mapConfig } = this;
       const mapOptions = {
         container: 'map',
         style: osmLiberty,
@@ -52,17 +40,17 @@ export default {
       const _this = this;
       // after map initiated, grab geography and initiate/style neighborhoods
       map.once('load', () => {
-        const selectedFilter = _this.selectedGeographies.length ? ['in', ['string', ['get', 'id']], ['literal', _this.selectedGeographies]] : ['boolean', true];
+        const selectedFilter = _this.selected.length ? ['in', ['string', ['get', 'id']], ['literal', _this.selected]] : ['boolean', true];
         const selectGroupFilter = ['==', ['string', ['get', 'id']], ['literal', _this.selectGroupName]];
 
         map.addSource('neighborhoods', {
           type: 'geojson',
-          data: `/data/${_this.geographyId}.geojson.json`,
+          data: `/data/${_this.geography.id}.geojson.json`,
         });
 
         // Neighborhood boundaries
         // TODO: Is `building` the right layer for this to be before?
-        if (_this.selectedGeographies.length) {
+        if (_this.selected.length) {
           map.addLayer({
             id: 'neighborhoods',
             type: 'line',
@@ -84,7 +72,7 @@ export default {
                 'text-font': ['Open Sans Semi Bold'],
                 'text-field': _this.$i18n.locale === 'es' ? '{label_es}' : '{label}',
                 'text-transform': 'uppercase',
-                'text-size': _this.selectedGeographies.length > 3 ? 8 : 12,
+                'text-size': _this.selected.length > 3 ? 8 : 12,
                 'text-allow-overlap': false,
               },
               paint: {

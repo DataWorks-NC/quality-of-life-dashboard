@@ -16,7 +16,7 @@
       {{ $t('undermapButtons.report') }}
     </v-btn>
     <v-btn
-      :to="{ query: { ...$route.query, mode: 'print' } }"
+      :to="{ name: 'compass', params: $route.params, query: { ...$route.query, mode: 'print' } }"
       theme="dark"
     >
       {{ $t('undermapButtons.printEmbed') }}

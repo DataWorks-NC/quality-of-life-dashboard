@@ -176,13 +176,18 @@ export default {
       }
     }
   },
+  created() {
+    if (this.metric.config) {
+      this.categoryTab = this.metric.config.category;
+    }
+  },
   methods: {
     swapLanguage() {
       let newLanguage = 'es';
       if (this.$i18n.locale === 'es') {
         newLanguage = 'en';
       }
-      this.$router.push({ params: { ...this.$route.params, locale: newLanguage }, query: this.$route.query });
+      this.$router.push({ name: this.$route.name, params: { ...this.$route.params, locale: newLanguage }, query: this.$route.query });
     },
     kebabCase,
     gaEvent,

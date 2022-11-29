@@ -10,9 +10,7 @@
                 <v-card>
                   <div v-if="mapboxglLoaded" style="min-height: 600px;">
                     <ClientOnly>
-                      <map-container
-                        :map-config="config.mapConfig"
-                      />
+                      <map-container />
                     </ClientOnly>
                   </div>
                   <div v-else style="width: 600px; height:600px;" />
@@ -52,7 +50,7 @@
         </v-container>
       </div>
       <div v-else>
-        <print-mode :config="config" />
+        <print-mode />
       </div>
     </v-main>
     <dashboard-footer />
@@ -121,7 +119,6 @@ export default {
   },
   data() {
     return {
-      config,
       metric: {
         id: null,
         config: {},

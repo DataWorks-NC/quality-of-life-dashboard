@@ -19,7 +19,7 @@
       <img :alt="$t('strings.DataWorksNCLogo')" src="@/assets/img/report-logo.png?url" class="header__logo">
       <div class="spacer" />
       <v-card class="map d-print-inline">
-        <map-container :mapbox-access-token="config.privateConfig.mapboxAccessToken" :map-config="Object.assign({ trackResize: false }, config.mapConfig)" />
+        <map-container />
         <i18n-t keypath="printMode.footerText" tag="p" class="print__footer">
           <template #compassLink>
             <a href="https://compass.durhamnc.gov">{{ $t('strings.theCompass') }}</a>
@@ -42,12 +42,6 @@ export default {
   components: {
     MapContainer,
     PrintMapHeader,
-  },
-  props: {
-    config: {
-      type: Object,
-      default: () => ({}),
-    },
   },
   data: () => ({ mdiPrinter, mdiArrowLeft }),
   methods: {

@@ -84,6 +84,13 @@ export default {
       return Array.from(new Set(metricYears.concat(countyYears))).sort();
     },
   },
+  mounted() {
+    if (this.$route.hash === `#metric-${this.metric.metric}`) {
+      console.log('Matched ' + `#metric-${this.metric.metric}`)
+      this.$el.scrollIntoView();
+      window.scrollBy(0, -50);
+    }
+  },
   methods: {
     prettify(value) {
       return prettyNumber(

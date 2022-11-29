@@ -42,6 +42,7 @@ export const createApp = ViteSSG(
 
       // Language handling.
       if (!to.params.locale) {
+        debugLog('Redirecting with language set.');
         return {
           ...to,
           params: {
