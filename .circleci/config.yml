@@ -83,7 +83,7 @@ jobs:
 
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver      # Performance test
-      - run: npm install --location=global @lhci/cli@0.8.x
+      - run: npm install --location=global @lhci/cli
       - run: |
           if [ "$CIRCLECI_BRANCH" = "main" ]; then
             lhci autorun --uploadUrlMap
