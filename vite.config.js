@@ -35,4 +35,9 @@ export default defineConfig({
       "@": resolve(dirname(fileURLToPath(import.meta.url)), "./src"),
     },
   },
-})
+  modulePreload: {
+    // See https://github.com/vitejs/vite/issues/5532 -- with this set to true, FF and Safari
+    // load chunks twice.
+    polyfill: false
+  },
+});

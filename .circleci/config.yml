@@ -70,26 +70,26 @@ jobs:
           root: .
           paths:
             - ./*
-
-  performance_test:
-    docker:
-      - image: cimg/node:lts-browsers
-
-    working_directory: /tmp/workspace/
-
-    steps:
-      - attach_workspace:
-          at: /tmp/workspace
-
-      - browser-tools/install-chrome
-      - browser-tools/install-chromedriver      # Performance test
-      - run: npm install --location=global @lhci/cli
-      - run: |
-          if [ "$CIRCLECI_BRANCH" = "main" ]; then
-            lhci autorun --uploadUrlMap
-          else
-            lhci autorun
-          fi
+#
+#  performance_test:
+#    docker:
+#      - image: cimg/node:lts-browsers
+#
+#    working_directory: /tmp/workspace/
+#
+#    steps:
+#      - attach_workspace:
+#          at: /tmp/workspace
+#
+#      - browser-tools/install-chrome
+#      - browser-tools/install-chromedriver      # Performance test
+#      - run: npm install --location=global @lhci/cli
+#      - run: |
+#          if [ "$CIRCLECI_BRANCH" = "main" ]; then
+#            lhci autorun --uploadUrlMap
+#          else
+#            lhci autorun
+#          fi
 
   sitemap:
     docker:
@@ -174,9 +174,9 @@ workflows:
   build_and_deploy:
     jobs:
       - build
-      - performance_test:
-          requires:
-            - build
+#      - performance_test:
+#          requires:
+#            - build
       - sitemap:
           requires:
             - build

@@ -53,6 +53,21 @@
         <v-icon :icon="icons.mdiDownload" />
       </v-btn>
 
+      <v-btn v-if="!isSearching" icon :aria-label="$t('strings.search')" @click.stop="openSearch">
+        <v-icon :icon="icons.mdiMagnify" />
+      </v-btn>
+      <v-text-field v-else v-model="searchText" label="$t('strings.searchPlaceholder')" variant="solo">
+        <template #prepend-inner>
+          <v-icon :icon="icons.mdiMagnify" />
+        </template>
+        <template #append>
+          <v-icon
+            :icon="icons.mdiClose"
+            @click="closeSearch"
+          />
+        </template>
+      </v-text-field>
+
       <!-- Desktop nav -->
       <template #extension>
         <v-tabs v-model="categoryTab" :mandatory="false">
@@ -62,6 +77,13 @@
             :value="category.id"
           >
             {{ category.name }}
+          </v-tab>
+          <v-tab
+            v-if="isSearching"
+            key="searchResults"
+            value="searchResults"
+          >
+            Search Results
           </v-tab>
         </v-tabs>
       </template>
@@ -103,6 +125,9 @@
               </v-btn>
             </template>
           </v-window-item>
+          <v-window-item key="searchResults" value="searchResults">
+            <MetricSearchResults :search-text="searchText" />
+          </v-window-item>
         </v-window>
       </v-sheet>
     </div>
@@ -111,20 +136,25 @@
 
 <script>
 import { fromPairs, kebabCase, uniq } from 'lodash-es';
-import { mdiTriangleSmallDown, mdiClose, mdiDownload, mdiInformation } from '@mdi/js';
+import { mdiTriangleSmallDown, mdiClose, mdiDownload, mdiInformation, mdiMagnify } from '@mdi/js';
 
 import { gaEvent } from '../modules/tracking';
 import config from '../modules/config';
+import MetricSearchResults from '@/js/components/MetricSearchResults.vue';
 
 export default {
   name: 'CompassNav',
+  components: {MetricSearchResults},
   inject: {
     metric: {
       default: {},
     },
   },
   data: () => ({
+    isSearching: false,
+    searchText: '',
     categoryTab: null,
+    oldCategoryTab: null,
     drawer: false,
     metricsByCategory: config.metricsByCategory,
     title: config.siteConfig.title,
@@ -133,6 +163,7 @@ export default {
       mdiClose,
       mdiDownload,
       mdiInformation,
+      mdiMagnify,
     }
   }),
   computed: {
@@ -182,6 +213,15 @@ export default {
     }
   },
   methods: {
+    openSearch() {
+      this.isSearching = true;
+      this.oldCategoryTab = this.categoryTab;
+      this.categoryTab = 'searchResults';
+    },
+    closeSearch() {
+      this.isSearching = false;
+      this.categoryTab = this.oldCategoryTab;
+    },
     swapLanguage() {
       let newLanguage = 'es';
       if (this.$i18n.locale === 'es') {
