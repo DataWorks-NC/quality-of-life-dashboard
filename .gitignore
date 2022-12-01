@@ -30,6 +30,7 @@ deploy.sh
 .envrc
 .env
 /public/data
+/public/selectgroups
 
 # Auto-generated download files (some files in the /public/download directory do need to be tracked)
 /public/download/*.csv

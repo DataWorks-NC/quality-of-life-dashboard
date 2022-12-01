@@ -24,9 +24,6 @@ export default {
     layersLoaded: {},
   }),
   computed: {
-    selectGroupFilter() {
-      return ['==', 'id', this.selectGroupName];
-    },
     layers() {
       const BASE_LABEL_SIZE = 12;
 
@@ -58,7 +55,6 @@ export default {
             'text-halo-color': '#fff',
             'text-halo-width': ['interpolate', ['linear'], ['zoom'], 9, 1, 13, 2],
           },
-          filter: this.selectGroupFilter,
         },
         selectGroupOutline: {
           id: 'selectGroupOutline',
@@ -72,13 +68,11 @@ export default {
             'line-join': 'round',
             'line-cap': 'round',
           },
-          filter: this.selectGroupFilter,
         },
         selectGroupFill: {
           id: 'selectGroupFill',
           type: 'fill',
           source: 'selectGroup',
-          filter: this.selectGroupFilter,
         },
       };
     },
@@ -116,15 +110,14 @@ export default {
         return;
       }
 
-      // TODO: Is this potentially faster if we split up the selectgroups geoJSON file
-      //  into separate files for each selectGroup?
-      const selectGroups = await import('@/../data/selectgroups.geojson.json');
         if (!map.getSource('selectGroup')) {
           map.addSource('selectGroup', {
             type: 'geojson',
             promoteId: 'id',
-            data: selectGroups,
+            data: `/selectgroups/${encodeURIComponent(this.selectGroupName)}.geojson.json`,
           });
+        } else {
+          map.getSource('selectGroup').setData(`/selectgroups/${encodeURIComponent(this.selectGroupName)}.geojson.json`);
         }
 
       this.layerNames.forEach(name => {

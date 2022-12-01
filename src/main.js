@@ -1,4 +1,3 @@
-import {computed} from 'vue';
 import {ViteSSG} from 'vite-ssg';
 import dataConfig from '../data/config/data';
 import VueGtag from 'vue-gtag';
@@ -75,21 +74,6 @@ export const createApp = ViteSSG(
         return String(value).charAt(0).toUpperCase() + String(value).slice(1);
       },
     };
-    let mapboxglLoaded = false;
-    app.provide('mapboxglLoaded', () => computed(() => mapboxglLoaded));
-
-    if (!import.meta.env.SSR) {
-      import(/* webpackChunkName: "mapboxgl" */ 'mapbox-gl').then((mapboxgl) => {
-        if (!mapboxgl || !mapboxgl.prewarm) {
-          return;
-        }
-        mapboxgl.prewarm();
-        import(/* webpackChunkName: "mapboxgl" */ 'mapbox-gl/dist/mapbox-gl.css').then(() => {
-          mapboxglLoaded = true;
-          app.provide('mapboxgl', mapboxgl);
-        });
-      });
-    }
   },
 );
 

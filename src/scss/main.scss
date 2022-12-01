@@ -129,6 +129,78 @@ textarea {
   outline: none;
 }
 
+.landing-page {
+  padding: 15px 25px;
+
+  div {
+    overflow: auto;
+  }
+
+  a {
+    color: white;
+    text-decoration: none;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+    -webkit-transition: 0.2s cubic-bezier(0.4, 0, 0.6, 1);
+    transition: 0.2s cubic-bezier(0.4, 0, 0.6, 1);
+
+    &:hover {
+      border-color:rgba(255, 255, 255, 1);
+    }
+  }
+
+  .v-card-text {
+    font-size: 1em;
+
+    @media (max-width: 767px) {
+      font-size: 0.75em;
+      p {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .v-img {
+    overflow: hidden;
+    border-radius: 4px;
+
+    @media (min-width: 768px) {
+      width: 50%;
+    }
+  }
+
+  .v-card.d-flex {
+    @media (max-width: 767px) {
+      flex-direction: column;
+    }
+  }
+
+  .v-card.d-flex + .v-card.d-flex {
+    margin-top: 25px;
+  }
+
+  .v-card > *:first-child:not(.v-btn):not(.v-chip) {
+    border-radius: inherit;
+  }
+
+  h2 {
+    font-size: 24px;
+    margin-bottom: 0.75em;
+    @media (max-width: 767px) {
+      font-size: 20px;
+    }
+  }
+
+  h3 {
+    font-size: 20px;
+    margin-bottom: 0.75rem;
+    margin-top: 1.5em;
+  }
+
+  p {
+    max-width: 680px;
+  }
+}
+
 
 // Fix for Vuetify bug where when scrolling menu vertically the background scrolls up and out of view.
 .v-menu__content.menuable__content__active {

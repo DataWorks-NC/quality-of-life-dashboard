@@ -11,7 +11,7 @@
       :hint="$t('yearSlider.useSlider')"
       :dense="metric.years.length > 5"
       show-ticks="always"
-      thumb-label="always"
+      thumb-label
     >
       <template #thumb-label="{ modelValue }">
         {{ metric.years[modelValue] }}

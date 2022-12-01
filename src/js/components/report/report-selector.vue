@@ -89,10 +89,11 @@ import config from "../../modules/config";
 import reportCategoriesFromRouteMixin
   from '@/js/components/mixins/reportCategoriesFromRouteMixin.js';
 import { store } from '@/js/stores/compass-store.js';
+import handleLinksMixin from '@/js/components/mixins/handleLinksMixin.js';
 
 export default {
   name: "ReportSelector",
-  mixins: [reportCategoriesFromRouteMixin],
+  mixins: [reportCategoriesFromRouteMixin, handleLinksMixin],
   inject: ['geography', 'metricValues', 'countyAverages', "reportTitle",'categoryNames'],
   data: () => ({
     dialog: false,
@@ -118,9 +119,6 @@ export default {
         .sort(this.localizedSortByName);
     },
   },
-  updated() {
-    this.handleLinks();
-  },
   methods: {
     toggleCategory(category) {
       this.$router.push(this.getToggleCategoryRoute(this.$route, category.originalName));
@@ -132,12 +130,6 @@ export default {
       return (
         config.siteConfig.qoldashboardURL.slice(0, -1) + this.$route.fullPath
       );
-    },
-    handleLinks() {
-      const link = document.querySelector(".router-link-active");
-      if (link && !link.querySelector(".link-underline")) {
-        link.innerHTML = `<span class="link-underline">${link.innerHTML}</span>`;
-      }
     },
   },
 };

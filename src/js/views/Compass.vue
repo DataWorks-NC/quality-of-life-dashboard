@@ -62,7 +62,6 @@ import { useHead } from '@vueuse/head';
 import { defineAsyncComponent, computed } from 'vue';
 import { store } from '../stores/compass-store.js';
 import parseRouteMixin from '@/js/components/mixins/parseRouteMixin.js';
-
 import config from "../modules/config";
 import {calcValue, sum, wValsToArray} from '../modules/metric_calculations';
 

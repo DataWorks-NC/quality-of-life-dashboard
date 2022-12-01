@@ -5,7 +5,7 @@
 <script>
 import config from '../../modules/config';
 import osmLiberty from '@/assets/osm-liberty.json';
-import selectGroups from '@/../data/selectgroups.geojson.json';
+
 const mapConfig = config.mapConfig;
 
 export default {
@@ -41,7 +41,6 @@ export default {
       // after map initiated, grab geography and initiate/style neighborhoods
       map.once('load', () => {
         const selectedFilter = _this.selected.length ? ['in', ['string', ['get', 'id']], ['literal', _this.selected]] : ['boolean', true];
-        const selectGroupFilter = ['==', ['string', ['get', 'id']], ['literal', _this.selectGroupName]];
 
         map.addSource('neighborhoods', {
           type: 'geojson',
@@ -87,7 +86,8 @@ export default {
         if (_this.selectGroupName) {
           map.addSource('selectGroup', {
             type: 'geojson',
-            data: selectGroups,
+            promoteId: 'id',
+            data: `/selectgroups/${encodeURIComponent(this.selectGroupName)}.geojson.json`,
           });
 
           map.addLayer({
@@ -104,7 +104,6 @@ export default {
               'line-opacity': 0.9,
             },
             source: 'selectGroup',
-            filter: selectGroupFilter,
           });
 
           // Labels
@@ -136,7 +135,6 @@ export default {
               'text-halo-color': '#F7E55B',
               'text-halo-width': ['interpolate', ['linear'], ['zoom'], 9, 1, 13, 2],
             },
-            filter: selectGroupFilter,
           });
         }
 

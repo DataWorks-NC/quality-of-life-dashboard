@@ -1,13 +1,13 @@
 <template>
   <v-footer color="background" class="d-print-none">
     <p class="logos text-center">
-      <ExternalLink href="https://durhamnc.gov">
+      <ExternalLink href="https://durhamnc.gov" class="no-underline">
         <img src="../../assets/img/cityLogo.png" :alt="$t('strings.CityOfDurhamLogo')" height="125">
       </ExternalLink>
-      <ExternalLink href="https://www.dataworks-nc.org">
+      <ExternalLink href="https://www.dataworks-nc.org" class="no-underline">
         <img src="../../assets/img/dwLogo.png" :alt="$t('strings.DataWorksNCLogo')" height="50">
       </ExternalLink>
-      <ExternalLink href="https://dconc.gov">
+      <ExternalLink href="https://dconc.gov" class="no-underline">
         <img src="../../assets/img/countyLogo.png" :alt="$t('strings.DurhamCountyLogo')" height="125">
       </ExternalLink>
     </p>
@@ -26,12 +26,14 @@
 
 <script>
 import ExternalLink from "./external-link.vue";
+import handleLinksMixin from '@/js/components/mixins/handleLinksMixin.js';
 
 export default {
   name: "DashboardFooter",
   components: {
     ExternalLink,
   },
+  mixins: [handleLinksMixin,],
 };
 </script>
 

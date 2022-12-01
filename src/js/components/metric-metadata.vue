@@ -25,9 +25,11 @@
 <script>
 import {fetchResponseHTML, fetchResponseHTMLSync} from '@/js/modules/fetch.js';
 import getSubstringIndex from '@/js/modules/substring-nth.js';
+import handleLinksMixin from '@/js/components/mixins/handleLinksMixin.js';
 
 export default {
   name: "MetricMetadata",
+  mixins: [handleLinksMixin,],
   props: {
     metricId: {
       type: String,
@@ -63,12 +65,8 @@ export default {
   async created() {
     await this.loadMetricMetadata();
   },
-  mounted() {
-    this.handleLinks();
-  },
   async updated() {
     await this.loadMetricMetadata();
-    this.handleLinks();
   },
   methods: {
     async loadMetricMetadata() {
@@ -79,14 +77,6 @@ export default {
           this.metadata = fetchResponseHTMLSync(path);
         } else {
           this.metadata = await fetchResponseHTML(path);
-        }
-      }
-    },
-    handleLinks() {
-      const links = this.$el.getElementsByTagName("a");
-      for (let i = 0; i < links.length; i += 1) {
-        if (!links[i].querySelector(".link-underline")) {
-          links[i].innerHTML = `<span class="link-underline">${links[i].innerHTML}</span>`;
         }
       }
     },

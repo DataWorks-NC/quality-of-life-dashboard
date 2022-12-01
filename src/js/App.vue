@@ -7,9 +7,22 @@
 <script>
 
 import {useHead} from '@vueuse/head';
+import {computed} from 'vue';
 
 export default {
   name: 'App',
+  provide() {
+    return {
+      mapboxglLoaded: computed(() => this.mapboxglLoaded),
+      mapboxgl: computed(() => this.mapboxgl),
+    };
+  },
+  data() {
+    return {
+      mapboxglLoaded: false,
+      mapboxgl: null,
+    };
+  },
   created() {
     const title = this.$t('strings.DurhamNeighborhoodCompass');
     const description = this.$t('strings.metaDescriptionHome');
@@ -73,6 +86,18 @@ export default {
           hreflang: 'es',
         }
       ]
+    });
+  },
+  mounted() {
+    import(/* webpackChunkName: "mapboxgl" */ 'mapbox-gl').then((mapboxgl) => {
+      if (!mapboxgl || !mapboxgl.prewarm) {
+        return;
+      }
+      mapboxgl.prewarm();
+      import(/* webpackChunkName: "mapboxgl" */ 'mapbox-gl/dist/mapbox-gl.css').then(() => {
+        this.mapboxglLoaded = true;
+        this.mapboxgl = mapboxgl;
+      });
     });
   },
 };

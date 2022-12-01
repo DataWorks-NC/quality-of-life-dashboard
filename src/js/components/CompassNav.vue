@@ -55,7 +55,7 @@
 
       <!-- Desktop nav -->
       <template #extension>
-        <v-tabs v-model="categoryTab">
+        <v-tabs v-model="categoryTab" :mandatory="false">
           <v-tab
             v-for="category in categories"
             :key="category.id"

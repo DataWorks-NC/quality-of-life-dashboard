@@ -46,7 +46,7 @@
     </div>
     <p class="text-right">
       <v-btn
-        variant="text" href="data.csv" download class="download"
+        variant="text" href="data.csv" :download="dataFilename" class="download"
         @click="downloadTable('#datatable table')"
       >
         {{ $filters.capitalize($t('strings.download')) }}
@@ -140,13 +140,20 @@ export default {
           && rawTrend(geogIndex),
       }));
     },
+    dataFilename() {
+      let title = this.metric.config.title;
+      if (this.$i18n.locale === 'es') {
+        title = this.metric.config.title_es;
+      }
+      return `${title.replace(' ', '_')}.csv`
+    },
   },
   methods: {
+    // TODO: Switch to using brushBreaksCategories mixin.
     highlight(n) {
       this.store.highlight = n;
     },
     downloadTable(theTable) {
-      // TODO: rewrite this?
       const csvData = table2csv(theTable);
       // i hate you ie
       if (window.navigator.msSaveBlob) {

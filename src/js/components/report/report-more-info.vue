@@ -11,9 +11,11 @@
 
 <script>
 import { fetchResponseHTML } from "../../modules/fetch";
+import handleLinksMixin from '@/js/components/mixins/handleLinksMixin.js';
 
 export default {
   name: "ReportMoreInfo",
+  mixins: [handleLinksMixin,],
   props: {
     href: {
       type: String,
@@ -26,9 +28,6 @@ export default {
       moreInfo: this.$t('strings.loading'),
     };
   },
-  updated() {
-    this.handleLinks();
-  },
   methods: {
     toggleMoreInfo() {
       if (!this.collapsed || !this.href) {
@@ -40,16 +39,6 @@ export default {
         _this.moreInfo = result;
         _this.collapsed = false;
       });
-    },
-    handleLinks() {
-      const links = this.$el.getElementsByTagName("a");
-      for (let i = 0; i < links.length; i += 1) {
-        if (!links[i].querySelector(".link-underline")) {
-          links[
-            i
-          ].innerHTML = `<span class="link-underline">${links[i].innerHTML}</span>`;
-        }
-      }
     },
   },
 };

@@ -81,13 +81,6 @@ export default {
     formatAnchor(category) {
       return category.toLowerCase().replace(/\s/g, "-");
     },
-    // categoryVisible(isVisible, entry) {
-    //   if (!isVisible) {
-    //     return;
-    //   }
-    //   // TODO: Fix this.
-    //   // this.setActiveCategory(entry.target.id);
-    // },
   },
 };
 </script>

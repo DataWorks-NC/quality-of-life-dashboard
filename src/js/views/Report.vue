@@ -32,6 +32,8 @@
 <script>
 import { computed } from 'vue';
 import parseRouteMixin from '@/js/components/mixins/parseRouteMixin.js';
+import handleLinksMixin from '@/js/components/mixins/handleLinksMixin.js';
+
 import { reportStore } from '@/js/stores/report-store.js';
 import config from '../modules/config';
 const categoryNamesBase = new Array(...new Set(Object.values(config.dataConfig).map(m => (m.category))));
@@ -55,7 +57,7 @@ export default {
     ReportBody,
     ReportJumpNav,
   },
-  mixins: [parseRouteMixin],
+  mixins: [parseRouteMixin, handleLinksMixin],
   provide() {
     return {
       geography: computed(() => this.geography),

@@ -53,11 +53,16 @@ export default {
 };
 </script>
 
-<style scoped lang="css">
-.social__link {
-  margin: 0 0.5em;
-}
-.social__link svg:hover {
-  color: rgb(var(--v-theme-accent)) !important;
+<style scoped lang="scss">
+a.social__link {
+  -webkit-transition: 0.2s cubic-bezier(0.4, 0, 0.6, 1);
+  transition: 0.2s cubic-bezier(0.4, 0, 0.6, 1);
+  margin: -0.25em 0.25em;
+  padding: 0.25em;
+  border-radius: 100%;
+
+  &:hover {
+    background: rgba(104, 8, 158, 0.25);
+  }
 }
 </style>

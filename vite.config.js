@@ -27,6 +27,8 @@ export default defineConfig({
       preload: "media",
       // Other options: https://github.com/GoogleChromeLabs/critters#usage
     },
+    script: 'async defer',
+    formatting: 'minify',
   },
   resolve: {
     alias: {
