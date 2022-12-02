@@ -11,7 +11,18 @@
           <v-toolbar-title>{{ $t('strings.chooseATopic') }}</v-toolbar-title>
         </v-toolbar>
         <v-list nav>
-          <v-list-group v-for="category in categories" :key="category.id" :value="category.id">
+          <v-text-field ref="searchFieldMobile" v-model="searchText" :label="$t('search.placeholder')" variant="underlined">
+            <template #prepend-inner>
+              <v-icon :icon="icons.mdiMagnify" />
+            </template>
+            <template #append>
+              <v-btn icon @click="closeSearch">
+                <v-icon :icon="icons.mdiClose" />
+              </v-btn>
+            </template>
+          </v-text-field>
+          <MetricSearchResults v-if="searchText !== ''" :search-text="searchText" mobile />
+          <v-list-group v-for="category in categories" v-else :key="category.id" :value="category.id">
             <template #activator="{ props }">
               <v-list-item v-bind="props">
                 <v-list-item-title>{{ category.name }}</v-list-item-title>
@@ -39,32 +50,31 @@
       <v-toolbar-title>
         <router-link :to="{ name: 'homepage' }">
           <img src="../../assets/img/logo.png" :alt="$t('strings.DurhamNeighborhoodCompass')" class="d-none d-md-flex">
-          <img src="../../assets/img/logoMobile.png" :alt="$t('strings.DurhamNeighborhoodCompass')" class="d-md-none">
+          <img src="../../assets/img/logoMobile.png" :alt="$t('strings.DurhamNeighborhoodCompass')" class="d-none d-sm-flex d-md-none">
         </router-link>
       </v-toolbar-title>
       <div class="flex-grow-1" />
-      <v-btn variant="text" @click="swapLanguage()">
+      <v-btn v-if="!isSearching" variant="text" @click="swapLanguage()">
         {{ $t('strings.ChangeLanguage') }}
       </v-btn>
-      <v-btn icon :aria-label="$t('about.link')" :to="{ name: 'about' }">
+      <v-btn v-if="!isSearching" icon :aria-label="$t('about.link')" :to="{ name: 'about' }">
         <v-icon :icon="icons.mdiInformation" />
       </v-btn>
-      <v-btn icon :aria-label="$t('strings.DownloadData')" href="/download/download.zip" @click="gaEvent('send', 'event', 'download', 'metric zip file download')">
+      <v-btn v-if="!isSearching" icon :aria-label="$t('strings.DownloadData')" href="/download/download.zip" @click="gaEvent('send', 'event', 'download', 'metric zip file download')">
         <v-icon :icon="icons.mdiDownload" />
       </v-btn>
 
-      <v-btn v-if="!isSearching" icon :aria-label="$t('strings.search')" @click.stop="openSearch">
+      <v-btn v-if="!isSearching" icon :aria-label="$t('search.search')" class="d-none d-md-block" @click.stop="openSearch">
         <v-icon :icon="icons.mdiMagnify" />
       </v-btn>
-      <v-text-field v-else v-model="searchText" label="$t('strings.searchPlaceholder')" variant="solo">
+      <v-text-field v-else ref="searchField" v-model="searchText" :label="$t('search.placeholder')" variant="underlined" class="searchField--desktop">
         <template #prepend-inner>
           <v-icon :icon="icons.mdiMagnify" />
         </template>
         <template #append>
-          <v-icon
-            :icon="icons.mdiClose"
-            @click="closeSearch"
-          />
+          <v-btn icon @click="closeSearch">
+            <v-icon :icon="icons.mdiClose" />
+          </v-btn>
         </template>
       </v-text-field>
 
@@ -142,6 +152,10 @@ import { gaEvent } from '../modules/tracking';
 import config from '../modules/config';
 import MetricSearchResults from '@/js/components/MetricSearchResults.vue';
 
+// TODO: Add transition where search text box slides in from the right.
+
+// TODO: Tweak styling of search input.
+
 export default {
   name: 'CompassNav',
   components: {MetricSearchResults},
@@ -217,10 +231,12 @@ export default {
       this.isSearching = true;
       this.oldCategoryTab = this.categoryTab;
       this.categoryTab = 'searchResults';
+      this.$nextTick(() => { this.$refs.searchField.focus(); });
     },
     closeSearch() {
       this.isSearching = false;
       this.categoryTab = this.oldCategoryTab;
+      this.searchText = '';
     },
     swapLanguage() {
       let newLanguage = 'es';
@@ -259,6 +275,18 @@ export default {
 
 .v-toolbar__title img {
   margin-top: 10px;
+}
+
+// Search field.
+.v-input {
+  height: var(--v-input-control-height);
+}
+.searchField--desktop {
+  margin-top: 1.5rem;
+
+  .v-btn {
+    margin-top: -1rem;
+  }
 }
 
 @media(max-width: 959px) {

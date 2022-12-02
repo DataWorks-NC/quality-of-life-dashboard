@@ -1,6 +1,6 @@
 <template>
-  <v-card v-if="siteConfig && (siteConfig.feedbackUrl || siteConfig.signupEmbed)">
-    <v-btn v-if="siteConfig.feedbackUrl" size="small" @click="openSurvey">
+  <v-card v-if="feedbackUrl || mailchimpUrl">
+    <v-btn v-if="feedbackUrl" size="small" :href="feedbackUrl" target="_blank">
       {{ $t('feedback.ShareFeedback') }} <v-icon size="14px" :icon="mdiOpenInNew" />
     </v-btn>
     <v-btn v-if="mailchimpUrl" size="small" :active="showSignup" @click="showSignup = !showSignup">
@@ -22,15 +22,10 @@ export default {
   },
   data: () => ({
     showSignup: false,
-    siteConfig: config.siteConfig,
+    feedbackUrl: config.siteConfig.feedbackUrl,
     mailchimpUrl: config.privateConfig.mailchimpUrl,
     mdiOpenInNew,
   }),
-  methods: {
-    openSurvey() {
-      window.open(config.siteConfig.feedbackUrl);
-    },
-  },
 };
 </script>
 

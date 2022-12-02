@@ -40,6 +40,13 @@
   "DownloadData": "Download Data",
   "openMobileNav": "Open navigation menu"
  },
+ "search": {
+   "search": "Search for a metric",
+   "noResults": "Sorry, no metric names matched your search. If you'd like to suggest a metric, you can {0}!",
+   "getInTouch": "get in touch with us",
+   "startTyping": "Start typing to see search results",
+   "placeholder": "Enter metric name to search"
+ },
  "dashboard": {
   "moveToC": "Click to move Table of Contents"
  },
@@ -128,7 +135,7 @@
   "linkedIn": "Share on LinkedIn",
   "twitter": "Share on Twitter",
   "viewGitHub": "View the project on GitHub",
-  "print": "TODO",
+  "print": "@:undermapButtons.printEmbed"
  },
  "undermapButtons": {
   "clear": "Clear Selected",
