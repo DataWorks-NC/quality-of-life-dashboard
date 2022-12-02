@@ -9,6 +9,7 @@
     "serve": "vite preview",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
     "build-data": "babel-node ./build/datagen.js && babel-node ./build/report-datagen.js && ./build/generate_download.sh",
+    "build-report-data": "babel-node ./build/report-datagen.js",
     "build-site": "npm run build-data && npm run build",
     "build-sitemap-dev": "node ./build/build-sitemap.js nbhdcompassdev.azurewebsites.us",
     "export-translations": "node ./build/export_translations.js",

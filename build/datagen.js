@@ -25,7 +25,6 @@ import {
 const fsPromises = fs.promises;
 
 const dest = './public/data/metric';
-console.log(siteConfig);
 
 // /////////////////////////////////////////////////
 // Create destination folders
@@ -166,7 +165,6 @@ async function main() {
   // /////////////////////////////////////////////
   // CSVtoJSON
   // /////////////////////////////////////////////
-
   async function convertMetricCsvToJson(geography, metric) {
     const destPath = path.join(dest, geography);
 
