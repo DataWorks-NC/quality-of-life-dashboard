@@ -1,5 +1,4 @@
 import {ViteSSG} from 'vite-ssg';
-import dataConfig from '../data/config/data';
 import VueGtag from 'vue-gtag';
 
 import {routerOptions, setUpRouterHooks} from './plugins/router';
@@ -76,18 +75,3 @@ export const createApp = ViteSSG(
     };
   },
 );
-
-// Specify all routes to be pre-rendered.
-export function includedRoutes() {
-  return ['en', 'es'].flatMap(
-    lang => ([
-        `/${lang}/`,
-        `/${lang}/about/`,
-        `/${lang}/report/blockgroup/`,
-        `/${lang}/report/tract/`,
-      ].concat(Object.values(dataConfig).filter(m => !m.exclude_from_map).flatMap(
-        m => m.geographies.map(
-          g => `/${lang}/compass/${m.metric}/${g}/`),
-      ))
-    ));
-}

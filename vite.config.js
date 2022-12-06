@@ -5,6 +5,7 @@ import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'url'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import { VitePWA } from 'vite-plugin-pwa'
+import { includedRoutes } from './src/includedRoutes.js';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -29,6 +30,7 @@ export default defineConfig({
     },
     script: 'async defer',
     formatting: 'minify',
+    includedRoutes,
   },
   resolve: {
     alias: {

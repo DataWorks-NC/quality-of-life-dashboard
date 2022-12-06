@@ -91,30 +91,6 @@ jobs:
 #            lhci autorun
 #          fi
 
-  sitemap:
-    docker:
-      - image: cimg/node:lts-browsers
-
-    working_directory: /tmp/workspace/
-
-    steps:
-      - attach_workspace:
-          at: /tmp/workspace
-
-      - restore_cache:
-          keys:
-            - v4-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v4-dependencies-
-
-      # Generate a sitemap based on what's currently on dev site.
-      - run: npm run build-sitemap-dev
-
-      - persist_to_workspace:
-          root: .
-          paths:
-            - ./*
-
   deploy_prod: &DEPLOY_PROD
     docker:
       - image: mcr.microsoft.com/azure-cli
@@ -127,9 +103,6 @@ jobs:
 
       # Add robots file for production.
       - run: cp /tmp/workspace/.circleci/robots-prod.txt /tmp/workspace/dist/robots.txt
-
-      # Tweak sitemap URLs
-      - run: sed -i 's/nbhdcompassdev\.azurewebsites\.us/compass\.durhamnc\.gov/g' /tmp/workspace/dist/sitemap.xml
 
       # Push code to Azure blob storage
       - run:
@@ -177,13 +150,6 @@ workflows:
 #      - performance_test:
 #          requires:
 #            - build
-      - sitemap:
-          requires:
-            - build
-          filters:
-            branches:
-              only:
-                main
       - deploy_stage:
           requires:
             - build
@@ -192,16 +158,12 @@ workflows:
               only:
                 staging
       - deploy_dev:
-          requires:
-            - build
           filters:
             branches:
               only:
                 develop
 
       - deploy_prod:
-          requires:
-            - sitemap
           filters:
             branches:
               only:
