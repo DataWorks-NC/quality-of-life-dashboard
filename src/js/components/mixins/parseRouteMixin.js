@@ -13,9 +13,6 @@ export default {
       if (!selectGroupType && !selectGroupName ) {
         selectGroupType = this.$route.query.selectGroupType;
         selectGroupName = this.$route.query.selectGroupName;
-      } else {
-        selectGroupName = selectGroupName.replaceAll('_', ' ');
-        selectGroupType = selectGroupType.replaceAll('_', ' ');
       }
       if (selectGroupType && selectGroupName && this.geography.id in config.selectGroups[selectGroupType] && selectGroupName in config.selectGroups[selectGroupType][this.geography.id]) return selectGroupName;
       return null;
@@ -24,8 +21,6 @@ export default {
       let selectGroupType = this.$route.params.selectGroupType;
       if (!selectGroupType) {
         selectGroupType = this.$route.query.selectGroupType;
-      } else {
-        selectGroupType = selectGroupType.replaceAll('_', ' ');
       }
       if (selectGroupType && this.selectGroupName && this.geography.id in config.selectGroups[selectGroupType] && this.selectGroupName in config.selectGroups[selectGroupType][this.geography.id]) return selectGroupType;
       return null;

@@ -23,6 +23,7 @@ export default defineConfig({
     noExternal: ['vuetify', /vue-i18n/],
   },
   ssgOptions: {
+    concurrency: 50,
     crittersOptions: {
       // E.g., change the preload strategy
       preload: "media",

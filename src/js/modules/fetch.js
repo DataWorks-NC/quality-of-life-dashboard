@@ -21,7 +21,6 @@ async function fetchResponseJSON(path) {
       // eslint disable-next-line
       if (fileExists('dist' + path)) {
         const json = JSON.parse(readFileSync('dist' + path));
-        cache.json[path] = json;
         return Promise.resolve(json);
       }
       return Promise.resolve(null);
@@ -37,15 +36,10 @@ async function fetchResponseJSON(path) {
 }
 
 function fetchResponseJSONSync(path) {
-  if (path in cache.json) {
-    return cache.json[path];
-  }
   if (!import.meta.env.SSR) {
     return null;
   }
-  const json = JSON.parse(readFileSync('dist' + path));
-  cache.json[path] = json;
-  return json;
+  return JSON.parse(readFileSync('dist' + path));
 }
 
 function fetchResponseHTML(path) {
@@ -55,7 +49,6 @@ function fetchResponseHTML(path) {
   try {
     if (import.meta.env.SSR) {
       const html = readFileSync('dist' + path, 'utf8');
-      cache.html[path] = html;
       return Promise.resolve(html);
     } else {
       return fetch(path).then(response => response.text()).then((text) => {
@@ -69,15 +62,10 @@ function fetchResponseHTML(path) {
 }
 
 function fetchResponseHTMLSync(path) {
-  if (path in cache.html) {
-    return cache.html[path];
-  }
   if (!import.meta.env.SSR) {
     return null;
   }
-  const html = readFileSync('dist' + path, 'utf8');
-  cache.html[path] = html;
-  return html;
+  return readFileSync('dist' + path, 'utf8');
 }
 
 export { fetchResponseJSON, fetchResponseJSONSync, fetchResponseHTML, fetchResponseHTMLSync, cache };

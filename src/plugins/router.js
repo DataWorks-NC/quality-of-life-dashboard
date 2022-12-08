@@ -17,12 +17,7 @@ const routes = [
   },
   {
     name: 'report',
-    path: '/:locale/report/:geographyLevel/:selectGroupType/:selectGroupName/',
-    component: Report,
-  },
-  {
-    name: 'report-base',
-    path: '/:locale/report/:geographyLevel/',
+    path: '/:locale/report/:geographyLevel/:selectGroupType?/:selectGroupName?/',
     component: Report,
   },
   {

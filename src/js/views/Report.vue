@@ -1,19 +1,5 @@
 <template>
   <div class="report">
-    <SetHead>
-      <meta
-        name="og:type" content="article"
-      >
-      <meta
-        name="description"
-        :content="$t('strings.metaDescriptionReport', { title: reportTitle})"
-      >
-      <meta
-        name="og:description"
-        :content="$t('strings.metaDescriptionReport', { title: reportTitle})"
-      >
-      <title>{{ reportTitle }} - {{ $t('strings.DurhamNeighborhoodCompass') }}</title>
-    </SetHead>
     <report-nav />
     <v-main id="report-container">
       <v-container>
@@ -45,6 +31,7 @@ import ReportNav from '../components/report/report-nav.vue';
 import ReportJumpNav from '../components/report/report-jump-nav.vue';
 import {xor} from 'lodash-es';
 import {fetchResponseJSON} from '@/js/modules/fetch.js';
+import {useHead} from '@vueuse/head';
 
 const getJSONFilename = (geographyId, areaId) => `/data/report/${geographyId}/${areaId}.json`;
 
@@ -71,7 +58,6 @@ export default {
     };
   },
   data: () => ({
-    mapConfig: config.mapConfig,
     metricValues: {},
     countyAverages: {},
     areaDataLoadedFor: [],
@@ -103,7 +89,7 @@ export default {
     },
     reportTitle() {
       if (this.selectGroupName) {
-        return `${this.selectGroupType} (${this.selectGroupName})`;
+        return `${this.selectGroupName} (${this.selectGroupType})`;
       }
       if (this.areaNames.length) {
         return this.areaNames.join(', ');
@@ -115,10 +101,32 @@ export default {
   watch: {
     selected() { this.loadData(); }
   },
-  async mounted() {
-    // TODO: Move data load into created method and parse out what can be done server-side.
-    await this.loadData();
+  created() {
+    this.loadData();
 
+    useHead({
+      title: this.reportTitle,
+      meta: [
+        {
+          name: 'og:title',
+          content: this.reportTitle,
+        },
+        {
+        name: 'description',
+          content: this.$t('strings.metaDescriptionReport', { title: this.reportTitle}),
+        },
+        {
+          name: 'og:description',
+          content: this.$t('strings.metaDescriptionReport', { title: this.reportTitle}),
+        },
+        {
+          name: 'og:type',
+          content: 'article',
+        }
+    ]
+    });
+  },
+  async mounted() {
     this.intersectionObserver = new IntersectionObserver(
       this.onElementObserved,
       {

@@ -148,7 +148,6 @@ export default {
             }
           }
         } else {
-          map.setFilter(name, this.selectGroupFilter);
           map.setLayoutProperty(name, 'visibility', 'visible');
         }
       });

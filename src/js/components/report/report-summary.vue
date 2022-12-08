@@ -26,7 +26,6 @@
         <ClientOnly>
           <ReportMap
             v-if="mapboxglLoaded"
-            :geography-id="geographyId"
           />
         </ClientOnly>
       </v-col>

@@ -13,9 +13,6 @@ let useSelectGroupConfig = selectGroupConfig;
 if (selectGroupConfig.default) {
   useSelectGroupConfig = selectGroupConfig.default;
 }
-console.log(Object.keys(useSelectGroupConfig).flatMap(t => ['blockgroup','tract'].flatMap(l => Object.keys(useSelectGroupConfig[t][l]).map(n => [
-  `/en/report/${l}/${encodeURIComponent(t)}/${encodeURIComponent(n)}/`
-]))));
 
 export function includedRoutes() {
   return ['en', 'es'].flatMap(
@@ -28,8 +25,10 @@ export function includedRoutes() {
         m => m.geographies.flatMap(
           g => [`/${lang}/compass/${m.metric}/${g}/`,`/${lang}/embed/${m.metric}/${g}/`]),
       ))
+        // TODO: Expand to use all selectgroup types once memory leak fixed in vite-ssg.
+        // @see https://github.com/antfu/vite-ssg/issues/210
         .concat(Object.keys(useSelectGroupConfig).flatMap(t => ['blockgroup','tract'].flatMap(l => Object.keys(useSelectGroupConfig[t][l]).flatMap(n => [
-        `/${lang}/report/${l}/${encodeURIComponent(t.replaceAll(' ', '_'))}/${encodeURIComponent(n.replaceAll(' ', '_'))}/`
+        `/${lang}/report/${l}/${encodeURIComponent(t)}/${encodeURIComponent(n)}/`
       ]))))
-    ));
+    )).sort(() => Math.random() - 0.5);
 }

@@ -10,7 +10,7 @@
       {{ $t('undermapButtons.clear') }}
     </v-btn>
     <v-btn
-      :to="{ name: (selectGroupName ? 'report' : 'report-base'), params: { locale: $i18n.locale, selectGroupType: (selectGroupType ? selectGroupType.replaceAll(' ', '_') : null), selectGroupName: (selectGroupName ? selectGroupName.replaceAll(' ', '_') : null) }, query: { selected: selected, legendTitle: undefined }, hash: `#metric-${metric.id}` }"
+      :to="{ name: 'report', params: { locale: $i18n.locale, selectGroupType, selectGroupName }, query: { selected: selected, legendTitle: undefined }, hash: `#metric-${metric.id}` }"
       theme="dark"
     >
       {{ $t('undermapButtons.report') }}

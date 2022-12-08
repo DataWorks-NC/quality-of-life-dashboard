@@ -176,9 +176,6 @@ export default {
 </script>
 
 <style lang="css">
-    #datatable {
-        margin: 10px 15px;
-    }
 
     #datatable table {
         width: 100%;
@@ -191,6 +188,7 @@ export default {
 
     #datatable .tablescroll {
         max-height: 350px;
+        max-width: calc(100vw - 56px);
         overflow: auto;
     }
 

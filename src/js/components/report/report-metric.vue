@@ -36,13 +36,15 @@
     </v-table>
     <div class="spacer" />
     <div v-if="years.length > 1" class="metric-trendchart">
-      <TrendChart
-        :metric-config="metric"
-        :years="years"
-        :values="metricValues"
-        :county-values="countyAverages"
-        :selected="[]"
-      />
+      <ClientOnly>
+        <TrendChart
+          :metric-config="metric"
+          :years="years"
+          :values="metricValues"
+          :county-values="countyAverages"
+          :selected="[]"
+        />
+      </ClientOnly>
     </div>
     <div class="spacer" />
     <MoreInfo :href="`/data/meta/${$i18n.locale}/m${metric.metric}.html`" />
