@@ -67,7 +67,7 @@ export default {
   name: 'DashboardLegend',
   mixins: [brushBreaksCategoriesMixin,],
   inject: [
-    'selected', 'metric',
+    'selected', 'metric', 'legendTitle'
   ],
   data: () => ({
     selectedValue: null,
@@ -80,13 +80,6 @@ export default {
     store,
   }),
   computed: {
-    legendTitle() {
-      if (this.$route.query.legendTitle) {
-        return this.$route.query.legendTitle;
-      }
-      if (this.metric.config) return `${this.$i18n.locale === 'es' ? this.metric.config.title_es : this.metric.config.title}, ${this.store.year}`;
-      return '';
-    },
     areaValue() {
       if (this.metric.averageValues && this.store.year in this.metric.averageValues) {
         return prettyNumber(this.metric.averageValues[this.store.year].value, this.metric.config);

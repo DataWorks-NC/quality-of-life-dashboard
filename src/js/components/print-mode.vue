@@ -19,7 +19,11 @@
       <img :alt="$t('strings.DataWorksNCLogo')" src="@/assets/img/report-logo.png?url" class="header__logo">
       <div class="spacer" />
       <v-card class="map d-print-inline">
-        <map-container />
+        <div v-if="mapboxglLoaded" style="min-height: 600px;">
+          <ClientOnly>
+            <map-container />
+          </ClientOnly>
+        </div>
         <i18n-t keypath="printMode.footerText" tag="p" class="print__footer">
           <template #compassLink>
             <a href="https://compass.durhamnc.gov">{{ $t('strings.theCompass') }}</a>
@@ -43,6 +47,7 @@ export default {
     MapContainer,
     PrintMapHeader,
   },
+  inject: ['mapboxglLoaded',],
   data: () => ({ mdiPrinter, mdiArrowLeft }),
   methods: {
     print() {

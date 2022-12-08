@@ -15,8 +15,8 @@ export function includedRoutes() {
         `/${lang}/report/blockgroup/`,
         `/${lang}/report/tract/`,
       ].concat(Object.values(useDataConfig).filter(m => !m.exclude_from_map).flatMap(
-        m => m.geographies.map(
-          g => `/${lang}/compass/${m.metric}/${g}/`),
+        m => m.geographies.flatMap(
+          g => [`/${lang}/compass/${m.metric}/${g}/`,`/${lang}/embed/${m.metric}/${g}/`]),
       ))
     ));
 }

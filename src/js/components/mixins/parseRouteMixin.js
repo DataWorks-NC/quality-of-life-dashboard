@@ -30,5 +30,12 @@ export default {
       }
       return [];
     },
+    legendTitle() {
+      if (this.$route.query.legendTitle) {
+        return this.$route.query.legendTitle;
+      }
+      if (this.metric.config) return `${this.$i18n.locale === 'es' ? this.metric.config.title_es : this.metric.config.title}, ${this.store.year}`;
+      return '';
+    },
   }
 };
