@@ -109,7 +109,7 @@ async function main() {
     });
 
     // Write to file.
-    const filePath = `public/selectgroups/${encodeURIComponent(f.properties.name)}.geojson.json`;
+    const filePath = `public/selectgroups/${encodeURIComponent(f.properties.id.replaceAll(' ', '_'))}.geojson.json`;
     return await fsPromises.writeFile(filePath, jsonminify(selectGroupGeoJSON));
   })).then(() => console.log('Wrote all selectgroups to separate geojson files'));
 

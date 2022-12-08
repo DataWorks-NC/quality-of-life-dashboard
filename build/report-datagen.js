@@ -87,29 +87,28 @@ async function main() {
           }
         });
 
-        // Use worldval for county average if it is set in config/data.js.
-        if ('world_val' in metric) {
-          if (!(metric.metric in countyAverages)) {
-            countyAverages[metric.metric] = mapKeys(metric.world_val,
-              (value, key) => key.replace('y_', ''));
-          }
+        // Use worldval for county average when it is set in config/data.js.
+        if (('world_val' in metric) && !(metric.metric in countyAverages)) {
+          countyAverages[metric.metric] = mapKeys(metric.world_val,
+            (value, key) => key.replace('y_', ''));
+        }
+        else if (!(metric.metric in countyAverages)) {
+          countyAverages[metric.metric] = {};
         }
 
         // Otherwise, compute and store county averages.
         // Prefer tract over blockgroup data for calculating averages.
-        else if (geography.id === 'tract' || geography.id === 'blockgroup'
-            && !(metric.metric in countyAverages)) {
+        if (geography.id === 'tract' || geography.id === 'blockgroup') {
+          // Get the maximal set of years across all the geographies
           const geographyKeys = Object.keys(contents.map);
-
-          // Get the maximal set of years across all the tracts
-          const years = geographyKeys.reduce(
+          const years = Array.from(geographyKeys.reduce(
             (y, currentValue) => (
               new Set([
                 ...Object.keys(contents.map[currentValue]).map(year => (year.replace('y_', ''))).sort(),
                 ...y,
               ])), [],
-          );
-          countyAverages[metric.metric] = {};
+          )).filter(y => !(y in countyAverages[metric.metric]));
+
           years.forEach((year) => {
             countyAverages[metric.metric][year] = calcValue(contents,
               metric.type,

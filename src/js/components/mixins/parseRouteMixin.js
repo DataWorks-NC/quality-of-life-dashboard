@@ -8,13 +8,26 @@ export default {
       ) || { id: null };
     },
     selectGroupName() {
-      const { selectGroupType = null, selectGroupName = null } = this.$route.query;
+      let selectGroupName = this.$route.params.selectGroupName;
+      let selectGroupType = this.$route.params.selectGroupType;
+      if (!selectGroupType && !selectGroupName ) {
+        selectGroupType = this.$route.query.selectGroupType;
+        selectGroupName = this.$route.query.selectGroupName;
+      } else {
+        selectGroupName = selectGroupName.replaceAll('_', ' ');
+        selectGroupType = selectGroupType.replaceAll('_', ' ');
+      }
       if (selectGroupType && selectGroupName && this.geography.id in config.selectGroups[selectGroupType] && selectGroupName in config.selectGroups[selectGroupType][this.geography.id]) return selectGroupName;
       return null;
     },
     selectGroupType() {
-      const { selectGroupType = null, selectGroupName = null } = this.$route.query;
-      if (selectGroupType && selectGroupName && this.geography.id in config.selectGroups[selectGroupType] && selectGroupName in config.selectGroups[selectGroupType][this.geography.id]) return selectGroupType;
+      let selectGroupType = this.$route.params.selectGroupType;
+      if (!selectGroupType) {
+        selectGroupType = this.$route.query.selectGroupType;
+      } else {
+        selectGroupType = selectGroupType.replaceAll('_', ' ');
+      }
+      if (selectGroupType && this.selectGroupName && this.geography.id in config.selectGroups[selectGroupType] && this.selectGroupName in config.selectGroups[selectGroupType][this.geography.id]) return selectGroupType;
       return null;
     },
     selected() {
@@ -31,6 +44,9 @@ export default {
       return [];
     },
     legendTitle() {
+      if (!this.metric) {
+        return null;
+      }
       if (this.$route.query.legendTitle) {
         return this.$route.query.legendTitle;
       }

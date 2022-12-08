@@ -109,15 +109,16 @@ export default {
         this.hideSelectGroup();
         return;
       }
+      const sourceName = `/selectgroups/${encodeURIComponent(this.selectGroupName.replaceAll(' ', '_'))}.geojson.json`;
 
         if (!map.getSource('selectGroup')) {
           map.addSource('selectGroup', {
             type: 'geojson',
             promoteId: 'id',
-            data: `/selectgroups/${encodeURIComponent(this.selectGroupName)}.geojson.json`,
+            data: sourceName,
           });
         } else {
-          map.getSource('selectGroup').setData(`/selectgroups/${encodeURIComponent(this.selectGroupName)}.geojson.json`);
+          map.getSource('selectGroup').setData(sourceName);
         }
 
       this.layerNames.forEach(name => {

@@ -145,7 +145,7 @@ export default {
       if (this.$i18n.locale === 'es') {
         title = this.metric.config.title_es;
       }
-      return `${title.replace(' ', '_')}.csv`
+      return `${title.replaceAll(' ', '_')}.csv`
     },
   },
   methods: {

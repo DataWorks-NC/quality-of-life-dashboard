@@ -84,10 +84,12 @@ export default {
         }
 
         if (_this.selectGroupName) {
+          const sourceName = `/selectgroups/${encodeURIComponent(_this.selectGroupName.replaceAll(' ', '_'))}.geojson.json`;
+
           map.addSource('selectGroup', {
             type: 'geojson',
             promoteId: 'id',
-            data: `/selectgroups/${encodeURIComponent(this.selectGroupName)}.geojson.json`,
+            data: sourceName,
           });
 
           map.addLayer({

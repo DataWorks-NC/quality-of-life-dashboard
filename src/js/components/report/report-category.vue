@@ -9,14 +9,14 @@
             </h2>
           </v-col>
         </v-row>
-        <template v-if="countyAverages && metricValues">
+        <template v-if="countyAverages || metricValues">
           <template v-for="m in validMetrics" :key="m.metric">
             <v-row>
               <v-col cols="12">
                 <ReportMetric
                   :metric="m"
-                  :metric-values="metricValues[m.metric]"
-                  :county-averages="countyAverages[m.metric]"
+                  :metric-values="metricValues ? metricValues[m.metric] : null"
+                  :county-averages="countyAverages ? countyAverages[m.metric] : null"
                 />
               </v-col>
             </v-row>

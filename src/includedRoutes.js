@@ -1,11 +1,21 @@
 // Specify all routes to be pre-rendered.
 // Weird workaround for command line use of this tool.
 import dataConfig from '../data/config/data.js';
+import selectGroupConfig from '../data/config/selectgroups.js'
 
 let useDataConfig = dataConfig;
 if (dataConfig.default) {
   useDataConfig = dataConfig.default;
 }
+
+
+let useSelectGroupConfig = selectGroupConfig;
+if (selectGroupConfig.default) {
+  useSelectGroupConfig = selectGroupConfig.default;
+}
+console.log(Object.keys(useSelectGroupConfig).flatMap(t => ['blockgroup','tract'].flatMap(l => Object.keys(useSelectGroupConfig[t][l]).map(n => [
+  `/en/report/${l}/${encodeURIComponent(t)}/${encodeURIComponent(n)}/`
+]))));
 
 export function includedRoutes() {
   return ['en', 'es'].flatMap(
@@ -18,5 +28,8 @@ export function includedRoutes() {
         m => m.geographies.flatMap(
           g => [`/${lang}/compass/${m.metric}/${g}/`,`/${lang}/embed/${m.metric}/${g}/`]),
       ))
+        .concat(Object.keys(useSelectGroupConfig).flatMap(t => ['blockgroup','tract'].flatMap(l => Object.keys(useSelectGroupConfig[t][l]).flatMap(n => [
+        `/${lang}/report/${l}/${encodeURIComponent(t.replaceAll(' ', '_'))}/${encodeURIComponent(n.replaceAll(' ', '_'))}/`
+      ]))))
     ));
 }

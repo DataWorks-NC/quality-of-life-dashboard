@@ -12,11 +12,16 @@ const Embed = () => import('../js/views/CompassEmbed.vue');
 const routes = [
   {
     name: 'compass',
-    path: '/:locale/compass/:metric/:geographyLevel?',
+    path: '/:locale/compass/:metric/:geographyLevel?/',
     component: Compass,
   },
   {
     name: 'report',
+    path: '/:locale/report/:geographyLevel/:selectGroupType/:selectGroupName/',
+    component: Report,
+  },
+  {
+    name: 'report-base',
     path: '/:locale/report/:geographyLevel/',
     component: Report,
   },

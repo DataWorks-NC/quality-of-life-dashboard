@@ -52,7 +52,7 @@
 <script>
 import { defineAsyncComponent } from 'vue';
 import { prettyNumber } from "../../modules/number_format";
-
+import {reportStore} from '@/js/stores/report-store.js';
 import MoreInfo from "./report-more-info.vue";
 
 const TrendChart = defineAsyncComponent(() => import("../trend-chart.vue"));
@@ -77,6 +77,11 @@ export default {
       default: () => {},
     },
   },
+  data() {
+    return {
+      reportStore,
+    };
+  },
   computed: {
     years() {
       const metricYears = this.metricValues ? Object.keys(this.metricValues) : [];
@@ -89,6 +94,8 @@ export default {
       console.log('Matched ' + `#metric-${this.metric.metric}`)
       this.$el.scrollIntoView();
       window.scrollBy(0, -50);
+
+      this.reportStore.activeCategory = this.$t(`strings.metricCategories['${this.metric.category}']`);
     }
   },
   methods: {

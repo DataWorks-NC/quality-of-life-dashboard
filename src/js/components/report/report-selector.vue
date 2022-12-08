@@ -45,15 +45,15 @@
             <v-col
               v-for="category in categories"
               :key="category.originalName"
-              xs="12"
               sm="6"
               md="4"
+              cols="12"
             >
               <v-list>
                 <v-list-item
                   :active="fullyVisibleCategories.includes(category.originalName)"
                   class="metric-selector__category"
-                  :class="partiallyVisibleCategories.includes(category.originalName) && 'partially-active'"
+                  :class="partiallyVisibleCategories.includes(category.originalName) ? 'partially-active' : ''"
                   :prepend-icon="fullyVisibleCategories.includes(category.originalName) ? mdiEye : mdiEyeOff"
                   @click.prevent="toggleCategory(category)"
                 >

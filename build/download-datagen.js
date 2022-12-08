@@ -47,7 +47,7 @@ export default async function generateDownloadCSVs(allGeographyMetricsCached) {
     async.each(siteConfig.geographies, (geography, callback) => {
       // Set up output file stream to CSV
       const dataFile = fs.createWriteStream(
-        `${dest}${categoryPath}/DurhamNeighborhoodCompass-${geography.id}.csv`,
+        `${dest}${categoryPath}/DurhamNeighborhoodCompass-${categoryPath}-${geography.id}.csv`,
       );
       dataFile.on('finish', () => {
         console.log(`Wrote downloadable CSV file for ${geography.id} and category ${category}`);
@@ -64,7 +64,7 @@ export default async function generateDownloadCSVs(allGeographyMetricsCached) {
 
       // Set up output file stream to CSV
       const weightsFile = fs.createWriteStream(
-        `${dest}${categoryPath}/DurhamNeighborhoodCompass-${geography.id}-weights.csv`,
+        `${dest}${categoryPath}/DurhamNeighborhoodCompass-${categoryPath}-${geography.id}-weights.csv`,
       );
       weightsFile.on('finish', () => {
         console.log(`Wrote downloadable weights CSV file for ${geography.id} and category ${category}`);

@@ -2,44 +2,46 @@ import config from '@/js/modules/config.js';
 
 import { union, omit, difference, isArray } from 'lodash-es';
 
-function deleteFrom(array, item) {
-  return array.filter(i => i !== item);
+function deleteFrom(ary, item) {
+  return ary.filter(i => i !== item);
 }
 
 export default {
   // Note: Must inject the geography param!
   computed: {
-      allMetrics() {
-        return Object.values(config.dataConfig).filter(m => m.geographies.includes(this.geography.id));
-      },
+    allMetrics() {
+      return Object.values(config.dataConfig).
+        filter(m => m.geographies.includes(this.geography.id));
+    },
     allCategories() {
       return Array.from(new Set(this.allMetrics.map(m => m.category)));
     },
-      visibleMetrics() {
-        if (!this.$route.query.visibleMetrics) {
-          return [];
-        }
-        if (isArray(this.$route.query.visibleMetrics)) {
-          this.$route.query.visibleMetrics;
-        }
-        return [this.$route.query.visibleMetrics];
-      },
-      fullyVisibleCategories() {
-        if (!this.$route.query.visibleCategories) {
-          return Array.from(new Set(this.allMetrics.map(m => (m.category))));
-        }
-        if (isArray(this.$route.query.visibleCategories)) {
-          return this.$route.query.visibleCategories;
-        }
-        return [this.$route.query.visibleCategories];
-      },
-      partiallyVisibleCategories() {
-        const partiallyVisibleCategories = new Set();
-        this.visibleMetrics.forEach(metricId => partiallyVisibleCategories.add(config.dataConfig[`m${metricId}`].category))
-        return Array.from(partiallyVisibleCategories);
+    visibleMetrics() {
+      if (!this.$route.query.visibleMetrics) {
+        return [];
+      }
+      if (isArray(this.$route.query.visibleMetrics)) {
+        return this.$route.query.visibleMetrics;
+      }
+      return [this.$route.query.visibleMetrics];
+    },
+    fullyVisibleCategories() {
+      if (!this.$route.query.visibleCategories) {
+        return Array.from(new Set(this.allMetrics.map(m => (m.category))));
+      }
+      if (isArray(this.$route.query.visibleCategories)) {
+        return this.$route.query.visibleCategories;
+      }
+      return [this.$route.query.visibleCategories];
+    },
+    partiallyVisibleCategories() {
+      const partiallyVisibleCategories = new Set();
+      this.visibleMetrics.forEach(
+        metricId => partiallyVisibleCategories.add(config.dataConfig[`m${metricId}`].category))
+      return Array.from(partiallyVisibleCategories);
     },
     visibleCategories() {
-        return union(this.fullyVisibleCategories, this.partiallyVisibleCategories);
+      return union(this.fullyVisibleCategories, this.partiallyVisibleCategories);
     },
   },
   methods: {
@@ -101,19 +103,19 @@ export default {
       }
 
       // If metric is in a category that is fully visible, then we need to switch the category to partially visible.
-      if (this.visibleCategories.includes(category)) {
+      if (this.fullyVisibleCategories.includes(category)) {
         return {
           name: 'report',
           params: currentRoute.params,
           query: {
             ...currentRoute.query,
-            visibleCategories: deleteFrom(this.visibleCategories, category),
+            visibleCategories: deleteFrom(this.fullyVisibleCategories, category),
             visibleMetrics: union(this.visibleMetrics, this.allMetrics.filter(m => m.category === category && m.metric !== metric).map(m=> m.metric)) }};
       }
 
       // If metric is currently hidden, then we first need to check if it is the last metric in a category that would otherwise be fully visible.
       if (this.allMetrics.filter(m => m.category === category && !this.visibleMetrics.includes(m.metric)).length === 1) {
-        const newVisibleCategories = [...this.visibleCategories, category];
+        const newVisibleCategories = [...this.fullyVisibleCategories, category];
         return {
           name: 'report',
           params: currentRoute.params, query: { ...currentRoute.query,
