@@ -32,10 +32,10 @@ export default async function generateDownloadCSVs(allGeographyMetricsCached) {
   });
   directoriesToMake.forEach((name) => {
     try {
-      fs.mkdirSync(`public/${name}`);
+      fs.mkdirSync(`${name}`);
     } catch (err) {
       if (err.code !== 'EEXIST') {
-        console.error(`Error making directory public/${name}: ${err.message}`);
+        console.error(`Error making directory ${name}: ${err.message}`);
       }
     }
   });
