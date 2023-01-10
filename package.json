@@ -18,6 +18,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@juggle/resize-observer": "^3.4.0",
     "@mapbox/mapbox-gl-geocoder": "^5.0.1",
     "chartist": "^1.0",
     "core-js": "^3.6.5",
@@ -64,7 +65,6 @@
     "sass": "^1.43.2",
     "terser": "^5.15.1",
     "vite": "^3",
-    "vite-plugin-pwa": "^0.13.3",
     "vite-plugin-vuetify": "^1.0.0",
     "vite-ssg": "^0.22",
     "vue-gtag": "^2.0.1",
@@ -76,7 +76,7 @@
     }
   },
   "browserslist": [
-    "> 0.2%",
+    "> 0.05%",
     "last 2 versions",
     "not dead"
   ],

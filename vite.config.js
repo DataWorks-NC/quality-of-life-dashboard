@@ -4,7 +4,6 @@ import vuetify, {transformAssetUrls} from 'vite-plugin-vuetify';
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'url'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
-import { VitePWA } from 'vite-plugin-pwa'
 import { includedRoutes } from './src/includedRoutes.js';
 
 // https://vitejs.dev/config/
@@ -17,7 +16,7 @@ export default defineConfig({
     VueI18nPlugin({
       include: [resolve(dirname(fileURLToPath(import.meta.url)), './src/locales/*.json'),resolve(dirname(fileURLToPath(import.meta.url)), './data/locales/*.json')]
     }),
-    VitePWA({ registerType: 'autoUpdate' }),
+  //   Currently not using Vite PWA because it introduces compatibility errors with IE.
   ],
   ssr: {
     noExternal: ['vuetify', /vue-i18n/],
@@ -42,5 +41,8 @@ export default defineConfig({
     // See https://github.com/vitejs/vite/issues/5532 -- with this set to true, FF and Safari
     // load chunks twice.
     polyfill: false
+  },
+  server: {
+    port: 3000,
   },
 });

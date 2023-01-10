@@ -1,3 +1,17 @@
+// Polyfills
+import "core-js/stable";
+
+if (typeof window !== 'undefined') {
+  // Polyfill ResizeObserver for older versions of Safari.
+  (async () => {
+    if (!('ResizeObserver' in window)) {
+      // Loads polyfill asynchronously, only if required.
+      const module = await import('@juggle/resize-observer');
+      window.ResizeObserver = module.ResizeObserver;
+    }
+  })();
+}
+
 import {ViteSSG} from 'vite-ssg';
 import VueGtag from 'vue-gtag';
 
@@ -10,6 +24,7 @@ import {Head} from '@vueuse/head';
 
 import '@/scss/main.scss';
 import {debugLog} from './js/modules/tracking';
+
 
 export const createApp = ViteSSG(
   App,

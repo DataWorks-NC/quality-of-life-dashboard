@@ -206,3 +206,9 @@ textarea {
 .v-menu__content.menuable__content__active {
   background: white;
 }
+
+// Fix for svg icons on older browsers
+svg.v-icon__svg {
+  width: 24px;
+  height: 24px;
+}
