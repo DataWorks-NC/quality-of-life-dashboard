@@ -11,6 +11,8 @@
 </template>
 
 <script>
+import 'mapbox-gl/dist/mapbox-gl.css';
+
 import { isFinite } from 'lodash-es';
 import { defineAsyncComponent } from 'vue';
 import { store } from '@/js/stores/compass-store.js';

@@ -20,7 +20,9 @@ export default {
     }
   },
   methods: {
-    initFromRoute(metricChanged = true, geographyChanged = true) {
+    async initFromRoute(metricChanged = true, geographyChanged = true) {
+      // TODO: Return if data already loaded.
+
       // Base metric info.
       const metricId = this.$route.params.metric;
 
@@ -39,7 +41,7 @@ export default {
         this.store.highlight = [];
       }
       if (metricChanged || geographyChanged) {
-        this.loadMetricData();
+        await this.loadMetricData();
       }
     },
     async loadMetricData() {

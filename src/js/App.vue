@@ -9,6 +9,7 @@
 import {useHead} from '@vueuse/head';
 import {computed} from 'vue';
 
+
 export default {
   name: 'App',
   provide() {
@@ -88,17 +89,14 @@ export default {
       ]
     });
   },
-  mounted() {
-    import(/* webpackChunkName: "mapboxgl" */ 'mapbox-gl').then((mapboxgl) => {
-      if (!mapboxgl || !mapboxgl.prewarm) {
-        return;
-      }
-      mapboxgl.prewarm();
-      import(/* webpackChunkName: "mapboxgl" */ 'mapbox-gl/dist/mapbox-gl.css').then(() => {
-        this.mapboxglLoaded = true;
-        this.mapboxgl = mapboxgl;
-      });
-    });
+  async mounted() {
+    const mapboxgl = await import('mapbox-gl');
+    if (!mapboxgl || !mapboxgl.prewarm) {
+      return;
+    }
+    mapboxgl.prewarm();
+    this.mapboxglLoaded = true;
+    this.mapboxgl = mapboxgl;
   },
 };
 </script>

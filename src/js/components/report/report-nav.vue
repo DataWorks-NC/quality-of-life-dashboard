@@ -6,7 +6,9 @@
       </router-link>
     </v-toolbar-title>
     <div class="flex-grow-1" />
-    <report-selector />
+    <ClientOnly>
+      <report-selector />
+    </ClientOnly>
     <div class="flex-grow-1" />
     <v-btn variant="text" @click="swapLanguage()">
       {{ $t('strings.ChangeLanguage') }}

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "NODE_OPTIONS=--max-old-space-size=8192 vite-ssg build",
+    "build": "NODE_OPTIONS=--max-old-space-size=8192 NODE_ENV=production vite-ssg build",
     "serve": "vite preview",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
     "build-data": "babel-node ./build/datagen.js && babel-node ./build/report-datagen.js && ./build/generate_download.sh",

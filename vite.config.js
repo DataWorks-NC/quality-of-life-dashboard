@@ -24,12 +24,8 @@ export default defineConfig({
     noExternal: ['vuetify', /vue-i18n/],
   },
   ssgOptions: {
-    concurrency: 50,
-    crittersOptions: {
-      // E.g., change the preload strategy
-      preload: "media",
-      // Other options: https://github.com/GoogleChromeLabs/critters#usage
-    },
+    concurrency: 10,
+    crittersOptions: false,
     script: 'async defer',
     formatting: 'minify',
     includedRoutes,

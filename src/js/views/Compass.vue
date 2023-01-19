@@ -146,19 +146,24 @@ export default {
       this.setPrintClass();
     },
   },
-  created() {
-    this.initFromRoute();
-    this.$watch(() => this.$route.params, (newParams, oldParams) => {
-      this.initFromRoute(newParams.metric !== oldParams.metric, newParams.geographyLevel !== oldParams.geographyLevel);
+  async serverPrefetch() {
+    await this.initFromRoute();
+    this.setMetadata();
+  },
+  async created() {
+      if (!import.meta.env.SSR) {
+        await this.initFromRoute();
+      }
+  },
+  async mounted() {
+    this.setMetadata();
+    this.$watch(() => this.$route.params, async (newParams, oldParams) => {
+      await this.initFromRoute(newParams.metric !== oldParams.metric, newParams.geographyLevel !== oldParams.geographyLevel);
     });
     this.$watch(() => this.$route.query.printMode, (newMode) => {
       this.printMode = newMode;
       this.setPrintClass();
     });
-
-    this.setMetadata();
-  },
-  mounted() {
     this.setPrintClass();
   },
   methods: {

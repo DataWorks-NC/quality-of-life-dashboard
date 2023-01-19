@@ -8,7 +8,7 @@ const cache = {
 let readFileSync = null;
 let fileExists = null;
 if (import.meta.env.SSR) {
-  import('fs').then(({ readFileSync: readFileSyncFunc, existsSync }) => { readFileSync = readFileSyncFunc; fileExists = existsSync; });
+  import('node:fs').then(({ readFileSync: readFileSyncFunc, existsSync }) => { readFileSync = readFileSyncFunc; fileExists = existsSync; });
 }
 
 async function fetchResponseJSON(path) {

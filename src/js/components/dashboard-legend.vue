@@ -133,7 +133,6 @@ export default {
       }
     },
     cyclePosition() {
-      console.log('Change position');
       if (this.position === 'top-left') {
         this.position = 'bottom-left';
       } else if (this.position === 'bottom-left') {

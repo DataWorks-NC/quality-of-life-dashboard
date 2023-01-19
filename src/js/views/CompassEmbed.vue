@@ -40,10 +40,15 @@ export default {
       legendTitle: computed(() => this.legendTitle),
     };
   },
-  created() {
-    this.initFromRoute();
-    this.$watch(() => this.$route.params, (newParams, oldParams) => {
-      this.initFromRoute(newParams.metric !== oldParams.metric, newParams.geographyLevel !== oldParams.geographyLevel);
+  async serverPrefetch() {
+    await this.initFromRoute();
+  },
+  async created() {
+    await this.initFromRoute();
+  },
+  async mounted() {
+    this.$watch(() => this.$route.params, async (newParams, oldParams) => {
+      await this.initFromRoute(newParams.metric !== oldParams.metric, newParams.geographyLevel !== oldParams.geographyLevel);
     });
   },
 };

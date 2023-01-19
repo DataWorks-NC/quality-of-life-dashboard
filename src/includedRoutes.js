@@ -23,12 +23,13 @@ export function includedRoutes() {
         `/${lang}/report/tract/`,
       ].concat(Object.values(useDataConfig).filter(m => !m.exclude_from_map).flatMap(
         m => m.geographies.flatMap(
-          g => [`/${lang}/compass/${m.metric}/${g}/`,`/${lang}/embed/${m.metric}/${g}/`]),
-      ))
-        // TODO: Expand to use all selectgroup types once memory leak fixed in vite-ssg.
-        // @see https://github.com/antfu/vite-ssg/issues/210
-        .concat(Object.keys(useSelectGroupConfig).flatMap(t => ['blockgroup','tract'].flatMap(l => Object.keys(useSelectGroupConfig[t][l]).flatMap(n => [
-        `/${lang}/report/${l}/${encodeURIComponent(t)}/${encodeURIComponent(n)}/`
-      ]))))
-    )).sort(() => Math.random() - 0.5);
+          g => [`/${lang}/compass/${m.metric}/${g}/`, `/${lang}/embed/${m.metric}/${g}/`]),
+      )).concat(
+        Object.keys(useSelectGroupConfig).
+          flatMap(t => ['blockgroup', 'tract'].flatMap(
+            l => Object.keys(useSelectGroupConfig[t][l]).flatMap(n => [
+              `/${lang}/report/${l}/${encodeURIComponent(t)}/${encodeURIComponent(n)}/`
+            ])))
+      )
+    ));
 }

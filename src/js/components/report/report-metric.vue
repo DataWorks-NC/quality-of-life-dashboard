@@ -47,7 +47,9 @@
       </ClientOnly>
     </div>
     <div class="spacer" />
-    <MoreInfo :href="`/data/meta/${$i18n.locale}/m${metric.metric}.html`" />
+    <ClientOnly>
+      <MoreInfo :href="`/data/meta/${$i18n.locale}/m${metric.metric}.html`" />
+    </ClientOnly>
   </div>
 </template>
 
@@ -93,7 +95,6 @@ export default {
   },
   mounted() {
     if (this.$route.hash === `#metric-${this.metric.metric}`) {
-      console.log('Matched ' + `#metric-${this.metric.metric}`)
       this.$el.scrollIntoView();
       window.scrollBy(0, -50);
 

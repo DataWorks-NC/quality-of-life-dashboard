@@ -8,7 +8,9 @@
           :summary-metrics="summaryMetrics"
         />
         <div class="spacer" />
-        <report-body />
+        <ClientOnly>
+          <report-body />
+        </ClientOnly>
       </v-container>
     </v-main>
     <dashboard-footer />
@@ -88,22 +90,25 @@ export default {
         []
     },
     reportTitle() {
+      let title = '';
       if (this.selectGroupName) {
-        return `${this.selectGroupName} (${this.selectGroupType})`;
+        title = `${this.selectGroupName} (${this.selectGroupType})`;
       }
       if (this.areaNames.length) {
-        return this.areaNames.join(', ');
+        title = this.areaNames.join(', ');
       }
 
-      return this.$t('strings.DurhamCounty');
+      title = this.$t('strings.DurhamCounty');
+      return `${title} - ${this.$t('strings.DurhamNeighborhoodCompass')}`;
     },
   },
   watch: {
     selected() { this.loadData(); }
   },
+  async serverPrefetch() {
+    await this.loadData();
+  },
   created() {
-    this.loadData();
-
     useHead({
       title: this.reportTitle,
       meta: [
@@ -127,12 +132,15 @@ export default {
     });
   },
   async mounted() {
-    this.intersectionObserver = new IntersectionObserver(
-      this.onElementObserved,
-      {
-        root: null,
-      }
-    );
+    if (!import.meta.env.SSR) {
+      await this.loadData();
+      this.intersectionObserver = new IntersectionObserver(
+        this.onElementObserved,
+        {
+          root: null,
+        }
+      );
+    }
   },
   beforeUnmount() {
     this.intersectionObserver.disconnect();
