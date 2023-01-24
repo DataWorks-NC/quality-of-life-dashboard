@@ -12,18 +12,18 @@
     <p class="geography-switcher--instructions">
       {{ $t('geographySwitcher.instructions') }}
     </p>
-    <select-group class="geography-switcher--instructions" />
+    <select-group-selector class="geography-switcher--instructions" />
   </v-card>
 </template>
 
 <script>
-import SelectGroup from './select-group.vue';
+import SelectGroupSelector from './SelectGroupSelector.vue';
 
 import config from '../modules/config';
 
 export default {
   name: 'GeographySwitcher',
-  components: { SelectGroup },
+  components: { SelectGroupSelector },
   inject: ['metric'],
   computed: {
     validGeographies() {

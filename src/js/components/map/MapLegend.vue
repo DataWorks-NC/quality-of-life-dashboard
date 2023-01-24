@@ -53,18 +53,18 @@
 <script>
 import { store } from '@/js/stores/compass-store.js';
 
-import config from '../modules/config';
+import config from '../../modules/config';
 import { mdiCursorMove } from '@mdi/js';
 
-import brushBreaksCategoriesMixin from './mixins/brushBreaksCategoriesMixin';
+import brushBreaksCategoriesMixin from '../mixins/brushBreaksCategoriesMixin';
 import {
   legendLabelNumber, prettyNumber,
-} from '../modules/number_format';
-import { calcValue, wValsToArray, sum } from '../modules/metric_calculations';
+} from '../../modules/number_format';
+import { calcValue, wValsToArray, sum } from '../../modules/metric_calculations';
 
 export default {
   // You would think to just name this component 'Legend', but <legend> is in the HTML5 spec!
-  name: 'DashboardLegend',
+  name: 'MapLegend',
   mixins: [brushBreaksCategoriesMixin,],
   inject: [
     'selected', 'metric', 'legendTitle'

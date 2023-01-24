@@ -23,7 +23,7 @@
 import { mdiInformation } from '@mdi/js';
 import { gaEvent } from '../../modules/tracking';
 import config from '../../modules/config';
-import ReportSelector from './report-selector.vue';
+import ReportSelector from './ReportSelector.vue';
 
 export default {
   name: 'ReportNav',

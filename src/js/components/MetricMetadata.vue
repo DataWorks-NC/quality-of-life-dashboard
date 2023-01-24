@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import {fetchResponseHTML, fetchResponseHTMLSync} from '@/js/modules/fetch.js';
+import {fetchResponseHTML} from '@/js/modules/fetch.js';
 import getSubstringIndex from '@/js/modules/substring-nth.js';
 import handleLinksMixin from '@/js/components/mixins/handleLinksMixin.js';
 
@@ -72,9 +72,8 @@ export default {
     async loadMetricMetadata() {
       if (this.metricId) {
         const path = `/data/meta/${this.locale}/m${this.metricId}.html`;
-
         if (import.meta.env.SSR) {
-          this.metadata = fetchResponseHTMLSync(path);
+          this.metadata = fetchResponseHTML(path);
         } else {
           this.metadata = await fetchResponseHTML(path);
         }

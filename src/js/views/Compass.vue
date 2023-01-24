@@ -65,20 +65,20 @@ import loadMetricDataMixin from '@/js/components/mixins/loadMetricDataMixin.js';
 import {calcValue} from '../modules/metric_calculations';
 
 // TODO: Check which components have a heavier bundle and only make those ones async loaded.
-import DashboardFooter from "../components/dashboard-footer.vue";
-import DataTable from "../components/datatable.vue";
-import Feedback from "../components/feedback.vue";
-import GeographySwitcher from "../components/geography-switcher.vue";
-import MetricMetadata from "../components/metric-metadata.vue";
-import PrintMode from "../components/print-mode.vue";
-import Social from "../components/social.vue";
-import UndermapButtons from "../components/undermap-buttons.vue";
+import DashboardFooter from "../components/DashboardFooter.vue";
+import DataTable from "../components/DataTable.vue";
+import Feedback from "../components/Feedback.vue";
+import GeographySwitcher from "../components/GeographySwitcher.vue";
+import MetricMetadata from "../components/MetricMetadata.vue";
+import PrintMode from "../components/PrintMode.vue";
+import Social from "../components/Social.vue";
+import UndermapButtons from "../components/UndermapButtons.vue";
 import CompassNav from "../components/CompassNav.vue";
 
 const MapContainer = defineAsyncComponent(() => import("../components/map/MapContainer.vue"));
-const DistributionChart = defineAsyncComponent(() => import("../components/distribution-chart.vue"));
-const TrendChart = defineAsyncComponent(() => import("../components/trend-chart.vue"));
-const YearSlider = defineAsyncComponent(() => import("../components/year-slider.vue"));
+const DistributionChart = defineAsyncComponent(() => import("../components/DistributionChart.vue"));
+const TrendChart = defineAsyncComponent(() => import("../components/TrendChart.vue"));
+const YearSlider = defineAsyncComponent(() => import("../components/YearSlider.vue"));
 
 export default {
   name: "Compass",

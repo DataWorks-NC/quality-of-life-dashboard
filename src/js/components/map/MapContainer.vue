@@ -6,7 +6,7 @@
       <select-group-outline v-if="mapLoaded && selectGroupName" :map="map" :select-group-name="selectGroupName" @layers-loaded="rescale" />
       <geocoder v-if="mapLoaded && !printMode" :map="map" />
     </div>
-    <dashboard-legend />
+    <map-legend />
   </div>
 </template>
 
@@ -21,7 +21,7 @@ import { prettyNumber } from '@/js/modules/number_format';
 import FullExtent from '@/js/modules/map-fullextent';
 import config from '@/js/modules/config';
 import osmLiberty from '@/assets/osm-liberty.json';
-import DashboardLegend from "../dashboard-legend.vue";
+import MapLegend from "./MapLegend.vue";
 import debugLogMixin from '../mixins/debugLogMixin';
 
 const Geocoder = defineAsyncComponent(() => import('./Geocoder.vue'));
@@ -35,7 +35,7 @@ export default {
   components: {
     Geocoder,
     SelectedLayers,
-    DashboardLegend,
+    MapLegend,
     SelectGroupOutline,
   },
   mixins: [debugLogMixin],

@@ -57,12 +57,12 @@
 import { defineAsyncComponent } from 'vue';
 import { prettyNumber } from "../../modules/number_format";
 import {reportStore} from '@/js/stores/report-store.js';
-import MoreInfo from "./report-more-info.vue";
+import MoreInfo from "./ReportMoreInfo.vue";
 
-const TrendChart = defineAsyncComponent(() => import("../trend-chart.vue"));
+const TrendChart = defineAsyncComponent(() => import("../TrendChart.vue"));
 
 export default {
-  name: "ReportMetric",
+  name: "ReportMetricCard",
   components: {
     MoreInfo,
     TrendChart,

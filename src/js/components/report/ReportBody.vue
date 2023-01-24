@@ -1,18 +1,18 @@
 <template>
   <div>
-    <ReportCategory v-for="c in categories" :key="c.name" :category="c" :metric-values="metricValues[c.originalName]" :county-averages="countyAverages[c.originalName]" />
+    <ReportCategorySection v-for="c in categories" :key="c.name" :category="c" :metric-values="metricValues[c.originalName]" :county-averages="countyAverages[c.originalName]" />
   </div>
 </template>
 
 <script>
 import reportCategoriesFromRouteMixin
   from '@/js/components/mixins/reportCategoriesFromRouteMixin.js';
-import ReportCategory from './report-category.vue';
+import ReportCategorySection from './ReportCategorySection.vue';
 
 export default {
   name: 'ReportBody',
   components: {
-    ReportCategory,
+    ReportCategorySection,
   },
   mixins: [reportCategoriesFromRouteMixin],
   inject: ['metricValues', 'countyAverages', 'geography'],

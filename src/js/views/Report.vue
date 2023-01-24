@@ -26,11 +26,11 @@ import { reportStore } from '@/js/stores/report-store.js';
 import config from '../modules/config';
 const categoryNamesBase = new Array(...new Set(Object.values(config.dataConfig).map(m => (m.category))));
 
-import DashboardFooter from '../components/dashboard-footer.vue';
-import ReportSummary from '../components/report/report-summary.vue';
-import ReportBody from '../components/report/report-body.vue';
-import ReportNav from '../components/report/report-nav.vue';
-import ReportJumpNav from '../components/report/report-jump-nav.vue';
+import DashboardFooter from '../components/DashboardFooter.vue';
+import ReportSummary from '../components/report/ReportSummary.vue';
+import ReportBody from '../components/report/ReportBody.vue';
+import ReportNav from '../components/report/ReportNav.vue';
+import ReportJumpNav from '../components/report/ReportJumpNav.vue';
 import {xor} from 'lodash-es';
 import {fetchResponseJSON} from '@/js/modules/fetch.js';
 import {useHead} from '@vueuse/head';
@@ -226,7 +226,7 @@ export default {
 
     // eslint-disable-next-line no-unused-vars
     async loadCountyAverages() {
-      if (Object.values(this.countyAverages).length) return;
+      if (Object.values(this.countyAverages).length > 0) return;
       return fetchResponseJSON('/data/report/county_averages.json')
       .then((data) => {
         const countyAverages = {};

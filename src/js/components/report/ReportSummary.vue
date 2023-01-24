@@ -58,7 +58,7 @@
 import { defineAsyncComponent} from 'vue';
 import { prettyNumber } from "../../modules/number_format";
 
-const ReportMap = defineAsyncComponent(() => import("./report-map.vue"));
+const ReportMap = defineAsyncComponent(() => import("./ReportMap.vue"));
 
 export default {
   name: "ReportSummary",

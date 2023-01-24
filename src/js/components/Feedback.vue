@@ -13,7 +13,7 @@
 <script>
 import { mdiOpenInNew } from "@mdi/js";
 import config from '../modules/config';
-import MailchimpSignup from './mailchimp-signup.vue';
+import MailchimpSignup from './MailchimpSignup.vue';
 
 export default {
   name: 'Feedback',

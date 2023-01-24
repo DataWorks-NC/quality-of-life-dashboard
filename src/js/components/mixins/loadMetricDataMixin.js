@@ -1,6 +1,6 @@
 import config from '@/js/modules/config.js';
 import {gaEvent} from '@/js/modules/tracking.js';
-import {fetchResponseJSON, fetchResponseJSONSync} from '@/js/modules/fetch.js';
+import {fetchResponseJSON} from '@/js/modules/fetch.js';
 import {calcValue, sum, wValsToArray} from '@/js/modules/metric_calculations.js';
 import jenksBreaks from '@/js/modules/jenksbreaks.js';
 import {store} from '@/js/stores/compass-store.js';
@@ -50,11 +50,8 @@ export default {
       const path = `/data/metric/${this.geography.id}/m${this.metric.id}.json`;
 
       let metricJSON = {};
-      if (import.meta.env.SSR) {
-        metricJSON = fetchResponseJSONSync(path);
-      } else {
-        metricJSON = await fetchResponseJSON(path);
-      }
+      metricJSON = await fetchResponseJSON(path);
+
       if (!metricJSON) {
         return;
       }

@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import ExternalLink from "./external-link.vue";
+import ExternalLink from "./ExternalLink.vue";
 import handleLinksMixin from '@/js/components/mixins/handleLinksMixin.js';
 
 export default {

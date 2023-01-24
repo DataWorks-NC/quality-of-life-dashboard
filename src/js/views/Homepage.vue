@@ -24,11 +24,11 @@
 </template>
 <script>
 
-import DashboardFooter from "../components/dashboard-footer.vue";
-import Feedback from "../components/feedback.vue";
-import Social from "../components/social.vue";
+import DashboardFooter from "../components/DashboardFooter.vue";
+import Feedback from "../components/Feedback.vue";
+import Social from "../components/Social.vue";
 import CompassNav from "../components/CompassNav.vue";
-import HomepageContents from '@/js/components/homepage-contents.vue';
+import HomepageContents from '@/js/components/HomepageContents.vue';
 
 export default {
   name: 'Homepage',

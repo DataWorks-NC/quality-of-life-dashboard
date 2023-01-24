@@ -27,7 +27,7 @@ import {
   mdiTwitter, mdiFacebook, mdiPrinter, mdiWhatsapp,
 } from '@mdi/js';
 
-import ExternalLink from './external-link.vue';
+import ExternalLink from './ExternalLink.vue';
 
 export default {
   name: 'Social',

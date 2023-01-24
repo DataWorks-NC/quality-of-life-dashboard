@@ -26,7 +26,7 @@
 
 <script>
 import config from '../modules/config';
-import ExternalLink from '@/js/components/external-link.vue';
+import ExternalLink from '@/js/components/ExternalLink.vue';
 
 // TODO: Add transitions.
 

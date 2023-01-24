@@ -13,7 +13,7 @@
           <template v-for="m in validMetrics" :key="m.metric">
             <v-row>
               <v-col cols="12">
-                <ReportMetric
+                <ReportMetricCard
                   :metric="m"
                   :metric-values="metricValues ? metricValues[m.metric] : null"
                   :county-averages="countyAverages ? countyAverages[m.metric] : null"
@@ -30,11 +30,11 @@
 </template>
 
 <script>
-import ReportMetric from "./report-metric.vue";
+import ReportMetricCard from "./ReportMetricCard.vue";
 export default {
-  name: "ReportCategory",
+  name: "ReportCategorySection",
   components: {
-    ReportMetric,
+    ReportMetricCard,
   },
   inject: ['intersectionObserver'],
   props: {

@@ -25,7 +25,7 @@
 import config from '../modules/config';
 
 export default {
-  name: 'SelectGroup',
+  name: 'SelectGroupSelector',
   inject: ['geography'],
   data() {
     return {

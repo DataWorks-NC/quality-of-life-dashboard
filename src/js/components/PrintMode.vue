@@ -37,11 +37,12 @@
 <script>
 import { mdiPrinter, mdiArrowLeft } from "@mdi/js";
 import { defineAsyncComponent } from 'vue';
-import PrintMapHeader from './print-map-header.vue';
+import PrintMapHeader from './PrintMapHeader.vue';
 
 const MapContainer = defineAsyncComponent(() => import('./map/MapContainer.vue'));
 
 export default {
+  // TODO: Consider making this a top-level view rather than a subcomponent of Compass.
   name: 'PrintMode',
   components: {
     MapContainer,

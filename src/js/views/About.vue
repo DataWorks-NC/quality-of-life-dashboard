@@ -7,7 +7,7 @@
           <v-row>
             <v-col cols="12" md="8">
               <v-card>
-                <AboutContents />
+                <AboutPageContents />
               </v-card>
             </v-col>
             <v-col cols="12" md="4">
@@ -25,15 +25,15 @@
 
 <script>
 import CompassNav from '../components/CompassNav.vue';
-import DashboardFooter from '../components/dashboard-footer.vue';
-import Feedback from '../components/feedback.vue';
-import Social from '../components/social.vue';
-import AboutContents from '@/js/components/about-contents.vue';
+import DashboardFooter from '../components/DashboardFooter.vue';
+import Feedback from '../components/Feedback.vue';
+import Social from '../components/Social.vue';
+import AboutPageContents from '@/js/components/AboutPageContents.vue';
 
 export default {
   name: 'About',
   components: {
-    AboutContents,
+    AboutPageContents,
     Feedback,
     CompassNav,
     DashboardFooter,
