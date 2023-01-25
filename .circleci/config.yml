@@ -131,12 +131,15 @@ workflows:
               only:
                 staging
       - deploy_dev:
+          requires:
+            - build
           filters:
             branches:
               only:
                 develop
-
       - deploy_prod:
+          requires:
+            - build
           filters:
             branches:
               only:
