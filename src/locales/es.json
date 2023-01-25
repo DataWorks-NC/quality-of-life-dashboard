@@ -43,6 +43,15 @@
  "dashboard": {
   "moveToC": "Haga clic para mover Tabla de Contenido"
  },
+ "search": {
+   "search": "TODO",
+   "noResults": "TODO",
+   "getInTouch": "TODO",
+   "startTyping": "TODO",
+   "placeholder": "TODO",
+   "all": "TODO",
+   "less": "TODO"
+ },
  "distributionChart": {
   "DataDistribution": "Distribución de los datos"
  },

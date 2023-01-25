@@ -11,17 +11,20 @@
           <v-toolbar-title>{{ $t('strings.chooseATopic') }}</v-toolbar-title>
         </v-toolbar>
         <v-list nav>
-          <v-text-field ref="searchFieldMobile" v-model="searchText" :label="$t('search.placeholder')" variant="underlined">
-            <template #prepend-inner>
-              <v-icon :icon="icons.mdiMagnify" />
-            </template>
-            <template #append>
-              <v-btn icon @click="closeSearch">
-                <v-icon :icon="icons.mdiClose" />
-              </v-btn>
-            </template>
-          </v-text-field>
-          <MetricSearchResults v-if="searchText !== ''" :search-text="searchText" mobile />
+          <v-form @submit.prevent="focusResults()">
+            <v-text-field ref="searchFieldMobile" v-model="searchText" :label="$t('search.placeholder')" variant="underlined">
+              <template #prepend-inner>
+                <v-icon :icon="icons.mdiMagnify" />
+              </template>
+              <template #append>
+                <v-btn icon @click="closeSearch">
+                  <v-icon :icon="icons.mdiClose" />
+                </v-btn>
+              </template>
+            </v-text-field>
+            <input type="submit" hidden>
+          </v-form>
+          <MetricSearchResults v-if="searchText !== ''" ref="searchResults" :search-text="searchText" mobile />
           <v-list-group v-for="category in categories" v-else :key="category.id" :value="category.id">
             <template #activator="{ props }">
               <v-list-item v-bind="props">
@@ -67,16 +70,18 @@
       <v-btn v-if="!isSearching" icon :aria-label="$t('search.search')" class="d-none d-md-block" @click.stop="openSearch">
         <v-icon :icon="icons.mdiMagnify" />
       </v-btn>
-      <v-text-field v-else ref="searchField" v-model="searchText" :label="$t('search.placeholder')" variant="underlined" class="searchField--desktop">
-        <template #prepend-inner>
-          <v-icon :icon="icons.mdiMagnify" />
-        </template>
-        <template #append>
-          <v-btn icon @click="closeSearch">
-            <v-icon :icon="icons.mdiClose" />
-          </v-btn>
-        </template>
-      </v-text-field>
+      <v-form v-else class="searchForm--desktop" role="search" @submit.prevent="focusResults()">
+        <v-text-field ref="searchField" v-model="searchText" :label="$t('search.placeholder')" variant="underlined" class="searchField--desktop" type="search">
+          <template #prepend-inner>
+            <v-icon :icon="icons.mdiMagnify" />
+          </template>
+          <template #append>
+            <v-btn icon @click="closeSearch">
+              <v-icon :icon="icons.mdiClose" />
+            </v-btn>
+          </template>
+        </v-text-field>
+      </v-form>
 
       <!-- Desktop nav -->
       <template #extension>
@@ -136,7 +141,7 @@
             </template>
           </v-window-item>
           <v-window-item key="searchResults" value="searchResults">
-            <MetricSearchResults :search-text="searchText" />
+            <MetricSearchResults ref="searchResults" :search-text="searchText" />
           </v-window-item>
         </v-window>
       </v-sheet>
@@ -231,12 +236,15 @@ export default {
       this.isSearching = true;
       this.oldCategoryTab = this.categoryTab;
       this.categoryTab = 'searchResults';
-      this.$nextTick(() => { this.$refs.searchField.focus(); });
+      this.$nextTick(() => { this.$refs.searchField.$el.focus(); });
     },
     closeSearch() {
       this.isSearching = false;
       this.categoryTab = this.oldCategoryTab;
       this.searchText = '';
+    },
+    focusResults() {
+      this.$refs.searchResults.$el.children[0].focus();
     },
     swapLanguage() {
       let newLanguage = 'es';
@@ -278,6 +286,10 @@ export default {
 }
 
 // Search field.
+.searchForm--desktop {
+  flex: 1 1 auto;
+}
+
 .v-input {
   height: var(--v-input-control-height);
 }

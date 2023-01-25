@@ -45,7 +45,9 @@
    "noResults": "Sorry, no metric names matched your search. If you'd like to suggest a metric, you can {0}!",
    "getInTouch": "get in touch with us",
    "startTyping": "Start typing to see search results",
-   "placeholder": "Enter metric name to search"
+   "placeholder": "Enter metric name to search",
+   "all": "Show all results",
+  "less": "Show fewer results"
  },
  "dashboard": {
   "moveToC": "Click to move Table of Contents"
