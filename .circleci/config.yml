@@ -13,10 +13,6 @@ jobs:
     steps:
       - checkout
       - run: git clone https://github.com/DataWorks-NC/durham-quality-of-life-data.git data
-#        TODO: Remove this step once fully upgraded
-      - run:
-          command: git checkout develop
-          working_directory: data
 
       # Download and cache dependencies
       - restore_cache:
