@@ -3,10 +3,9 @@
 </template>
 
 <script>
-import { uniqBy } from 'lodash';
+import { uniqBy } from 'lodash-es';
 
 import MapboxGlGeocoder from '@mapbox/mapbox-gl-geocoder';
-import { mapGetters, mapState } from 'vuex';
 
 import debugLogMixin from '../mixins/debugLogMixin';
 import config from '../../modules/config';
@@ -16,6 +15,7 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 export default {
   name: 'Geocoder',
   mixins: [debugLogMixin],
+  inject: ['mapboxgl', 'geography', 'selected'],
   props: {
     map: {
       type: Object,
@@ -29,13 +29,6 @@ export default {
     };
   },
   computed: {
-    ...mapState(
-      ['geography'],
-    ),
-    ...mapGetters(['selected']),
-    mapboxgl() {
-      return this.$root.mapboxgl;
-    },
     selectGroups() {
       const categories = Object.keys(this.selectGroupsData);
       const selectGroups = {};
@@ -60,7 +53,7 @@ export default {
     this.addressMarker = null;
     this.initGeocoder();
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.map) {
       this.map.removeControl(this.geocoder);
     }

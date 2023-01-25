@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
   <div class="map-container" style="min-height:600px;">
     <div class="" style="position: relative; width: 100%; height: 100%">
       <div id="map" />
@@ -6,24 +6,28 @@
       <select-group-outline v-if="mapLoaded && selectGroupName" :map="map" :select-group-name="selectGroupName" @layers-loaded="rescale" />
       <geocoder v-if="mapLoaded && !printMode" :map="map" />
     </div>
-    <dashboard-legend />
+    <map-legend />
   </div>
 </template>
 
 <script>
-import { isFinite } from 'lodash';
-import { mapGetters, mapState } from 'vuex';
+import 'mapbox-gl/dist/mapbox-gl.css';
 
-import { prettyNumber } from '../../modules/number_format';
-import FullExtent from '../../modules/map-fullextent';
-import config from '../../modules/config';
+import { isFinite } from 'lodash-es';
+import { defineAsyncComponent } from 'vue';
+import { store } from '@/js/stores/compass-store.js';
 
-import DashboardLegend from "../dashboard-legend.vue";
+import { prettyNumber } from '@/js/modules/number_format';
+import FullExtent from '@/js/modules/map-fullextent';
+import config from '@/js/modules/config';
+import osmLiberty from '@/assets/osm-liberty.json';
+import MapLegend from "./MapLegend.vue";
 import debugLogMixin from '../mixins/debugLogMixin';
 
-const Geocoder = () => import(/* webpackChunkName: "geocoder" */ './Geocoder.vue');
-const SelectGroupOutline = () => import(/* webpackChunkName: "select-group-outline" */ './SelectGroupOutline.vue');
-const SelectedLayers = () => import(/* webpackChunkName: "selected-layers" */ './SelectedLayers.vue');
+const Geocoder = defineAsyncComponent(() => import('./Geocoder.vue'));
+const SelectGroupOutline = defineAsyncComponent(() => import('./SelectGroupOutline.vue'));
+const SelectedLayers = defineAsyncComponent(() => import('./SelectedLayers.vue'));
+const mapConfig = config.mapConfig;
 
 export default {
   // You would think to just name this component 'Map', but <map> is in the HTML5 spec!
@@ -31,36 +35,24 @@ export default {
   components: {
     Geocoder,
     SelectedLayers,
-    DashboardLegend,
+    MapLegend,
     SelectGroupOutline,
   },
   mixins: [debugLogMixin],
-  props: {
-    mapConfig: {
-      type: Object,
-      required: true,
-    },
-  },
-
+  inject: ['mapboxgl','metric','geography','breaks', 'selectGroupName', 'selectGroupType', 'selected', 'printMode'],
   data() {
     return {
       locationPopup: null,
       mapLoaded: false,
       map: null,
       colors: config.colors,
+      store,
     };
   },
 
   computed: {
-    ...mapState(
-      ['breaks', 'geography', 'highlight', 'metric', 'metricId', 'printMode', 'year'],
-    ),
-    ...mapGetters(['selected', 'selectGroupName', 'selectGroupType']),
-    mapboxgl() {
-      return this.$root.mapboxgl;
-    },
     metricData() {
-      if (this.metric) {
+      if (this.metric.loaded) {
         return this.metric.data;
       }
       return {};
@@ -68,9 +60,9 @@ export default {
 
     // Returns a Mapbox GL Expression assigning tract/blockgroup values to the color which matches their metric value
     // using this.colors and this.breaks to set colors and break values. Also highlights tracts/blockgroups in yellow
-    // when their IDs are in this.highlight.
+    // when their IDs are in this.store.highlight.
     colorMap() {
-      if (!this.metricData) return;
+      if (!this.metric.loaded) return;
 
       // Array of arrays of IDs. Places 0-4 correspond to choropleth colors 1-5 and place 5 corresponds to highlight.
       const stops = [[], [], [], [], [], []];
@@ -93,8 +85,8 @@ export default {
       };
 
       Object.keys(this.metricData.map).forEach((id) => {
-        const value = this.metricData.map[id][`y_${this.year}`];
-        if (this.highlight.indexOf(id) !== -1) {
+        const value = this.metricData.map[id][`y_${this.store.year}`];
+        if (this.store.highlight.indexOf(id) !== -1) {
           stops[5].push(id);
         } else if (isFinite(value) && (getStop(value) !== null)) {
           try {
@@ -133,7 +125,7 @@ export default {
     this.hoverPopup = null;
     this.initMap();
   },
-  destroyed() {
+  unmounted() {
     this.map.remove();
   },
   methods: {
@@ -141,9 +133,9 @@ export default {
       const mapOptions = {
         container: 'map',
         attributionControl: false,
-        // eslint-disable-next-line global-require
-        style: require('@/assets/osm-liberty.json'),
-        ...this.mapConfig,
+        style: osmLiberty,
+        ...mapConfig,
+        trackResize: !this.printMode,
         accessToken: config.privateConfig.mapboxAccessToken,
       };
       this.map = new this.mapboxgl.Map(mapOptions);
@@ -216,7 +208,7 @@ export default {
 
       // on feature click add or remove from selected set
       map.on('click', (e) => {
-        const features = map.queryRenderedFeatures(e.point, { layers: [`${_this.geography.id}-fill`] }).filter(f => _this.metric.data.map[f.properties.id][`y_${_this.year}`] !== null); // Only allow select when metric value is not null;
+        const features = map.queryRenderedFeatures(e.point, { layers: [`${_this.geography.id}-fill`] }).filter(f => _this.metric.data.map[f.properties.id][`y_${_this.store.year}`] !== null); // Only allow select when metric value is not null;
         if (!features.length) {
           return;
         }
@@ -232,42 +224,39 @@ export default {
       });
 
       // fix for popup cancelling click event on iOS
-      // TODO: evaluate if necessary
-      const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-      if (!iOS) {
-        map.on('mouseleave', `${this.geography.id}-fill`, () => {
+      // TODO: Test on ios
+      map.on('mouseleave', `${this.geography.id}-fill`, () => {
+        _this.hoverPopup.remove();
+      });
+
+      // show feature info on mouse move
+      map.on('mousemove', (e) => {
+        if (!_this.metric.config || !_this.metric.data) {
+          return;
+        }
+        const features = map.queryRenderedFeatures(e.point, { layers: [`${_this.geography.id}-fill`] })
+          .filter(f => f.properties.id in _this.metric.data.map && _this.metric.data.map[f.properties.id][`y_${_this.store.year}`] !== null); // Only show popup when metric value is not null
+
+        if (!features.length) {
           _this.hoverPopup.remove();
-        });
+          map.getCanvas().style.cursor = '';
+          return;
+        }
 
-        // show feature info on mouse move
-        map.on('mousemove', (e) => {
-          if (!_this.metric.config || !_this.metric.data) {
-            return;
-          }
-          const features = map.queryRenderedFeatures(e.point, { layers: [`${_this.geography.id}-fill`] })
-            .filter(f => f.properties.id in _this.metric.data.map && _this.metric.data.map[f.properties.id][`y_${_this.year}`] !== null); // Only show popup when metric value is not null
+        map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
 
-          if (!features.length) {
-            _this.hoverPopup.remove();
-            map.getCanvas().style.cursor = '';
-            return;
-          }
-
-          map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
-
-          const feature = features[0];
-          const { id } = feature.properties;
-          const data = _this.metric.data.map[id][`y_${_this.year}`];
-          const geographyLabel = _this.$i18n.locale === 'es' ? feature.properties.label_es : feature.properties.label;
-          const val = prettyNumber(data, _this.metric.config);
-          const label = _this.metric.config.label ? ` ${_this.$t(`metricLabels.${_this.metric.config.label}`)}` : '';
-          _this.hoverPopup.setLngLat(map.unproject(e.point))
-            .setHTML(
-              `<div style="text-align:center; margin:0; padding:0;"><h3 style="font-size:1.2em; margin:0; padding:0; line-height:1em; font-weight:bold;">${geographyLabel}</h3>${val}${label}</div>`,
-            )
-            .addTo(map);
-        });
-      }
+        const feature = features[0];
+        const { id } = feature.properties;
+        const data = _this.metric.data.map[id][`y_${_this.store.year}`];
+        const geographyLabel = _this.$i18n.locale === 'es' ? feature.properties.label_es : feature.properties.label;
+        const val = prettyNumber(data, _this.metric.config);
+        const label = _this.metric.config.label ? ` ${_this.$t(`metricLabels.${_this.metric.config.label}`)}` : '';
+        _this.hoverPopup.setLngLat(map.unproject(e.point))
+          .setHTML(
+            `<div style="text-align:center; margin:0; padding:0;"><h3 style="font-size:1.2em; margin:0; padding:0; line-height:1em; font-weight:bold;">${geographyLabel}</h3>${val}${label}</div>`,
+          )
+          .addTo(map);
+      });
     },
     updateGeography(newGeography, oldGeography) {
       if (!this.geography.id) return;
@@ -345,6 +334,7 @@ export default {
       }
       return bounds;
     },
+
     // TODO: Move this to SelectGroupOUtline component and communicate via an event.
     zoomToSelectGroup(id, recurse = true) {
       const zoomToFeatures = this.map.querySourceFeatures('selectGroup', { filter: ['==', 'id', id] });

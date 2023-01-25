@@ -3,15 +3,15 @@
   "about": "The Neighborhood Compass is a primary community resource that allows you to track changes in your community with data; regularly-updated information that often deepens your gut-level understanding that the character of Durham’s neighborhoods is changing.",
   "metaDescriptionHome": "Explore your Durham neighborhood with this regularly-updated website. Find current data, create reports and maps, and track changes in your community. The best resource for accurate data about neighborhoods in Durham, North Carolina.",
   "metaDescriptionAbout": "Learn more about the Durham Neighborhood Compass! The Neighborhood Compass is a primary community resource that allows you to track changes in your community with data; regularly-updated information that often deepens your gut-level understanding that the character of Durham’s neighborhoods is changing.",
-  "metaDescriptionMetric": "Learn more about {metric} in Durham County at the {geography} level on the Durham Neighborhood Compass.",
-  "metaDescriptionPrint": "Print a map of {metric} in Durham County at the {geography} level from the Durham Neighborhood Compass.",
-  "metaDescriptionReport": "Learn more about {area} in Durham County on the Durham Neighborhood Compass. The Neighborhood Compass is a primary community resource that allows you to track changes in your community with data; regularly-updated information that often deepens your gut-level understanding that the character of Durham’s neighborhoods is changing.",
+  "metaDescriptionPrint": "Print a map of {0} in Durham County at the {1} level from the Durham Neighborhood Compass.",
+  "metaDescriptionReport": "Learn more about {title} in Durham County on the Durham Neighborhood Compass. The Neighborhood Compass is a primary community resource that allows you to track changes in your community with data; regularly-updated information that often deepens your gut-level understanding that the character of Durham’s neighborhoods is changing.",
   "accuracy": "accuracy",
   "and": "and",
   "back": "back",
   "close": "close",
   "county": "county",
   "download": "download",
+  "loading": "Loading...",
   "median": "median",
   "numberOf": "number of",
   "opensInNewWindow": "(opens in new window)",
@@ -39,6 +39,15 @@
   "ChangeLanguage": "Ver en español",
   "DownloadData": "Download Data",
   "openMobileNav": "Open navigation menu"
+ },
+ "search": {
+   "search": "Search for a metric",
+   "noResults": "Sorry, no metric names matched your search. If you'd like to suggest a metric, you can {0}!",
+   "getInTouch": "get in touch with us",
+   "startTyping": "Start typing to see search results",
+   "placeholder": "Enter metric name to search",
+   "all": "Show all results",
+  "less": "Show fewer results"
  },
  "dashboard": {
   "moveToC": "Click to move Table of Contents"
@@ -104,7 +113,7 @@
   "instructions": [
    "Click on the title of a category to hide or show all of the metrics in that category.",
    "Click on the title of an individual metric to hide or show just that metric.",
-   "If you want to choose a different part of the city to view for this report, you'll need to {goBack}",
+   "If you want to choose a different part of the city to view for this report, you'll need to {0}",
    "Share your customized report using the following URL:"
   ],
   "metricsShown": "Metrics shown in your report"
@@ -127,7 +136,8 @@
   "facebook": "Share on Facebook",
   "linkedIn": "Share on LinkedIn",
   "twitter": "Share on Twitter",
-  "viewGitHub": "View the project on GitHub"
+  "viewGitHub": "View the project on GitHub",
+  "print": "@:undermapButtons.printEmbed"
  },
  "undermapButtons": {
   "clear": "Clear Selected",

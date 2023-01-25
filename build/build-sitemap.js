@@ -1,32 +1,49 @@
-const SitemapGenerator = require('advanced-sitemap-generator');
-const vueConfig = require('../vue.config.js');
-
-const renderRoutes = vueConfig.pluginOptions.prerenderSpa.renderRoutes;
+/* eslint-disable no-console */
+import { XMLBuilder } from 'fast-xml-parser';
+import { includedRoutes } from '../src/includedRoutes.js';
+import fs from 'fs';
 
 // Get domain name from command line if it's passed through.
+// eslint-disable-next-line no-undef
 const domainName = process.argv[2] ? process.argv[2] : 'compass.durhamnc.gov';
+// eslint-disable-next-line no-undef
 const protocol = (process.argv[3] && process.argv[3] === 'http') ? 'http://' : 'https://';
 
-// create generator
-const generator = SitemapGenerator(`${protocol}${domainName}`, {
-  ignoreHreflang: false,
-  changeFreq: 'monthly',
-  filepath: './dist/sitemap.xml',
-  respectRobotsTxt: false, // Since there will be a robots.txt on our dev site which we need to crawl.
-});
+const today = new Date().toISOString().slice(0, 10);
+const builder = new XMLBuilder({ attributesGroupName: '@' });
 
-const referrer = {
-  url: `${protocol}${domainName}`,
-  host: domainName,
-};
+const siteMapRoutes = includedRoutes().map(url => {
+  const enUrl = `${protocol}${domainName}${url.replace(/^\/en|es/,'/en')}`;
+  const esUrl = `${protocol}${domainName}${url.replace(/^\/en|es/, '/es')}`;
+  return '<url>' + [
+    {loc: `${protocol}${domainName}${url}`},
+    {"xhtml:link": {
+    '@': {
+      rel: 'alternate',
+      hreflang: 'x-default',
+      href: enUrl,
+    }
+  }},
+    {"xhtml:link": {
+        '@': {
+          rel: 'alternate',
+          hreflang: 'en',
+          href: enUrl,
+        }
+      }},
+    {"xhtml:link": {
+        '@': {
+          rel: 'alternate',
+          hreflang: 'es',
+          href: esUrl,
+        }
+      }},
+    { changefreq: 'monthly'},
+    { lastmod:  today },
+].map(o => builder.build(o)).join('') + '</url>';
+}).join('');
 
-renderRoutes.forEach(
-  route => generator.queueURL(`${protocol}${domainName}${route}`, referrer),
-);
+fs.writeFileSync('./public/sitemap.xml', '<?xml version="1.0" encoding="utf-8" standalone="yes" ?>\n' +
+  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" >' + siteMapRoutes + '</urlset>');
 
-// Register event listeners
-generator.on('done', () => {
-});
-
-// Start the crawler
-generator.start();
+console.log('Sitemap written to ./public/sitemap.xml');

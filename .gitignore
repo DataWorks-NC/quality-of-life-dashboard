@@ -30,10 +30,19 @@ deploy.sh
 .envrc
 .env
 /public/data
+/public/selectgroups
 
 # Auto-generated download files (some files in the /public/download directory do need to be tracked)
 /public/download/*.csv
+/public/*.xml
 /public/download/download.zip
+/public/download/*/*
+!/public/download/*.pdf
+!/public/download/*.docx
+!/public/download/geography
 
 # Lighthouse
 .lighthouseci/
+
+# Vite ssg
+.vite-ssg-temp/

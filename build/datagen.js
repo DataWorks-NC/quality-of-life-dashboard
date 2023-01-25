@@ -1,22 +1,26 @@
-/* eslint-disable no-console,import/no-extraneous-dependencies */
-const path = require('path');
-const jsonminify = require('jsonminify');
-const csv = require('csvtojson');
-const _ = require('lodash');
-const { marked } = require('marked');
-const stringify = require('json-stable-stringify');
+import path from 'path';
+import jsonminify from 'jsonminify';
+import csv from 'csvtojson';
+import {each } from 'lodash-es';
+import { marked } from 'marked';
+import stringify from 'json-stable-stringify';
 
-const fs = require('fs');
-const dataConfig = require('../data/config/data');
-const siteConfig = require('../data/config/site');
+import fs from 'fs';
 
-const {
+// Weird workaround for command line use of this tool.
+import siteConfigData from '../data/config/site.js';
+import dataConfigData from '../data/config/data.js';
+
+const dataConfig = dataConfigData.default;
+const siteConfig = siteConfigData.default;
+
+import {
   isNumeric,
   csvToJsonTransform,
   newFormatCsvToJsonTransform,
   writeMetricFile,
   checkMetricFileName,
-} = require('./datagen-functions');
+} from './datagen-functions.js';
 
 const fsPromises = fs.promises;
 
@@ -27,12 +31,13 @@ const dest = './public/data/metric';
 // /////////////////////////////////////////////////
 const directoriesToMake = [
   '',
+  'selectgroups',
   'data',
   'data/meta',
   'data/meta/en',
   'data/meta/es',
   'data/metric'];
-_.each(siteConfig.geographies, (geography) => {
+  each(siteConfig.geographies, (geography) => {
   directoriesToMake.push(`data/metric/${geography.id}`);
 });
 
@@ -50,9 +55,6 @@ async function main() {
   // ////////////////////////////////////////////////
   // Copy download, geography, style
   // ////////////////////////////////////////////////
-
-  // Note: Selectgroups.geojson.json is processed by Webpack file-loader and hot-loaded.
-  // TODO: Long-term, would be ideal to do this for other geojson files as well.
 
   // Either loop through the geography IDs, or just copy geography.geojson.json.
   await Promise.all((siteConfig.geographies || ['geography']).map(
@@ -92,6 +94,24 @@ async function main() {
       }
     },
   ));
+
+  // Split selectgroups into one file for each select group.
+  const selectGroupData = await fsPromises.readFile(`data/selectgroups.geojson.json`, 'utf8');
+  const selectGroups = JSON.parse(selectGroupData);
+
+  await Promise.all(selectGroups.features.map(async (f) => {
+    // Create new JSON object.
+    const selectGroupGeoJSON = stringify({
+      type: "FeatureCollection",
+      name: "selectgroups",
+      crs: { type: "name", properties: { name: "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+      features: [f,]
+    });
+
+    // Write to file.
+    const filePath = `public/selectgroups/${encodeURIComponent(f.properties.id.replaceAll(' ', '_'))}.geojson.json`;
+    return await fsPromises.writeFile(filePath, jsonminify(selectGroupGeoJSON));
+  })).then(() => console.log('Wrote all selectgroups to separate geojson files'));
 
   // //////////////////////////////////////////////
   // Process Markdown Meta files into HTML
@@ -145,7 +165,6 @@ async function main() {
   // /////////////////////////////////////////////
   // CSVtoJSON
   // /////////////////////////////////////////////
-
   async function convertMetricCsvToJson(geography, metric) {
     const destPath = path.join(dest, geography);
 

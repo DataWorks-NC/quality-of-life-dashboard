@@ -3,15 +3,15 @@
   "about": "El Neighborhood Compass es un recurso fundamental que le permite seguir los cambios en su comunidad con información que es actualizada regularmente y que, a menudo, profundiza esa sensación visceral que usted tiene de que el carácter de los vecindarios de Durham está cambiando.",
   "metaDescriptionHome": "Explore su vecindario en Durham en este sitio web, que es actualizado regularmente. Encuentre información actualizada, genere reportes y mapas, y siga los cambios que ocurren en su comunidad. El mejor recurso para obtener información precisa sobre los vecindarios de Durham, Carolina del Norte.",
   "metaDescriptionAbout": "Conozca más sobre el Neighborhood Compass de Durham! El Neighborhood Compass es un recurso fundamental que le permite seguir los cambios en su comunidad con información que es actualizada regularmente y que, a menudo, profundiza esa sensación visceral que usted tiene de que el carácter de los vecindarios de Durham está cambiando.",
-  "metaDescriptionMetric": "Conozca más sobre {metric} en el Condado de Durham a nivel de {geography} en el Neighborhood Compass de Durham.",
-  "metaDescriptionPrint": "Imprima un mapa de {metric} en el Condado de Durham a nivel de {geography} con el Neighborhood Compass de Durham.",
-  "metaDescriptionReport": "Conozca más sobre la {area} en el Condado de Durham en el Neighborhood Compass de Durham. El Neighborhood Compass es un recurso fundamental que le permite seguir los cambios en su comunidad con información que es actualizada regularmente y que, a menudo, profundiza esa sensación visceral que usted tiene de que el carácter de los vecindarios de Durham está cambiando.",
+  "metaDescriptionPrint": "Imprima un mapa de {0} en el Condado de Durham a nivel de {1} con el Neighborhood Compass de Durham.",
+  "metaDescriptionReport": "Conozca más sobre la {title} en el Condado de Durham en el Neighborhood Compass de Durham. El Neighborhood Compass es un recurso fundamental que le permite seguir los cambios en su comunidad con información que es actualizada regularmente y que, a menudo, profundiza esa sensación visceral que usted tiene de que el carácter de los vecindarios de Durham está cambiando.",
   "accuracy": "exactitud",
   "and": "y",
   "back": "atrás",
   "close": "cerrar",
   "county": "condado",
   "download": "descargar",
+  "loading": "Cargando...",
   "median": "mediana",
   "numberOf": "número de",
   "or": "o",
@@ -42,6 +42,15 @@
  },
  "dashboard": {
   "moveToC": "Haga clic para mover Tabla de Contenido"
+ },
+ "search": {
+   "search": "Buscar una métrica",
+   "noResults": "Lo sentimos, no hay métricas que coincidan con su búsqueda. {0}",
+   "getInTouch": "¡Si quiere sugerirnos una métrica, contáctenos!",
+   "startTyping": "Comience a tipear para ver los resultados de la búsqueda",
+   "placeholder": "Ingrese nombre de la métrica a buscar",
+   "all": "Mostrar todos",
+   "less": "Mostrar menos"
  },
  "distributionChart": {
   "DataDistribution": "Distribución de los datos"
@@ -104,7 +113,7 @@
   "instructions": [
    "Haga clic en el título de una categoría para ocultar o mostrar todos los indicadores de esa categoría.",
    "Haga clic en el título de un indicador determinado para ocultarlo o mostrarlo.",
-   "Si quiere elegir una parte distinta de la ciudad para ver este informe, necesitará {goBack}",
+   "Si quiere elegir una parte distinta de la ciudad para ver este informe, necesitará {0}",
    "Comparta su informe personalizado usando el siguiente URL:"
   ],
   "metricsShown": "Indicadores presentados en su informe"

@@ -1,8 +1,5 @@
 {
-  "extends": ["plugin:vue/recommended", "@vue/airbnb"],
-  "parserOptions": {
-    "parser": "babel-eslint"
-  },
+  "extends": ["eslint:recommended", "plugin:vue/vue3-recommended", "plugin:vuetify/base"],
   "rules": {
     "quote-props": "off",
     "quotes": "off",
@@ -17,7 +14,8 @@
     "no-plusplus": "off",
     "no-minusminus": "off",
     "no-mixed-operators": "off",
-    "brace-style": "off"
+    "brace-style": "off",
+    "vue/multi-word-component-names": "off"
   },
   "env": {
     "jest": true

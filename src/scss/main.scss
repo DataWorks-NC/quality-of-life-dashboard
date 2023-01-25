@@ -1,35 +1,45 @@
 @import "./typography.scss";
 @import "./modules/a11y.css";
 
-.v-btn:not(.v-btn--text):not(.v-btn--outlined):not(.v-btn--icon) {
+.v-main {
+  padding-top: 0 !important;
+}
+
+.v-app-bar.v-toolbar .v-tabs, .v-main .jump-nav-bar {
+  .v-slide-group__container {
+    color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity));
+
+    .v-tab--selected {
+      color: rgb(var(--v-theme-on-surface))
+    }
+  }
+}
+
+
+.v-btn:not(.v-btn--variant-text):not(.v-btn--variant-outlined):not(.v-btn--icon) {
   margin: 2px;
   box-sizing: border-box;
 
-  &:not(.theme--dark) {
-    &:before {
-      background-color: #dedede;
-      opacity: 1;
-    }
+  &:not(.v-theme--dark) {
+    background: #dedede;
+    opacity: 1;
 
-    &:hover:before {
+    &:hover {
       box-shadow: inset 0 0 0 2px rgba(104, 8, 158, .4) !important;
     }
 
-    &.v-btn--active:before {
-      background-color: var(--v-accent-base);
+    &.v-btn--active {
+      background-color: rgb(var(--v-theme-accent));
       box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12);
       opacity: 1;
-    }
-
-    &.v-btn--active {
       color: white;
     }
   }
 
-  &.theme--dark {
-      background-color: var(--v-accent-base);
+  &.v-theme--dark {
+      background-color: rgb(var(--v-theme-accent));
       &.v-btn--disabled {
-        background-color: rgba(0,0,0,.26) !important;
+        background: rgba(0,0,0,.26) !important;
       }
   }
 }
@@ -39,11 +49,11 @@
 }
 
 .theme--dark {
-  .v-list-item--link:not(.v-list-group__header)::before {
-    background-color: var(--v-accent-base);
+  .v-list-item--link:not(.v-list-group__header) {
+    background: rgb(var(--v-theme-accent));
   }
 
-  .v-list-item__title, .v-list-item__icon {
+  .v-list-item-title, .v-list-item__icon {
     color: white;
     caret-color: white;
   }
@@ -51,7 +61,7 @@
   .v-list-group__items {
 
     .v-list-item--active:not(.v-list-group__header) {
-      background-color: var(--v-accent-base);
+      background: rgb(var(--v-theme-accent));
     }
 
     .v-list-item--active:before {
@@ -61,7 +71,7 @@
 }
 
 .v-card {
-  padding: 8px;
+  padding: 8px !important;
 }
 
 .spacer {
@@ -90,37 +100,7 @@
 
 /* Chartist tooltips */
 .chartist-tooltip {
-  position: absolute;
-  top: 0;
-  display: inline-block;
-  opacity: 0;
-  min-width: 5em;
-  padding: .5em;
-  background: rgba(0, 0, 0, 0.85);
-  color: #ccc;
-  font-family: Oxygen, Helvetica, Arial, sans-serif;
-  font-weight: 700;
-  text-align: center;
-  pointer-events: none;
-  z-index: 1;
-  border-radius: 5px;
-  transition: opacity .2s linear;
-}
-
-.chartist-tooltip:before {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  margin-left: -15px;
-  border: 15px solid transparent;
-  border-top-color: rgba(0, 0, 0, 0.85);
-}
-
-.chartist-tooltip.tooltip-show {
-  opacity: 1;
+  z-index: 1000 !important;
 }
 
 /* prevent top-of-page spasms */
@@ -149,8 +129,86 @@ textarea {
   outline: none;
 }
 
+.landing-page {
+  padding: 15px 25px;
+
+  div {
+    overflow: auto;
+  }
+
+  a {
+    color: white;
+    text-decoration: none;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+    -webkit-transition: 0.2s cubic-bezier(0.4, 0, 0.6, 1);
+    transition: 0.2s cubic-bezier(0.4, 0, 0.6, 1);
+
+    &:hover {
+      border-color:rgba(255, 255, 255, 1);
+    }
+  }
+
+  .v-card-text {
+    font-size: 1em;
+
+    @media (max-width: 767px) {
+      font-size: 0.75em;
+      p {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .v-img {
+    overflow: hidden;
+    border-radius: 4px;
+
+    @media (min-width: 768px) {
+      width: 50%;
+    }
+  }
+
+  .v-card.d-flex {
+    @media (max-width: 767px) {
+      flex-direction: column;
+    }
+  }
+
+  .v-card.d-flex + .v-card.d-flex {
+    margin-top: 25px;
+  }
+
+  .v-card > *:first-child:not(.v-btn):not(.v-chip) {
+    border-radius: inherit;
+  }
+
+  h2 {
+    font-size: 24px;
+    margin-bottom: 0.75em;
+    @media (max-width: 767px) {
+      font-size: 20px;
+    }
+  }
+
+  h3 {
+    font-size: 20px;
+    margin-bottom: 0.75rem;
+    margin-top: 1.5em;
+  }
+
+  p {
+    max-width: 680px;
+  }
+}
+
 
 // Fix for Vuetify bug where when scrolling menu vertically the background scrolls up and out of view.
 .v-menu__content.menuable__content__active {
-  background-color: white;
+  background: white;
+}
+
+// Fix for svg icons on older browsers
+svg.v-icon__svg {
+  width: 24px;
+  height: 24px;
 }

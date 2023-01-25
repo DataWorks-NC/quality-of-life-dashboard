@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
 
-const path = require('path');
-const jsonminify = require('jsonminify');
-const fs = require('fs');
-const stringify = require('json-stable-stringify');
+import path from 'path';
+import jsonminify from 'jsonminify';
+import fs from 'fs';
+import stringify from 'json-stable-stringify';
 
 // return true if convertable to number
 function isNumeric(n) {
@@ -130,7 +130,7 @@ function checkMetricFileName(geography, metric, type) {
   return false;
 }
 
-module.exports = {
+export {
   isNumeric,
   csvToJsonTransform,
   newFormatCsvToJsonTransform,
