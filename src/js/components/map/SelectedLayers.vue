@@ -3,13 +3,12 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex';
-
 import debugLogMixin from '../mixins/debugLogMixin';
 
 export default {
   name: "SelectedLayers",
   mixins: [debugLogMixin],
+  inject: ['selected', 'geography', 'selectGroupName', 'selectGroupType'],
   props: {
     map: {
       type: Object,
@@ -21,14 +20,11 @@ export default {
       default: () => [],
     },
   },
+  emits: ['layers-loaded'],
   data: () => ({
     layersLoaded: {},
   }),
   computed: {
-    ...mapState(
-      ['geography'],
-    ),
-    ...mapGetters(['selected', 'selectGroupName', 'selectGroupType']),
     selectedToLabel() {
       if (this.selectGroupName && this.selectGroupType) return [];
       return this.selected;
@@ -49,7 +45,7 @@ export default {
   mounted() {
     this.showLayers();
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.map) {
       this.hideLayers();
     }

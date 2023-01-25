@@ -1,36 +1,49 @@
-import Vue from 'vue';
-import Vuetify from 'vuetify/lib';
-import minifyTheme from 'minify-css-string';
+import 'vuetify/styles';
 
-Vue.use(Vuetify);
+import { createVueI18nAdapter } from 'vuetify/locale/adapters/vue-i18n';
+import { useI18n } from 'vue-i18n';
+import i18n from './i18n';
 
-export default new Vuetify({
+import { createVuetify } from 'vuetify';
+import { aliases, mdi } from 'vuetify/iconsets/mdi-svg';
+
+export default createVuetify({
+  locale: {
+    adapter: createVueI18nAdapter({ i18n, useI18n }),
+  },
+  icons: {
+    defaultSet: 'mdi',
+    aliases,
+    sets: {
+      mdi,
+    }
+  },
   theme: {
+    defaultTheme: 'light',
     options: {
       customProperties: true,
-      minifyTheme,
       variations: false,
     },
     themes: {
       light: {
-        primary: '#016888',
-        secondary: '#566330',
-        accent: '#68089e',
-        error: '#db3360',
-        info: '#68089e',
-        success: '#d4eb8f',
-        warning: '#ce6733',
-        background: '#cccccc',
+        colors: {
+          'surface-variant': '#016888',
+          primary: '#016888',
+          secondary: '#566330',
+          accent: '#68089e',
+          error: '#db3360',
+          info: '#68089e',
+          success: '#d4eb8f',
+          warning: '#ce6733',
+          background: '#cccccc',
+        },
       },
       dark: {
-        background: '#263238',
+        colors: {
+          background: '#263238',
+          primary: '#016888',
+        },
       },
     },
-  },
-  lang: {
-    locales: ['en', 'es'],
-  },
-  icons: {
-    iconfont: 'mdiSvg',
   },
 });

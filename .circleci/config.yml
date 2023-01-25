@@ -13,6 +13,7 @@ jobs:
     steps:
       - checkout
       - run: git clone https://github.com/DataWorks-NC/durham-quality-of-life-data.git data
+
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -35,56 +36,32 @@ jobs:
       - run: npm run build-data 2>&1 | tee npm-build-output-data.txt
       - store_artifacts:
           path: ~/repo/npm-build-output-data.txt
+
+      # Copy env file based on environment
+      - when:
+          condition:
+            equal: [ main, << pipeline.git.branch >> ]
+          steps:
+            - run: cp .circleci/.env.production ./.env.production
+
+      - when:
+          condition:
+            equal: [ staging, << pipeline.git.branch >> ]
+          steps:
+            - run: cp .circleci/.env.staging ./.env.staging
+
+      - when:
+          condition:
+            equal: [ develop, << pipeline.git.branch >> ]
+          steps:
+            - run: cp .circleci/.env.develop ./.env.develop
+
       - run: npm run build 2>&1 | tee npm-build-output.txt
       - store_artifacts:
           path: ~/repo/npm-build-output.txt
       - run: ~/repo/data/.circleci/check-build-output-for-errors.sh
 
       - run: mkdir /tmp/workspace
-      - persist_to_workspace:
-          root: .
-          paths:
-            - ./*
-
-  performance_test:
-    docker:
-      - image: cimg/node:lts-browsers
-
-    working_directory: /tmp/workspace/
-
-    steps:
-      - attach_workspace:
-          at: /tmp/workspace
-
-      - browser-tools/install-chrome
-      - browser-tools/install-chromedriver      # Performance test
-      - run: npm install --location=global @lhci/cli@0.8.x
-      - run: |
-          if [ "$CIRCLECI_BRANCH" = "main" ]; then
-            lhci autorun --uploadUrlMap
-          else
-            lhci autorun
-          fi
-
-  sitemap:
-    docker:
-      - image: cimg/node:lts-browsers
-
-    working_directory: /tmp/workspace/
-
-    steps:
-      - attach_workspace:
-          at: /tmp/workspace
-
-      - restore_cache:
-          keys:
-            - v4-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v4-dependencies-
-
-      # Generate a sitemap based on what's currently on dev site.
-      - run: npm run build-sitemap-dev
-
       - persist_to_workspace:
           root: .
           paths:
@@ -102,9 +79,6 @@ jobs:
 
       # Add robots file for production.
       - run: cp /tmp/workspace/.circleci/robots-prod.txt /tmp/workspace/dist/robots.txt
-
-      # Tweak sitemap URLs
-      - run: sed -i 's/nbhdcompassdev\.azurewebsites\.us/compass\.durhamnc\.gov/g' /tmp/workspace/dist/sitemap.xml
 
       # Push code to Azure blob storage
       - run:
@@ -149,16 +123,6 @@ workflows:
   build_and_deploy:
     jobs:
       - build
-      - performance_test:
-          requires:
-            - build
-      - sitemap:
-          requires:
-            - build
-          filters:
-            branches:
-              only:
-                main
       - deploy_stage:
           requires:
             - build
@@ -173,10 +137,9 @@ workflows:
             branches:
               only:
                 develop
-
       - deploy_prod:
           requires:
-            - sitemap
+            - build
           filters:
             branches:
               only:

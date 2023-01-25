@@ -1,155 +1,196 @@
-<template lang="html">
+<template>
   <div>
-    <v-app-bar dark extension-height="48px">
+    <v-app-bar extension-height="48" theme="dark" absolute elevation="0">
+      <v-app-bar-nav-icon :aria-label="$t('strings.openMobileNav')" class="d-md-none" @click.stop="drawer = !drawer" />
       <!-- Mobile nav -->
-      <v-dialog v-model="drawer" fullscreen hide-overlay transition="dialog-bottom-transition">
-        <template #activator="{ // eslint-disable-next-line vue/no-unused-vars
-          on
-        }"
-        >
-          <v-app-bar-nav-icon :aria-label="$t('strings.openMobileNav')" class="d-md-none" @click="drawer = !drawer" />
-        </template>
-        <v-card dark>
-          <v-toolbar flat>
-            <v-btn icon @click="drawer = false">
-              <v-icon>{{ mdiClose }}</v-icon>
-            </v-btn>
-            <v-toolbar-title>{{ $t('strings.chooseATopic') }}</v-toolbar-title>
-          </v-toolbar>
-          <v-container>
-            <v-list nav dark>
-              <v-list-group v-for="category in categories" :key="category.id" :value="categoryTab === `tab-${category.id}`">
-                <template #activator>
-                  <v-list-item-content><v-list-item-title>{{ category.name }}</v-list-item-title></v-list-item-content>
-                </template>
-                <template v-for="m in categoryMetrics[category.originalName]">
-                  <v-list-group v-if="m.children.length" :key="m.name" sub-group :value="metric.config && metric.config.subcategory === m.originalName">
-                    <template #activator>
-                      <v-list-item-content>
-                        <v-list-item-title>{{ m.name }}</v-list-item-title>
-                      </v-list-item-content>
-                    </template>
-                    <v-list-item v-for="m2 in m.children" :key="m2.metric" :to="{ name: 'compass', params: { ...$route.params, metric: m2.metric }, query: $route.query }" exact link @click="drawer = !drawer">
-                      <v-list-item-title>{{ m2.name }}</v-list-item-title>
-                    </v-list-item>
-                  </v-list-group>
-                  <v-list-item v-else :key="m.metric" :to="{ name: 'compass', params: { ...$route.params, metric: m.metric }, query: $route.query }" exact link @click="drawer = !drawer">
+      <v-dialog v-model="drawer" fullscreen :scrim="false" transition="dialog-bottom-transition" scrollable>
+        <v-toolbar flat>
+          <v-btn icon @click="drawer = false">
+            <v-icon :icon="icons.mdiClose" />
+          </v-btn>
+          <v-toolbar-title>{{ $t('strings.chooseATopic') }}</v-toolbar-title>
+        </v-toolbar>
+        <v-list nav>
+          <v-form @submit.prevent="focusResults()">
+            <v-text-field ref="searchFieldMobile" v-model="searchText" :label="$t('search.placeholder')" variant="underlined">
+              <template #prepend-inner>
+                <v-icon :icon="icons.mdiMagnify" />
+              </template>
+              <template #append>
+                <v-btn icon @click="closeSearch">
+                  <v-icon :icon="icons.mdiClose" />
+                </v-btn>
+              </template>
+            </v-text-field>
+            <input type="submit" hidden>
+          </v-form>
+          <MetricSearchResults v-if="searchText !== ''" ref="searchResults" :search-text="searchText" mobile />
+          <v-list-group v-for="category in categories" v-else :key="category.id" :value="category.id">
+            <template #activator="{ props }">
+              <v-list-item v-bind="props">
+                <v-list-item-title>{{ category.name }}</v-list-item-title>
+              </v-list-item>
+            </template>
+            <template v-for="m in categoryMetrics[category.originalName]">
+              <v-list-item v-if="!m.children.length" :key="m.name" :value="m.name" :to="{ name: 'compass', params: { ...$route.params, metric: m.metric }, query: $route.query }" @click="drawer = !drawer">
+                <v-list-item-title> {{ m.name }} </v-list-item-title>
+              </v-list-item>
+              <v-list-group v-else :key="m.name" :value="`${m.name}-children`">
+                <template #activator="{ props }">
+                  <v-list-item v-bind="props">
                     <v-list-item-title>{{ m.name }}</v-list-item-title>
                   </v-list-item>
                 </template>
+                <v-list-item v-for="m2 in m.children" :key="m2.metric" :value="m2.metric" :to="{ name: 'compass', params: { ...$route.params, metric: m2.metric }, query: $route.query }" @click="drawer = !drawer">
+                  <v-list-item-title> {{ m2.name }} </v-list-item-title>
+                </v-list-item>
               </v-list-group>
-            </v-list>
-          </v-container>
-        </v-card>
+            </template>
+          </v-list-group>
+        </v-list>
       </v-dialog>
+
       <v-toolbar-title>
         <router-link :to="{ name: 'homepage' }">
           <img src="../../assets/img/logo.png" :alt="$t('strings.DurhamNeighborhoodCompass')" class="d-none d-md-flex">
-          <img src="../../assets/img/logoMobile.png" :alt="$t('strings.DurhamNeighborhoodCompass')" class="d-md-none">
+          <img src="../../assets/img/logoMobile.png" :alt="$t('strings.DurhamNeighborhoodCompass')" class="d-none d-sm-flex d-md-none">
         </router-link>
       </v-toolbar-title>
       <div class="flex-grow-1" />
-      <v-btn text @click="swapLanguage()">
+      <v-btn v-if="!isSearching" variant="text" @click="swapLanguage()">
         {{ $t('strings.ChangeLanguage') }}
       </v-btn>
-      <v-btn icon :aria-label="$t('about.link')" :to="{ name: 'about' }">
-        <v-icon>{{ mdiInformation }}</v-icon>
+      <v-btn v-if="!isSearching" icon :aria-label="$t('about.link')" :to="{ name: 'about' }">
+        <v-icon :icon="icons.mdiInformation" />
       </v-btn>
-      <v-btn icon :aria-label="$t('strings.DownloadData')" href="/download/download.zip" @click="gaEvent('send', 'event', 'download', 'metric zip file download')">
-        <v-icon>{{ mdiDownload }}</v-icon>
+      <v-btn v-if="!isSearching" icon :aria-label="$t('strings.DownloadData')" href="/download/download.zip" @click="gaEvent('send', 'event', 'download', 'metric zip file download')">
+        <v-icon :icon="icons.mdiDownload" />
       </v-btn>
 
+      <v-btn v-if="!isSearching" icon :aria-label="$t('search.search')" class="d-none d-md-block" @click.stop="openSearch">
+        <v-icon :icon="icons.mdiMagnify" />
+      </v-btn>
+      <v-form v-else class="searchForm--desktop" role="search" @submit.prevent="focusResults()">
+        <v-text-field ref="searchField" v-model="searchText" :label="$t('search.placeholder')" variant="underlined" class="searchField--desktop" type="search">
+          <template #prepend-inner>
+            <v-icon :icon="icons.mdiMagnify" />
+          </template>
+          <template #append>
+            <v-btn icon @click="closeSearch">
+              <v-icon :icon="icons.mdiClose" />
+            </v-btn>
+          </template>
+        </v-text-field>
+      </v-form>
+
+      <!-- Desktop nav -->
       <template #extension>
-        <v-tabs v-model="categoryTab" show-arrows center-active optional class="d-none d-md-flex">
+        <v-tabs v-model="categoryTab" :mandatory="false">
           <v-tab
             v-for="category in categories"
             :key="category.id"
-            :href="`#tab-${category.id}`"
+            :value="category.id"
           >
             {{ category.name }}
+          </v-tab>
+          <v-tab
+            v-if="isSearching"
+            key="searchResults"
+            value="searchResults"
+          >
+            Search Results
           </v-tab>
         </v-tabs>
       </template>
     </v-app-bar>
 
-    <!-- Desktop nav -->
-    <v-card v-if="categoryTab" class="d-none d-md-flex">
-      <v-tabs-items v-model="categoryTab" class="metric__buttons">
-        <v-tab-item
-          v-for="category in categories"
-          :key="category.id"
-          :value="`tab-${category.id}`"
-        >
-          <template v-for="m in categoryMetrics[category.originalName]">
-            <template v-if="m.children.length">
-              <v-menu :key="m.metric" :attach="'#' + kebabCase(m.originalName)" offset-y>
-                <template #activator="{ on }">
-                  <!-- TODO: Add attach property for a11y -->
-                  <v-btn v-if="metric.config && metric.config.subcategory === m.originalName" rounded depressed class="v-btn--active" v-on="on">
-                    {{ $i18n.locale === 'es' ? metric.config.title_es : metric.config.title }} <v-icon>$subgroup</v-icon>
-                  </v-btn>
-                  <v-btn v-else rounded depressed v-on="on">
-                    {{ m.name }} <v-icon>$subgroup</v-icon>
-                  </v-btn>
-                </template>
-                <v-list nav dense offset-y max-height="75vh">
-                  <v-list-item v-for="m2 in m.children" :key="m2.metric" :to="{ name: 'compass', params: { ...$route.params, metric: m2.metric }, query: $route.query }" exact link>
-                    <v-list-item-title>{{ m2.name }}</v-list-item-title>
-                  </v-list-item>
-                </v-list>
-              </v-menu>
-              <span :id="kebabCase(m.originalName)" :key="`${m.originalName}-attach`" />
+    <div v-if="categoryTab" class="d-none d-md-flex">
+      <v-sheet theme="light" width="100%" elevation="1">
+        <v-window v-model="categoryTab" class="metric__buttons">
+          <v-window-item
+            v-for="category in categories"
+            :key="'tab-'+category.id"
+            :value="category.id"
+          >
+            <template v-for="m in categoryMetrics[category.originalName]" :key="kebabCase(m.originalName)">
+              <template v-if="m.children.length">
+                <span :id="kebabCase(m.originalName)">
+                  <!-- Needed so that focus can be directed for accessibility. -->
+                </span>
+                <v-menu :key="m.metric || m.originalName" :attach="'#' + kebabCase(m.originalName)">
+                  <template #activator="{ props }">
+                    <v-btn v-if="metric.config && metric.config.subcategory === m.originalName" rounded variant="flat" class="v-btn--active" v-bind="props">
+                      {{ $i18n.locale === 'es' ? metric.config.title_es : metric.config.title }} <v-icon :icon="icons.mdiTriangleSmallDown" />
+                    </v-btn>
+                    <v-btn v-else rounded variant="flat" v-bind="props">
+                      {{ m.name }} <v-icon :icon="icons.mdiTriangleSmallDown" />
+                    </v-btn>
+                  </template>
+                  <v-list nav dense offset-y max-height="75vh">
+                    <v-list-item v-for="m2 in m.children" :key="m2.metric" :to="{ name: 'compass', params: { ...$route.params, metric: m2.metric }, query: $route.query }">
+                      <v-list-item-title>
+                        {{ m2.name }}
+                      </v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </template>
+              <v-btn v-else :key="m.metric" exact rounded variant="flat" :to="{ name: 'compass', params: { ...$route.params, metric: m.metric }, query: $route.query }">
+                {{ m.name }}
+              </v-btn>
             </template>
-            <v-btn v-else :key="m.metric" exact rounded depressed :to="{ name: 'compass', params: { ...$route.params, metric: m.metric }, query: $route.query }">
-              {{ m.name }}
-            </v-btn>
-          </template>
-        </v-tab-item>
-      </v-tabs-items>
-    </v-card>
+          </v-window-item>
+          <v-window-item key="searchResults" value="searchResults">
+            <MetricSearchResults ref="searchResults" :search-text="searchText" />
+          </v-window-item>
+        </v-window>
+      </v-sheet>
+    </div>
   </div>
 </template>
 
 <script>
-import { mdiClose, mdiDownload, mdiInformation } from '@mdi/js';
-import { mapState } from 'vuex';
-import { fromPairs, kebabCase, uniq } from 'lodash';
+import { fromPairs, kebabCase, uniq } from 'lodash-es';
+import { mdiTriangleSmallDown, mdiClose, mdiDownload, mdiInformation, mdiMagnify } from '@mdi/js';
 
 import { gaEvent } from '../modules/tracking';
 import config from '../modules/config';
+import MetricSearchResults from '@/js/components/MetricSearchResults.vue';
+
+// TODO: Add transition where search text box slides in from the right.
+
+// TODO: Tweak styling of search input.
 
 export default {
   name: 'CompassNav',
+  components: {MetricSearchResults},
+  inject: {
+    metric: {
+      default: {},
+    },
+  },
   data: () => ({
+    isSearching: false,
+    searchText: '',
+    categoryTab: null,
+    oldCategoryTab: null,
     drawer: false,
-    filterVal: null,
     metricsByCategory: config.metricsByCategory,
     title: config.siteConfig.title,
-    mdiClose,
-    mdiDownload,
-    mdiInformation,
+    icons: {
+      mdiTriangleSmallDown,
+      mdiClose,
+      mdiDownload,
+      mdiInformation,
+      mdiMagnify,
+    }
   }),
   computed: {
-    ...mapState(['metric', 'metricId']),
     categories() {
       return config.categories.map(c => ({ id: c.replace(/\s+/g, ''), name: this.$t(`strings.metricCategories['${c}']`), originalName: c }))
-        .sort((a, b) => this.$i18n.localizedStringCompareFn(a.name, b.name));
+        .sort(this.localizedSortByName);
     },
 
-    // Used on navbar. Needs to supply both getter and setter so that an error is not thrown when
-    // using this with v-model.
-    categoryTab: {
-      get() {
-        let categoryId = this.filterVal && this.filterVal.id;
-        if (this.filterVal === null) {
-          categoryId = this.metric.config && this.metric.config.category.replace(/\s+/g, '');
-        }
-        return categoryId && `tab-${categoryId}`;
-      },
-      set(val) {
-        this.filterVal = this.categories.find(c => c.id === val.replace('tab-', ''));
-      },
-    },
     // Return sorted array of metrics by category, with the names translated as needed.
     categoryMetrics() {
       return fromPairs(config.categories.map(c => {
@@ -160,11 +201,11 @@ export default {
           .map(m => ({
             metric: m.metric, subcategory: m.subcategory, name: (this.$i18n.locale === 'es' ? m.title_es : m.title), children: [],
           }))
-          .sort((a, b) => this.$i18n.localizedStringCompareFn(a.name, b.name));
+          .sort(this.localizedSortByName);
 
         const subcategories = uniq(metrics.map(m => m.subcategory).filter(a => !!a))
           .map(subcategory => ({
-            name: this.$i18n.t(`strings.metricSubCategories.${subcategory}`),
+            name: this.$t(`strings.metricSubCategories.${subcategory}`),
             originalName: subcategory,
             children: metrics.filter(m => m.subcategory === subcategory),
           }));
@@ -173,18 +214,44 @@ export default {
           .filter(m => !m.subcategory) // Only include metrics which have no subcategory, at this level
           // Nest child metrics under subcategories.
           .concat(subcategories)
-          .sort((a, b) => this.$i18n.localizedStringCompareFn(a.name, b.name)),
+          .sort(this.localizedSortByName),
         ];
       }));
     },
   },
+  watch: {
+    metric(newMetric) {
+      if (newMetric.config) {
+        this.categoryTab = newMetric.config.category;
+      }
+    }
+  },
+  created() {
+    if (this.metric.config) {
+      this.categoryTab = this.metric.config.category;
+    }
+  },
   methods: {
+    openSearch() {
+      this.isSearching = true;
+      this.oldCategoryTab = this.categoryTab;
+      this.categoryTab = 'searchResults';
+      this.$nextTick(() => { this.$refs.searchField.$el.focus(); });
+    },
+    closeSearch() {
+      this.isSearching = false;
+      this.categoryTab = this.oldCategoryTab;
+      this.searchText = '';
+    },
+    focusResults() {
+      this.$refs.searchResults.$el.children[0].focus();
+    },
     swapLanguage() {
       let newLanguage = 'es';
       if (this.$i18n.locale === 'es') {
         newLanguage = 'en';
       }
-      this.$router.push({ params: { ...this.$route.params, locale: newLanguage }, query: this.$route.query });
+      this.$router.push({ name: this.$route.name, params: { ...this.$route.params, locale: newLanguage }, query: this.$route.query });
     },
     kebabCase,
     gaEvent,
@@ -192,7 +259,15 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+.v-toolbar {
+  position:relative !important;
+}
+
+.v-window {
+  width: 100%;
+}
+
 .metric__buttons {
   padding: 10px;
 
@@ -208,6 +283,22 @@ export default {
 
 .v-toolbar__title img {
   margin-top: 10px;
+}
+
+// Search field.
+.searchForm--desktop {
+  flex: 1 1 auto;
+}
+
+.v-input {
+  height: var(--v-input-control-height);
+}
+.searchField--desktop {
+  margin-top: 1.5rem;
+
+  .v-btn {
+    margin-top: -1rem;
+  }
 }
 
 @media(max-width: 959px) {

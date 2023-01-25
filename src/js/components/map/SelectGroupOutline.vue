@@ -19,13 +19,11 @@ export default {
       default: null,
     },
   },
+  emits: ['layers-loaded'],
   data: () => ({
     layersLoaded: {},
   }),
   computed: {
-    selectGroupFilter() {
-      return ['==', 'id', this.selectGroupName];
-    },
     layers() {
       const BASE_LABEL_SIZE = 12;
 
@@ -57,7 +55,6 @@ export default {
             'text-halo-color': '#fff',
             'text-halo-width': ['interpolate', ['linear'], ['zoom'], 9, 1, 13, 2],
           },
-          filter: this.selectGroupFilter,
         },
         selectGroupOutline: {
           id: 'selectGroupOutline',
@@ -71,13 +68,11 @@ export default {
             'line-join': 'round',
             'line-cap': 'round',
           },
-          filter: this.selectGroupFilter,
         },
         selectGroupFill: {
           id: 'selectGroupFill',
           type: 'fill',
           source: 'selectGroup',
-          filter: this.selectGroupFilter,
         },
       };
     },
@@ -91,7 +86,7 @@ export default {
   mounted() {
     this.showSelectGroup(this.selectGroupName, null);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.map) {
       this.hideSelectGroup();
     }
@@ -104,7 +99,7 @@ export default {
         }
       });
     },
-    showSelectGroup(newName, oldName) {
+    async showSelectGroup(newName, oldName) {
       if ((!newName && !oldName) || (newName === oldName)) return;
 
       const map = this.map;
@@ -114,17 +109,17 @@ export default {
         this.hideSelectGroup();
         return;
       }
+      const sourceName = `/selectgroups/${encodeURIComponent(this.selectGroupName.replaceAll(' ', '_'))}.geojson.json`;
 
-      // TODO: Is this potentially faster if we split up the selectgroups geoJSON file
-      //  into separate files for each selectGroup?
-      if (!map.getSource('selectGroup')) {
-        map.addSource('selectGroup', {
-          type: 'geojson',
-          promoteId: 'id',
-          // eslint-disable-next-line global-require
-          data: require('@/../data/selectgroups.geojson.json'),
-        });
-      }
+        if (!map.getSource('selectGroup')) {
+          map.addSource('selectGroup', {
+            type: 'geojson',
+            promoteId: 'id',
+            data: sourceName,
+          });
+        } else {
+          map.getSource('selectGroup').setData(sourceName);
+        }
 
       this.layerNames.forEach(name => {
         if (!map.getLayer(name)) {
@@ -153,7 +148,6 @@ export default {
             }
           }
         } else {
-          map.setFilter(name, this.selectGroupFilter);
           map.setLayoutProperty(name, 'visibility', 'visible');
         }
       });
