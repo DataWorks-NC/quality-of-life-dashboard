@@ -44,13 +44,13 @@
   "moveToC": "Haga clic para mover Tabla de Contenido"
  },
  "search": {
-   "search": "TODO",
-   "noResults": "TODO",
-   "getInTouch": "TODO",
-   "startTyping": "TODO",
-   "placeholder": "TODO",
-   "all": "TODO",
-   "less": "TODO"
+   "search": "Buscar una métrica",
+   "noResults": "Lo sentimos, no hay métricas que coincidan con su búsqueda. {0}",
+   "getInTouch": "¡Si quiere sugerirnos una métrica, contáctenos!",
+   "startTyping": "Comience a tipear para ver los resultados de la búsqueda",
+   "placeholder": "Ingrese nombre de la métrica a buscar",
+   "all": "Mostrar todos",
+   "less": "Mostrar menos"
  },
  "distributionChart": {
   "DataDistribution": "Distribución de los datos"

@@ -334,6 +334,7 @@ export default {
       }
       return bounds;
     },
+
     // TODO: Move this to SelectGroupOUtline component and communicate via an event.
     zoomToSelectGroup(id, recurse = true) {
       const zoomToFeatures = this.map.querySourceFeatures('selectGroup', { filter: ['==', 'id', id] });
