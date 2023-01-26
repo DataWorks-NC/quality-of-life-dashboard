@@ -19,9 +19,11 @@
       <img :alt="$t('strings.DataWorksNCLogo')" src="@/assets/img/report-logo.png?url" class="header__logo">
       <div class="spacer" />
       <v-card class="map d-print-inline">
-        <div v-if="mapboxglLoaded" style="min-height: 600px;">
+        <div style="min-height: 600px;">
           <ClientOnly>
-            <map-container />
+            <MapboxProvider>
+              <map-container />
+            </MapboxProvider>
           </ClientOnly>
         </div>
         <i18n-t keypath="printMode.footerText" tag="p" class="print__footer">
@@ -39,7 +41,8 @@ import { mdiPrinter, mdiArrowLeft } from "@mdi/js";
 import { defineAsyncComponent } from 'vue';
 import PrintMapHeader from './PrintMapHeader.vue';
 
-const MapContainer = defineAsyncComponent(() => import('./map/MapContainer.vue'));
+const MapContainer = defineAsyncComponent(() => import('./map/CompassMap.vue'));
+const MapboxProvider = defineAsyncComponent(() => import('../components/map/MapboxProvider.vue'));
 
 export default {
   // TODO: Consider making this a top-level view rather than a subcomponent of Compass.
@@ -47,8 +50,8 @@ export default {
   components: {
     MapContainer,
     PrintMapHeader,
+    MapboxProvider,
   },
-  inject: ['mapboxglLoaded',],
   data: () => ({ mdiPrinter, mdiArrowLeft }),
   methods: {
     print() {

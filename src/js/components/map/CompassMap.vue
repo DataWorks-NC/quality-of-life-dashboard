@@ -1,6 +1,6 @@
 <template>
   <div class="map-container" style="min-height:600px;">
-    <div class="" style="position: relative; width: 100%; height: 100%">
+    <div v-if="mapboxglLoaded" class="" style="position: relative; width: 100%; height: 100%">
       <div id="map" />
       <selected-layers v-if="mapLoaded && selected.length > 0" :color-map="colorMap" :map="map" @layers-loaded="rescale" />
       <select-group-outline v-if="mapLoaded && selectGroupName" :map="map" :select-group-name="selectGroupName" @layers-loaded="rescale" />
@@ -11,8 +11,6 @@
 </template>
 
 <script>
-import 'mapbox-gl/dist/mapbox-gl.css';
-
 import { isFinite } from 'lodash-es';
 import { defineAsyncComponent } from 'vue';
 import { store } from '@/js/stores/compass-store.js';
@@ -28,6 +26,8 @@ const Geocoder = defineAsyncComponent(() => import('./Geocoder.vue'));
 const SelectGroupOutline = defineAsyncComponent(() => import('./SelectGroupOutline.vue'));
 const SelectedLayers = defineAsyncComponent(() => import('./SelectedLayers.vue'));
 const mapConfig = config.mapConfig;
+import 'mapbox-gl/dist/mapbox-gl.css';
+
 
 export default {
   // You would think to just name this component 'Map', but <map> is in the HTML5 spec!
@@ -39,7 +39,7 @@ export default {
     SelectGroupOutline,
   },
   mixins: [debugLogMixin],
-  inject: ['mapboxgl','metric','geography','breaks', 'selectGroupName', 'selectGroupType', 'selected', 'printMode'],
+  inject: ['mapboxgl', 'mapboxglLoaded', 'metric','geography','breaks', 'selectGroupName', 'selectGroupType', 'selected', 'printMode'],
   data() {
     return {
       locationPopup: null,

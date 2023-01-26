@@ -60,6 +60,14 @@ jobs:
       - store_artifacts:
           path: ~/repo/npm-build-output.txt
       - run: ~/repo/data/.circleci/check-build-output-for-errors.sh
+        
+      - when:
+          condition:
+            equal: [ main, << pipeline.git.branch >> ]
+          steps:
+            - run:
+                name: Build sitemap
+                command: npm run build-sitemap
 
       - run: mkdir /tmp/workspace
       - persist_to_workspace:
