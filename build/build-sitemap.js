@@ -43,7 +43,7 @@ const siteMapRoutes = includedRoutes().map(url => {
 ].map(o => builder.build(o)).join('') + '</url>';
 }).join('');
 
-fs.writeFileSync('./public/sitemap.xml', '<?xml version="1.0" encoding="utf-8" standalone="yes" ?>\n' +
+fs.writeFileSync('./dist/sitemap.xml', '<?xml version="1.0" encoding="utf-8" standalone="yes" ?>\n' +
   '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" >' + siteMapRoutes + '</urlset>');
 
-console.log('Sitemap written to ./public/sitemap.xml');
+console.log('Sitemap written to ./dist/sitemap.xml');
