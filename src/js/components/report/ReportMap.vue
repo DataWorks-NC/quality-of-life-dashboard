@@ -12,7 +12,7 @@ const mapConfig = config.mapConfig;
 
 export default {
   name: 'ReportMap',
-  inject: ['mapboxgl','reportTitle', 'selected', 'selectGroupName', 'geography'],
+  inject: ['mapboxgl', 'mapboxglLoaded', 'reportTitle', 'selected', 'selectGroupName', 'geography'],
   watch: {
     '$i18n.locale': 'setLabelLanguage',
   },

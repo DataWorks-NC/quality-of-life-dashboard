@@ -8,12 +8,9 @@
             <v-row>
               <v-col cols="12" md="8">
                 <v-card>
-                  <div v-if="mapboxglLoaded" style="min-height: 600px;">
-                    <ClientOnly>
-                      <map-container />
-                    </ClientOnly>
-                  </div>
-                  <div v-else style="width: 600px; height:600px;" />
+                  <MapboxProvider>
+                    <map-container />
+                  </MapboxProvider>
                   <div class="spacer" />
                   <div class="flex-container">
                     <year-slider v-if="metric.years.length > 1" />
@@ -75,7 +72,8 @@ import Social from "../components/Social.vue";
 import UndermapButtons from "../components/UndermapButtons.vue";
 import CompassNav from "../components/CompassNav.vue";
 
-const MapContainer = defineAsyncComponent(() => import("../components/map/MapContainer.vue"));
+const MapboxProvider = defineAsyncComponent(() => import('../components/map/MapboxProvider.vue'));
+const MapContainer = defineAsyncComponent(() => import("../components/map/CompassMap.vue"));
 const DistributionChart = defineAsyncComponent(() => import("../components/DistributionChart.vue"));
 const TrendChart = defineAsyncComponent(() => import("../components/TrendChart.vue"));
 const YearSlider = defineAsyncComponent(() => import("../components/YearSlider.vue"));
@@ -83,6 +81,7 @@ const YearSlider = defineAsyncComponent(() => import("../components/YearSlider.v
 export default {
   name: "Compass",
   components: {
+    MapboxProvider,
     CompassNav,
     DashboardFooter,
     DataTable,
@@ -98,7 +97,6 @@ export default {
     YearSlider,
   },
   mixins: [parseRouteMixin, loadMetricDataMixin],
-  inject: ['mapboxglLoaded',],
   provide() {
     return {
       metric: computed(() => this.metric),

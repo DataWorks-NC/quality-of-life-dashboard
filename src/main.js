@@ -41,9 +41,9 @@ export const createApp = ViteSSG(
             id: import.meta.env.VITE_GOOGLE_ANALYTICS_ID,
             params: {
               anonymize_ip: true,
-            }
+            },
           },
-      }
+      }, router
     );
 
     setUpRouterHooks(router);

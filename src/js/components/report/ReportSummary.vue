@@ -23,11 +23,9 @@
         <i18n-t keypath="reportSummary.about[2]" tag="p" />
       </v-col>
       <v-col cols="12" sm="6">
-        <ClientOnly>
-          <ReportMap
-            v-if="mapboxglLoaded"
-          />
-        </ClientOnly>
+        <MapboxProvider min-height="400">
+          <ReportMap />
+        </MapboxProvider>
       </v-col>
     </v-row>
     <v-row id="metric-summary-box" class="metric-box">
@@ -58,14 +56,16 @@
 import { defineAsyncComponent} from 'vue';
 import { prettyNumber } from "../../modules/number_format";
 
+const MapboxProvider = defineAsyncComponent(() => import('../map/MapboxProvider.vue'));
 const ReportMap = defineAsyncComponent(() => import("./ReportMap.vue"));
 
 export default {
   name: "ReportSummary",
   components: {
     ReportMap,
+    MapboxProvider
   },
-  inject: ['mapboxglLoaded',  'reportTitle', 'intersectionObserver'],
+  inject: ['reportTitle', 'intersectionObserver'],
   props: {
     summaryMetrics: {
       type: Array,
