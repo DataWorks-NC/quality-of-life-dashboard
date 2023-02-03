@@ -23,6 +23,7 @@
   </div>
 </template>
 <script>
+import getBaseMetadataMixin from '@/js/components/mixins/getBaseMetadataMixin.js';
 
 import DashboardFooter from "../components/DashboardFooter.vue";
 import Feedback from "../components/Feedback.vue";
@@ -39,5 +40,6 @@ export default {
     Feedback,
     Social,
   },
+  mixins: [getBaseMetadataMixin],
 };
 </script>

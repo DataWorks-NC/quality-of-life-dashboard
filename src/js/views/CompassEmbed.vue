@@ -18,6 +18,7 @@ import {computed, defineAsyncComponent} from 'vue';
 
 import parseRouteMixin from '@/js/components/mixins/parseRouteMixin.js';
 import loadMetricDataMixin from '@/js/components/mixins/loadMetricDataMixin.js';
+import getBaseMetadataMixin from '@/js/components/mixins/getBaseMetadataMixin.js';
 
 const MapContainer = defineAsyncComponent(() => import('../components/map/CompassMap.vue'));
 
@@ -26,7 +27,7 @@ export default {
   components: {
     MapContainer,
   },
-  mixins: [parseRouteMixin, loadMetricDataMixin],
+  mixins: [parseRouteMixin, loadMetricDataMixin, getBaseMetadataMixin],
   provide() {
     return {
       metric: computed(() => this.metric),
