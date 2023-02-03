@@ -24,6 +24,8 @@
 </template>
 
 <script>
+import getBaseMetadataMixin from '@/js/components/mixins/getBaseMetadataMixin.js';
+
 import CompassNav from '../components/CompassNav.vue';
 import DashboardFooter from '../components/DashboardFooter.vue';
 import Feedback from '../components/Feedback.vue';
@@ -39,6 +41,7 @@ export default {
     DashboardFooter,
     Social,
   },
+  mixins: [getBaseMetadataMixin],
 };
 </script>
 

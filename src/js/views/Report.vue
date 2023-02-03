@@ -21,6 +21,7 @@
 import { computed } from 'vue';
 import parseRouteMixin from '@/js/components/mixins/parseRouteMixin.js';
 import handleLinksMixin from '@/js/components/mixins/handleLinksMixin.js';
+import getBaseMetadataMixin from '@/js/components/mixins/getBaseMetadataMixin.js';
 
 import { reportStore } from '@/js/stores/report-store.js';
 import config from '../modules/config';
@@ -46,7 +47,7 @@ export default {
     ReportBody,
     ReportJumpNav,
   },
-  mixins: [parseRouteMixin, handleLinksMixin],
+  mixins: [parseRouteMixin, handleLinksMixin, getBaseMetadataMixin],
   provide() {
     return {
       geography: computed(() => this.geography),
@@ -112,23 +113,25 @@ export default {
     useHead({
       title: this.reportTitle,
       meta: [
+        ...this.baseMeta.meta,
         {
           name: 'og:title',
           content: this.reportTitle,
         },
         {
-        name: 'description',
-          content: this.$t('strings.metaDescriptionReport', { title: this.reportTitle}),
+          name: 'description',
+          content: this.$t('strings.metaDescriptionReport', {title: this.reportTitle}),
         },
         {
           name: 'og:description',
-          content: this.$t('strings.metaDescriptionReport', { title: this.reportTitle}),
+          content: this.$t('strings.metaDescriptionReport', {title: this.reportTitle}),
         },
         {
           name: 'og:type',
           content: 'article',
         }
-    ]
+      ],
+      link: [...this.baseMeta.link],
     });
   },
   async mounted() {
