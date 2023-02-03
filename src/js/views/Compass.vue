@@ -59,6 +59,8 @@ import { useHead } from '@vueuse/head';
 import { defineAsyncComponent, computed } from 'vue';
 import parseRouteMixin from '@/js/components/mixins/parseRouteMixin.js';
 import loadMetricDataMixin from '@/js/components/mixins/loadMetricDataMixin.js';
+import getBaseMetadataMixin from '@/js/components/mixins/getBaseMetadataMixin.js';
+
 import {calcValue} from '../modules/metric_calculations';
 
 // TODO: Check which components have a heavier bundle and only make those ones async loaded.
@@ -96,7 +98,7 @@ export default {
     UndermapButtons,
     YearSlider,
   },
-  mixins: [parseRouteMixin, loadMetricDataMixin],
+  mixins: [parseRouteMixin, loadMetricDataMixin, getBaseMetadataMixin],
   provide() {
     return {
       metric: computed(() => this.metric),

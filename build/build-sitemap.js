@@ -13,8 +13,8 @@ const today = new Date().toISOString().slice(0, 10);
 const builder = new XMLBuilder({ attributesGroupName: '@' });
 
 const siteMapRoutes = includedRoutes().map(url => {
-  const enUrl = `${protocol}${domainName}${url.replace(/^\/en|es/,'/en')}`;
-  const esUrl = `${protocol}${domainName}${url.replace(/^\/en|es/, '/es')}`;
+  const enUrl = `${protocol}${domainName}${url.replace(/^\/en|es/,'en')}`;
+  const esUrl = `${protocol}${domainName}${url.replace(/^\/en|es/, 'es')}`;
   return '<url>' + [
     {loc: `${protocol}${domainName}${url}`},
     {"xhtml:link": {
