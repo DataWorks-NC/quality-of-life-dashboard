@@ -70,8 +70,6 @@ export default {
     'selected', 'metric', 'legendTitle'
   ],
   data: () => ({
-    selectedValue: null,
-    selectedValueRaw: null,
     colors: config.colors,
     position: 'top-left',
     icons: {
@@ -101,36 +99,27 @@ export default {
         'float-left': this.position.endsWith('left'),
         'float-right': this.position.endsWith('right'),
       }
-    }
-  },
-  watch: {
-    'metric': 'processSelected',
-    'selected': 'processSelected',
-    'year': 'processSelected',
-  },
-  created() {
-    this.processSelected();
+    },
+    selectedValue() {
+      if (!this.metric.data || !this.metric.config) return null;
+
+      const selectedValue = calcValue(this.metric.data, this.metric.config.type, this.store.year, this.selected);
+      return prettyNumber(selectedValue, this.metric.config);
+    },
+    selectedValueRaw() {
+      if (!this.metric.data || !this.metric.config || !this.metric.config.raw_label) return null;
+      const rawArray = wValsToArray(this.metric.data.map, this.metric.data.w, [this.store.year],
+        this.selected);
+      let rawValue = sum(rawArray);
+      if (this.metric.config.suffix === '%') {
+        rawValue /= 100;
+      }
+      return prettyNumber(rawValue, {prefix: this.metric.config.prefix});
+    },
   },
   methods: {
     abbrNumber(value) {
       return legendLabelNumber(value, this.metric.config, false);
-    },
-    processSelected() {
-      if (!this.metric.data || !this.metric.config) return;
-
-      const metricConfig = this.metric.config;
-      const metricData = this.metric.data;
-
-      const selectedValue = calcValue(metricData, metricConfig.type, this.store.year, this.selected);
-      this.selectedValue = prettyNumber(selectedValue, metricConfig);
-      if (metricConfig.raw_label) {
-        const rawArray = wValsToArray(metricData.map, metricData.w, [this.store.year], this.selected);
-        let rawValue = sum(rawArray);
-        if (metricConfig.suffix === '%') {
-          rawValue /= 100;
-        }
-        this.selectedValueRaw = prettyNumber(rawValue, { prefix: metricConfig.prefix });
-      }
     },
     cyclePosition() {
       if (this.position === 'top-left') {
