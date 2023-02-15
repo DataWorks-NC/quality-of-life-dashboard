@@ -41,7 +41,7 @@ export default {
       return Array.from(partiallyVisibleCategories);
     },
     visibleCategories() {
-      return union(this.fullyVisibleCategories, this.partiallyVisibleCategories);
+      return union(this.fullyVisibleCategories, this.partiallyVisibleCategories).sort(this.localizedSortByName);
     },
   },
   methods: {
@@ -65,7 +65,8 @@ export default {
       else if (Object.values(config.dataConfig).some(m => this.visibleMetrics.includes(m.metric))) {
         return {
           name: 'report',
-          params: currentRoute.params,          query: {
+          params: currentRoute.params,
+          query: {
             ...currentRoute.query,
             visibleMetrics: difference(this.visibleMetrics, this.allMetrics.
               filter(m => m.category = categoryName).
