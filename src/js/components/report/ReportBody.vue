@@ -18,7 +18,8 @@ export default {
   inject: ['metricValues', 'countyAverages', 'geography'],
   computed: {
     categories() {
-      return this.visibleCategories.map(
+      return this.visibleCategories
+      .map(
         categoryName => ({
           name: this.$t(`strings.metricCategories['${categoryName}']`),
           originalName: categoryName,
@@ -28,7 +29,7 @@ export default {
             .sort(this.localizedSortByName),
         }
         ),
-      ).sort(this.localizedSortByName);
+      );
     },
   },
 };

@@ -121,10 +121,10 @@ export default {
   },
   methods: {
     toggleCategory(category) {
-      this.$router.push(this.getToggleCategoryRoute(this.$route, category.originalName));
+      this.$router.replace(this.getToggleCategoryRoute(this.$route, category.originalName));
     },
     toggleMetric(metric) {
-      this.$router.push(this.getToggleMetricRoute(this.$route, metric));
+      this.$router.replace(this.getToggleMetricRoute(this.$route, metric));
     },
     getReportURL() {
       return (
