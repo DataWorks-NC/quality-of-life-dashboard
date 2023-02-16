@@ -42,19 +42,19 @@ jobs:
           condition:
             equal: [ main, << pipeline.git.branch >> ]
           steps:
-            - run: cp .circleci/.env.production ./.env.production
+            - run: cp .circleci/.env.production ./.env
 
       - when:
           condition:
             equal: [ staging, << pipeline.git.branch >> ]
           steps:
-            - run: cp .circleci/.env.staging ./.env.staging
+            - run: cp .circleci/.env.staging ./.env
 
       - when:
           condition:
             equal: [ develop, << pipeline.git.branch >> ]
           steps:
-            - run: cp .circleci/.env.develop ./.env.develop
+            - run: cp .circleci/.env.develop ./.env
 
       - run: npm run build 2>&1 | tee npm-build-output.txt
       - store_artifacts:
