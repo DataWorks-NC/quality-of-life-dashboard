@@ -5,7 +5,7 @@
 <script>
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-import config from '../../modules/config';
+import config from '../../helpers/config';
 import osmLiberty from '@/assets/osm-liberty.json';
 
 const mapConfig = config.mapConfig;

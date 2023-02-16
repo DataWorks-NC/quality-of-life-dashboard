@@ -8,7 +8,7 @@ import { uniqBy } from 'lodash-es';
 import MapboxGlGeocoder from '@mapbox/mapbox-gl-geocoder';
 
 import debugLogMixin from '../mixins/debugLogMixin';
-import config from '../../modules/config';
+import config from '../../helpers/config';
 
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 

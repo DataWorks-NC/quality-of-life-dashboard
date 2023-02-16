@@ -23,9 +23,9 @@
 </template>
 
 <script>
-import {fetchResponseHTML} from '@/js/modules/fetch.js';
-import getSubstringIndex from '@/js/modules/substring-nth.js';
+import {fetchResponseHTML} from '@/js/helpers/fetch.js';
 import handleLinksMixin from '@/js/components/mixins/handleLinksMixin.js';
+import { getSubstringIndex } from '@/js/helpers/miscHelpers.js';
 
 export default {
   name: "MetricMetadata",

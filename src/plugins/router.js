@@ -1,5 +1,5 @@
-import config from '../js/modules/config';
-import { debugLog } from '../js/modules/tracking';
+import config from '../js/helpers/config';
+import { debugLog } from '../js/helpers/tracking';
 import { store } from '@/js/stores/compass-store.js';
 import { pageview } from 'vue-gtag';
 

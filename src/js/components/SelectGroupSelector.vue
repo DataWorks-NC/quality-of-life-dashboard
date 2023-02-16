@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import config from '../modules/config';
+import config from '../helpers/config';
 
 export default {
   name: 'SelectGroupSelector',

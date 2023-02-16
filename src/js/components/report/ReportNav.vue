@@ -21,8 +21,8 @@
 
 <script>
 import { mdiInformation } from '@mdi/js';
-import { gaEvent } from '../../modules/tracking';
-import config from '../../modules/config';
+import { gaEvent } from '../../helpers/tracking';
+import config from '../../helpers/config';
 import ReportSelector from './ReportSelector.vue';
 
 export default {

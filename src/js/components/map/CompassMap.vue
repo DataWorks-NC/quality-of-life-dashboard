@@ -15,9 +15,9 @@ import { isFinite } from 'lodash-es';
 import { defineAsyncComponent } from 'vue';
 import { store } from '@/js/stores/compass-store.js';
 
-import { prettyNumber } from '@/js/modules/number_format';
-import FullExtent from '@/js/modules/map-fullextent';
-import config from '@/js/modules/config';
+import { prettyNumber } from '@/js/helpers/numberFormat.js';
+import FullExtent from '@/js/helpers/mapFullextent.js';
+import config from '@/js/helpers/config';
 import osmLiberty from '@/assets/osm-liberty.json';
 import MapLegend from "./MapLegend.vue";
 import debugLogMixin from '../mixins/debugLogMixin';

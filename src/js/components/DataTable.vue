@@ -58,10 +58,10 @@
 <script>
 import { mdiTrendingDown, mdiTrendingNeutral, mdiTrendingUp } from '@mdi/js';
 import { store } from '@/js/stores/compass-store.js';
+import { isFinite } from 'lodash-es';
 
-import table2csv from '../modules/table2csv';
-import { prettyNumber, round } from '../modules/number_format';
-import isNumeric from '../modules/isnumeric';
+import tableToCSV from '../helpers/tableToCSV.js';
+import { prettyNumber, round } from '../helpers/numberFormat.js';
 
 export default {
   name: 'DataTable',
@@ -85,7 +85,7 @@ export default {
         const begin = this.metric.data.map[geogIndex][`y_${this.trendEndYear}`];
         const end = this.metric.data.map[geogIndex][`y_${this.trendStartYear}`];
 
-        if (isNumeric(begin) && isNumeric(end)) {
+        if (isFinite(begin) && isFinite(end)) {
           const trendVal = round(Number(begin), this.metric.config.decimals)
             - round(Number(end), this.metric.config.decimals);
           return {
@@ -106,7 +106,7 @@ export default {
         const end = this.metric.data.map[geogIndex][`y_${this.trendStartYear}`]
           * this.metric.data.w[geogIndex][`y_${this.trendStartYear}`];
 
-        if (isNumeric(begin) && isNumeric(end)) {
+        if (isFinite(begin) && isFinite(end)) {
           const trendVal = (begin - end) * (this.metric.config.suffix === '%' ? 0.01 : 1);
           return {
             icon: this.trendIcon(trendVal),
@@ -154,7 +154,7 @@ export default {
       this.store.highlight = n;
     },
     downloadTable(theTable) {
-      const csvData = table2csv(theTable);
+      const csvData = tableToCSV(theTable);
       // i hate you ie
       if (window.navigator.msSaveBlob) {
         const blob = new Blob([csvData], { type: 'application/csv;charset=utf-8;' });

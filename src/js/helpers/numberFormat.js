@@ -1,4 +1,4 @@
-import isNumeric from './isnumeric';
+import { isFinite } from "lodash-es";
 
 function abbrNum(number, decPlaces) {
   // 2 decimal places => 100, 3 => 1000, etc
@@ -57,7 +57,7 @@ function prettyNumber(number,
   {
     decimals = 0, prefix = '', suffix = '', commas = true,
   }) {
-  if (isNumeric(number)) {
+  if (isFinite(number)) {
     if (commas) {
       return numberfixes(commafy(round(Number(number), decimals)), prefix,
         suffix);
