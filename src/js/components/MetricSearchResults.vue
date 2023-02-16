@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import config from '../modules/config';
+import config from '../helpers/config';
 import ExternalLink from '@/js/components/ExternalLink.vue';
 import { mdiPlusCircle, mdiMinusCircle } from "@mdi/js";
 

@@ -1,14 +1,15 @@
-import config from '@/js/modules/config.js';
+import config from '@/js/helpers/config.js';
 
 import { union, omit, difference, isArray } from 'lodash-es';
 
-function deleteFrom(ary, item) {
-  return ary.filter(i => i !== item);
-}
+import { deleteFrom, paramToArray } from '../../helpers/miscHelpers.js';
 
 export default {
   // Note: Must inject the geography param!
   computed: {
+    // dataConfig() {
+    //   return config.dataConfig;
+    // },
     allMetrics() {
       return Object.values(config.dataConfig).
         filter(m => m.geographies.includes(this.geography.id));
@@ -26,8 +27,11 @@ export default {
       return [this.$route.query.visibleMetrics];
     },
     fullyVisibleCategories() {
-      if (!this.$route.query.visibleCategories) {
-        return Array.from(new Set(this.allMetrics.map(m => (m.category))));
+      if ((!this.$route.query.visibleCategories)) {
+        if (this.visibleMetrics.length === 0) {
+          return Array.from(new Set(this.allMetrics.map(m => (m.category))));
+        }
+        return [];
       }
       if (isArray(this.$route.query.visibleCategories)) {
         return this.$route.query.visibleCategories;
@@ -61,8 +65,8 @@ export default {
         };
       }
 
-      // If it has some metrics showing, clear out all those metrics from visibleMetrics query.
-      else if (Object.values(config.dataConfig).some(m => this.visibleMetrics.includes(m.metric))) {
+      // If this category has some metrics showing, clear out all those metrics from visibleMetrics query.
+      else if (this.visibleMetrics.some(metricId => config.dataConfig[`m${metricId}`].category === categoryName)) {
         return {
           name: 'report',
           params: currentRoute.params,

@@ -61,7 +61,7 @@ import parseRouteMixin from '@/js/components/mixins/parseRouteMixin.js';
 import loadMetricDataMixin from '@/js/components/mixins/loadMetricDataMixin.js';
 import getBaseMetadataMixin from '@/js/components/mixins/getBaseMetadataMixin.js';
 
-import {calcValue} from '../modules/metric_calculations';
+import {calcValue} from '../helpers/metricCalculations.js';
 
 // TODO: Check which components have a heavier bundle and only make those ones async loaded.
 import DashboardFooter from "../components/DashboardFooter.vue";

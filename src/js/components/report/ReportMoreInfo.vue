@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { fetchResponseHTML } from "../../modules/fetch";
+import { fetchResponseHTML } from "../../helpers/fetch";
 import handleLinksMixin from '@/js/components/mixins/handleLinksMixin.js';
 
 export default {

@@ -1,5 +1,5 @@
 // Send in a unique identifier for a table, like #mytable
-export default function table2csv(theTable) {
+export default function tableToCSV(theTable) {
   const rows = document.querySelectorAll(`${theTable} tr`);
   let csvData = "";
 

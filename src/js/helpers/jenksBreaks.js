@@ -1,5 +1,5 @@
 import jenks from './jenks';
-import { valsToArray } from './metric_calculations';
+import { valsToArray } from './metricCalculations.js';
 
 // With more than a few years worth of data, jenks calculations can take a long time.
 // So I'm cheating here a bit. I do a jenks calculation with just the last two years if

@@ -21,9 +21,9 @@ import 'chartist/dist/index.css';
 import { mdiTrendingUp } from "@mdi/js";
 import { LineChart, Interpolation, Svg, AutoScaleAxis } from 'chartist';
 
-import { legendLabelNumber, prettyNumber } from "../modules/number_format";
-import { ctAxisTitle } from '@/js/modules/ctAxisTitle';
-import { ctTooltip } from '@/js/modules/ctTooltip';
+import { legendLabelNumber, prettyNumber } from "../helpers/numberFormat.js";
+import { ctAxisTitle } from '@/js/helpers/ctAxisTitle';
+import { ctTooltip } from '@/js/helpers/ctTooltip';
 
 export default {
   name: "TrendChart",

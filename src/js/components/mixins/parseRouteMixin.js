@@ -1,4 +1,4 @@
-import config from '@/js/modules/config.js';
+import config from '@/js/helpers/config.js';
 
 export default {
   computed: {

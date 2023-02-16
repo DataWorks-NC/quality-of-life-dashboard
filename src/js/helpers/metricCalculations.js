@@ -1,13 +1,4 @@
-import isNumeric from './isnumeric.js';
-
-function sum(arr) {
-  if (arr.length === 0) return '--';
-  return arr.reduce((total, x) => total + x, 0);
-}
-
-function mean(arr) {
-  return sum(arr) / arr.length;
-}
+import { isFinite, sum, mean } from "lodash-es";
 
 function weighted(arr, weight) {
   const sumR = sum(arr);
@@ -30,7 +21,7 @@ function valsToArray(data = {}, years, keys) {
   const arr = [];
   for (let y = 0; y < years.length; y++) {
     for (let i = 0; i < keys.length; i++) {
-      if (keys[i] in data && isNumeric(data[keys[i]][`y_${years[y]}`])) {
+      if (keys[i] in data && isFinite(data[keys[i]][`y_${years[y]}`])) {
         arr.push(data[keys[i]][`y_${years[y]}`]);
       }
     }
@@ -42,7 +33,7 @@ function wValsToArray(data = {}, weight = {}, years, keys) {
   const arr = [];
   for (let y = 0; y < years.length; y++) {
     for (let i = 0; i < keys.length; i++) {
-      if (keys[i] in data && keys[i] in weight && isNumeric(data[keys[i]][`y_${years[y]}`]) && isNumeric(weight[keys[i]][`y_${years[y]}`])) {
+      if (keys[i] in data && keys[i] in weight && isFinite(data[keys[i]][`y_${years[y]}`]) && isFinite(weight[keys[i]][`y_${years[y]}`])) {
         arr.push(data[keys[i]][`y_${years[y]}`] * weight[keys[i]][`y_${years[y]}`]);
       }
     }

@@ -6,7 +6,7 @@ import jsonminify from 'jsonminify';
 import path from 'path';
 import JSONstringify from 'json-stable-stringify';
 
-import { calcValue } from '../src/js/modules/metric_calculations.js';
+import { calcValue } from '@/js/helpers/metricCalculations.js';
 import generateDownloadCSVs from './download-datagen.js';
 
 import siteConfigData from '../data/config/site.js';

@@ -85,7 +85,7 @@
 
 <script>
 import { mdiClose, mdiEye, mdiEyeOff } from "@mdi/js";
-import config from "../../modules/config";
+import config from "../../helpers/config";
 import reportCategoriesFromRouteMixin
   from '@/js/components/mixins/reportCategoriesFromRouteMixin.js';
 import { store } from '@/js/stores/compass-store.js';
@@ -128,7 +128,7 @@ export default {
     },
     getReportURL() {
       return (
-        config.siteConfig.qoldashboardURL.slice(0, -1) + this.$route.fullPath
+        import.meta.env.VITE_BASE_URL + this.$route.fullPath
       );
     },
   },
