@@ -123,7 +123,7 @@ export default {
       this.$router.replace(this.getToggleCategoryRoute(category.originalName));
     },
     toggleMetric(metric) {
-      this.$router.replace(this.getToggleMetricRoute(metric));
+      this.$router.replace(this.getToggleMetricRoute(metric.metric));
     },
     getReportURL() {
       return (

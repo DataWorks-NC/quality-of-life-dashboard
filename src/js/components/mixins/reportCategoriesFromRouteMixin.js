@@ -91,14 +91,19 @@ export default {
         }
       };
     },
-    getToggleMetricRoute(metric) {
-      const category = config.dataConfig[`m${metric}`].category;
+    getToggleMetricRoute(metricName) {
+      const key = `m${metricName}`;
+      if (!(key in config.dataConfig)) {
+        console.error(`${key} not found in data Config!`);
+        return;
+      }
+      const category = config.dataConfig[`m${metricName}`].category;
       // If metric is in the visibleMetrics array, then remove it.
-      if (this.visibleMetrics.includes(metric)) {
+      if (this.visibleMetrics.includes(metricName)) {
         return {
           name: 'report',
           params: this.$route.params,
-          query: { ...this.$route.query, visibleMetrics: deleteFrom(this.visibleMetrics, metric) }}
+          query: { ...this.$route.query, visibleMetrics: deleteFrom(this.visibleMetrics, metricName) }}
       }
 
       // If metric is in a category that is fully visible, then we need to switch the category to partially visible.
@@ -109,7 +114,7 @@ export default {
           query: {
             ...this.$route.query,
             visibleCategories: deleteFrom(this.fullyVisibleCategories, category),
-            visibleMetrics: union(this.visibleMetrics, this.allMetrics.filter(m => m.category === category && m.metric !== metric).map(m=> m.metric)) }};
+            visibleMetrics: union(this.visibleMetrics, this.allMetrics.filter(m => m.category === category && m.metric !== metricName).map(m=> m.metric)) }};
       }
 
       // If metric is currently hidden, then we first need to check if it is the last metric in a category that would otherwise be fully visible.
@@ -126,7 +131,7 @@ export default {
       // With all that done, we can just show it.
       return {
         name: 'report',
-        params: this.$route.params, query: { ...this.$route.query, visibleMetrics: [...this.visibleMetrics, metric]}}
+        params: this.$route.params, query: { ...this.$route.query, visibleMetrics: [...this.visibleMetrics, metricName]}}
     }
   }
 }
