@@ -85,7 +85,6 @@
 
 <script>
 import { mdiClose, mdiEye, mdiEyeOff } from "@mdi/js";
-import config from "../../helpers/config";
 import reportCategoriesFromRouteMixin
   from '@/js/components/mixins/reportCategoriesFromRouteMixin.js';
 import { store } from '@/js/stores/compass-store.js';
@@ -121,10 +120,10 @@ export default {
   },
   methods: {
     toggleCategory(category) {
-      this.$router.replace(this.getToggleCategoryRoute(this.$route, category.originalName));
+      this.$router.replace(this.getToggleCategoryRoute(category.originalName));
     },
     toggleMetric(metric) {
-      this.$router.replace(this.getToggleMetricRoute(this.$route, metric));
+      this.$router.replace(this.getToggleMetricRoute(metric));
     },
     getReportURL() {
       return (

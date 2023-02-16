@@ -1,15 +1,12 @@
 import config from '@/js/helpers/config.js';
 
-import { union, omit, difference, isArray } from 'lodash-es';
+import { union, omit, difference } from 'lodash-es';
 
 import { deleteFrom, paramToArray } from '../../helpers/miscHelpers.js';
 
 export default {
   // Note: Must inject the geography param!
   computed: {
-    // dataConfig() {
-    //   return config.dataConfig;
-    // },
     allMetrics() {
       return Object.values(config.dataConfig).
         filter(m => m.geographies.includes(this.geography.id));
@@ -18,13 +15,7 @@ export default {
       return Array.from(new Set(this.allMetrics.map(m => m.category)));
     },
     visibleMetrics() {
-      if (!this.$route.query.visibleMetrics) {
-        return [];
-      }
-      if (isArray(this.$route.query.visibleMetrics)) {
-        return this.$route.query.visibleMetrics;
-      }
-      return [this.$route.query.visibleMetrics];
+      return paramToArray(this.$route.query, 'visibleMetrics');
     },
     fullyVisibleCategories() {
       if ((!this.$route.query.visibleCategories)) {
@@ -33,16 +24,18 @@ export default {
         }
         return [];
       }
-      if (isArray(this.$route.query.visibleCategories)) {
-        return this.$route.query.visibleCategories;
-      }
-      return [this.$route.query.visibleCategories];
+      return paramToArray(this.$route.query, 'visibleCategories');
     },
     partiallyVisibleCategories() {
       const partiallyVisibleCategories = new Set();
       this.visibleMetrics.forEach(
-        metricId => partiallyVisibleCategories.add(config.dataConfig[`m${metricId}`].category))
-      return Array.from(partiallyVisibleCategories);
+        metricId => {
+          const key = `m${metricId}`;
+          if (key in config.dataConfig) {
+            partiallyVisibleCategories.add(config.dataConfig[key].category);
+          }
+        });
+      return Array.from(partiallyVisibleCategories).sort();
     },
     visibleCategories() {
       return union(this.fullyVisibleCategories, this.partiallyVisibleCategories).sort(this.localizedSortByName);
@@ -52,14 +45,14 @@ export default {
     metricIsVisible(metric) {
       return this.visibleMetrics.includes(metric.metric) || this.fullyVisibleCategories.includes(metric.category);
     },
-    getToggleCategoryRoute(currentRoute, categoryName) {
+    getToggleCategoryRoute(categoryName) {
       // If this category is already in the visible categories query, just remove it!
       if (this.fullyVisibleCategories.includes(categoryName)) {
         return {
           name: 'report',
-          params: currentRoute.params,
+          params: this.$route.params,
           query: {
-            ...currentRoute.query,
+            ...this.$route.query,
             visibleCategories: deleteFrom(this.fullyVisibleCategories, categoryName)
           }
         };
@@ -69,11 +62,11 @@ export default {
       else if (this.visibleMetrics.some(metricId => config.dataConfig[`m${metricId}`].category === categoryName)) {
         return {
           name: 'report',
-          params: currentRoute.params,
+          params: this.$route.params,
           query: {
-            ...currentRoute.query,
+            ...this.$route.query,
             visibleMetrics: difference(this.visibleMetrics, this.allMetrics.
-              filter(m => m.category = categoryName).
+              filter(m => m.category === categoryName).
               map(m => m.metric))
           }
         };
@@ -84,36 +77,37 @@ export default {
       if (this.visibleCategories.length === this.allCategories.length - 1) {
         return {
           name: 'report',
-          params: currentRoute.params,
-          query: omit(currentRoute.query, 'visibleCategories')
+          params: this.$route.params,
+          query: omit(this.$route.query, 'visibleCategories')
         };
       }
 
       return {
         name: 'report',
-        params: currentRoute.params,
+        params: this.$route.params,
         query: {
-          ...currentRoute.query,
-          visibleCategories: [...this.visibleCategories, categoryName]
+          ...this.$route.query,
+          visibleCategories: [...this.fullyVisibleCategories, categoryName]
         }
       };
     },
-    getToggleMetricRoute(currentRoute, { metric, category }) {
+    getToggleMetricRoute(metric) {
+      const category = config.dataConfig[`m${metric}`].category;
       // If metric is in the visibleMetrics array, then remove it.
       if (this.visibleMetrics.includes(metric)) {
         return {
           name: 'report',
-          params: currentRoute.params,
-          query: { ...currentRoute.query, visibleMetrics: deleteFrom(this.visibleMetrics, metric) }}
+          params: this.$route.params,
+          query: { ...this.$route.query, visibleMetrics: deleteFrom(this.visibleMetrics, metric) }}
       }
 
       // If metric is in a category that is fully visible, then we need to switch the category to partially visible.
       if (this.fullyVisibleCategories.includes(category)) {
         return {
           name: 'report',
-          params: currentRoute.params,
+          params: this.$route.params,
           query: {
-            ...currentRoute.query,
+            ...this.$route.query,
             visibleCategories: deleteFrom(this.fullyVisibleCategories, category),
             visibleMetrics: union(this.visibleMetrics, this.allMetrics.filter(m => m.category === category && m.metric !== metric).map(m=> m.metric)) }};
       }
@@ -123,7 +117,7 @@ export default {
         const newVisibleCategories = [...this.fullyVisibleCategories, category];
         return {
           name: 'report',
-          params: currentRoute.params, query: { ...currentRoute.query,
+          params: this.$route.params, query: { ...this.$route.query,
             visibleCategories: newVisibleCategories,
             visibleMetrics: this.allMetrics.filter(m => this.visibleMetrics.includes(m.metric) && !newVisibleCategories.includes(m.category)).map(m=> m.metric),
           }}
@@ -132,7 +126,7 @@ export default {
       // With all that done, we can just show it.
       return {
         name: 'report',
-        params: currentRoute.params, query: { ...currentRoute.query, visibleMetrics: [...this.visibleMetrics, metric]}}
+        params: this.$route.params, query: { ...this.$route.query, visibleMetrics: [...this.visibleMetrics, metric]}}
     }
   }
 }
