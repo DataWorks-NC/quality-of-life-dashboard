@@ -407,7 +407,7 @@
 import handleLinksMixin from '@/js/components/mixins/handleLinksMixin.js';
 import MailchimpSignup from '@/js/components/MailchimpSignup.vue';
 import ExternalLink from '@/js/components/ExternalLink.vue';
-import config from '@/js/modules/config.js';
+import config from '@/js/helpers/config.js';
 
 export default {
   name: 'AboutPageContents',

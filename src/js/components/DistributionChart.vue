@@ -15,12 +15,12 @@
 import 'chartist/dist/index.css';
 import { mdiCircle, mdiDotsHorizontal } from "@mdi/js";
 import { store } from '@/js/stores/compass-store.js';
+import { isFinite } from 'lodash-es';
 
 import { LineChart } from 'chartist';
-import isNumeric from '@/js/modules/isnumeric';
-import { legendLabelNumber, prettyNumber } from '@/js/modules/number_format';
-import {ctAxisTitle } from '@/js/modules/ctAxisTitle';
-import {ctTooltip} from '@/js/modules/ctTooltip';
+import { legendLabelNumber, prettyNumber } from '@/js/helpers/numberFormat.js';
+import {ctAxisTitle } from '@/js/helpers/ctAxisTitle';
+import {ctTooltip} from '@/js/helpers/ctTooltip';
 import brushBreaksCategoriesMixin from '@/js/components/mixins/brushBreaksCategoriesMixin';
 
 export default {
@@ -246,7 +246,7 @@ export default {
       const keys = Object.keys(data);
 
       for (let i = 0; i < keys.length; i += 1) {
-        if (isNumeric(data[keys[i]][`y_${year}`])) {
+        if (isFinite(data[keys[i]][`y_${year}`])) {
           dataArray.push({ "id": keys[i], "val": data[keys[i]][`y_${year}`] });
         }
       }

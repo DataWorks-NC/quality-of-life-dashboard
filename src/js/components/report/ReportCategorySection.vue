@@ -70,6 +70,13 @@ export default {
         document.getElementById(`${this.formatAnchor(this.category.name)}-container`));
     }
   },
+  beforeUnmount() {
+    if (this.intersectionObserver && this.isObserved) {
+      this.isObserved = false;
+      this.intersectionObserver.unobserve(
+        document.getElementById(`${this.formatAnchor(this.category.name)}-container`));
+    }
+  },
   updated() {
     if (this.intersectionObserver && !this.isObserved) {
       this.isObserved = true;

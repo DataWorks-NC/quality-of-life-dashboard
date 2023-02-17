@@ -1,8 +1,8 @@
-import config from '@/js/modules/config.js';
-import {gaEvent} from '@/js/modules/tracking.js';
-import {fetchResponseJSON} from '@/js/modules/fetch.js';
-import {calcValue, sum, wValsToArray} from '@/js/modules/metric_calculations.js';
-import jenksBreaks from '@/js/modules/jenksbreaks.js';
+import config from '@/js/helpers/config.js';
+import {gaEvent} from '@/js/helpers/tracking.js';
+import {fetchResponseJSON} from '@/js/helpers/fetch.js';
+import {calcValue, sum, wValsToArray} from '@/js/helpers/metricCalculations.js';
+import jenksBreaks from '@/js/helpers/jenksBreaks.js';
 import {store} from '@/js/stores/compass-store.js';
 
 export default {

@@ -55,7 +55,7 @@
 
 <script>
 import { defineAsyncComponent } from 'vue';
-import { prettyNumber } from "../../modules/number_format";
+import { prettyNumber } from "../../helpers/numberFormat.js";
 import {reportStore} from '@/js/stores/report-store.js';
 import MoreInfo from "./ReportMoreInfo.vue";
 

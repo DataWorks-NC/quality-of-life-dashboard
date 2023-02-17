@@ -23,7 +23,7 @@ import App from './js/App.vue';
 import {Head} from '@vueuse/head';
 
 import '@/scss/main.scss';
-import {debugLog} from './js/modules/tracking';
+import {debugLog} from './js/helpers/tracking';
 
 
 export const createApp = ViteSSG(

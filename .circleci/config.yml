@@ -28,35 +28,40 @@ jobs:
             - node_modules
           key: v4-dependencies-{{ checksum "package.json" }}
 
-      - run:
-          name: Run jest tests
-          command: npm run test
-
-      # run tests!
-      - run: npm run build-data 2>&1 | tee npm-build-output-data.txt
-      - store_artifacts:
-          path: ~/repo/npm-build-output-data.txt
 
       # Copy env file based on environment
       - when:
           condition:
             equal: [ main, << pipeline.git.branch >> ]
           steps:
-            - run: cp .circleci/.env.production ./.env.production
+            - run: cp .circleci/.env.production ./.env
 
       - when:
           condition:
             equal: [ staging, << pipeline.git.branch >> ]
           steps:
-            - run: cp .circleci/.env.staging ./.env.staging
+            - run: cp .circleci/.env.staging ./.env
 
       - when:
           condition:
             equal: [ develop, << pipeline.git.branch >> ]
           steps:
-            - run: cp .circleci/.env.develop ./.env.develop
+            - run: cp .circleci/.env.develop ./.env
 
-      - run: npm run build 2>&1 | tee npm-build-output.txt
+      # run tests!
+      - run:
+          name: Run jest tests
+          command: npm run test
+
+      - run:
+          name: Build data
+          command: npm run build-data 2>&1 | tee npm-build-output-data.txt
+      - store_artifacts:
+          path: ~/repo/npm-build-output-data.txt
+
+      - run:
+          name: Build (statically-render) site
+          command: npm run build 2>&1 | tee npm-build-output.txt
       - store_artifacts:
           path: ~/repo/npm-build-output.txt
       - run: ~/repo/data/.circleci/check-build-output-for-errors.sh

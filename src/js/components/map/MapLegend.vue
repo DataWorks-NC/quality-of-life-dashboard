@@ -53,14 +53,14 @@
 <script>
 import { store } from '@/js/stores/compass-store.js';
 
-import config from '../../modules/config';
+import config from '../../helpers/config';
 import { mdiCursorMove } from '@mdi/js';
 
 import brushBreaksCategoriesMixin from '../mixins/brushBreaksCategoriesMixin';
 import {
   legendLabelNumber, prettyNumber,
-} from '../../modules/number_format';
-import { calcValue, wValsToArray, sum } from '../../modules/metric_calculations';
+} from '../../helpers/numberFormat.js';
+import { calcValue, wValsToArray, sum } from '../../helpers/metricCalculations.js';
 
 export default {
   // You would think to just name this component 'Legend', but <legend> is in the HTML5 spec!

@@ -153,8 +153,8 @@
 import { fromPairs, kebabCase, uniq } from 'lodash-es';
 import { mdiTriangleSmallDown, mdiClose, mdiDownload, mdiInformation, mdiMagnify } from '@mdi/js';
 
-import { gaEvent } from '../modules/tracking';
-import config from '../modules/config';
+import { gaEvent } from '../helpers/tracking';
+import config from '../helpers/config';
 import MetricSearchResults from '@/js/components/MetricSearchResults.vue';
 
 // TODO: Add transition where search text box slides in from the right.

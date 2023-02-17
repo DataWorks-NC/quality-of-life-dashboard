@@ -24,7 +24,7 @@ import handleLinksMixin from '@/js/components/mixins/handleLinksMixin.js';
 import getBaseMetadataMixin from '@/js/components/mixins/getBaseMetadataMixin.js';
 
 import { reportStore } from '@/js/stores/report-store.js';
-import config from '../modules/config';
+import config from '../helpers/config';
 const categoryNamesBase = new Array(...new Set(Object.values(config.dataConfig).map(m => (m.category))));
 
 import DashboardFooter from '../components/DashboardFooter.vue';
@@ -33,7 +33,7 @@ import ReportBody from '../components/report/ReportBody.vue';
 import ReportNav from '../components/report/ReportNav.vue';
 import ReportJumpNav from '../components/report/ReportJumpNav.vue';
 import {xor} from 'lodash-es';
-import {fetchResponseJSON} from '@/js/modules/fetch.js';
+import {fetchResponseJSON} from '@/js/helpers/fetch.js';
 import {useHead} from '@vueuse/head';
 
 const getJSONFilename = (geographyId, areaId) => `/data/report/${geographyId}/${areaId}.json`;

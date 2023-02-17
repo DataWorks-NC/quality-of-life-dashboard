@@ -85,7 +85,6 @@
 
 <script>
 import { mdiClose, mdiEye, mdiEyeOff } from "@mdi/js";
-import config from "../../modules/config";
 import reportCategoriesFromRouteMixin
   from '@/js/components/mixins/reportCategoriesFromRouteMixin.js';
 import { store } from '@/js/stores/compass-store.js';
@@ -121,14 +120,14 @@ export default {
   },
   methods: {
     toggleCategory(category) {
-      this.$router.push(this.getToggleCategoryRoute(this.$route, category.originalName));
+      this.$router.replace(this.getToggleCategoryRoute(category.originalName));
     },
     toggleMetric(metric) {
-      this.$router.push(this.getToggleMetricRoute(this.$route, metric));
+      this.$router.replace(this.getToggleMetricRoute(metric.metric));
     },
     getReportURL() {
       return (
-        config.siteConfig.qoldashboardURL.slice(0, -1) + this.$route.fullPath
+        import.meta.env.VITE_BASE_URL + this.$route.fullPath
       );
     },
   },
