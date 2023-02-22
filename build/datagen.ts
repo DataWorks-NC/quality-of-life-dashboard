@@ -7,12 +7,8 @@ import stringify from 'json-stable-stringify';
 
 import fs from 'fs';
 
-// Weird workaround for command line use of this tool.
-import siteConfigData from '../data/config/site.js';
-import dataConfigData from '../data/config/data.js';
-
-const dataConfig = dataConfigData.default;
-const siteConfig = siteConfigData.default;
+import siteConfig from '../data/config/site.js';
+import dataConfig from '../data/config/data.js';
 
 import {
   isNumeric,
@@ -25,6 +21,64 @@ import {
 const fsPromises = fs.promises;
 
 const dest = './public/data/metric';
+
+
+// Typescript types
+interface GeoJSONFeature {
+  type: string;
+  properties: {
+    id: string;
+    label?: string;
+    label_es?: string;
+    feature_type: string;
+  };
+  geometry: {
+    type: string;
+    coordinates: any[];
+  }
+}
+
+interface Geography {
+  type: string;
+  features: GeoJSONFeature[],
+}
+
+interface MetricValue {
+    [index: string]: {
+      [index: string]: number;
+    };
+}
+
+interface MetricOutput {
+  // Computed metric values to be displayed on the map.
+  map: MetricValue;
+
+  // Corresponding weights, used for aggregation.
+  w?: MetricValue;
+
+  // Corresponding accuracy.
+  a?: MetricValue;
+}
+
+type GeographyLevel = "blockgroup" | "tract";
+interface MetricConfig {
+  metric: string;
+  category: string;
+  prefix?: string;
+  suffix?: string;
+  subcategory?: string;
+  title: string;
+  title_es: string;
+  label?: string;
+  raw_label?: string;
+  decimals: number;
+  accuracy?: boolean;
+  type: "sum" | "mean" | "weighted";
+  geographies?: GeographyLevel[];
+  world_val?: {
+    [index: string]: number;
+  };
+}
 
 // /////////////////////////////////////////////////
 // Create destination folders
@@ -60,29 +114,24 @@ async function main() {
   await Promise.all((siteConfig.geographies || ['geography']).map(
     async (geography) => {
       try {
-        let data = await fsPromises.readFile(`data/${geography.id}.geojson.json`, 'utf8');
+        const dataContents = await fsPromises.readFile(`data/${geography.id}.geojson.json`, 'utf8');
 
         // Add labels
-        data = JSON.parse(data);
+        const data: Geography = JSON.parse(dataContents);
         data.features = data.features.map((g) => {
-          if (!('label_en' in g.properties && 'label_es' in g.properties)) {
-            g.properties = {
-              ...g.properties,
-              label: g.properties.label
-                ? g.properties.label
-                : geography.label(g.properties.id),
-              label_es: g.properties.label_es
-                ? g.properties.label_es
-                : geography.label_es(g.properties.id),
-            };
+          if (!g.properties.label) {
+            g.properties.label = geography.label(g.properties.id);
+          }
+          if (!g.properties.label_es) {
+            g.properties.label_es = geography.label_es(g.properties.id);
           }
           return g;
         });
 
-        data = stringify(data);
+        const jsonData = stringify(data);
         try {
           await fsPromises.writeFile(`public/data/${geography.id}.geojson.json`,
-            jsonminify(data));
+            jsonminify(jsonData));
           console.log(`Saved and minified geojson for ${geography.name}`);
         } catch (err) {
           return console.error(
@@ -172,7 +221,9 @@ async function main() {
       let matchingFile = checkMetricFileName(geography, metric, (metric.type === 'sum' ? 'r' : 'n'));
 
       try {
-        const outJSON = {};
+        const outJSON: MetricOutput = {
+          map: {},
+        };
         if (!matchingFile) {
           console.error(
             `Can't find metric CSV files for ${metric.metric}`,
@@ -210,7 +261,9 @@ async function main() {
     }
 
     if (metric.type === 'weighted') {
-      const outJSON = {};
+      const outJSON: MetricOutput = {
+        map: {},
+      };
       const files = [checkMetricFileName(geography, metric, 'r'), checkMetricFileName(geography, metric, 'd')];
 
       const [jsonArrayR, jsonArrayD] = await Promise.all(files.map(async file => {
@@ -268,7 +321,7 @@ async function main() {
 
   // Loop through geographies & variables.
   const siteGeographyIds = siteConfig.geographies.map(g => (g.id));
-  await Promise.all(Object.values(dataConfig).map(async (metric) => {
+  await Promise.all(Object.values(dataConfig).map(async (metric: MetricConfig) => {
     if (metric.geographies) {
       console.log(`Converting csvs to JSON for ${metric.metric}`);
       return Promise.all(
