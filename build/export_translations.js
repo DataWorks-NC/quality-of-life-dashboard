@@ -1,12 +1,10 @@
-/* eslint-disable no-console */
-
 // Convert translation files in javascript and english to a CSV file.
 // Each row contains a key, and then the translations for each language.
 
-const fs = require('fs');
-const path = require('path');
-const _ = require('lodash');
-const { stringify } = require('csv-stringify');
+import fs from 'fs';
+import path from 'path';
+import * as _ from 'lodash';
+import { stringify } from 'csv-stringify';
 
 // TODO: Handle data translation file path also.
 const translationFilePath = path.join(__dirname, '../src/locales/');

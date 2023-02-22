@@ -2,11 +2,11 @@
 
 // TODO: Split data/interface translations
 
-const fs = require('fs');
-const path = require('path');
-const _ = require('lodash');
-const parse = require('csv-parse/lib/sync');
-const stringify = require('json-stable-stringify');
+import fs from 'fs';
+import path from 'path';
+import * as _ from "lodash";
+import parse from 'csv-parse/lib/sync';
+import stringify from 'json-stable-stringify';
 
 const translationFilePath = path.join(__dirname, '../src/locales/');
 

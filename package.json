@@ -12,9 +12,9 @@
     "build-report-data": "babel-node ./build/report-datagen.js",
     "build-site": "npm run build-data && npm run build-sitemap && npm run build",
     "build-sitemap": "babel-node ./build/build-sitemap.js --es-module-specifier-resolution=node",
-    "export-translations": "node ./build/export_translations.js",
+    "export-translations": "babel-node ./build/export_translations.js",
     "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/locales/**/*.json'",
-    "import-translations": "node ./build/import_translations.js",
+    "import-translations": "babel-node ./build/import_translations.js",
     "test": "vitest"
   },
   "dependencies": {
