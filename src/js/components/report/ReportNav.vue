@@ -1,7 +1,7 @@
 <template>
   <v-app-bar theme="dark" extension="tabs" absolute class="d-print-none">
     <v-toolbar-title>
-      <router-link :to="{ name: 'homepage' }">
+      <router-link :to="store.lastCompassRoute ? store.lastCompassRoute : { name: 'homepage', params: $route.params, query: { selected: $route.query.selected } }">
         <img src="@/assets/img/logo.png" :alt="$t('strings.DurhamNeighborhoodCompass')">
       </router-link>
     </v-toolbar-title>
@@ -25,12 +25,15 @@ import { gaEvent } from '../../helpers/tracking';
 import config from '../../helpers/config';
 import ReportSelector from './ReportSelector.vue';
 
+import { store } from '@/js/stores/compass-store.js';
+
 export default {
   name: 'ReportNav',
   components: { ReportSelector },
   data: () => ({
     title: config.siteConfig.title,
     mdiInformation,
+    store,
   }),
   methods: {
     swapLanguage() {
