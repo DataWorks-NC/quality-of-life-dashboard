@@ -146,7 +146,9 @@ export default {
     }
   },
   beforeUnmount() {
-    this.intersectionObserver.disconnect();
+    if (this.intersectionObserver) {
+      this.intersectionObserver.disconnect();
+    }
   },
   methods: {
     onElementObserved(entries) {

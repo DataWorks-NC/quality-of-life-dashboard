@@ -14,11 +14,11 @@ export default {
       let enUrl = '';
       let esUrl = '';
       if (this.$i18n.locale === 'en') {
-        enUrl = this.$route.path;
-        esUrl = this.$router.resolve({...enUrl, params: {...enUrl.params, locale: 'es'}}).href;
+        enUrl = this.$route.fullPath;
+        esUrl = this.$router.resolve({...this.$route, params: {...this.$route.params, locale: 'es'}}).href;
       } else {
-        esUrl = this.$route.path;
-        enUrl = this.$router.resolve({...esUrl, params: {...esUrl.params, locale: 'en'}}).href;
+        esUrl = this.$route.fullPath;
+        enUrl = this.$router.resolve({...this.$route, params: {...this.$route.params, locale: 'en'}}).href;
       }
       return {
         title,
