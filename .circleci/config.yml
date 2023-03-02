@@ -13,13 +13,6 @@ jobs:
     steps:
       - checkout
       - run: git clone https://github.com/DataWorks-NC/durham-quality-of-life-data.git data
-      - when:
-          condition:
-            equal: [ develop, << pipeline.git.branch >> ]
-          steps:
-            - run:
-                command: git checkout develop
-                working_directory: ~/repo/data
 
       # Download and cache dependencies
       - restore_cache:
