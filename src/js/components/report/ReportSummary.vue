@@ -133,8 +133,8 @@ export default {
   height: 98px;
   width: 408px;
 
-  @media (max-width: 767px) {
-    width: 100%;
+  @media (max-width: 408px) {
+    max-width: 100%;
     height: auto;
   }
 }
