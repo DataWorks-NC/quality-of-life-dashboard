@@ -91,15 +91,15 @@ export default {
         []
     },
     reportTitle() {
-      let title = '';
-      if (this.selectGroupName) {
-        title = `${this.selectGroupName} (${this.selectGroupType})`;
-      }
+      let title = this.$t('strings.DurhamCounty');
+
       if (this.areaNames.length) {
         title = this.areaNames.join(', ');
       }
+      if (this.selectGroupName) {
+        title = `${this.selectGroupName} (${this.selectGroupType})`;
+      }
 
-      title = this.$t('strings.DurhamCounty');
       return `${title} - ${this.$t('strings.DurhamNeighborhoodCompass')}`;
     },
   },
@@ -146,7 +146,9 @@ export default {
     }
   },
   beforeUnmount() {
-    this.intersectionObserver.disconnect();
+    if (this.intersectionObserver) {
+      this.intersectionObserver.disconnect();
+    }
   },
   methods: {
     onElementObserved(entries) {
