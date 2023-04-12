@@ -4,6 +4,12 @@ A dashboard for community data and health, maintained by [DataWorks NC](https://
 
 The Dashboard is built using [Vue.js](http://vuejs.org/), [Vuetify](https://vuetifyjs.com), and [Mapbox GL JS](https://www.mapbox.com/mapbox-gl-js/api/).
 
+Portions of this code copyright (c) 2016 Mecklenburg County GIS
+
+Other portions copyright (c) 2018-2023 DataWorks NC
+
+Code released under an MIT license (see License.txt)
+
 ## Original source
 This repo was forked from, and draws heavily on, Tobin Bradley's work on Mecklenburg QoL dashboard. See their [demo site](http://mcmap.org/qol-dev).
 
