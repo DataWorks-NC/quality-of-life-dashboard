@@ -24,25 +24,26 @@ function addLabels(data, labelFunc, labelEsFunc) {
  * Never throws, all errors are caught.
  *
  * @param {Object} options
- * @param {string} options.inputBase The base path from which input geographies will be read
- * @param {string} options.outputBase The base path to which processed geogrpahies will be written
+ * @param {string} options.inputFileBasePath The base path from which input geographies will be read
+ * @param {string} options.outputFileBasePath The base path to which processed geogrpahies will be
+ *   written
  */
-export default async function datagenGeographies({ inputBase, outputBase }) {
+export default async function datagenGeographies({ inputFileBasePath, outputFileBasePath }) {
   await Promise.all(
     siteConfig.geographies.map(async (config) => {
       let data;
       try {
-        const inputPath = path.join(inputBase, `${config.id}.geojson.json`);
+        const inputPath = path.join(inputFileBasePath, `${config.id}.geojson.json`);
         data = await fs.promises.readFile(inputPath, "utf8");
         data = JSON.parse(data);
         data = addLabels(data, config.label, config.label_es);
         data = stringify(data);
         data = jsonminify(data);
       } catch (err) {
-        console.error(`Error reading geography: ${config.name}: ${err.message}`);
+        console.error(`Error reading or processing geography: ${config.name}: ${err.message}`);
       }
 
-      const outputPath = path.join(outputBase, `${config.id}.geojson.json`);
+      const outputPath = path.join(outputFileBasePath, `${config.id}.geojson.json`);
       try {
         await fs.promises.writeFile(outputPath, data);
         console.log(`Saved processed geography: ${config.name}`);

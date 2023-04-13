@@ -4,7 +4,7 @@ const siteConfig = siteConfigData.default;
 import { createDirectories } from "./datagen-helpers.js";
 
 import datagenGeographies from "./datagen-steps/geographies.js";
-import datagenSelectgropus from "./datagen-steps/selectgroups.js";
+import datagenSelectgroups from "./datagen-steps/selectgroups.js";
 import datagenMeta from "./datagen-steps/meta.js";
 import datagenMetrics from "./datagen-steps/metrics.js";
 
@@ -23,23 +23,23 @@ async function main() {
   await createDirectories(directoriesToMake);
 
   await datagenGeographies({
-    inputBase: "data",
-    outputBase: "public/data",
+    inputFileBasePath: "data",
+    outputFileBasePath: "public/data",
   });
 
-  await datagenSelectgropus({
-    inputFile: "data/selectgroups.geojson.json",
-    outputBase: "public/selectgroups",
+  await datagenSelectgroups({
+    inputFilePath: "data/selectgroups.geojson.json",
+    outputFileBasePath: "public/selectgroups",
   });
 
   await datagenMeta({
-    inputBases: ["data/meta/en", "data/meta/es"],
-    outputBase: "public",
+    inputFileBasePaths: ["data/meta/en", "data/meta/es"],
+    outputFileBasePath: "public",
   });
 
   await datagenMetrics({
-    inputBase: "data/metric",
-    outputBase: "public/data/metric",
+    inputFileBasePath: "data/metric",
+    outputFileBasePath: "public/data/metric",
   });
 }
 

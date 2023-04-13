@@ -79,10 +79,10 @@ describe("selectgroups datagen step", () => {
   });
 
   it("processes successfully", async () => {
-    const inputFile = "test/data/selectgroups.geojson.json";
-    const outputBase = "test/output/selectgroups";
+    const inputFilePath = "test/data/selectgroups.geojson.json";
+    const outputFileBasePath = "test/output/selectgroups";
 
-    await datagenSelectgroups({ inputFile, outputBase });
+    await datagenSelectgroups({ inputFilePath, outputFileBasePath });
 
     expect(fs.promises.readFile).toHaveBeenCalledWith(
       "test/data/selectgroups.geojson.json",

@@ -4,20 +4,20 @@ exports[`meta datagen step > processes successfully 1`] = `
 [
   [
     "test/output/test/data/meta/en/mPOPDENS.html",
-    "<h2 id=\\"populationnnpopulationn-why-is-this-importantntotal-population-indicates-the-number-of-people-living-in-a-selected-area\\">Population\\\\n\\\\nPopulation\\\\n### Why is this important?\\\\nTotal population indicates the number of people living in a selected area...</h2>
+    "<h2>Population\\\\n\\\\nPopulation\\\\n### Why is this important?\\\\nTotal population indicates the number of people living in a selected area...</h2>
 ",
   ],
   [
     "test/output/test/data/meta/es/mCOR.html",
-    "<h2 id=\\"certificados-de-ocupación-residencial\\">Certificados de Ocupación Residencial</h2>
+    "<h2>Certificados de Ocupación Residencial</h2>
 <p>Certificados de Ocupación Residencial por milla cuadrada</p>
-<h3 id=\\"¿por-qué-esto-es-importante\\">¿Por qué esto es importante?</h3>
+<h3>¿Por qué esto es importante?</h3>
 <p>Los certificados de ocupación son emitidos para nuevas construcciones o renovaciones totales...</p>
 ",
   ],
   [
     "test/output/test/data/meta/tp/toki-pona.html",
-    "<h2 id=\\"jan-suli-mute-en-telo-suli\\">jan suli mute en telo suli</h2>
+    "<h2>jan suli mute en telo suli</h2>
 <p>jan li lon. tenpo pi mute mute la, ona li sike e suno. jan taso li kama jo e kala tan telo lon nasin telo li lawa e tomo tawa telo lili. tenpo mun mute la, ona li kama jo e kala ala. tenpo nanpa wan la jan lili li awen poka pi jan suli.</p>
 ",
   ],

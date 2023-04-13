@@ -16,17 +16,18 @@ function genSelectgroupFileName(id) {
  * Never throws, all errors are caught.
  *
  * @param {Object} options
- * @param {string} options.inputFile The input json file that contains all selectgroups
- * @param {string} options.outputBase The base path to which processed selectgroups will be written
+ * @param {string} options.inputFilePath The input json file that contains all selectgroups
+ * @param {string} options.outputFileBasePath The base path to which processed selectgroups will be
+ *   written
  */
-export default async function datagenSelectgroups({ inputFile, outputBase }) {
+export default async function datagenSelectgroups({ inputFilePath, outputFileBasePath }) {
   // Read single selectgroups file
   let selectgroups;
   try {
-    selectgroups = await fs.promises.readFile(inputFile, "utf8");
+    selectgroups = await fs.promises.readFile(inputFilePath, "utf8");
     selectgroups = JSON.parse(selectgroups);
   } catch (err) {
-    console.error(`Error reading selectgroups: ${inputFile}: ${err.message}`);
+    console.error(`Error reading selectgroups: ${inputFilePath}: ${err.message}`);
   }
 
   // Write to separate selectgroup files
@@ -41,7 +42,7 @@ export default async function datagenSelectgroups({ inputFile, outputBase }) {
       selectgroup = stringify(selectgroup);
       selectgroup = jsonminify(selectgroup);
 
-      const outputPath = path.join(outputBase, genSelectgroupFileName(f.properties.id));
+      const outputPath = path.join(outputFileBasePath, genSelectgroupFileName(f.properties.id));
       try {
         await fs.promises.writeFile(outputPath, selectgroup);
       } catch (err) {

@@ -126,10 +126,10 @@ describe("geographies datagen step", () => {
   });
 
   it("processes successfully", async () => {
-    const inputBase = "test/data";
-    const outputBase = "test/output/data";
+    const inputFileBasePath = "test/data";
+    const outputFileBasePath = "test/output/data";
 
-    await datagenGeographies({ inputBase, outputBase });
+    await datagenGeographies({ inputFileBasePath, outputFileBasePath });
 
     expect(fs.promises.readFile).toHaveBeenCalledWith("test/data/tract.geojson.json", "utf8");
     expect(fs.promises.readFile).toHaveBeenCalledWith("test/data/blockgroup.geojson.json", "utf8");

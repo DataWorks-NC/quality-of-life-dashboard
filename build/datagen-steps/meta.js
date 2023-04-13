@@ -11,6 +11,7 @@ marked.setOptions({
   sanitize: false,
   smartLists: true,
   smartypants: false,
+  headerIds: false,
 });
 
 function isFileMarkdown(filePath) {
@@ -27,12 +28,14 @@ function filenameToHTML(filePath) {
  * Never throws, all errors are caught.
  *
  * @param {Object} options
- * @param {string} options.inputBases The base paths from which meta markdown files will be read
- * @param {string} options.outputBase The base path to which converted HTML files will be written
+ * @param {string} options.inputFileBasePaths The base paths from which meta markdown files will be
+ *   read
+ * @param {string} options.outputFileBasePath The base path to which converted HTML files will be
+ *   written
  */
-export default async function datagenMeta({ inputBases, outputBase }) {
+export default async function datagenMeta({ inputFileBasePaths, outputFileBasePath }) {
   await Promise.all(
-    inputBases.map(async (folder) => {
+    inputFileBasePaths.map(async (folder) => {
       // Read markdown meta directory
       let files;
       try {
@@ -63,7 +66,7 @@ export default async function datagenMeta({ inputBases, outputBase }) {
           }
 
           // Write HTML to file
-          const outputPath = path.join(outputBase, folder, filenameToHTML(file));
+          const outputPath = path.join(outputFileBasePath, folder, filenameToHTML(file));
           try {
             await fs.promises.writeFile(outputPath, content);
             console.log(`Wrote ${outputPath}`);

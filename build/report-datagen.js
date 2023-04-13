@@ -16,8 +16,8 @@ import dataConfigData from "../data/config/data.js";
 const dataConfig = dataConfigData.default;
 const siteConfig = siteConfigData.default;
 
-const inputBase = "./public/data/metric";
-const outputBase = "./public/data/report";
+const inputFileBasePath = "./public/data/metric";
+const outputFileBasePath = "./public/data/report";
 
 /**
  * Loads metric data for all geographies from JSON files written in datagen step, transposes it to
@@ -45,7 +45,7 @@ async function loadAndTransposeAllMetrics(metricGeographyPairs) {
         metrics[geographyId] = {};
       }
 
-      const metricFilePath = path.join(inputBase, `${geographyId}/m${metricName}.json`);
+      const metricFilePath = path.join(inputFileBasePath, `${geographyId}/m${metricName}.json`);
 
       // Read metric file
       let metricFileContents;
@@ -91,7 +91,19 @@ async function loadAndTransposeAllMetrics(metricGeographyPairs) {
  *   the site config determines the precedence of which geography level serves as the source for the
  *   aggregation.
  *
- * Returns an
+ * Returns an object representing averages and sums across the county for each metric. With the
+ * format:
+ *
+ * ```json
+ * {
+ *   "ACCOMMODATION-WORKERS": {
+ *     "2010": 8.40863,
+ *     "2011": 7.96962,
+ *     "2012": 7.87258,
+ *   },
+ *   "AFTERNOON-COOL-ISLANDS": { ... },
+ *   ...
+ * ```
  */
 function computeCountyAverages(metrics, metricGeographyPairs) {
   const countyAverages = {};
@@ -179,7 +191,7 @@ async function main() {
   }
 
   // Write county averages
-  const outFile = path.join(outputBase, "county_averages.json");
+  const outFile = path.join(outputFileBasePath, "county_averages.json");
   try {
     await fs.promises.writeFile(outFile, jsonminify(stringify(countyAverages)));
     console.log(`Wrote ${outFile}`);
@@ -196,7 +208,7 @@ async function main() {
           if (geographyId === "neighborhood") {
             filename = md5(geographyKey);
           }
-          const outFile = path.join(outputBase, `${geographyId}/${filename}.json`);
+          const outFile = path.join(outputFileBasePath, `${geographyId}/${filename}.json`);
           try {
             await fs.promises.writeFile(
               outFile,
@@ -213,7 +225,7 @@ async function main() {
     })
   );
 
-  generateDownloadCSVs(metrics);
+  await generateDownloadCSVs(metrics);
 }
 
 main();

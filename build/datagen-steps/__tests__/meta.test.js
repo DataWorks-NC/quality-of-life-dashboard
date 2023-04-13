@@ -34,10 +34,10 @@ describe("meta datagen step", () => {
   });
 
   it("processes successfully", async () => {
-    const inputBases = ["test/data/meta/en", "test/data/meta/es", "test/data/meta/tp"];
-    const outputBase = "test/output";
+    const inputFileBasePaths = ["test/data/meta/en", "test/data/meta/es", "test/data/meta/tp"];
+    const outputFileBasePath = "test/output";
 
-    await datagenMeta({ inputBases, outputBase });
+    await datagenMeta({ inputFileBasePaths, outputFileBasePath });
 
     expect(fs.promises.readFile).toHaveBeenCalledWith("test/data/meta/en/mPOPDENS.md", "utf8");
     expect(fs.promises.readFile).toHaveBeenCalledWith("test/data/meta/es/mCOR.md", "utf8");

@@ -22,14 +22,14 @@ const mockCsvArrays = {
     { year: "2022", fips: "370630023001", value: "0" },
   ],
   "data/metric/tract/nMEDAGE.csv": [
-    { id: "37063000101", y_2016: "34.6", y_2017: "35", y_2018: "33", y_2019: "37" },
-    { id: "37063000102", y_2016: "33.4", y_2017: "33", y_2018: "35.8", y_2019: "35.4" },
-    { id: "37063000200", y_2016: "32.9", y_2017: "33.9", y_2018: "34.5", y_2019: "35" },
+    { id: "37063000101", y_2017: "35.342167954", y_2018: "33.876598912", y_2019: "37.323459871" },
+    { id: "37063000102", y_2017: "33.762983451", y_2018: "35.876124623", y_2019: "35.871265789" },
+    { id: "37063000200", y_2017: "33.876783214", y_2018: "34.768341846", y_2019: "35.78251678" },
   ],
   "data/metric/tract/mMEDAGE-accuracy.csv": [
-    { id: "37063000101", y_2016: "3.8", y_2017: "4.9", y_2018: "4.1", y_2019: "5.4" },
-    { id: "37063000102", y_2016: "3.2", y_2017: "3.3", y_2018: "2.8", y_2019: "3.7" },
-    { id: "37063000200", y_2016: "2.8", y_2017: "2.1", y_2018: "2", y_2019: "1.6" },
+    { id: "37063000101", y_2017: "4.9", y_2018: "4.1", y_2019: "5.4" },
+    { id: "37063000102", y_2017: "3.3", y_2018: "2.8", y_2019: "3.7" },
+    { id: "37063000200", y_2017: "2.1", y_2018: "2", y_2019: "1.6" },
   ],
 };
 
@@ -271,10 +271,10 @@ describe("metrics datagen step", () => {
   });
 
   it("processes successfully", async () => {
-    const inputBase = "data/metric";
-    const outputBase = "public/data/metric";
+    const inputFileBasePath = "data/metric";
+    const outputFileBasePath = "public/data/metric";
 
-    await datagenMetrics({ inputBase, outputBase });
+    await datagenMetrics({ inputFileBasePath, outputFileBasePath });
 
     expect(csvFromFileSpy).toHaveBeenCalledWith("data/metric/blockgroup/CC45_denominator.csv");
     expect(csvFromFileSpy).toHaveBeenCalledWith("data/metric/blockgroup/CC45_numerator.csv");

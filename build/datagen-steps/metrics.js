@@ -3,6 +3,7 @@ import stringify from "json-stable-stringify";
 import jsonminify from "jsonminify";
 import path from "path";
 import csv from "csvtojson";
+import { ceil, floor } from "lodash-es";
 
 import siteConfigData from "../../data/config/site.js";
 import dataConfigData from "../../data/config/data.js";
@@ -13,6 +14,12 @@ const siteConfig = siteConfigData.default;
 /** Return true if `n` is convertible to a number. */
 function isNumeric(n) {
   return !Number.isNaN(Number.parseFloat(n)) && Number.isFinite(Number(n));
+}
+
+function truncateDecimals(numberMaybeStr, precision) {
+  const number = Number(numberMaybeStr);
+  if (number < 0) return ceil(number, precision);
+  return floor(number, precision);
 }
 
 /**
@@ -50,18 +57,14 @@ function isNumeric(n) {
  */
 function v1CsvToJson(csvArray) {
   const jsonOut = {};
-  for (let i = 0; i < csvArray.length; i++) {
-    jsonOut[csvArray[i].id] = {};
-    Object.keys(csvArray[i]).forEach((key) => {
+  csvArray.forEach((row) => {
+    jsonOut[row.id] = {};
+    Object.keys(row).forEach((key) => {
       if (key !== "id") {
-        if (isNumeric(csvArray[i][key])) {
-          jsonOut[csvArray[i].id][key] = Number(csvArray[i][key]);
-        } else {
-          jsonOut[csvArray[i].id][key] = null;
-        }
+        jsonOut[row.id][key] = isNumeric(row[key]) ? truncateDecimals(row[key], 5) : null;
       }
     });
-  }
+  });
   return jsonOut;
 }
 
@@ -113,7 +116,9 @@ function v2CsvToJson(csvArray) {
     if (!(row.fips in jsonOut)) {
       jsonOut[row.fips] = {};
     }
-    jsonOut[row.fips][`y_${row.year}`] = isNumeric(row.value) ? Number(row.value) : null;
+    jsonOut[row.fips][`y_${row.year}`] = isNumeric(row.value)
+      ? truncateDecimals(row.value, 5)
+      : null;
   });
   return jsonOut;
 }
@@ -170,8 +175,8 @@ async function checkIfFilesAreReadable(fileNames) {
  * @param {string} metric
  * @param {"r" | "d" | "n" | "accuracy"} type
  */
-async function checkMetricFileName(geography, metric, type, inputBase) {
-  const basePath = path.join(inputBase, geography);
+async function checkMetricFileName(geography, metric, type, inputFileBasePath) {
+  const basePath = path.join(inputFileBasePath, geography);
   let fileNamePossibilities = [];
 
   if (type === "accuracy") {
@@ -226,8 +231,8 @@ async function checkMetricFileName(geography, metric, type, inputBase) {
 }
 
 /** Convert accuracy metric accuracy files from CSV to JSON and return the JSON. */
-async function convertAccuracy(geography, metric, { inputBase }) {
-  const accuracyFile = await checkMetricFileName(geography, metric, "accuracy", inputBase);
+async function convertAccuracy(geography, metric, { inputFileBasePath }) {
+  const accuracyFile = await checkMetricFileName(geography, metric, "accuracy", inputFileBasePath);
   if (!accuracyFile) {
     console.error(`Could not find matching accuracy file for ${metric.metric} for ${geography}.`);
     return;
@@ -247,10 +252,14 @@ async function convertAccuracy(geography, metric, { inputBase }) {
  *
  * Can throw errors.
  */
-async function convertSumOrMeanMetric(geography, metric, { inputBase, outputBase }) {
+async function convertSumOrMeanMetric(
+  geography,
+  metric,
+  { inputFileBasePath, outputFileBasePath }
+) {
   const outJSON = {};
   const type = metric.type === "sum" ? "r" : "n";
-  const metricFile = await checkMetricFileName(geography, metric, type, inputBase);
+  const metricFile = await checkMetricFileName(geography, metric, type, inputFileBasePath);
 
   if (!metricFile) {
     throw Error(`Could not find ${metric.type} metric CSV files`);
@@ -276,7 +285,7 @@ async function convertSumOrMeanMetric(geography, metric, { inputBase, outputBase
   // Convert accuracy
   try {
     if (metric.accuracy) {
-      outJSON.a = await convertAccuracy(geography, metric, { inputBase });
+      outJSON.a = await convertAccuracy(geography, metric, { inputFileBasePath });
     }
   } catch (err) {
     throw Error(
@@ -284,7 +293,7 @@ async function convertSumOrMeanMetric(geography, metric, { inputBase, outputBase
     );
   }
   // Write metric file
-  const dest = path.join(outputBase, geography);
+  const dest = path.join(outputFileBasePath, geography);
   return writeMetricFile(dest, metric, outJSON);
 }
 
@@ -293,11 +302,11 @@ async function convertSumOrMeanMetric(geography, metric, { inputBase, outputBase
  *
  * Can throw errors.
  */
-async function convertWeightedMetric(geography, metric, { inputBase, outputBase }) {
+async function convertWeightedMetric(geography, metric, { inputFileBasePath, outputFileBasePath }) {
   const outJSON = {};
   const files = [
-    await checkMetricFileName(geography, metric, "r", inputBase),
-    await checkMetricFileName(geography, metric, "d", inputBase),
+    await checkMetricFileName(geography, metric, "r", inputFileBasePath),
+    await checkMetricFileName(geography, metric, "d", inputFileBasePath),
   ];
 
   if (!files[0]) {
@@ -335,10 +344,11 @@ async function convertWeightedMetric(geography, metric, { inputBase, outputBase 
     Object.keys(jsonArrayR).forEach((key) => {
       Object.keys(jsonArrayR[key]).forEach((key2) => {
         if (isNumeric(jsonArrayR[key][key2]) && isNumeric(jsonArrayD[key][key2])) {
-          jsonArrayR[key][key2] /= jsonArrayD[key][key2];
+          let value = jsonArrayR[key][key2] / jsonArrayD[key][key2];
           if (metric.suffix === "%") {
-            jsonArrayR[key][key2] *= 100;
+            value *= 100;
           }
+          jsonArrayR[key][key2] = truncateDecimals(value, 5);
         } else {
           jsonArrayR[key][key2] = null;
         }
@@ -350,10 +360,10 @@ async function convertWeightedMetric(geography, metric, { inputBase, outputBase 
   outJSON.w = jsonArrayD;
   outJSON.map = jsonArrayR;
   if (metric.accuracy) {
-    outJSON.a = await convertAccuracy(geography, metric, { inputBase });
+    outJSON.a = await convertAccuracy(geography, metric, { inputFileBasePath });
   }
   // Write metric file
-  const dest = path.join(outputBase, geography);
+  const dest = path.join(outputFileBasePath, geography);
   return writeMetricFile(dest, metric, outJSON);
 }
 
@@ -362,13 +372,13 @@ async function convertWeightedMetric(geography, metric, { inputBase, outputBase 
  *
  * Can throw errors.
  */
-async function convertMetric(geography, metric, { inputBase, outputBase }) {
+async function convertMetric(geography, metric, { inputFileBasePath, outputFileBasePath }) {
   if (metric.type === "sum" || metric.type === "mean") {
-    await convertSumOrMeanMetric(geography, metric, { inputBase, outputBase });
+    await convertSumOrMeanMetric(geography, metric, { inputFileBasePath, outputFileBasePath });
   }
 
   if (metric.type === "weighted") {
-    await convertWeightedMetric(geography, metric, { inputBase, outputBase });
+    await convertWeightedMetric(geography, metric, { inputFileBasePath, outputFileBasePath });
   }
 }
 
@@ -378,10 +388,11 @@ async function convertMetric(geography, metric, { inputBase, outputBase }) {
  * Never throws, all errors are caught.
  *
  * @param {Object} options
- * @param {string} options.inputBase The base path from which input metrics will be read
- * @param {string} options.outputBase The base path to which processed metrics will be written
+ * @param {string} options.inputFileBasePath The base path from which input metrics will be read
+ * @param {string} options.outputFileBasePath The base path to which processed metrics will be
+ *   written
  */
-export default async function datagenMetrics({ inputBase, outputBase }) {
+export default async function datagenMetrics({ inputFileBasePath, outputFileBasePath }) {
   const siteGeographyIds = siteConfig.geographies.map((g) => g.id);
   // Process all metrics defined in data config.
   await Promise.all(
@@ -394,7 +405,7 @@ export default async function datagenMetrics({ inputBase, outputBase }) {
             .filter((g) => siteGeographyIds.includes(g))
             .map(async (geography) => {
               try {
-                await convertMetric(geography, metric, { inputBase, outputBase });
+                await convertMetric(geography, metric, { inputFileBasePath, outputFileBasePath });
               } catch (err) {
                 console.error(
                   `Metric conversion error: ${err.message} metric=${metric.metric} geography=${geography}:`
@@ -406,7 +417,7 @@ export default async function datagenMetrics({ inputBase, outputBase }) {
       } else if (metric) {
         // Omit geography if metric does not have any defined
         try {
-          await convertMetric("", metric, { inputBase, outputBase });
+          await convertMetric("", metric, { inputFileBasePath, outputFileBasePath });
         } catch (err) {
           console.error(
             `Metric conversion error: ${err.message} metric=${metric.metric} geography=none:`
