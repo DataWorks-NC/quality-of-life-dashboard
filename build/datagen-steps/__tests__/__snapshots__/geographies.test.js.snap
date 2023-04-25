@@ -1,0 +1,18 @@
+// Vitest Snapshot v1
+
+exports[`geographies datagen step > processes successfully 1`] = `
+[
+  [
+    "test/output/data/tract.geojson.json",
+    "{\\"features\\":[{\\"geometry\\":{\\"coordinates\\":[[[-78.91659552365236,36.02529313411341],[-78.91171787018702,36.022247561656165],[-78.91882712981298,36.023375551455146],[-78.91659552365236,36.02529313411341]]],\\"type\\":\\"Polygon\\"},\\"properties\\":{\\"id\\":\\"37063000301\\",\\"label\\":\\"test_label_tract_37063000301\\",\\"label_es\\":\\"test_label_es_tract_37063000301\\"},\\"type\\":\\"Feature\\"},{\\"geometry\\":{\\"coordinates\\":[[[-78.88002906270627,35.996303796279626],[-78.88382279317932,35.996303796279626],[-78.88385467326732,35.99449901260126],[-78.88002906270627,35.996303796279626]]],\\"type\\":\\"Polygon\\"},\\"properties\\":{\\"id\\":\\"37063000900\\",\\"label\\":\\"test_label_tract_37063000900\\",\\"label_es\\":\\"test_label_es_tract_37063000900\\"},\\"type\\":\\"Feature\\"}],\\"type\\":\\"FeatureCollection\\"}",
+  ],
+  [
+    "test/output/data/blockgroup.geojson.json",
+    "{\\"features\\":[{\\"geometry\\":{\\"coordinates\\":[[[-78.97806033333333,36.0593209639964],[-78.97589248734873,36.059622050105006],[-78.97630692849285,36.057702626162616],[-78.97806033333333,36.0593209639964]]],\\"type\\":\\"Polygon\\"},\\"properties\\":{\\"id\\":\\"370630017074\\",\\"label\\":\\"test_label_blockgroup_370630017074\\",\\"label_es\\":\\"test_label_es_blockgroup_370630017074\\"},\\"type\\":\\"Feature\\"}],\\"type\\":\\"FeatureCollection\\"}",
+  ],
+  [
+    "test/output/data/other.geojson.json",
+    "{\\"features\\":[{\\"geometry\\":{\\"coordinates\\":[[[60.97806033333333,30.0593209639964],[60.97589248734873,30.059622050105006],[60.97630692849285,30.057702626162616],[60.97806033333333,30.0593209639964]]],\\"type\\":\\"Polygon\\"},\\"properties\\":{\\"id\\":\\"123456789\\",\\"label\\":\\"test_label_other_123456789\\",\\"label_es\\":\\"test_label_es_other_123456789\\"},\\"type\\":\\"Feature\\"}],\\"type\\":\\"FeatureCollection\\"}",
+  ],
+]
+`;

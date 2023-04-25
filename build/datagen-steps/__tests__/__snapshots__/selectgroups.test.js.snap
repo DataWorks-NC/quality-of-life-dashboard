@@ -1,0 +1,14 @@
+// Vitest Snapshot v1
+
+exports[`selectgroups datagen step > processes successfully 1`] = `
+[
+  [
+    "test/output/selectgroups/Anderson_St._%2F_Wrightwood_Park.geojson.json",
+    "{\\"crs\\":{\\"properties\\":{\\"name\\":\\"urn:ogc:def:crs:OGC:1.3:CRS84\\"},\\"type\\":\\"name\\"},\\"features\\":[{\\"geometry\\":{\\"coordinates\\":[[[[-78.930283,35.9984019999994],[-78.930298,35.99795199999941],[-78.930832,35.998341],[-78.930283,35.9984019999994]],[[-78.939194,35.989711999999386],[-78.939087,35.98910099999941],[-78.938103,35.989898999999404],[-78.939194,35.989711999999386]]]],\\"type\\":\\"MultiPolygon\\"},\\"properties\\":{\\"feature_type\\":\\"neighborhood\\",\\"id\\":\\"Anderson St. / Wrightwood Park\\",\\"label\\":\\"Anderson St. / Wrightwood Park\\",\\"label_es\\":\\"Anderson St. / Wrightwood Park\\"},\\"type\\":\\"Feature\\"}],\\"name\\":\\"selectgroups\\",\\"type\\":\\"FeatureCollection\\"}",
+  ],
+  [
+    "test/output/selectgroups/C.C._Spaulding.geojson.json",
+    "{\\"crs\\":{\\"properties\\":{\\"name\\":\\"urn:ogc:def:crs:OGC:1.3:CRS84\\"},\\"type\\":\\"name\\"},\\"features\\":[{\\"geometry\\":{\\"coordinates\\":[[[[-78.90460244883778,35.99721697678178],[-78.90276722329449,35.99619982188501],[-78.90188323521053,35.99571469360441],[-78.90460244883778,35.99721697678178]]]],\\"type\\":\\"MultiPolygon\\"},\\"properties\\":{\\"feature_type\\":\\"elementary_school_assignment_zone\\",\\"id\\":\\"C.C. Spaulding\\",\\"label\\":\\"C.C. Spaulding (School Assignment Zone)\\",\\"label_es\\":\\"C.C. Spaulding (Zona Escolar Asignada)\\"},\\"type\\":\\"Feature\\"}],\\"name\\":\\"selectgroups\\",\\"type\\":\\"FeatureCollection\\"}",
+  ],
+]
+`;
