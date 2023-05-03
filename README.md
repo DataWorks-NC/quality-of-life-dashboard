@@ -91,4 +91,4 @@ All text in the app is dynamically loaded using vue-i18n from the `en.json` and 
 Create the string keys and string items in either English or Spanish in the `en.json` or `es.json` files. If you then run the export_translations script immediately followed by the import_translations script, both languages `json` files will be populated with blank placeholders for any missing text.
 
 # Pinned dependencies
-None currently!
+* Vite on 4.2.x because version 4.3 is breaking tests -- see https://github.com/DataWorks-NC/quality-of-life-dashboard/pull/119#issuecomment-1531724946
