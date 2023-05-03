@@ -2,6 +2,14 @@
 
 A dashboard for community data and health, maintained by [DataWorks NC](https://www.dataworks-nc.org) and [Research Action Design](https://rad.cat). Live at https://compass.durhamnc.gov
 
+The Dashboard is built using [Vue.js](http://vuejs.org/), [Vuetify](https://vuetifyjs.com), and [Mapbox GL JS](https://www.mapbox.com/mapbox-gl-js/api/).
+
+Portions of this code copyright (c) 2016 Mecklenburg County GIS
+
+Other portions copyright (c) 2018-2023 DataWorks NC
+
+Code released under an MIT license (see License.txt)
+
 ## Original source
 This repo was forked from, and draws heavily on, Tobin Bradley's work on Mecklenburg QoL dashboard. See their [demo site](http://mcmap.org/qol-dev).
 
@@ -9,8 +17,6 @@ The original Mecklenburg repository with old versions of the Dashboard is [here]
 
 ### Related Projects
 
-*   [quality-of-life-embed](https://github.com/tobinbradley/quality-of-life-embed)
-*   [quality-of-life-report](https://github.com/tobinbradley/quality-of-life-report)
 *   [quality-of-life-data](https://github.com/DataWorks-NC/durham-quality-of-life-data)
 
 ## Get Started
@@ -30,7 +36,7 @@ Then run
 
 ```bash
 npm run build
-npm start
+npm run dev
 ```
 
 You should now be able to access the dashboard locally at http://127.0.0.1:3000/.
@@ -40,22 +46,6 @@ To build the site for production, see Deployment, below, and the Tehnical Infras
 ## Customizing the Dashboard
 
 Most Dashboard customization can be accomplished by creating your own data repository [following the directions here](https://github.com/tobinbradley/mecklenburg-quality-of-life-data). The data repository includes Dashboard meta (title, author, keywords, etc.), map style and configuration settings, data, etc.
-
-The Dashboard is built using [Vue.js](http://vuejs.org/), [Mapbox GL JS](https://www.mapbox.com/mapbox-gl-js/api/), and [Material Design Lite](https://getmdl.io/). The business end of things consists of independent Vue.js components in `app/js/components`. You can very easily create or disable components as needed. Each component has a shared state between all the components, and some components have a private state for things only needed by that component.
-
-The `app/js/search.vue` component searches for the geography id, zip codes, and addresses. Zip code and address searches use HTTP API's from our [Dirt Simple PostGIS HTTP API](https://github.com/tobinbradley/dirt-simple-postgis-http-api) project with Mecklenburg data and won't work for other areas (only the geography ID search will work). Setting up new searches is fairly straight-forward and you can customize it to meet your needs.
-
-To disable the non-geography searches, comment out everything but `searchNeighborhood` in the `search` method of `app/js/search.vue`.
-
-``` javascript
-search: function() {
-    let query = this.privateState.query.trim();
-
-    this.searchNeighborhood(query);
-    //this.searchAddress(query);
-    //this.searchZipcode(query);
-},.
-```
 
 ## Deployment
 
@@ -72,7 +62,7 @@ To deploy, run `python .circleci/deploy.py ./dist` (make sure that `python-doten
 To deploy to the staging site (https://nbhdcompassstage.azurewebsites.us/), push changes to `staging` branch in github, and CircleCI will do the rest.
 
 ### Sitemap
-Run `npm run build-sitemap` to build a sitemap for the site. Sitemap will be built to a file in `dist/sitemap.xml`. Currently this isn't auto-uploaded as part of the build process, but it should be soon.
+Run `npm run build-sitemap` to build a sitemap for the site. Sitemap will be built to a file in `public/sitemap.xml`.
 
 
 ## Map glyphs & sprites
@@ -88,12 +78,6 @@ If you update the sprites file, you may need to check for missing sprites as the
 
 We test with the help of [![Browserstack logo](https://raw.githubusercontent.com/DataWorks-NC/quality-of-life-dashboard/main/app/assets/img/browserstack-logo.png)](https://browserstack.com/)
 
-## Performance Testing
-
-We use [lighthouse-ci](https://github.com/GoogleChrome/lighthouse-ci) to track how the deployed app code performs against Google Lighthouse metrics over time. For the most part, if you're running the site locally you won't want to use or mess with lighthouse-ci, but if you want to run performane tests locally, you can globally install `@lhci/cli` and the `.lighthouserc.json` configuration will work locally as well.
-
-We also try to track the generated bundle size of the app using bundlesize, which runs on each pull request in CircleCI to check generated files against limits which are set in `package.json`. Occasionally a file will go over that limit by a few kb here or there, and our current practice is just to adjust the bundlesize limits as needed until the build passes, but it's good to have the extra info.
-
 ## Translations
 
 All text in the app is dynamically loaded using vue-i18n from the `en.json` and `es.json` files in `app/lang`. The codename for a string needs to match across both files. There are two utility functions in the app as well to more exaily import/export translations:
@@ -107,8 +91,4 @@ All text in the app is dynamically loaded using vue-i18n from the `en.json` and 
 Create the string keys and string items in either English or Spanish in the `en.json` or `es.json` files. If you then run the export_translations script immediately followed by the import_translations script, both languages `json` files will be populated with blank placeholders for any missing text.
 
 # Pinned dependencies
-* autoprefixer@9.x for the time being, b/c upgrading would require upgrading PostCSS
-* sass-loader@10.x because of webpack dependencies
-* eslint@6.x as required by vue eslint airbnb plugin
-* MapboxGL@1.x because we're not upgrading to the new ToS yet
-* Chartist at 0.x because plugins don't work with chartist v1 yet.
+* Vite on 4.2.x because version 4.3 is breaking tests -- see https://github.com/DataWorks-NC/quality-of-life-dashboard/pull/119#issuecomment-1531724946
