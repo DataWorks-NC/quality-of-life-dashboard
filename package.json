@@ -1,6 +1,6 @@
 {
   "name": "durham-neighborhood-compass",
-  "version": "3.1.2",
+  "version": "3.2.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -69,7 +69,6 @@
     "vite-plugin-vuetify": "^1.0.0",
     "vite-ssg": "^0.22",
     "vitest": "^0.28.5",
-    "vue-gtag": "^2.0.1",
     "yorkie": "^2.0.0"
   },
   "postcss": {
