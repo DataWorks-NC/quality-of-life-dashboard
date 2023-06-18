@@ -1,11 +1,11 @@
 import config from '@/js/helpers/config.js';
-import {gaEvent} from '@/js/helpers/tracking.js';
 import {fetchResponseJSON} from '@/js/helpers/fetch.js';
 import {calcValue, sum, wValsToArray} from '@/js/helpers/metricCalculations.js';
 import jenksBreaks from '@/js/helpers/jenksBreaks.js';
 import {store} from '@/js/stores/compass-store.js';
 
 export default {
+  inject: ['saEvent'],
   data() {
     return {
       metric: {
@@ -33,9 +33,7 @@ export default {
 
       // Load metric data.
       if (metricChanged) {
-        gaEvent('metric',
-          this.metric.config.title.trim(),
-          this.metric.config.category.trim());
+        this.saEvent?.(`metric__${this.metric.config.title.trim()}__${this.metric.config.category.trim()}`);
       }
       if (geographyChanged) {
         this.store.highlight = [];

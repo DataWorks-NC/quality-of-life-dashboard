@@ -22,7 +22,6 @@
 
 <script>
 import { mdiInformation } from '@mdi/js';
-import { gaEvent } from '../../helpers/tracking';
 import config from '../../helpers/config';
 import ReportSelector from './ReportSelector.vue';
 
@@ -44,7 +43,6 @@ export default {
       }
       this.$router.push({ params: { ...this.$route.params, locale: newLanguage }, query: this.$route.query });
     },
-    gaEvent,
   },
 };
 </script>

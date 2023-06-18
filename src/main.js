@@ -13,11 +13,11 @@ if (typeof window !== 'undefined') {
 }
 
 import {ViteSSG} from 'vite-ssg';
-import VueGtag from 'vue-gtag';
 
 import {routerOptions, setUpRouterHooks} from './plugins/router';
 import i18n from './plugins/i18n';
 import vuetify from './plugins/vuetify';
+import SimpleAnalytics from 'simple-analytics-vue';
 
 import App from './js/App.vue';
 import {Head} from '@vueuse/head';
@@ -35,16 +35,7 @@ export const createApp = ViteSSG(
     app.use(i18n);
     app.config.unwrapInjectedRef = true;
     app.component('SetHead', Head);
-    app.use(VueGtag, {
-        config:
-          {
-            id: import.meta.env.VITE_GOOGLE_ANALYTICS_ID,
-            params: {
-              anonymize_ip: true,
-            },
-          },
-      }, router
-    );
+    app.use(SimpleAnalytics, {});
 
     setUpRouterHooks(router);
 

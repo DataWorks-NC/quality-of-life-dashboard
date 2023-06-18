@@ -63,7 +63,7 @@
       <v-btn v-if="!isSearching" icon :aria-label="$t('about.link')" :to="{ name: 'about' }">
         <v-icon :icon="icons.mdiInformation" />
       </v-btn>
-      <v-btn v-if="!isSearching" icon :aria-label="$t('strings.DownloadData')" href="/download/download.zip" @click="gaEvent('send', 'event', 'download', 'metric zip file download')">
+      <v-btn v-if="!isSearching" icon :aria-label="$t('strings.DownloadData')" href="/download/download.zip" @click="saEvent?.('download__metric_zip_file')">
         <v-icon :icon="icons.mdiDownload" />
       </v-btn>
 
@@ -126,7 +126,7 @@
                       {{ m.name }} <v-icon :icon="icons.mdiTriangleSmallDown" />
                     </v-btn>
                   </template>
-                  <v-list nav dense offset-y max-height="75vh">
+                  <v-list nav density="compact" offset-y max-height="75vh">
                     <v-list-item v-for="m2 in m.children" :key="m2.metric" :to="{ name: 'compass', params: { ...$route.params, metric: m2.metric }, query: $route.query }">
                       <v-list-item-title>
                         {{ m2.name }}
@@ -148,12 +148,13 @@
     </div>
   </div>
 </template>
-
 <script>
 import { fromPairs, kebabCase, uniq } from 'lodash-es';
 import { mdiTriangleSmallDown, mdiClose, mdiDownload, mdiInformation, mdiMagnify } from '@mdi/js';
+import { inject } from "vue";
 
-import { gaEvent } from '../helpers/tracking';
+const saEvent = inject("saEvent");
+
 import config from '../helpers/config';
 import MetricSearchResults from '@/js/components/MetricSearchResults.vue';
 
@@ -168,6 +169,7 @@ export default {
     metric: {
       default: {},
     },
+    saEvent: {},
   },
   data: () => ({
     isSearching: false,
@@ -183,7 +185,7 @@ export default {
       mdiDownload,
       mdiInformation,
       mdiMagnify,
-    }
+    },
   }),
   computed: {
     categories() {
@@ -254,7 +256,7 @@ export default {
       this.$router.push({ name: this.$route.name, params: { ...this.$route.params, locale: newLanguage }, query: this.$route.query });
     },
     kebabCase,
-    gaEvent,
+    saEvent,
   },
 };
 </script>
