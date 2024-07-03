@@ -52,7 +52,6 @@
     "@vueuse/head": "^1.x",
     "async": "^3.2.0",
     "autoprefixer": "^10.0",
-    "bundlesize": "^0.18.0",
     "critters": "^0.0.16",
     "csvtojson": "^2.0.10",
     "eslint": "^8.0",
@@ -63,7 +62,7 @@
     "lint-staged": "^13.0",
     "marked": "^4.0.12",
     "prettier-plugin-jsdoc": "^0.4.2",
-    "sass": "^1.43.2",
+    "sass": "^1.77.6",
     "terser": "^5.16.1",
     "vite": "~4.2",
     "vite-plugin-vuetify": "^1.0.0",
@@ -80,40 +79,6 @@
     "> 0.05%",
     "last 2 versions",
     "not dead"
-  ],
-  "bundlesize": [
-    {
-      "path": "./dist/css/app.*.css",
-      "maxSize": "2 kB"
-    },
-    {
-      "path": "./dist/css/chunk-vendors.*.css",
-      "maxSize": "32 kB"
-    },
-    {
-      "path": "./dist/css/about~compass~report.*.css",
-      "maxSize": "15 kB"
-    },
-    {
-      "path": "./dist/css/!(app|chunk-vendors|about~compass~report).*.css",
-      "maxSize": "4.5 kB"
-    },
-    {
-      "path": "./dist/js/mapboxgl.*.js",
-      "maxSize": "192 kB"
-    },
-    {
-      "path": "./dist/js/report-map~select-group-outline.*.js",
-      "maxSize": "215 kB"
-    },
-    {
-      "path": "./dist/js/chunk-vendors.*.js",
-      "maxSize": "125 kB"
-    },
-    {
-      "path": "./dist/js/!(mapboxgl|chunk-vendors|report-map~select-group-outline).*.js",
-      "maxSize": "32 kB"
-    }
   ],
   "gitHooks": {
     "pre-commit": "lint-staged"
