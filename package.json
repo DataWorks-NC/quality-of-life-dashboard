@@ -52,7 +52,6 @@
     "@vueuse/head": "^1.x",
     "async": "^3.2.0",
     "autoprefixer": "^10.0",
-    "bundlesize": "^0.18.0",
     "critters": "^0.0.16",
     "csvtojson": "^2.0.10",
     "eslint": "^8.0",
