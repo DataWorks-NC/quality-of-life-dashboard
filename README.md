@@ -92,3 +92,4 @@ Create the string keys and string items in either English or Spanish in the `en.
 
 # Pinned dependencies
 * Vite on 4.2.x because version 4.3 is breaking tests -- see https://github.com/DataWorks-NC/quality-of-life-dashboard/pull/119#issuecomment-1531724946
+* Json-stable-stringify on 1.0.2 because new versions are breaking tests
