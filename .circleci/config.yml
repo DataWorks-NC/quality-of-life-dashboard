@@ -82,7 +82,7 @@ jobs:
 
   deploy_prod: &DEPLOY_PROD
     docker:
-      - image: cimg/azure
+      - image: cimg/azure:2025.01
     steps:
       - attach_workspace:
           at: /tmp/workspace
@@ -102,7 +102,7 @@ jobs:
 
   deploy_dev:
     docker:
-      - image: cimg/azure
+      - image: cimg/azure:2025.01
     steps:
       - attach_workspace:
           at: /tmp/workspace
@@ -118,7 +118,7 @@ jobs:
 
   deploy_stage:
     docker:
-      - image: cimg/azure
+      - image: cimg/azure:2025.01
     steps:
       - attach_workspace:
           at: /tmp/workspace
