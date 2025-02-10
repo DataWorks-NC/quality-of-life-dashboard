@@ -30,7 +30,7 @@ git clone https://github.com/DataWorks-NC/durham-quality-of-life-data data
 npm install
 ```
 
-You'll then need to copy `.env.example` to a new `.env` file in the repo root and fill in (at minimum) the `VUE_APP_MAPBOX_ACCESS_TOKEN` with a valid mapbox access token. You can use this file to store other local environment variables (for example, for testing Google Analytics), but they're not strictly required.
+You'll then need to copy `.env.example` to a new `.env` file in the repo root and fill in (at minimum) the `VITE_MAPBOX_ACCESS_TOKEN` with a valid mapbox access token, which you can obtain by signing up for a free mapbox account at https://console.mapbox.com/. You can use this file to store other local environment variables (for example, for testing Google Analytics), but they're not strictly required.
 
 Then run
 
