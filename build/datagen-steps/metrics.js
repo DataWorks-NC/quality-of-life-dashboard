@@ -107,11 +107,12 @@ function v1CsvToJson(csvArray) {
 function v2CsvToJson(csvArray) {
   const jsonOut = {};
   csvArray.forEach((row) => {
+    if ("data_year" in row && !("year" in row)) row.year = row.data_year;
     if (!("fips" in row && "year" in row && "value" in row)) {
-      throw new TypeError("Each row must have keys fips, year and value");
+      throw new TypeError(`Each row must have keys fips, year and value. Got ${JSON.stringify(row)}`);
     }
     if (!row.fips || !row.year) {
-      throw new TypeError("Each row must have a valid fips and year value");
+      throw new TypeError(`Each row must have a valid fips and year value. Got ${JSON.stringify(row)}`);
     }
     if (!(row.fips in jsonOut)) {
       jsonOut[row.fips] = {};
@@ -326,7 +327,7 @@ async function convertWeightedMetric(geography, metric, { inputFileBasePath, out
       try {
         csvArray = await csv().fromFile(file.name);
       } catch (err) {
-        throw Error(`Error importing weighted metric CSV file ${file.name}`);
+        throw Error(`Error importing weighted metric CSV file ${file.name} - ${err.message}`);
       }
       try {
         if (file.format === "v2") {
@@ -334,7 +335,7 @@ async function convertWeightedMetric(geography, metric, { inputFileBasePath, out
         }
         return v1CsvToJson(csvArray);
       } catch (err) {
-        throw Error(`Error converting weighted metric CSV to JSON ${file.name}`);
+        throw Error(`Error converting weighted metric CSV to JSON ${file.name} - ${err.message}`);
       }
     })
   );
