@@ -1,6 +1,6 @@
 {
   "name": "durham-neighborhood-compass",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -25,7 +25,7 @@
     "csv-parse": "^5.0.4",
     "csv-stringify": "^6.0.5",
     "js-md5": "^0.7.3",
-    "json-stable-stringify": "^1.0.1",
+    "json-stable-stringify": "1.0.2",
     "jsonminify": "^0.4.1",
     "lodash-es": "^4.17.20",
     "mapbox-gl": "^2.0",
@@ -33,8 +33,8 @@
     "minify-css-string": "^1.0.0",
     "regenerator-runtime": "^0.13.7",
     "vue": "^3.1.0",
-    "vue-i18n": "^9.0",
-    "vue-i18n-bridge": "^9.2.2",
+    "vue-i18n": "9.2.2",
+    "vue-i18n-bridge": "9.2.2",
     "vue-router": "^4.0",
     "vuetify": "^3.0",
     "whatwg-fetch": "^3.4.1"
@@ -52,7 +52,6 @@
     "@vueuse/head": "^1.x",
     "async": "^3.2.0",
     "autoprefixer": "^10.0",
-    "bundlesize": "^0.18.0",
     "critters": "^0.0.16",
     "csvtojson": "^2.0.10",
     "eslint": "^8.0",
@@ -64,10 +63,10 @@
     "marked": "^4.0.12",
     "prettier-plugin-jsdoc": "^0.4.2",
     "sass": "^1.43.2",
-    "terser": "^5.16.1",
+    "terser": "^5.31.1",
     "vite": "~4.2",
     "vite-plugin-vuetify": "^1.0.0",
-    "vite-ssg": "^0.22",
+    "vite-ssg": "0.22.2",
     "vitest": "^0.28.5",
     "yorkie": "^2.0.0"
   },

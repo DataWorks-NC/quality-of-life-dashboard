@@ -30,7 +30,7 @@ git clone https://github.com/DataWorks-NC/durham-quality-of-life-data data
 npm install
 ```
 
-You'll then need to copy `.env.example` to a new `.env` file in the repo root and fill in (at minimum) the `VUE_APP_MAPBOX_ACCESS_TOKEN` with a valid mapbox access token. You can use this file to store other local environment variables (for example, for testing Google Analytics), but they're not strictly required.
+You'll then need to copy `.env.example` to a new `.env` file in the repo root and fill in (at minimum) the `VITE_MAPBOX_ACCESS_TOKEN` with a valid mapbox access token, which you can obtain by signing up for a free mapbox account at https://console.mapbox.com/. You can use this file to store other local environment variables (for example, for testing Google Analytics), but they're not strictly required.
 
 Then run
 
@@ -92,3 +92,5 @@ Create the string keys and string items in either English or Spanish in the `en.
 
 # Pinned dependencies
 * Vite on 4.2.x because version 4.3 is breaking tests -- see https://github.com/DataWorks-NC/quality-of-life-dashboard/pull/119#issuecomment-1531724946
+* Json-stable-stringify on 1.0.2 because new versions are breaking tests
+* vite-ssg and vue-plugin-i18n(-bridge) -- some incompatability between these is breaking builds currently so pinning
