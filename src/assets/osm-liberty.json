@@ -11,7 +11,7 @@
       "url": " https://api.maptiler.com/tiles/v3/tiles.json?key=yolcHr0ZrAqgU69rGND2"
     }
   },
-  "sprite": "https://nbhd-compass-assets.s3.amazonaws.com/osm-liberty",
+  "sprite": "https://compass-assets-web.s3.us-east-1.amazonaws.com/osm-liberty",
   "glyphs": "https://orangemug.github.io/font-glyphs/glyphs/{fontstack}/{range}.pbf",
   "layers": [
     {
